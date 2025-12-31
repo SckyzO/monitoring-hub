@@ -6,52 +6,113 @@
     <title>Monitoring Hub</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --primary: #0066cc; --bg: #f8f9fa; --card-bg: #ffffff; --text: #2c3e50; --border: #e9ecef; }
-        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; line-height: 1.6; }
+        :root {
+            --primary: #0066cc;
+            --bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --text: #2c3e50;
+            --text-secondary: #6c757d;
+            --border: #e9ecef;
+            --code-bg: #2d3436;
+            --code-text: #dfe6e9;
+            --header-subtitle: #6c757d;
+            --th-bg: #f8f9fa;
+            --hover-bg: #f1f3f5;
+        }
+
+        [data-theme="dark"] {
+            --primary: #4dabf7;
+            --bg: #121212;
+            --card-bg: #1e1e1e;
+            --text: #e0e0e0;
+            --text-secondary: #a0a0a0;
+            --border: #333;
+            --code-bg: #000;
+            --code-text: #b0b0b0;
+            --header-subtitle: #a0a0a0;
+            --th-bg: #252525;
+            --hover-bg: #2d2d2d;
+        }
+
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; line-height: 1.6; transition: background 0.3s, color 0.3s; }
         
         /* Layout */
-        .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
-        header { text-align: center; margin-bottom: 60px; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; position: relative; }
+        header { text-align: center; margin-bottom: 60px; position: relative; }
         h1 { font-size: 3rem; color: var(--primary); margin: 0; letter-spacing: -1px; }
-        .subtitle { color: #6c757d; font-size: 1.25rem; margin-top: 10px; font-weight: 300; }
+        .subtitle { color: var(--header-subtitle); font-size: 1.25rem; margin-top: 10px; font-weight: 300; }
         
+        /* Dark Mode Toggle */
+        .theme-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .theme-toggle:hover { transform: scale(1.1); }
+
         /* Setup Section */
-        .setup-section { background: #fff; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); padding: 30px; margin-bottom: 50px; border: 1px solid var(--border); }
+        .setup-section { background: var(--card-bg); border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); padding: 30px; margin-bottom: 50px; border: 1px solid var(--border); transition: background 0.3s; }
         .tabs { display: flex; gap: 10px; border-bottom: 2px solid var(--border); margin-bottom: 20px; }
-        .tab { padding: 10px 20px; cursor: pointer; font-weight: 600; color: #6c757d; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.2s; }
+        .tab { padding: 10px 20px; cursor: pointer; font-weight: 600; color: var(--text-secondary); border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.2s; }
         .tab:hover { color: var(--primary); }
         .tab.active { color: var(--primary); border-bottom-color: var(--primary); }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
         
         /* Code Blocks */
-        pre { background: #2d3436; color: #dfe6e9; padding: 20px; border-radius: 8px; overflow-x: auto; position: relative; }
+        pre { background: var(--code-bg); color: var(--code-text); padding: 20px; border-radius: 8px; overflow-x: auto; position: relative; border: 1px solid var(--border); }
         code { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; }
         .copy-btn { position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.1); border: none; color: #fff; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; transition: background 0.2s; }
         .copy-btn:hover { background: rgba(255,255,255,0.2); }
         
         /* Packages Table */
-        .table-container { background: #fff; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); overflow: hidden; border: 1px solid var(--border); }
+        .table-container { background: var(--card-bg); border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); overflow: hidden; border: 1px solid var(--border); transition: background 0.3s; }
         table { width: 100%; border-collapse: collapse; }
-        th { background: #f8f9fa; padding: 15px 20px; text-align: left; font-weight: 600; color: #495057; border-bottom: 1px solid var(--border); }
-        td { padding: 15px 20px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+        th { background: var(--th-bg); padding: 15px 20px; text-align: left; font-weight: 600; color: var(--text-secondary); border-bottom: 1px solid var(--border); }
+        td { padding: 15px 20px; border-bottom: 1px solid var(--border); vertical-align: middle; color: var(--text); }
         tr:last-child td { border-bottom: none; }
-        tr:hover td { background: #f8f9fa; }
+        tr:hover td { background: var(--hover-bg); }
         
         /* Elements */
         .pkg-name { font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 10px; }
         .version-badge { background: #e3f2fd; color: #0d47a1; padding: 4px 8px; border-radius: 12px; font-size: 0.8rem; font-weight: 700; }
+        [data-theme="dark"] .version-badge { background: #1565c0; color: #e3f2fd; }
+
         .action-btn { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 6px; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: all 0.2s; border: 1px solid transparent; cursor: pointer; }
+        
         .btn-docker { background: #e3f2fd; color: #1565c0; border-color: #bbdefb; }
         .btn-docker:hover { background: #bbdefb; }
+        [data-theme="dark"] .btn-docker { background: #0d47a1; color: #e3f2fd; border-color: #1565c0; }
+        [data-theme="dark"] .btn-docker:hover { background: #1565c0; }
+
         .btn-rpm { background: #f3f0ff; color: #673ab7; border-color: #d1c4e9; }
         .btn-rpm:hover { background: #d1c4e9; }
+        [data-theme="dark"] .btn-rpm { background: #4527a0; color: #ede7f6; border-color: #512da8; }
+        [data-theme="dark"] .btn-rpm:hover { background: #512da8; }
+
         .download-links a { margin-right: 5px; font-size: 0.85rem; }
         
-        footer { text-align: center; margin-top: 60px; color: #adb5bd; font-size: 0.9rem; }
+        footer { text-align: center; margin-top: 60px; color: var(--text-secondary); font-size: 0.9rem; }
     </style>
 </head>
 <body>
+    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark Mode">
+        <i class="fas fa-moon"></i>
+    </button>
+
     <div class="container">
         <header>
             <h1>🏭 Monitoring Hub</h1>
@@ -102,14 +163,14 @@ sudo dnf install &lt;package_name&gt;</code><button class="copy-btn" onclick="co
                             </div>
                         </td>
                         <td><span class="version-badge">{{ exporter.version }}</span></td>
-                        <td style="color:#666; font-size:0.9rem;">{{ exporter.description }}</td>
+                        <td style="color:var(--text-secondary); font-size:0.9rem;">{{ exporter.description }}</td>
                         <td>
                             {% if exporter.artifacts.docker.enabled %}
                             <button class="action-btn btn-docker" onclick="copyDocker('ghcr.io/sckyzo/monitoring-hub/{{ exporter.name }}:latest', this)">
                                 <i class="fab fa-docker"></i> Pull
                             </button>
                             {% else %}
-                            <span style="color:#ccc">—</span>
+                            <span style="color:var(--text-secondary)">—</span>
                             {% endif %}
                         </td>
                         <td class="download-links">
@@ -120,7 +181,7 @@ sudo dnf install &lt;package_name&gt;</code><button class="copy-btn" onclick="co
                                 </a>
                                 {% endfor %}
                             {% else %}
-                            <span style="color:#ccc">—</span>
+                            <span style="color:var(--text-secondary)">—</span>
                             {% endif %}
                         </td>
                     </tr>
@@ -135,6 +196,33 @@ sudo dnf install &lt;package_name&gt;</code><button class="copy-btn" onclick="co
     </div>
 
     <script>
+        // Theme Logic
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute("data-theme");
+            const newTheme = currentTheme === "dark" ? "light" : "dark";
+            
+            document.documentElement.setAttribute("data-theme", newTheme);
+            localStorage.setItem("theme", newTheme);
+            updateIcon(newTheme);
+        }
+
+        function updateIcon(theme) {
+            const icon = document.querySelector(".theme-toggle i");
+            if (theme === "dark") {
+                icon.classList.remove("fa-moon");
+                icon.classList.add("fa-sun");
+            } else {
+                icon.classList.remove("fa-sun");
+                icon.classList.add("fa-moon");
+            }
+        }
+
+        // Initialize Theme
+        const savedTheme = localStorage.getItem("theme") || "light";
+        document.documentElement.setAttribute("data-theme", savedTheme);
+        updateIcon(savedTheme);
+
+        // Tab Logic
         function switchTab(id) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
