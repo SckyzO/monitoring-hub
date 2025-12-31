@@ -20,4 +20,5 @@ artifacts:
   docker:
     enabled: true
     base_image: registry.access.redhat.com/ubi9/ubi-minimal
-    entrypoint: ["/node_exporter"]
+    entrypoint:
+    - /usr/bin/node_exporter
