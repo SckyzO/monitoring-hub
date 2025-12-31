@@ -6,17 +6,26 @@ set -e
 
 SPEC_PATH_REL=$(realpath --relative-to="$(pwd)" "$1")
 OUTPUT_DIR=$(realpath "$2")
+TARGET_ARCH=${3:-amd64} # Default to amd64 if not provided
 SCRIPT_DIR=$(dirname "$(realpath "$0")")
 
 mkdir -p "$OUTPUT_DIR"
 
-echo "Starting RPM build for $SPEC_PATH_REL..."
+echo "Starting RPM build for $SPEC_PATH_REL on arch $TARGET_ARCH..."
 echo "Output directory: $OUTPUT_DIR"
+
+# Map arch names for Docker platform
+if [ "$TARGET_ARCH" == "arm64" ] || [ "$TARGET_ARCH" == "aarch64" ]; then
+    DOCKER_PLATFORM="linux/arm64"
+else
+    DOCKER_PLATFORM="linux/amd64"
+fi
 
 # We map the project root to /workspace to access files
 # We run as root in the container to allow dnf install
 # Note: We pass the path relative to /workspace inside the container
 docker run --rm \
+    --platform "$DOCKER_PLATFORM" \
     -v "$(pwd):/workspace" \
     -v "$OUTPUT_DIR:/output" \
     -w /workspace \

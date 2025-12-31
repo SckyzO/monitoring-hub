@@ -86,6 +86,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Add QEMU for multi-arch RPM build containers
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
@@ -111,7 +115,8 @@ jobs:
                   if [ -f "$spec_file" ]; then
                     chmod +x core/build_rpm.sh core/utils/rpm_build_entrypoint.sh
                     # Use distinct output dir for rpms to avoid overwriting
-                    ./core/build_rpm.sh "$spec_file" "$build_dir/rpms"
+                    # Pass architecture to build script
+                    ./core/build_rpm.sh "$spec_file" "$build_dir/rpms" "$arch"
                   fi
               done
             fi
