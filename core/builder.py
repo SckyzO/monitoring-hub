@@ -2,6 +2,19 @@ import click
 import yaml
 import os
 from jinja2 import Environment, FileSystemLoader
+from schema import ManifestSchema
+from marshmallow import ValidationError
+
+def load_manifest(path):
+    with open(path, 'r') as f:
+        data = yaml.safe_load(f)
+    
+    schema = ManifestSchema()
+    try:
+        return schema.load(data)
+    except ValidationError as err:
+        click.echo(f"Validation error in {path}: {err.messages}", err=True)
+        raise click.Abort()
 
 @click.command()
 @click.option('--manifest', '-m', help='Path to the manifest.yaml file', required=True)
@@ -13,10 +26,8 @@ def build(manifest, output_dir):
     click.echo(f"Processing manifest: {manifest}")
     
     try:
-        with open(manifest, 'r') as f:
-            data = yaml.safe_load(f)
-            
-        click.echo(f"Loaded manifest for: {data.get('name', 'Unknown')}")
+        data = load_manifest(manifest)
+        click.echo(f"Loaded and validated manifest for: {data['name']}")
         
         # Setup Jinja2 environment
         template_dir = os.path.join(os.path.dirname(__file__), 'templates')
@@ -26,7 +37,8 @@ def build(manifest, output_dir):
         os.makedirs(output_dir, exist_ok=True)
         
         # Generate RPM Spec
-        if data.get('artifacts', {}).get('rpm', {}).get('enabled'):
+        artifacts = data.get('artifacts', {})
+        if artifacts.get('rpm', {}).get('enabled'):
             template = env.get_template('default.spec.j2')
             output_content = template.render(data)
             output_file = os.path.join(output_dir, f"{data['name']}.spec")
@@ -35,7 +47,7 @@ def build(manifest, output_dir):
             click.echo(f"Generated RPM spec: {output_file}")
             
         # Generate Dockerfile
-        if data.get('artifacts', {}).get('docker', {}).get('enabled'):
+        if artifacts.get('docker', {}).get('enabled'):
             template = env.get_template('Dockerfile.j2')
             output_content = template.render(data)
             output_file = os.path.join(output_dir, "Dockerfile")
@@ -44,7 +56,9 @@ def build(manifest, output_dir):
             click.echo(f"Generated Dockerfile: {output_file}")
             
     except Exception as e:
-        click.echo(f"Error processing manifest: {e}", err=True)
+        if not isinstance(e, click.Abort):
+            click.echo(f"Error processing manifest: {e}", err=True)
+        raise e
 
 if __name__ == '__main__':
     build()
