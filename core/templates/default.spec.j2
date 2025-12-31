@@ -8,12 +8,12 @@ Summary:        {{ artifacts.rpm.summary }}
 
 License:        Apache-2.0
 URL:            https://github.com/{{ upstream.repo }}
-Source0:        https://github.com/{{ upstream.repo }}/releases/download/v{{ version }}/{{ name }}-{{ version }}.linux-amd64.tar.gz
+Source0:        https://github.com/{{ upstream.repo }}/releases/download/v{{ version }}/{{ name }}-{{ version }}.linux-{{ arch }}.tar.gz
 {% for file in artifacts.rpm.extra_files %}
 Source{{ loop.index }}: {{ file.build_source }}
 {% endfor %}
 
-BuildArch:      x86_64
+BuildArch:      {{ rpm_arch }}
 
 {% if artifacts.rpm.system_user %}
 Requires(pre):  shadow-utils
@@ -23,7 +23,7 @@ Requires(pre):  shadow-utils
 {{ description }}
 
 %prep
-%setup -q -n {{ name }}-{{ version }}.linux-amd64
+%setup -q -n {{ name }}-{{ version }}.linux-{{ arch }}
 
 %build
 # Nothing to build, binary repack
