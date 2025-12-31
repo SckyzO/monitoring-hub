@@ -1,0 +1,43 @@
+name: alertmanager
+description: Prometheus Alertmanager
+version: 0.30.0
+upstream:
+  type: github
+  repo: prometheus/alertmanager
+  strategy: latest_release
+build:
+  method: binary_repack
+  binary_name: alertmanager
+  extra_binaries:
+  - amtool
+artifacts:
+  rpm:
+    enabled: true
+    targets:
+    - el8
+    - el9
+    - el10
+    summary: Prometheus Alertmanager
+    service_file: true
+    system_user: alertmanager
+    extra_files:
+    - source: assets/alertmanager.yml
+      dest: /etc/alertmanager/alertmanager.yml
+      config: true
+    directories:
+    - path: /etc/alertmanager
+      mode: '0755'
+      owner: root
+      group: root
+    - path: /var/lib/alertmanager
+      mode: '0755'
+      owner: alertmanager
+      group: alertmanager
+  docker:
+    enabled: true
+    base_image: registry.access.redhat.com/ubi9/ubi-minimal
+    entrypoint:
+    - /usr/bin/alertmanager
+    cmd:
+    - --config.file=/etc/alertmanager/alertmanager.yml
+    - --storage.path=/var/lib/alertmanager
