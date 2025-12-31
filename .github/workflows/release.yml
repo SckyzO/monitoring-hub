@@ -64,6 +64,7 @@ jobs:
                 docker buildx build \
                   --file "build/$name/Dockerfile" \
                   --push \
+                  --label "org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}" \
                   --tag "$image_id:$version" \
                   --tag "$image_id:latest" \
                   "build/$name"
