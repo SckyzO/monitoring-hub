@@ -28,9 +28,15 @@ spectool -g -R ~/rpmbuild/SPECS/$(basename "$SPEC_FILE")
 echo "Installing build dependencies..."
 dnf builddep -y ~/rpmbuild/SPECS/$(basename "$SPEC_FILE")
 
+# Extract architecture from spec file to support cross-building (repack)
+TARGET_ARCH=$(grep "BuildArch:" "$SPEC_FILE" | awk '{print $2}')
+if [ -z "$TARGET_ARCH" ]; then
+    TARGET_ARCH="x86_64"
+fi
+
 # Build RPM
-echo "Building RPM..."
-rpmbuild -bb ~/rpmbuild/SPECS/$(basename "$SPEC_FILE")
+echo "Building RPM for target: $TARGET_ARCH..."
+rpmbuild -bb --target "$TARGET_ARCH" ~/rpmbuild/SPECS/$(basename "$SPEC_FILE")
 
 # Copy artifacts to output
 echo "Copying artifacts..."
