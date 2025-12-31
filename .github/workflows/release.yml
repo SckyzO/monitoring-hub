@@ -128,6 +128,11 @@ jobs:
           # Update metadata
           # We use a docker container for createrepo to avoid installing it on the runner
           docker run --rm -v $(pwd):/repo almalinux:9 /bin/bash -c "dnf install -y createrepo_c && createrepo_c /repo/el9/x86_64"
+
+          # Generate Landing Page
+          cd .. # Go back to root
+          python core/gen_site.py --output gh-pages-dist/index.html
+          cd gh-pages-dist
           
           # Commit and push
           git config user.name "Monitoring Hub Bot"

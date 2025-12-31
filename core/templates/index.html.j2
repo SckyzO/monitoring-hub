@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitoring Hub</title>
+    <style>
+        :root { --primary: #0066cc; --bg: #f4f6f8; --card-bg: #ffffff; --text: #333; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px; line-height: 1.6; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        header { text-align: center; margin-bottom: 40px; padding: 40px 0; }
+        h1 { margin: 0; font-size: 2.5rem; color: var(--primary); }
+        .subtitle { color: #666; font-size: 1.2rem; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }
+        .card { background: var(--card-bg); border-radius: 8px; padding: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: transform 0.2s; border: 1px solid #e1e4e8; }
+        .card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .card h2 { margin-top: 0; font-size: 1.5rem; }
+        .version { display: inline-block; background: #e1f5fe; color: #0277bd; padding: 2px 8px; border-radius: 12px; font-size: 0.85rem; font-weight: bold; }
+        .meta { margin-top: 15px; font-size: 0.9rem; color: #666; }
+        .links { margin-top: 20px; display: flex; gap: 10px; }
+        .btn { display: inline-block; padding: 8px 16px; border-radius: 4px; text-decoration: none; font-weight: 500; font-size: 0.9rem; }
+        .btn-rpm { background: #f0f0f0; color: #333; }
+        .btn-docker { background: #e3f2fd; color: #1565c0; }
+        .instructions { background: #2d3436; color: #dfe6e9; padding: 20px; border-radius: 8px; margin-bottom: 40px; overflow-x: auto; }
+        code { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; }
+        .copy-btn { float: right; cursor: pointer; opacity: 0.7; }
+        footer { text-align: center; margin-top: 60px; color: #999; font-size: 0.9rem; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏭 Monitoring Hub</h1>
+            <p class="subtitle">Automated Factory for Prometheus Exporters</p>
+        </header>
+
+        <section class="instructions">
+            <h3>🚀 Quick Setup (EL9)</h3>
+            <pre><code>sudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el9/x86_64/
+sudo dnf install &lt;exporter_name&gt;</code></pre>
+        </section>
+
+        <div class="grid">
+            {% for exporter in exporters %}
+            <div class="card">
+                <div style="display:flex; justify-content:space-between; align-items:start;">
+                    <h2>{{ exporter.name }}</h2>
+                    <span class="version">v{{ exporter.version }}</span>
+                </div>
+                <p>{{ exporter.description }}</p>
+                
+                <div class="meta">
+                    <strong>Upstream:</strong> <a href="https://github.com/{{ exporter.upstream.repo }}" target="_blank">{{ exporter.upstream.repo }}</a>
+                </div>
+
+                <div class="links">
+                    {% if exporter.artifacts.rpm.enabled %}
+                    <span class="btn btn-rpm" title="Available via YUM">📦 RPM</span>
+                    {% endif %}
+                    {% if exporter.artifacts.docker.enabled %}
+                    <span class="btn btn-docker" title="Available on GHCR">🐳 Docker</span>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <footer>
+            <p>Generated automatically by Monitoring Hub. <a href="https://github.com/SckyzO/monitoring-hub">View on GitHub</a>.</p>
+        </footer>
+    </div>
+</body>
+</html>
