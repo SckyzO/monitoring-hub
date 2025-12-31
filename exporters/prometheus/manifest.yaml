@@ -1,13 +1,13 @@
-name: node_exporter
-description: Prometheus exporter for machine metrics
-version: 1.10.2
+name: prometheus
+description: The Prometheus monitoring system and time series database.
+version: 3.8.1
 upstream:
   type: github
-  repo: prometheus/node_exporter
+  repo: prometheus/prometheus
   strategy: latest_release
 build:
   method: binary_repack
-  binary_name: node_exporter
+  binary_name: prometheus
 artifacts:
   rpm:
     enabled: true
@@ -15,10 +15,10 @@ artifacts:
     - el8
     - el9
     - el10
-    summary: Prometheus exporter for hardware and OS metrics
+    summary: The Prometheus monitoring system and time series database.
     service_file: true
   docker:
     enabled: true
     base_image: distroless/static
     entrypoint:
-    - /node_exporter
+    - /prometheus
