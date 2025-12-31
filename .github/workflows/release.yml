@@ -35,6 +35,9 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -45,29 +48,29 @@ jobs:
               name=$(basename "$exporter")
               echo "Processing $name..."
               
-              # Generate build files
-              python core/builder.py --manifest "${exporter}manifest.yaml" --output-dir "build/$name"
+              # Build context setup for multi-arch
+              # We stick to amd64 for Docker for this iteration to avoid breaking everything
+              # and focus on adding aarch64 RPMs as requested.
               
-              # Extract info from manifest for tagging (simple parsing for now)
+              # Generate build files (default amd64)
+              python core/builder.py --manifest "${exporter}manifest.yaml" --output-dir "build/$name" --arch amd64
+              
+              # Extract info from manifest for tagging
               version=$(grep "version:" "${exporter}manifest.yaml" | awk '{print $2}' | tr -d '"')
               
-                              if [ -f "build/$name/Dockerfile" ]; then
-                              echo "Building Docker image for $name version $version"
-                              echo "Build context directory: build/$name"
-                              ls -la "build/$name"
-                              
-                              # Build and push                # Tag: ghcr.io/owner/repo/exporter_name:version
-                # Tag: ghcr.io/owner/repo/exporter_name:latest
+              if [ -f "build/$name/Dockerfile" ]; then
+                 echo "Building Docker image for $name version $version"
+                 
+                 image_id="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/$name"
+                 image_id=$(echo $image_id | tr '[:upper:]' '[:lower:]')
                 
-                image_id="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/$name"
-                image_id=$(echo $image_id | tr '[:upper:]' '[:lower:]')
-                
-                docker buildx build \
+                 docker buildx build \
                   --file "build/$name/Dockerfile" \
                   --push \
                   --label "org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}" \
                   --tag "$image_id:$version" \
                   --tag "$image_id:latest" \
+                  --platform linux/amd64 \
                   "build/$name"
               fi
             fi
@@ -75,7 +78,7 @@ jobs:
 
   update-yum-repo:
     runs-on: ubuntu-latest
-    needs: build-and-push-docker # Ensure docker builds are fine first (optional dependency)
+    needs: build-and-push-docker
     permissions:
       contents: write # Needed to push to gh-pages
     steps:
@@ -89,23 +92,26 @@ jobs:
       - name: Install dependencies
         run: pip install -r core/requirements.txt
 
-      - name: Generate RPMs
+      - name: Generate RPMs (Multi-Arch)
         run: |
           for exporter in exporters/*/; do
             if [ -f "${exporter}manifest.yaml" ]; then
               name=$(basename "$exporter")
               echo "Processing $name for RPM..."
               
-              # Ensure build files exist (might have been generated in previous job but separate runners usually mean separate fs)
-              # Re-running builder is cheap
-              python core/builder.py --manifest "${exporter}manifest.yaml" --output-dir "build/$name"
-              
-              spec_file="build/$name/$name.spec"
-              if [ -f "$spec_file" ]; then
-                echo "Building RPM from $spec_file..."
-                chmod +x core/build_rpm.sh core/utils/rpm_build_entrypoint.sh
-                ./core/build_rpm.sh "$spec_file" "build/$name/rpms"
-              fi
+              for arch in amd64 arm64; do
+                  echo "  -> Building for $arch"
+                  build_dir="build/$name-$arch"
+                  
+                  python core/builder.py --manifest "${exporter}manifest.yaml" --output-dir "$build_dir" --arch "$arch"
+                  
+                  spec_file="$build_dir/$name.spec"
+                  if [ -f "$spec_file" ]; then
+                    chmod +x core/build_rpm.sh core/utils/rpm_build_entrypoint.sh
+                    # Use distinct output dir for rpms to avoid overwriting
+                    ./core/build_rpm.sh "$spec_file" "$build_dir/rpms"
+                  fi
+              done
             fi
           done
 
@@ -117,35 +123,52 @@ jobs:
           
           cd gh-pages-dist
           
-          # Prepare directory structure (e.g. el9/x86_64)
-          # Currently hardcoded for el9 as per our build script
-          mkdir -p el9/x86_64
+          # Prepare directory structure
+          # We map:
+          # amd64 -> x86_64
+          # arm64 -> aarch64
+          
+          mkdir -p el9/x86_64 el9/aarch64
           
           # Copy new RPMs
           # We need to find where they are in the main worktree
-          cp ../build/*/rpms/*/*.rpm el9/x86_64/ || echo "No new RPMs found"
+          # amd64
+          cp ../build/*-amd64/rpms/*/*.rpm el9/x86_64/ || echo "No new x86_64 RPMs found"
+          # arm64
+          cp ../build/*-arm64/rpms/*/*.rpm el9/aarch64/ || echo "No new aarch64 RPMs found"
           
           # Update metadata
-          # We use a docker container for createrepo to avoid installing it on the runner
-          docker run --rm -v $(pwd):/repo almalinux:9 /bin/bash -c "dnf install -y createrepo_c && createrepo_c /repo/el9/x86_64"
+          docker run --rm -v $(pwd):/repo almalinux:9 /bin/bash -c "dnf install -y createrepo_c && \
+             createrepo_c /repo/el9/x86_64 && \
+             createrepo_c /repo/el9/aarch64"
 
-          # Generate Directory Listing (index.html) for Browsing
-          # Simple bash script to mimic Apache/Nginx directory listing
-          cd el9/x86_64
-          echo "<!DOCTYPE html><html><head><title>Index of /el9/x86_64</title><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><style>body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif;padding:20px;line-height:1.5}h1{margin-bottom:20px}a{text-decoration:none;color:#0366d6}a:hover{text-decoration:underline}ul{list-style-type:none;padding:0}li{padding:5px 0;border-bottom:1px solid #eee}</style></head><body>" > index.html
-          echo "<h1>Index of /el9/x86_64</h1>" >> index.html
-          echo "<ul><li><a href=\"../\">📂 Parent Directory</a></li>" >> index.html
-          for f in *; do
-            if [ "$f" != "index.html" ]; then
-              # Add file size if possible, otherwise just name
-              size=$(du -h "$f" | cut -f1)
-              echo "<li><a href=\"$f\">📄 $f</a> <span style=\"color:#666;font-size:0.85em;float:right\">$size</span></li>" >> index.html
+          # Generate Recursive Directory Listing (index.html) for all subdirectories
+          # This prevents 404s when browsing /el9/ or /el9/x86_64/
+          find . -type d -not -path '*/.*' | while read dir; do
+            if [ ! -f "$dir/index.html" ]; then
+              echo "Generating index for $dir"
+              echo "<!DOCTYPE html><html><head><title>Index of $dir</title><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><style>body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif;padding:20px;line-height:1.5}h1{margin-bottom:20px;font-size:1.5em}a{text-decoration:none;color:#0366d6}a:hover{text-decoration:underline}ul{list-style-type:none;padding:0}li{padding:5px 0;border-bottom:1px solid #eee}</style></head><body>" > "$dir/index.html"
+              echo "<h1>Index of $dir</h1>" >> "$dir/index.html"
+              echo "<ul><li><a href=\"../\">📂 Parent Directory</a></li>" >> "$dir/index.html"
+              
+              # List files and directories
+              for f in "$dir"/*;
+ do
+                fname=$(basename "$f")
+                if [ "$fname" != "index.html" ]; then
+                   if [ -d "$f" ]; then
+                     echo "<li><a href=\"$fname/\">📁 $fname/</a></li>" >> "$dir/index.html"
+                   else
+                     size=$(du -h "$f" | cut -f1)
+                     echo "<li><a href=\"$fname\">📄 $fname</a> <span style=\"color:#666;font-size:0.85em;float:right\">$size</span></li>" >> "$dir/index.html"
+                   fi
+                fi
+              done
+              echo "</ul></body></html>" >> "$dir/index.html"
             fi
           done
-          echo "</ul></body></html>" >> index.html
-          cd ../..
 
-          # Generate Landing Page
+          # Generate Landing Page (Main index.html)
           cd .. # Go back to root
           python core/gen_site.py --output gh-pages-dist/index.html
           cd gh-pages-dist
@@ -158,7 +181,6 @@ jobs:
           if git diff --staged --quiet; then
             echo "No changes to commit."
           else
-            git commit -m "chore: update yum repository [skip ci]"
+            git commit -m "chore: update yum repository and landing page [skip ci]"
             git push origin gh-pages
           fi
-
