@@ -174,19 +174,22 @@ jobs:
           
           # Update metadata (needs docker but no QEMU needed here as createrepo is arch-agnostic usually, 
           # but we run it inside almalinux container which is x86_64)
+          # We also fix permissions because docker runs as root and we need to write index.html later
           docker run --rm -v $(pwd):/repo almalinux:9 /bin/bash -c "dnf install -y createrepo_c && \
              createrepo_c /repo/el9/x86_64 && \
-             createrepo_c /repo/el9/aarch64"
+             createrepo_c /repo/el9/aarch64 && \
+             chown -R $(id -u):$(id -g) /repo"
 
           # Recursive Index Generation
-          find . -type d -not -path '*/.*' | while read dir;
-          do
+          find . -type d -not -path '*/.*' | while read dir; do
             if [ ! -f "$dir/index.html" ]; then
+              echo "Generating index for $dir"
               echo "<!DOCTYPE html><html><head><title>Index of $dir</title><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><style>body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif;padding:20px;line-height:1.5}h1{margin-bottom:20px;font-size:1.5em}a{text-decoration:none;color:#0366d6}a:hover{text-decoration:underline}ul{list-style-type:none;padding:0}li{padding:5px 0;border-bottom:1px solid #eee}</style></head><body>" > "$dir/index.html"
               echo "<h1>Index of $dir</h1>" >> "$dir/index.html"
               echo "<ul><li><a href=\"../\">📂 Parent Directory</a></li>" >> "$dir/index.html"
-              for f in "$dir"/*;
-              do
+              
+              # List files and directories
+              for f in "$dir"/*; do
                 fname=$(basename "$f")
                 if [ "$fname" != "index.html" ]; then
                    if [ -d "$f" ]; then
