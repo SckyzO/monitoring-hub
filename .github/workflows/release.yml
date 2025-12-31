@@ -25,9 +25,7 @@ jobs:
         run: |
           # Find directories in exporters/ containing manifest.yaml
           # Output simple JSON array of names: ["node_exporter", "prometheus", ...]
-          exporters=$(find exporters -mindepth 1 -maxdepth 1 -type d -exec test -e '{}/manifest.yaml' \; -print | xargs -n 1 basename | jq -R -s -c 'split("\n")[:-1]')
-          echo "Found exporters: $exporters"
-          echo "exporters=$exporters" >> $GITHUB_OUTPUT
+          python3 -c "import os, json; print('exporters=' + json.dumps([d for d in os.listdir('exporters') if os.path.isdir(os.path.join('exporters', d)) and os.path.exists(os.path.join('exporters', d, 'manifest.yaml'))]))" >> $GITHUB_OUTPUT
 
   # 2. Build Docker Images (Parallel per exporter)
   build-docker:
@@ -65,7 +63,7 @@ jobs:
           echo "Processing $exporter..."
           
           # Generate build files (default arch, dockerfile is generic)
-          python core/builder.py --manifest "exporters/$exporter/manifest.yaml" --output-dir "build/$exporter"
+          python core/builder.py --manifest "exporters/$exporter/manifest.yaml" --output-dir "build/$exporter" --arch amd64
           
           version=$(grep "version:" "exporters/$exporter/manifest.yaml" | awk '{print $2}' | tr -d '"')
           
@@ -82,6 +80,7 @@ jobs:
               --tag "$image_id:latest" \
               --platform linux/amd64 \
               "build/$exporter"
+          fi
 
   # 3. Build RPMs (Parallel per exporter AND architecture)
   build-rpm:
