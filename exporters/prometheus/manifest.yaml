@@ -8,6 +8,8 @@ upstream:
 build:
   method: binary_repack
   binary_name: prometheus
+  extra_binaries:
+    - promtool
 artifacts:
   rpm:
     enabled: true
@@ -17,8 +19,25 @@ artifacts:
     - el10
     summary: The Prometheus monitoring system and time series database.
     service_file: true
+    system_user: prometheus
+    extra_files:
+    - source: assets/prometheus.yml
+      dest: /etc/prometheus/prometheus.yml
+      config: true
+    directories:
+    - path: /etc/prometheus
+      mode: '0755'
+      owner: root
+      group: root
+    - path: /var/lib/prometheus
+      mode: '0755'
+      owner: prometheus
+      group: prometheus
   docker:
     enabled: true
     base_image: registry.access.redhat.com/ubi9/ubi-minimal
     entrypoint:
-    - /prometheus
+    - /usr/bin/prometheus
+    cmd:
+    - --config.file=/etc/prometheus/prometheus.yml
+    - --storage.tsdb.path=/var/lib/prometheus

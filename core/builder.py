@@ -37,6 +37,8 @@ def download_and_extract(data, output_dir):
     click.echo(f"Downloading {url}...")
     
     local_tar = os.path.join(output_dir, filename)
+    binaries_to_find = [binary_name] + data['build'].get('extra_binaries', [])
+    found_binaries = []
     
     try:
         with requests.get(url, stream=True) as r:
@@ -45,38 +47,42 @@ def download_and_extract(data, output_dir):
                 for chunk in r.iter_content(chunk_size=8192):
                     f.write(chunk)
                     
-        click.echo(f"Extracting {binary_name} from {local_tar}...")
+        click.echo(f"Extracting binaries {binaries_to_find} from {local_tar}...")
         
         with tarfile.open(local_tar, "r:gz") as tar:
-            # Look for the binary inside the tar (it's usually in a subdir like name-version.linux-amd64/binary)
-            # We search for a file ending with the binary name
-            member_to_extract = None
-            for member in tar.getmembers():
-                if member.name.endswith(f"/{binary_name}") or member.name == binary_name:
-                    member_to_extract = member
-                    break
-            
-            if member_to_extract:
-                # Extract to a temp location then move to root of output_dir
-                tar.extract(member_to_extract, path=output_dir)
-                extracted_path = os.path.join(output_dir, member_to_extract.name)
-                final_path = os.path.join(output_dir, binary_name)
+            for b_name in binaries_to_find:
+                member_to_extract = None
+                for member in tar.getmembers():
+                    if member.name.endswith(f"/{b_name}") or member.name == b_name:
+                        member_to_extract = member
+                        break
                 
-                # Move to root if it was in a subdir
-                if extracted_path != final_path:
-                    shutil.move(extracted_path, final_path)
+                if member_to_extract:
+                    tar.extract(member_to_extract, path=output_dir)
+                    extracted_path = os.path.join(output_dir, member_to_extract.name)
+                    final_path = os.path.join(output_dir, b_name)
                     
-                # Cleanup empty dirs if any
-                if os.path.dirname(member_to_extract.name):
-                   shutil.rmtree(os.path.join(output_dir, member_to_extract.name.split('/')[0]), ignore_errors=True)
-                   
-                click.echo(f"Binary ready at: {final_path}")
-                
-                # Make executable
-                os.chmod(final_path, 0o755)
-            else:
-                click.echo(f"Error: Binary '{binary_name}' not found in archive.", err=True)
-                raise click.Abort()
+                    if extracted_path != final_path:
+                        shutil.move(extracted_path, final_path)
+                    
+                    # Make executable
+                    os.chmod(final_path, 0o755)
+                    found_binaries.append(b_name)
+                    click.echo(f"Binary ready at: {final_path}")
+                else:
+                    click.echo(f"Warning: Binary '{b_name}' not found in archive.")
+
+        # Cleanup empty dirs
+        for member in tar.getmembers():
+            parts = member.name.split('/')
+            if parts:
+                top_dir = os.path.join(output_dir, parts[0])
+                if os.path.isdir(top_dir) and top_dir != output_dir:
+                    shutil.rmtree(top_dir, ignore_errors=True)
+
+        if not found_binaries:
+            click.echo("Error: No binaries found in archive.", err=True)
+            raise click.Abort()
 
     except Exception as e:
         click.echo(f"Failed to download/extract artifact: {e}", err=True)
@@ -109,6 +115,14 @@ def build(manifest, output_dir):
         # Generate RPM Spec
         artifacts = data.get('artifacts', {})
         if artifacts.get('rpm', {}).get('enabled'):
+            # Copy extra files to build dir
+            for extra_file in artifacts['rpm'].get('extra_files', []):
+                src = os.path.join(os.path.dirname(manifest), extra_file['source'])
+                dst_name = os.path.basename(extra_file['source'])
+                shutil.copy(src, os.path.join(output_dir, dst_name))
+                # Update source path in data to be relative to build dir (just the filename)
+                extra_file['build_source'] = dst_name
+
             template = env.get_template('default.spec.j2')
             output_content = template.render(data)
             output_file = os.path.join(output_dir, f"{data['name']}.spec")

@@ -1,3 +1,27 @@
 FROM {{ artifacts.docker.base_image }}
-COPY {{ build.binary_name }} {{ artifacts.docker.entrypoint[0] }}
+
+# Create necessary directories
+RUN mkdir -p /etc/{{ name }} /var/lib/{{ name }} && \
+    chmod 777 /var/lib/{{ name }}
+
+# Copy main binary
+COPY {{ build.binary_name }} /usr/bin/{{ name }}
+
+# Copy extra binaries
+{% for b in build.extra_binaries %}
+COPY {{ b }} /usr/bin/{{ b }}
+{% endfor %}
+
+# Copy extra files (configs, etc.)
+{% for file in artifacts.rpm.extra_files %}
+COPY {{ file.build_source }} {{ file.dest }}
+{% endfor %}
+
+# Permissions (UBI 9 specific: we use a non-root approach if possible)
+# But for simplicity in this repack, we stay close to upstream
+WORKDIR /var/lib/{{ name }}
+
 ENTRYPOINT {{ artifacts.docker.entrypoint | tojson }}
+{% if artifacts.docker.cmd %}
+CMD {{ artifacts.docker.cmd | tojson }}
+{% endif %}

@@ -9,8 +9,15 @@ Summary:        {{ artifacts.rpm.summary }}
 License:        Apache-2.0
 URL:            https://github.com/{{ upstream.repo }}
 Source0:        https://github.com/{{ upstream.repo }}/releases/download/v{{ version }}/{{ name }}-{{ version }}.linux-amd64.tar.gz
+{% for file in artifacts.rpm.extra_files %}
+Source{{ loop.index }}: {{ file.build_source }}
+{% endfor %}
 
 BuildArch:      x86_64
+
+{% if artifacts.rpm.system_user %}
+Requires(pre):  shadow-utils
+{% endif %}
 
 %description
 {{ description }}
@@ -35,7 +42,9 @@ After=network.target
 
 [Service]
 Type=simple
-User=prometheus
+{% if artifacts.rpm.system_user %}
+User={{ artifacts.rpm.system_user }}
+{% endif %}
 ExecStart=%{_bindir}/{{ name }}
 Restart=on-failure
 
@@ -44,11 +53,44 @@ WantedBy=multi-user.target
 EOF
 {% endif %}
 
+# Create directories
+{% for dir in artifacts.rpm.directories %}
+mkdir -p $RPM_BUILD_ROOT{{ dir.path }}
+{% endfor %}
+
+# Install extra files
+{% for file in artifacts.rpm.extra_files %}
+# Assuming files go to specific locations, we use install -D
+# But we need to handle the destination path carefully
+install -D -m {{ file.mode }} %{SOURCE{{ loop.index }}} $RPM_BUILD_ROOT{{ file.dest }}
+{% endfor %}
+
+{% if artifacts.rpm.system_user %}
+%pre
+getent group {{ artifacts.rpm.system_user }} >/dev/null || groupadd -r {{ artifacts.rpm.system_user }}
+getent passwd {{ artifacts.rpm.system_user }} >/dev/null || \
+    useradd -r -g {{ artifacts.rpm.system_user }} -d /var/lib/{{ name }} -s /sbin/nologin \
+    -c "User for {{ name }}" {{ artifacts.rpm.system_user }}
+exit 0
+{% endif %}
+
 %files
 %{_bindir}/{{ name }}
 {% if artifacts.rpm.service_file %}
 %{_unitdir}/{{ name }}.service
 {% endif %}
+
+{% for dir in artifacts.rpm.directories %}
+%dir %attr({{ dir.mode }}, {{ dir.owner }}, {{ dir.group }}) {{ dir.path }}
+{% endfor %}
+
+{% for file in artifacts.rpm.extra_files %}
+{% if file.config %}
+%config(noreplace) {{ file.dest }}
+{% else %}
+{{ file.dest }}
+{% endif %}
+{% endfor %}
 
 %changelog
 * Wed Dec 31 2025 Monitoring Hub <bot@monitoring-hub.local> - {{ version }}-1
