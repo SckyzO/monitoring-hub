@@ -19,6 +19,5 @@ artifacts:
     service_file: true
   docker:
     enabled: true
-    base_image: distroless/static
-    entrypoint:
-    - /node_exporter
+    base_image: gcr.io/distroless/static-debian12
+    entrypoint: ["/node_exporter"]
