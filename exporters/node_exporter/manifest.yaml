@@ -19,5 +19,5 @@ artifacts:
     service_file: true
   docker:
     enabled: true
-    base_image: gcr.io/distroless/static-debian12
+    base_image: registry.access.redhat.com/ubi9/ubi-minimal
     entrypoint: ["/node_exporter"]

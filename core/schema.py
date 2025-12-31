@@ -17,7 +17,7 @@ class RPMSchema(Schema):
 
 class DockerSchema(Schema):
     enabled = fields.Bool(load_default=False)
-    base_image = fields.Str(load_default="gcr.io/distroless/static-debian12")
+    base_image = fields.Str(load_default="registry.access.redhat.com/ubi9/ubi-minimal")
     entrypoint = fields.List(fields.Str())
 
 class ArtifactsSchema(Schema):
