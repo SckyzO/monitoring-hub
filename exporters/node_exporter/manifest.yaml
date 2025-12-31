@@ -1,0 +1,20 @@
+name: node_exporter
+description: "Prometheus exporter for machine metrics"
+version: "1.8.2" # Example version
+upstream:
+  type: github
+  repo: prometheus/node_exporter
+  strategy: latest_release
+build:
+  method: binary_repack
+  binary_name: node_exporter
+artifacts:
+  rpm:
+    enabled: true
+    targets: [el8, el9, el10]
+    summary: "Prometheus exporter for hardware and OS metrics"
+    service_file: true
+  docker:
+    enabled: true
+    base_image: distroless/static
+    entrypoint: ["/node_exporter"]

@@ -41,3 +41,5 @@ secrets/
 # Contains architecture plans, raw notes, and local POCs
 ARCHITECTURE/
 
+build/
+.venv/

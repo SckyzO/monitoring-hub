@@ -9,7 +9,7 @@
 This repository acts as a "Source of Truth" to automatically build, package, and publish Prometheus exporters.
 Instead of maintaining manual build scripts for each tool, **Monitoring Hub** uses a configuration-driven approach to generate:
 
-*   📦 **RPM Packages** (for Rocky Linux 8, 9, RHEL, CentOS)
+*   📦 **RPM Packages** (for Rocky Linux 8, 9, 10, RHEL, CentOS)
 *   🐳 **Docker Images** (Multi-arch x86_64/ARM64)
 
 ## 🚀 Key Features

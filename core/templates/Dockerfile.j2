@@ -1,0 +1,3 @@
+FROM {{ artifacts.docker.base_image }}
+COPY {{ build.binary_name }} {{ artifacts.docker.entrypoint[0] }}
+ENTRYPOINT {{ artifacts.docker.entrypoint | tojson }}

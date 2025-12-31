@@ -1,0 +1,5 @@
+PyYAML
+Jinja2
+click
+requests
+semver
