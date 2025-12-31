@@ -15,6 +15,10 @@ rpmdev-setuptree
 # Copy spec file to SPECS
 cp "$SPEC_FILE" ~/rpmbuild/SPECS/
 
+# Copy all files from spec dir to SOURCES (for local sources like config files)
+SPEC_DIR=$(dirname "$SPEC_FILE")
+cp "$SPEC_DIR"/* ~/rpmbuild/SOURCES/ || true
+
 # Download sources
 # spectool is part of rpmdevtools
 echo "Downloading sources..."
