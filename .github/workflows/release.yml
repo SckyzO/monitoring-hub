@@ -169,10 +169,10 @@ jobs:
                                    echo "<li><a href=\"$fname\">📄 $fname</a> <span style=\"color:#666;font-size:0.85em;float:right\">$size</span></li>" >> "$dir/index.html"
                                  fi
                               fi
-                            done
-                            echo "</ul></body></html>" >> "$dir/index.html"            fi
-          done
-
+                                                         done
+                                                         echo "</ul></body></html>" >> "$dir/index.html"
+                                        fi
+                                      done
           # Generate Landing Page (Main index.html)
           cd .. # Go back to root
           python core/gen_site.py --output gh-pages-dist/index.html
