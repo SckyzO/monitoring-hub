@@ -1,109 +1,105 @@
 # Monitoring Hub 🏭
 
-**A centralized factory for Prometheus Exporters.**
+**The definitive Software Factory for Prometheus Exporters.**
 
-> **Status:** 🚧 Beta / Active Development
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Build and Publish](https://github.com/SckyzO/monitoring-hub/actions/workflows/release.yml/badge.svg)](https://github.com/SckyzO/monitoring-hub/actions/workflows/release.yml)
+[![Watcher - Scan Updates](https://github.com/SckyzO/monitoring-hub/actions/workflows/scan-updates.yml/badge.svg)](https://github.com/SckyzO/monitoring-hub/actions/workflows/scan-updates.yml)
 
-## 🎯 Goal
+---
 
-**Monitoring Hub** aims to be the definitive "Software Factory" for Prometheus Exporters.
-While Prometheus is the standard for monitoring, installing and maintaining the vast ecosystem of exporters on bare-metal (RPM/DEB) or distinct architectures remains fragmented.
+### 🔗 Quick Links
 
-**Our goal is to treat Exporter packaging as Code.**
-By defining *what* we want (a manifest), the system automatically handles the *how* (fetching, building, testing, publishing).
+| Resource | Description | URL |
+| :--- | :--- | :--- |
+| **🌐 Web Portal** | Browser, Installation Guide, Dark Mode | [**sckyzo.github.io/monitoring-hub**](https://sckyzo.github.io/monitoring-hub/) |
+| **📦 YUM Repo** | Direct file access (EL9/x86_64) | [**.../el9/x86_64/**](https://sckyzo.github.io/monitoring-hub/el9/x86_64/) |
+| **🐳 Docker Images** | GitHub Container Registry | [**ghcr.io/sckyzo/monitoring-hub**](https://github.com/SckyzO/monitoring-hub/pkgs/container/monitoring-hub%2Fnode_exporter) |
+| **🐛 Issues** | Report bugs or request exporters | [**GitHub Issues**](https://github.com/SckyzO/monitoring-hub/issues) |
 
-## 🚀 Features
+---
 
-*   **Automated Updates:** A "Watcher" system scans upstream repositories daily. If a new version is detected, it automatically creates a Pull Request to update the package.
-*   **One Manifest, All Targets:** A single `manifest.yaml` configuration generates:
-    *   📦 **RPM Packages** (EL8, EL9, EL10) with systemd integration.
-    *   🐳 **Docker Images** (Multi-arch) published to GHCR.
-*   **Public Repository:**
-    *   **YUM/DNF Repo:** Hosted on GitHub Pages.
-    *   **Container Registry:** Hosted on GitHub Container Registry (GHCR).
+## 🎯 Project Goal
+
+**Monitoring Hub** is an automated "Software Factory" designed to package Prometheus exporters and monitoring tools with a focus on enterprise-grade standards.
+
+By defining an exporter's intent in a simple `manifest.yaml`, the system automatically handles:
+- 🛠️ **Building:** Cross-architecture support (x86_64, aarch64).
+- 📦 **Packaging:** Professional RPMs (EL8, EL9, EL10) and Docker Images.
+- 🚀 **Publishing:** Automated YUM repository and Container Registry.
+- 🤖 **Updating:** Daily scans for new upstream releases.
+
+## 🚀 Key Features
+
+*   **Multi-Arch by Design:** Native support for `x86_64` and `aarch64` (ARM64) for all RPM packages.
+*   **Enterprise Security:** All Docker images are based on **Red Hat Universal Base Image (UBI 9 Minimal)**.
+*   **Full Automation:** A "Watcher" bot detects new versions and opens PRs automatically.
+*   **Production Ready:** Packages include dedicated system users, configuration files, and systemd units.
+*   **Modern Portal:** Browse our exporters on our [Automated Portal](https://sckyzo.github.io/monitoring-hub/) with built-in Dark Mode.
 
 ## 📦 Usage
 
-### 1. Using RPM Packages (Rocky Linux / AlmaLinux / RHEL)
+### 1. Using RPM Packages (Alma/Rocky/RHEL)
 
-Add the repository (example for EL9):
+Add the repository for your architecture and OS version:
 
 ```bash
-# Add repository config
-sudo cat <<EOF > /etc/yum.repos.d/monitoring-hub.repo
-[monitoring-hub]
-name=Monitoring Hub
-baseurl=https://sckyzo.github.io/monitoring-hub/el9/x86_64/
-enabled=1
-gpgcheck=0
-repo_gpgcheck=0
-EOF
-
-# Install an exporter
+# Example for EL9 on x86_64
+sudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el9/x86_64/
 sudo dnf install node_exporter
 ```
 
+Browse all available packages at: [sckyzo.github.io/monitoring-hub/](https://sckyzo.github.io/monitoring-hub/)
+
 ### 2. Using Docker Images
 
-Images are published to GHCR:
+Images are published to **GHCR** and are linked to this repository:
 
 ```bash
 docker pull ghcr.io/sckyzo/monitoring-hub/node_exporter:latest
 ```
 
-## 🛠️ Development
+## 🛠️ Development & Contributing
 
-### Setup
+### Adding a new Exporter
+
+Adding a tool is as simple as creating a folder in `exporters/` with a `manifest.yaml`:
+
+```yaml
+name: my_exporter
+description: "My awesome exporter"
+version: "1.0.0"
+upstream:
+  type: github
+  repo: owner/my_exporter
+build:
+  method: binary_repack
+  binary_name: my_exporter
+artifacts:
+  rpm:
+    enabled: true
+    system_user: my_user
+  docker:
+    enabled: true
+```
+
+### Local Build
 
 ```bash
-# Clone repository
-git clone https://github.com/SckyzO/monitoring-hub.git
-cd monitoring-hub
-
-# Create virtual environment
-python3 -m venv .venv
-source .venv/bin/activate
-
-# Install dependencies
+# Setup
+python3 -m venv .venv && source .venv/bin/activate
 pip install -r core/requirements.txt
+
+# Build (generates spec, dockerfile and downloads binary)
+python core/builder.py --manifest exporters/node_exporter/manifest.yaml --arch amd64
 ```
 
-### Build an Exporter Manually
+## 📂 Repository Structure
 
-To generate the `.spec` file and `Dockerfile` locally:
+- **`core/`**: The Python engine, Jinja2 templates, and build scripts.
+- **`exporters/`**: Manifests and custom assets for each tool.
+- **`ARCHITECTURE/`**: Detailed design documents and roadmap.
 
-```bash
-python core/builder.py --manifest exporters/node_exporter/manifest.yaml --output-dir build/node_exporter
-```
+## 📜 License
 
-### Run the Watcher
-
-Check for updates:
-
-```bash
-# Dry-run
-python core/watcher.py
-
-# Apply updates (modifies manifest.yaml)
-python core/watcher.py --update
-```
-
-### Build RPM locally (requires Docker)
-
-```bash
-./core/build_rpm.sh build/node_exporter/node_exporter.spec build/node_exporter/rpms
-```
-
-## 📂 Architecture
-
-- **`core/`**: The build engine (Python) & Jinja2 templates.
-- **`exporters/`**: Source of truth. One folder per exporter containing `manifest.yaml`.
-- **`.github/workflows/`**:
-    - `scan-updates.yml`: Runs the Watcher daily.
-    - `release.yml`: Builds and publishes artifacts on Push to Main.
-
-## 🤝 Contributing
-
-1.  Create a new folder in `exporters/<new_exporter_name>`.
-2.  Add a `manifest.yaml` (copy `node_exporter` as a template).
-3.  Open a Pull Request.
+Distributed under the MIT License. See `LICENSE` for more information.
