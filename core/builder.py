@@ -160,6 +160,9 @@ def build(manifest, output_dir, arch):
             click.echo(f"Generated Dockerfile: {output_file}")
             
     except Exception as e:
+        if not isinstance(e, click.Abort):
+            click.echo(f"Error processing manifest: {e}", err=True)
+        raise e
 
 if __name__ == '__main__':
     build()
