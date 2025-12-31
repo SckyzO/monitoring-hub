@@ -4,17 +4,18 @@ set -e
 # Usage: ./core/build_rpm.sh <path_to_spec_file> <output_dir>
 # Example: ./core/build_rpm.sh build/node_exporter/node_exporter.spec build/node_exporter/rpms
 
-SPEC_PATH=$(realpath "$1")
+SPEC_PATH_REL=$(realpath --relative-to="$(pwd)" "$1")
 OUTPUT_DIR=$(realpath "$2")
 SCRIPT_DIR=$(dirname "$(realpath "$0")")
 
 mkdir -p "$OUTPUT_DIR"
 
-echo "Starting RPM build for $SPEC_PATH..."
+echo "Starting RPM build for $SPEC_PATH_REL..."
 echo "Output directory: $OUTPUT_DIR"
 
 # We map the project root to /workspace to access files
 # We run as root in the container to allow dnf install
+# Note: We pass the path relative to /workspace inside the container
 docker run --rm \
     -v "$(pwd):/workspace" \
     -v "$OUTPUT_DIR:/output" \
@@ -22,6 +23,6 @@ docker run --rm \
     almalinux:9 \
     /bin/bash -c "dnf install -y rpmdevtools epel-release && \
                   dnf install -y 'dnf-command(builddep)' && \
-                  /workspace/core/utils/rpm_build_entrypoint.sh '$SPEC_PATH' /output"
+                  /workspace/core/utils/rpm_build_entrypoint.sh '/workspace/$SPEC_PATH_REL' /output"
 
 echo "RPM build finished."
