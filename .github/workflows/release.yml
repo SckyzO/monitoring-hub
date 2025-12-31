@@ -89,16 +89,53 @@ jobs:
 
       - name: Generate RPMs
         run: |
-          # Only generate specs here, actual build would need mock/rpmbuild
-          # For this MVP, we are skipping actual RPM compilation as it requires a heavy setup (mock/docker)
-          # We will implement the RPM build in a container in the next iteration.
-          echo "RPM Build is currently a placeholder for the MVP."
-          
-          # Real implementation would be:
-          # 1. Generate spec
-          # 2. Run rpmbuild inside a container (e.g., almalinux:9)
-          # 3. Save .rpm files
-          
-      # Placeholder for repository update
+          for exporter in exporters/*/; do
+            if [ -f "${exporter}manifest.yaml" ]; then
+              name=$(basename "$exporter")
+              echo "Processing $name for RPM..."
+              
+              # Ensure build files exist (might have been generated in previous job but separate runners usually mean separate fs)
+              # Re-running builder is cheap
+              python core/builder.py --manifest "${exporter}manifest.yaml" --output-dir "build/$name"
+              
+              spec_file="build/$name/$name.spec"
+              if [ -f "$spec_file" ]; then
+                echo "Building RPM from $spec_file..."
+                chmod +x core/build_rpm.sh core/utils/rpm_build_entrypoint.sh
+                ./core/build_rpm.sh "$spec_file" "build/$name/rpms"
+              fi
+            fi
+          done
+
       - name: Update YUM Repository
-        run: echo "YUM repo update to be implemented with createrepo container."
+        run: |
+          # Checkout gh-pages
+          git fetch origin gh-pages
+          git worktree add -B gh-pages gh-pages-dist origin/gh-pages
+          
+          cd gh-pages-dist
+          
+          # Prepare directory structure (e.g. el9/x86_64)
+          # Currently hardcoded for el9 as per our build script
+          mkdir -p el9/x86_64
+          
+          # Copy new RPMs
+          # We need to find where they are in the main worktree
+          cp ../build/*/rpms/*/*.rpm el9/x86_64/ || echo "No new RPMs found"
+          
+          # Update metadata
+          # We use a docker container for createrepo to avoid installing it on the runner
+          docker run --rm -v $(pwd):/repo almalinux:9 /bin/bash -c "dnf install -y createrepo_c && createrepo_c /repo/el9/x86_64"
+          
+          # Commit and push
+          git config user.name "Monitoring Hub Bot"
+          git config user.email "bot@monitoring-hub.local"
+          git add .
+          
+          if git diff --staged --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "chore: update yum repository [skip ci]"
+            git push origin gh-pages
+          fi
+

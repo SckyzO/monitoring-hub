@@ -1,0 +1,42 @@
+name: Watcher - Scan Updates
+
+on:
+  schedule:
+    - cron: '0 8 * * *' # Every day at 8:00 UTC
+  workflow_dispatch:
+
+jobs:
+  check-updates:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r core/requirements.txt
+
+      - name: Run Watcher
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python core/watcher.py --update
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore: update exporters versions"
+          title: "chore: update exporters versions"
+          body: |
+            This PR updates exporter versions detected by the Watcher.
+            
+            - Automated update via `core/watcher.py`
+          branch: "auto/update-exporters"
+          delete-branch: true
+          base: main

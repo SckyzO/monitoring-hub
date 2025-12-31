@@ -4,3 +4,4 @@ click
 requests
 semver
 marshmallow
+packaging
