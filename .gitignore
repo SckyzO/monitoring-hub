@@ -1,0 +1,43 @@
+# --- System & OS ---
+.DS_Store
+Thumbs.db
+.directory
+
+# --- Logs ---
+*.log
+logs/
+
+# --- Python (Core Builder) ---
+__pycache__/
+*.py[cod]
+*.so
+.venv/
+venv/
+env/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# --- IDEs & Editors ---
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# --- Build Artifacts (Local) ---
+build/
+dist/
+archives/
+tmp/
+*.egg-info/
+
+# --- Secrets & Environment Variables ---
+secrets/
+.env
+.env.local
+
+# --- Architecture & Private Notes ---
+# Contains architecture plans, raw notes, and local POCs
+ARCHITECTURE/
+
