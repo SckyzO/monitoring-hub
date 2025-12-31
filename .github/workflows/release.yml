@@ -51,11 +51,12 @@ jobs:
               # Extract info from manifest for tagging (simple parsing for now)
               version=$(grep "version:" "${exporter}manifest.yaml" | awk '{print $2}' | tr -d '"')
               
-              if [ -f "build/$name/Dockerfile" ]; then
-                echo "Building Docker image for $name version $version"
-                
-                # Build and push
-                # Tag: ghcr.io/owner/repo/exporter_name:version
+                              if [ -f "build/$name/Dockerfile" ]; then
+                              echo "Building Docker image for $name version $version"
+                              echo "Build context directory: build/$name"
+                              ls -la "build/$name"
+                              
+                              # Build and push                # Tag: ghcr.io/owner/repo/exporter_name:version
                 # Tag: ghcr.io/owner/repo/exporter_name:latest
                 
                 image_id="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/$name"
