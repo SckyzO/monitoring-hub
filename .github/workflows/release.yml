@@ -151,21 +151,19 @@ jobs:
               echo "<h1>Index of $dir</h1>" >> "$dir/index.html"
               echo "<ul><li><a href=\"../\">📂 Parent Directory</a></li>" >> "$dir/index.html"
               
-              # List files and directories
-              for f in "$dir"/*;
- do
-                fname=$(basename "$f")
-                if [ "$fname" != "index.html" ]; then
-                   if [ -d "$f" ]; then
-                     echo "<li><a href=\"$fname/\">📁 $fname/</a></li>" >> "$dir/index.html"
-                   else
-                     size=$(du -h "$f" | cut -f1)
-                     echo "<li><a href=\"$fname\">📄 $fname</a> <span style=\"color:#666;font-size:0.85em;float:right\">$size</span></li>" >> "$dir/index.html"
-                   fi
-                fi
-              done
-              echo "</ul></body></html>" >> "$dir/index.html"
-            fi
+                            # List files and directories
+                            for f in "$dir"/*; do
+                              fname=$(basename "$f")
+                              if [ "$fname" != "index.html" ]; then
+                                 if [ -d "$f" ]; then
+                                   echo "<li><a href=\"$fname/\">📁 $fname/</a></li>" >> "$dir/index.html"
+                                 else
+                                   size=$(du -h "$f" | cut -f1)
+                                   echo "<li><a href=\"$fname\">📄 $fname</a> <span style=\"color:#666;font-size:0.85em;float:right\">$size</span></li>" >> "$dir/index.html"
+                                 fi
+                              fi
+                            done
+                            echo "</ul></body></html>" >> "$dir/index.html"            fi
           done
 
           # Generate Landing Page (Main index.html)
