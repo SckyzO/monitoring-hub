@@ -1,0 +1,104 @@
+name: Release and Publish
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'exporters/**'
+      - 'core/**'
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  build-and-push-docker:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r core/requirements.txt
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and Push Docker Images
+        run: |
+          for exporter in exporters/*/; do
+            if [ -f "${exporter}manifest.yaml" ]; then
+              name=$(basename "$exporter")
+              echo "Processing $name..."
+              
+              # Generate build files
+              python core/builder.py --manifest "${exporter}manifest.yaml" --output-dir "build/$name"
+              
+              # Extract info from manifest for tagging (simple parsing for now)
+              version=$(grep "version:" "${exporter}manifest.yaml" | awk '{print $2}' | tr -d '"')
+              
+              if [ -f "build/$name/Dockerfile" ]; then
+                echo "Building Docker image for $name version $version"
+                
+                # Build and push
+                # Tag: ghcr.io/owner/repo/exporter_name:version
+                # Tag: ghcr.io/owner/repo/exporter_name:latest
+                
+                image_id="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/$name"
+                image_id=$(echo $image_id | tr '[:upper:]' '[:lower:]')
+                
+                docker buildx build \
+                  --context "build/$name" \
+                  --file "build/$name/Dockerfile" \
+                  --push \
+                  --tag "$image_id:$version" \
+                  --tag "$image_id:latest"
+              fi
+            fi
+          done
+
+  update-yum-repo:
+    runs-on: ubuntu-latest
+    needs: build-and-push-docker # Ensure docker builds are fine first (optional dependency)
+    permissions:
+      contents: write # Needed to push to gh-pages
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r core/requirements.txt
+
+      - name: Generate RPMs
+        run: |
+          # Only generate specs here, actual build would need mock/rpmbuild
+          # For this MVP, we are skipping actual RPM compilation as it requires a heavy setup (mock/docker)
+          # We will implement the RPM build in a container in the next iteration.
+          echo "RPM Build is currently a placeholder for the MVP."
+          
+          # Real implementation would be:
+          # 1. Generate spec
+          # 2. Run rpmbuild inside a container (e.g., almalinux:9)
+          # 3. Save .rpm files
+          
+      # Placeholder for repository update
+      - name: Update YUM Repository
+        run: echo "YUM repo update to be implemented with createrepo container."
