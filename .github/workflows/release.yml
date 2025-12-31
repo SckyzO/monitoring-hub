@@ -6,6 +6,8 @@ on:
     paths:
       - 'exporters/**'
       - 'core/**'
+      - '.github/workflows/**' # Trigger on workflow changes too
+  workflow_dispatch: # Allow manual trigger
 
 env:
   REGISTRY: ghcr.io
