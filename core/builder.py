@@ -46,7 +46,59 @@ def download_and_extract(data, output_dir, arch):
     try:
         with requests.get(url, stream=True) as r:
             r.raise_for_status()
-# ... (rest of download logic)
+            with open(local_tar, 'wb') as f:
+                for chunk in r.iter_content(chunk_size=8192):
+                    f.write(chunk)
+                    
+        click.echo(f"Extracting binaries {binaries_to_find} from {local_tar}...")
+        
+        extracted_dirs = set()
+        with tarfile.open(local_tar, "r:gz") as tar:
+            members = tar.getmembers()
+            for b_name in binaries_to_find:
+                member_to_extract = None
+                for member in members:
+                    if member.name.endswith(f"/{b_name}") or member.name == b_name:
+                        member_to_extract = member
+                        break
+                
+                if member_to_extract:
+                    tar.extract(member_to_extract, path=output_dir)
+                    extracted_path = os.path.join(output_dir, member_to_extract.name)
+                    final_path = os.path.join(output_dir, b_name)
+                    
+                    if extracted_path != final_path:
+                        shutil.move(extracted_path, final_path)
+                    
+                    # Track top-level dir to cleanup
+                    parts = member_to_extract.name.split('/')
+                    if len(parts) > 1:
+                        extracted_dirs.add(parts[0])
+                    
+                    # Make executable
+                    os.chmod(final_path, 0o755)
+                    found_binaries.append(b_name)
+                    click.echo(f"Binary ready at: {final_path}")
+                else:
+                    click.echo(f"Warning: Binary '{b_name}' not found in archive.")
+
+        # Cleanup top-level extracted directories
+        for d in extracted_dirs:
+            dir_to_remove = os.path.join(output_dir, d)
+            if os.path.isdir(dir_to_remove):
+                shutil.rmtree(dir_to_remove, ignore_errors=True)
+
+        if not found_binaries:
+            click.echo("Error: No binaries found in archive.", err=True)
+            raise click.Abort()
+
+    except Exception as e:
+        click.echo(f"Failed to download/extract artifact: {e}", err=True)
+        raise e
+    finally:
+        # Clean up tarball
+        if os.path.exists(local_tar):
+            os.remove(local_tar)
 
 @click.command()
 @click.option('--manifest', '-m', help='Path to the manifest.yaml file', required=True)
