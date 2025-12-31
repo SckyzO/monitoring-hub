@@ -36,7 +36,11 @@ fi
 
 # Build RPM
 echo "Building RPM for target: $TARGET_ARCH..."
-rpmbuild -bb --target "$TARGET_ARCH" ~/rpmbuild/SPECS/$(basename "$SPEC_FILE")
+# Force _target_cpu to make rpmbuild accept the arch on x86_64 host
+rpmbuild -bb \
+  --define "_target_cpu $TARGET_ARCH" \
+  --target "$TARGET_ARCH" \
+  ~/rpmbuild/SPECS/$(basename "$SPEC_FILE")
 
 # Copy artifacts to output
 echo "Copying artifacts..."
