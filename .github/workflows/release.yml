@@ -62,11 +62,11 @@ jobs:
                 image_id=$(echo $image_id | tr '[:upper:]' '[:lower:]')
                 
                 docker buildx build \
-                  --context "build/$name" \
                   --file "build/$name/Dockerfile" \
                   --push \
                   --tag "$image_id:$version" \
-                  --tag "$image_id:latest"
+                  --tag "$image_id:latest" \
+                  "build/$name"
               fi
             fi
           done
