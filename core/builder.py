@@ -49,10 +49,12 @@ def download_and_extract(data, output_dir):
                     
         click.echo(f"Extracting binaries {binaries_to_find} from {local_tar}...")
         
+        extracted_dirs = set()
         with tarfile.open(local_tar, "r:gz") as tar:
+            members = tar.getmembers()
             for b_name in binaries_to_find:
                 member_to_extract = None
-                for member in tar.getmembers():
+                for member in members:
                     if member.name.endswith(f"/{b_name}") or member.name == b_name:
                         member_to_extract = member
                         break
@@ -65,6 +67,11 @@ def download_and_extract(data, output_dir):
                     if extracted_path != final_path:
                         shutil.move(extracted_path, final_path)
                     
+                    # Track top-level dir to cleanup
+                    parts = member_to_extract.name.split('/')
+                    if len(parts) > 1:
+                        extracted_dirs.add(parts[0])
+                    
                     # Make executable
                     os.chmod(final_path, 0o755)
                     found_binaries.append(b_name)
@@ -72,13 +79,11 @@ def download_and_extract(data, output_dir):
                 else:
                     click.echo(f"Warning: Binary '{b_name}' not found in archive.")
 
-        # Cleanup empty dirs
-        for member in tar.getmembers():
-            parts = member.name.split('/')
-            if parts:
-                top_dir = os.path.join(output_dir, parts[0])
-                if os.path.isdir(top_dir) and top_dir != output_dir:
-                    shutil.rmtree(top_dir, ignore_errors=True)
+        # Cleanup top-level extracted directories
+        for d in extracted_dirs:
+            dir_to_remove = os.path.join(output_dir, d)
+            if os.path.isdir(dir_to_remove):
+                shutil.rmtree(dir_to_remove, ignore_errors=True)
 
         if not found_binaries:
             click.echo("Error: No binaries found in archive.", err=True)
