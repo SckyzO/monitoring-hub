@@ -16,8 +16,18 @@ artifacts:
     summary: Prometheus exporter for ICMP ping metrics
     service_file: true
     system_user: prometheus
+    extra_files:
+      - source: assets/ping.yml
+        dest: /etc/ping_exporter/ping.yml
+        config: true
+    directories:
+      - path: /etc/ping_exporter
+        mode: '0755'
+        owner: root
+        group: root
   docker:
     enabled: true
     base_image: registry.access.redhat.com/ubi9/ubi-minimal
     entrypoint: [/usr/bin/ping_exporter]
+    cmd: ["--config.path=/etc/ping_exporter/ping.yml"]
     smoke_test_port: 9427
