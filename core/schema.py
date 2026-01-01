@@ -33,10 +33,15 @@ class UpstreamSchema(Schema):
     repo = fields.Str(required=True)
     strategy = fields.Str(load_default="latest_release")
 
+class ExtraSourceSchema(Schema):
+    url = fields.Str(required=True)
+    filename = fields.Str(required=True)
+
 class BuildSchema(Schema):
     method = fields.Str(required=True, validate=validate.OneOf(["binary_repack", "source_build"]))
     binary_name = fields.Str(required=True)
     extra_binaries = fields.List(fields.Str(), load_default=[])
+    extra_sources = fields.List(fields.Nested(ExtraSourceSchema), load_default=[])
 
 class ArtifactsSchema(Schema):
     rpm = fields.Nested(RPMSchema)

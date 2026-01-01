@@ -1,5 +1,5 @@
 name: snmp_exporter
-description: Prometheus exporter for SNMP-enabled devices
+description: "Prometheus exporter for SNMP-enabled devices"
 version: 0.29.0
 upstream:
   type: github
@@ -8,21 +8,29 @@ upstream:
 build:
   method: binary_repack
   binary_name: snmp_exporter
-  extra_binaries:
-  - snmp_generator
+  extra_binaries: [snmp_generator]
+  extra_sources:
+    - url: https://raw.githubusercontent.com/prometheus/snmp_exporter/refs/heads/main/snmp.yml
+      filename: snmp.yml
 artifacts:
   rpm:
     enabled: true
-    targets:
-    - el8
-    - el9
-    - el10
+    targets: [el8, el9, el10]
     summary: Prometheus exporter for SNMP metrics
     service_file: true
     system_user: prometheus
+    extra_files:
+      - source: snmp.yml
+        dest: /etc/snmp_exporter/snmp.yml
+        config: true
+    directories:
+      - path: /etc/snmp_exporter
+        mode: '0755'
+        owner: root
+        group: root
   docker:
     enabled: true
     base_image: registry.access.redhat.com/ubi9/ubi-minimal
-    entrypoint:
-    - /usr/bin/snmp_exporter
+    entrypoint: [/usr/bin/snmp_exporter]
+    cmd: ["--config.file=/etc/snmp_exporter/snmp.yml"]
     smoke_test_port: 9116

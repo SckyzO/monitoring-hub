@@ -89,6 +89,24 @@ def download_and_extract(data, output_dir, arch):
         if os.path.exists(local_tar):
             os.remove(local_tar)
 
+def download_extra_sources(data, output_dir):
+    """
+    Download additional sources specified in the manifest.
+    """
+    extra_sources = data.get('build', {}).get('extra_sources', [])
+    for source in extra_sources:
+        url = source['url']
+        filename = source['filename']
+        click.echo(f"Downloading extra source: {url}...")
+        try:
+            r = requests.get(url)
+            r.raise_for_status()
+            with open(os.path.join(output_dir, filename), 'wb') as f:
+                f.write(r.content)
+            click.echo(f"Extra source saved as {filename}")
+        except Exception as e:
+            click.echo(f"Warning: Failed to download extra source {url}: {e}")
+
 @click.command()
 @click.option('--manifest', '-m', help='Path to manifest', required=True)
 @click.option('--output-dir', '-o', help='Output directory', default='./build')
@@ -109,9 +127,13 @@ def build(manifest, output_dir, arch):
         env = Environment(loader=FileSystemLoader(template_dirs))
         os.makedirs(output_dir, exist_ok=True)
         download_and_extract(data, output_dir, arch)
+        download_extra_sources(data, output_dir)
 
         artifacts = data.get('artifacts', {})
         if artifacts.get('rpm', {}).get('enabled'):
+            # Also include extra_sources in the build_source logic for RPM
+            extra_sources_files = [s['filename'] for s in data.get('build', {}).get('extra_sources', [])]
+            
             for extra_file in artifacts['rpm'].get('extra_files', []):
                 src = os.path.join(os.path.dirname(manifest), extra_file['source'])
                 dst_name = os.path.basename(extra_file['source'])
