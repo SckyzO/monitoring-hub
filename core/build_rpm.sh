@@ -6,12 +6,13 @@ set -e
 
 SPEC_PATH_REL=$(realpath --relative-to="$(pwd)" "$1")
 OUTPUT_DIR=$(realpath "$2")
-TARGET_ARCH=${3:-amd64} # Default to amd64 if not provided
+TARGET_ARCH=${3:-amd64}
+DOCKER_IMAGE=${4:-almalinux:9} # New argument for distribution image
 SCRIPT_DIR=$(dirname "$(realpath "$0")")
 
 mkdir -p "$OUTPUT_DIR"
 
-echo "Starting RPM build for $SPEC_PATH_REL on arch $TARGET_ARCH..."
+echo "Starting RPM build for $SPEC_PATH_REL on arch $TARGET_ARCH using $DOCKER_IMAGE..."
 echo "Output directory: $OUTPUT_DIR"
 
 # Map arch names for Docker platform
@@ -29,7 +30,7 @@ docker run --rm \
     -v "$(pwd):/workspace" \
     -v "$OUTPUT_DIR:/output" \
     -w /workspace \
-    almalinux:9 \
+    "$DOCKER_IMAGE" \
     /bin/bash -c "dnf install -y rpmdevtools epel-release && \
                   dnf install -y 'dnf-command(builddep)' && \
                   /workspace/core/utils/rpm_build_entrypoint.sh '/workspace/$SPEC_PATH_REL' /output"
