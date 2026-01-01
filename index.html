@@ -10,7 +10,7 @@
             --primary: #0066cc; --bg: #f8f9fa; --card-bg: #ffffff;
             --text: #2c3e50; --text-secondary: #6c757d; --border: #e9ecef;
             --code-bg: #2d3436; --code-text: #dfe6e9; --th-bg: #f8f9fa; --hover-bg: #f1f3f5;
-            --success: #27ae60;
+            --success: #27ae60; --danger: #e74c3c; --warning: #f39c12;
         }
 
         [data-theme="dark"] {
@@ -62,8 +62,11 @@
         .compat-matrix { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin-top: 15px; border: 1px solid var(--border); }
         .compat-matrix th { background: var(--th-bg); padding: 6px; border: 1px solid var(--border); font-weight: 600; text-align: center; }
         .compat-matrix td { padding: 8px; border: 1px solid var(--border); text-align: center; }
-        .dl-link { color: var(--primary); text-decoration: none; display: flex; flex-direction: column; align-items: center; gap: 2px; }
-        .dl-link:hover { text-decoration: underline; }
+        
+        /* Status Badges */
+        .status-success { color: var(--success); font-weight: 600; text-decoration: none; display: flex; flex-direction: column; align-items: center; }
+        .status-success:hover { text-decoration: underline; }
+        .status-failed { color: var(--danger); font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
         .na { color: #ccc; font-style: italic; }
 
         .btn-docker-action { margin-top: 15px; width: 100%; background: var(--hover-bg); border: 1px solid var(--border); color: var(--text); padding: 8px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; gap: 8px; }
@@ -114,12 +117,12 @@
 
         <div class="grid" id="exporter-grid">
             
-            <div class="card" data-name="alertmanager" data-desc="Prometheus Alertmanager">
+            <div class="card" data-name="alertmanager" data-desc="Handle alerts and notifications for the Prometheus ecosystem">
                 <div class="card-header">
                     <h2 class="card-title">alertmanager</h2>
                     <span class="version-badge">v0.30.0</span>
                 </div>
-                <p class="description">Prometheus Alertmanager</p>
+                <p class="description">Handle alerts and notifications for the Prometheus ecosystem</p>
                 
                 <table class="compat-matrix">
                     <thead>
@@ -137,8 +140,8 @@
                             <td>
                                 
                                 
-                                <a href="el8/x86_64/alertmanager-0.30.0-1.el8.x86_64.rpm" class="dl-link" title="Download RPM">
-                                    <i class="fas fa-download"></i> RPM
+                                <a href="el8/x86_64/alertmanager-0.30.0-1.el8.x86_64.rpm" class="status-success" title="Download RPM">
+                                    <i class="fas fa-check-circle"></i> RPM
                                 </a>
                                 
                             </td>
@@ -146,8 +149,8 @@
                             <td>
                                 
                                 
-                                <a href="el8/aarch64/alertmanager-0.30.0-1.el8.aarch64.rpm" class="dl-link" title="Download RPM">
-                                    <i class="fas fa-download"></i> RPM
+                                <a href="el8/aarch64/alertmanager-0.30.0-1.el8.aarch64.rpm" class="status-success" title="Download RPM">
+                                    <i class="fas fa-check-circle"></i> RPM
                                 </a>
                                 
                             </td>
@@ -160,8 +163,8 @@
                             <td>
                                 
                                 
-                                <a href="el9/x86_64/alertmanager-0.30.0-1.el9.x86_64.rpm" class="dl-link" title="Download RPM">
-                                    <i class="fas fa-download"></i> RPM
+                                <a href="el9/x86_64/alertmanager-0.30.0-1.el9.x86_64.rpm" class="status-success" title="Download RPM">
+                                    <i class="fas fa-check-circle"></i> RPM
                                 </a>
                                 
                             </td>
@@ -169,8 +172,8 @@
                             <td>
                                 
                                 
-                                <a href="el9/aarch64/alertmanager-0.30.0-1.el9.aarch64.rpm" class="dl-link" title="Download RPM">
-                                    <i class="fas fa-download"></i> RPM
+                                <a href="el9/aarch64/alertmanager-0.30.0-1.el9.aarch64.rpm" class="status-success" title="Download RPM">
+                                    <i class="fas fa-check-circle"></i> RPM
                                 </a>
                                 
                             </td>
@@ -183,8 +186,8 @@
                             <td>
                                 
                                 
-                                <a href="el10/x86_64/alertmanager-0.30.0-1.el10.x86_64.rpm" class="dl-link" title="Download RPM">
-                                    <i class="fas fa-download"></i> RPM
+                                <a href="el10/x86_64/alertmanager-0.30.0-1.el10.x86_64.rpm" class="status-success" title="Download RPM">
+                                    <i class="fas fa-check-circle"></i> RPM
                                 </a>
                                 
                             </td>
@@ -192,8 +195,8 @@
                             <td>
                                 
                                 
-                                <a href="el10/aarch64/alertmanager-0.30.0-1.el10.aarch64.rpm" class="dl-link" title="Download RPM">
-                                    <i class="fas fa-download"></i> RPM
+                                <a href="el10/aarch64/alertmanager-0.30.0-1.el10.aarch64.rpm" class="status-success" title="Download RPM">
+                                    <i class="fas fa-check-circle"></i> RPM
                                 </a>
                                 
                             </td>
@@ -210,12 +213,12 @@
                 
             </div>
             
-            <div class="card" data-name="node_exporter" data-desc="Prometheus exporter for machine metrics">
+            <div class="card" data-name="node_exporter" data-desc="Hardware and OS metrics exporter for Prometheus">
                 <div class="card-header">
                     <h2 class="card-title">node_exporter</h2>
                     <span class="version-badge">v1.10.2</span>
                 </div>
-                <p class="description">Prometheus exporter for machine metrics</p>
+                <p class="description">Hardware and OS metrics exporter for Prometheus</p>
                 
                 <table class="compat-matrix">
                     <thead>
@@ -233,8 +236,8 @@
                             <td>
                                 
                                 
-                                <a href="el8/x86_64/node_exporter-1.10.2-1.el8.x86_64.rpm" class="dl-link" title="Download RPM">
-                                    <i class="fas fa-download"></i> RPM
+                                <a href="el8/x86_64/node_exporter-1.10.2-1.el8.x86_64.rpm" class="status-success" title="Download RPM">
+                                    <i class="fas fa-check-circle"></i> RPM
                                 </a>
                                 
                             </td>
@@ -242,8 +245,8 @@
                             <td>
                                 
                                 
-                                <a href="el8/aarch64/node_exporter-1.10.2-1.el8.aarch64.rpm" class="dl-link" title="Download RPM">
-                                    <i class="fas fa-download"></i> RPM
+                                <a href="el8/aarch64/node_exporter-1.10.2-1.el8.aarch64.rpm" class="status-success" title="Download RPM">
+                                    <i class="fas fa-check-circle"></i> RPM
                                 </a>
                                 
                             </td>
@@ -256,8 +259,8 @@
                             <td>
                                 
                                 
-                                <a href="el9/x86_64/node_exporter-1.10.2-1.el9.x86_64.rpm" class="dl-link" title="Download RPM">
-                                    <i class="fas fa-download"></i> RPM
+                                <a href="el9/x86_64/node_exporter-1.10.2-1.el9.x86_64.rpm" class="status-success" title="Download RPM">
+                                    <i class="fas fa-check-circle"></i> RPM
                                 </a>
                                 
                             </td>
@@ -265,8 +268,8 @@
                             <td>
                                 
                                 
-                                <a href="el9/aarch64/node_exporter-1.10.2-1.el9.aarch64.rpm" class="dl-link" title="Download RPM">
-                                    <i class="fas fa-download"></i> RPM
+                                <a href="el9/aarch64/node_exporter-1.10.2-1.el9.aarch64.rpm" class="status-success" title="Download RPM">
+                                    <i class="fas fa-check-circle"></i> RPM
                                 </a>
                                 
                             </td>
@@ -279,8 +282,8 @@
                             <td>
                                 
                                 
-                                <a href="el10/x86_64/node_exporter-1.10.2-1.el10.x86_64.rpm" class="dl-link" title="Download RPM">
-                                    <i class="fas fa-download"></i> RPM
+                                <a href="el10/x86_64/node_exporter-1.10.2-1.el10.x86_64.rpm" class="status-success" title="Download RPM">
+                                    <i class="fas fa-check-circle"></i> RPM
                                 </a>
                                 
                             </td>
@@ -288,8 +291,8 @@
                             <td>
                                 
                                 
-                                <a href="el10/aarch64/node_exporter-1.10.2-1.el10.aarch64.rpm" class="dl-link" title="Download RPM">
-                                    <i class="fas fa-download"></i> RPM
+                                <a href="el10/aarch64/node_exporter-1.10.2-1.el10.aarch64.rpm" class="status-success" title="Download RPM">
+                                    <i class="fas fa-check-circle"></i> RPM
                                 </a>
                                 
                             </td>
@@ -329,8 +332,8 @@
                             <td>
                                 
                                 
-                                <a href="el8/x86_64/prometheus-3.8.1-1.el8.x86_64.rpm" class="dl-link" title="Download RPM">
-                                    <i class="fas fa-download"></i> RPM
+                                <a href="el8/x86_64/prometheus-3.8.1-1.el8.x86_64.rpm" class="status-success" title="Download RPM">
+                                    <i class="fas fa-check-circle"></i> RPM
                                 </a>
                                 
                             </td>
@@ -338,8 +341,8 @@
                             <td>
                                 
                                 
-                                <a href="el8/aarch64/prometheus-3.8.1-1.el8.aarch64.rpm" class="dl-link" title="Download RPM">
-                                    <i class="fas fa-download"></i> RPM
+                                <a href="el8/aarch64/prometheus-3.8.1-1.el8.aarch64.rpm" class="status-success" title="Download RPM">
+                                    <i class="fas fa-check-circle"></i> RPM
                                 </a>
                                 
                             </td>
@@ -352,8 +355,8 @@
                             <td>
                                 
                                 
-                                <a href="el9/x86_64/prometheus-3.8.1-1.el9.x86_64.rpm" class="dl-link" title="Download RPM">
-                                    <i class="fas fa-download"></i> RPM
+                                <a href="el9/x86_64/prometheus-3.8.1-1.el9.x86_64.rpm" class="status-success" title="Download RPM">
+                                    <i class="fas fa-check-circle"></i> RPM
                                 </a>
                                 
                             </td>
@@ -361,8 +364,8 @@
                             <td>
                                 
                                 
-                                <a href="el9/aarch64/prometheus-3.8.1-1.el9.aarch64.rpm" class="dl-link" title="Download RPM">
-                                    <i class="fas fa-download"></i> RPM
+                                <a href="el9/aarch64/prometheus-3.8.1-1.el9.aarch64.rpm" class="status-success" title="Download RPM">
+                                    <i class="fas fa-check-circle"></i> RPM
                                 </a>
                                 
                             </td>
@@ -375,8 +378,8 @@
                             <td>
                                 
                                 
-                                <a href="el10/x86_64/prometheus-3.8.1-1.el10.x86_64.rpm" class="dl-link" title="Download RPM">
-                                    <i class="fas fa-download"></i> RPM
+                                <a href="el10/x86_64/prometheus-3.8.1-1.el10.x86_64.rpm" class="status-success" title="Download RPM">
+                                    <i class="fas fa-check-circle"></i> RPM
                                 </a>
                                 
                             </td>
@@ -384,8 +387,8 @@
                             <td>
                                 
                                 
-                                <a href="el10/aarch64/prometheus-3.8.1-1.el10.aarch64.rpm" class="dl-link" title="Download RPM">
-                                    <i class="fas fa-download"></i> RPM
+                                <a href="el10/aarch64/prometheus-3.8.1-1.el10.aarch64.rpm" class="status-success" title="Download RPM">
+                                    <i class="fas fa-check-circle"></i> RPM
                                 </a>
                                 
                             </td>
@@ -441,7 +444,7 @@
             navigator.clipboard.writeText(`docker pull ${image}`);
             const orig = btn.innerHTML;
             btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
-            setTimeout(() => btn.innerHTML = orig, 2000);
+            setTimeout(() => btn.innerHTML = original, 2000);
         }
 
         function filterExporters(val) {
