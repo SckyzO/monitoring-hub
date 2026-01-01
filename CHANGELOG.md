@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.10.0] - 2025-12-31
+
+### 🚀 Features
+- **Custom Archive Naming:** Added support for `archive_name` patterns in manifests to handle non-standard release filenames (e.g., `{name}_{version}_linux_{arch}.tar.gz`).
+- **Flexible Tagging:** Removed hardcoded 'v' prefix in engine URLs, allowing exact tag specification in manifests.
+- **Improved Ping Monitoring:** Migrated `ping_exporter` to `czerwonk/ping_exporter` with full pattern support and ARM64 compatibility.
+
+### 🐛 Fixes
+- Resolved widespread 404 download errors by aligning manifest versions with precise upstream tags.
+
+## [0.9.0] - 2025-12-31
+
+### 🚀 Features
+- **External Assets Support:** Implemented `extra_sources` in the build engine to download additional files (like `snmp.yml`) directly during the build process.
+- **Automated SNMP Configuration:** `snmp_exporter` now automatically includes the latest official MIB-mapped configuration from upstream.
+
 ## [0.8.0] - 2025-12-31
 
 ### 🚀 Features
@@ -28,9 +44,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### 🚀 Features
 - **Advanced Customization Support:** Added the ability to override default build artifacts per exporter.
-- **Local Template Overrides:** Exporters can now provide their own Jinja2 templates for RPM Specs and Dockerfiles.
-    - Search path: `exporters/<name>/templates/`.
-    - Local templates take priority over global core templates while still receiving all dynamic variables.
+- **Local Template Overrides:** Exporters can now provide their own Jinja2 templates for RPM Specs and Dockerfiles in `exporters/<name>/templates/`.
+- **Static File Overrides:** Support for custom `Dockerfile` detection.
 
 ## [0.5.0] - 2025-12-31
 
