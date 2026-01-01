@@ -52,10 +52,10 @@ jobs:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-
+  
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-
+  
       - name: Build and Push
         run: |
           exporter="${{ matrix.exporter }}"
@@ -77,7 +77,6 @@ jobs:
              image_id="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/$exporter"
              image_id=$(echo $image_id | tr '[:upper:]' '[:lower:]')
             
-             # Currently building amd64 only for Docker as per previous config
              description=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(m.get('description', ''))")
              
              docker buildx build \
@@ -86,46 +85,46 @@ jobs:
               --label "org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}" \
               --label "org.opencontainers.image.description=$description" \
               --tag "$image_id:$version" \
-                                --tag "$image_id:latest" \
-                                --platform linux/amd64 \
-                                "build/$exporter"
-                           fi
-              
-                    - name: Container Smoke Test
-                      run: |
-                        exporter="${{ matrix.exporter }}"
-                        # Extract port from manifest
-                        port=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(m.get('artifacts', {}).get('docker', {}).get('smoke_test_port', 9100))")
-                        image_id="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/$exporter:latest"
-                        image_id=$(echo $image_id | tr '[:upper:]' '[:lower:]')
-                        
-                        echo "🚀 Starting Smoke Test for $image_id on port $port..."
-                        
-                        # Run container (use a random local port to avoid conflicts)
-                        container_id=$(docker run -d -p 9999:$port $image_id)
-                        
-                        # Retry loop (max 10 seconds)
-                        success=false
-                        for i in {1..5}; do
-                          echo "Attempt $i: Checking metrics at http://localhost:9999/metrics..."
-                          if curl -s --fail http://localhost:9999/metrics | grep -qiE "prometheus|exporter|metrics|alertmanager" ; then
-                            echo "✅ Smoke test PASSED!"
-                            success=true
-                            break
-                          fi
-                          sleep 2
-                        done
-                        
-                        if [ "$success" = false ]; then
-                          echo "❌ Smoke test FAILED!"
-                          echo "--- Container Logs ---"
-                          docker logs $container_id
-                          docker rm -f $container_id
-                          exit 1
-                        fi
-                        
-                        # Cleanup
-                        docker rm -f $container_id
+              --tag "$image_id:latest" \
+              --platform linux/amd64 \
+              "build/$exporter"
+          fi
+
+      - name: Container Smoke Test
+        run: |
+          exporter="${{ matrix.exporter }}"
+          port=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(m.get('artifacts', {}).get('docker', {}).get('smoke_test_port', 9100))")
+          image_id="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/$exporter:latest"
+          image_id=$(echo $image_id | tr '[:upper:]' '[:lower:]')
+          
+          is_enabled=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(m.get('artifacts', {}).get('docker', {}).get('enabled', False))")
+          if [ "$is_enabled" != "True" ]; then
+            echo "Docker disabled, skipping smoke test."
+            exit 0
+          fi
+
+          echo "🚀 Starting Smoke Test for $image_id on port $port..."
+          container_id=$(docker run -d -p 9999:$port $image_id)
+          
+          success=false
+          for i in {1..5}; do
+            echo "Attempt $i: Checking metrics at http://localhost:9999/metrics..."
+            if curl -s --fail http://localhost:9999/metrics | grep -qiE "prometheus|exporter|metrics|alertmanager" ; then
+              echo "✅ Smoke test PASSED!"
+              success=true
+              break
+            fi
+            sleep 2
+          done
+          
+          if [ "$success" = false ]; then
+            echo "❌ Smoke test FAILED!"
+            docker logs $container_id
+            docker rm -f $container_id
+            exit 1
+          fi
+          docker rm -f $container_id
+
   # 3. Build RPMs (Parallel per exporter, architecture AND distribution)
   build-rpm:
     needs: discover
@@ -155,7 +154,6 @@ jobs:
           arch="${{ matrix.arch }}"
           dist="${{ matrix.dist }}"
           
-          # Check if RPM and this dist are requested in the manifest
           is_target=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print('$dist' in m.get('artifacts', {}).get('rpm', {}).get('targets', []))")
           is_enabled=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(m.get('artifacts', {}).get('rpm', {}).get('enabled', False))")
           
@@ -166,12 +164,11 @@ jobs:
 
           echo "Building RPM for $exporter ($arch) on $dist..."
           
-          # Select correct image for the target distribution
           case $dist in
-            el8) image="almalinux:8" ;;
-            el9) image="almalinux:9" ;;
-            el10) image="quay.io/centos/centos:stream10" ;;
-            *) image="almalinux:9" ;;
+            el8) image="almalinux:8" ;; 
+            el9) image="almalinux:9" ;; 
+            el10) image="quay.io/centos/centos:stream10" ;; 
+            *) image="almalinux:9" ;; 
           esac
 
           build_dir="build/$exporter-$arch-$dist"
@@ -180,7 +177,6 @@ jobs:
           spec_file="$build_dir/$exporter.spec"
           if [ -f "$spec_file" ]; then
             chmod +x core/build_rpm.sh core/utils/rpm_build_entrypoint.sh
-            # Pass BOTH architecture and the specific distribution image
             ./core/build_rpm.sh "$spec_file" "$build_dir/rpms" "$arch" "$image"
           fi
 
@@ -193,7 +189,7 @@ jobs:
 
   # 4. Publish YUM Repo & Website (Fan-in)
   publish-yum:
-    if: always() && !cancelled() # Run even if some builds failed
+    if: always() && !cancelled()
     needs: [build-rpm, build-docker]
     runs-on: ubuntu-latest
     permissions:
@@ -207,7 +203,7 @@ jobs:
           path: all_rpms
           pattern: rpm-*
           merge-multiple: true
-        continue-on-error: true # Don't crash if NO artifacts found (unlikely but safer)
+        continue-on-error: true
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -222,17 +218,12 @@ jobs:
           
           cd gh-pages-dist
           
-          # Initialize and Update ALL target repositories
           for dist in el8 el9 el10; do
             for arch_name in x86_64 aarch64; do
               mkdir -p "$dist/$arch_name"
-              
-              # Find and copy matching RPMs
-              # We use a broader match for dist (e.g. .el8*) to handle variations like .el8_10
               echo "Moving RPMs for $dist/$arch_name..."
               find ../all_rpms -name "*.$dist*.$arch_name.rpm" -exec cp -v {} "$dist/$arch_name/" \;
               
-              # Rebuild Repository Metadata if RPMs exist
               if [ "$(ls -A $dist/$arch_name/*.rpm 2>/dev/null)" ]; then
                 echo "Generating YUM metadata for $dist/$arch_name..."
                 docker run --rm -v $(pwd):/repo almalinux:9 /bin/bash -c "dnf install -y createrepo_c && \
@@ -242,7 +233,6 @@ jobs:
             done
           done
 
-          # Recursive Index Generation for ALL directories
           find . -type d -not -path '*/.*' | while read dir; do
             echo "Generating index for $dir"
             echo "<!DOCTYPE html><html><head><title>Index of $dir</title><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><style>body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif;padding:20px;line-height:1.5}h1{margin-bottom:20px;font-size:1.5em}a{text-decoration:none;color:#0366d6}a:hover{text-decoration:underline}ul{list-style-type:none;padding:0}li{padding:5px 0;border-bottom:1px solid #eee}</style></head><body>" > "$dir/index.html"
@@ -254,7 +244,6 @@ jobs:
                  if [ -d "$f" ]; then
                    echo "<li><a href=\"$fname/\">📁 $fname/</a></li>" >> "$dir/index.html"
                  else
-                   # Note: du -h fails inside the container if file not owned by user, but here we are outside
                    size=$(du -h "$f" | cut -f1)
                    echo "<li><a href=\"$fname\">📄 $fname</a> <span style=\"color:#666;font-size:0.85em;float:right\">$size</span></li>" >> "$dir/index.html"
                  fi
@@ -263,12 +252,10 @@ jobs:
             echo "</ul></body></html>" >> "$dir/index.html"
           done
 
-          # Generate Main Portal with reality check
           cd ..
           python core/gen_site.py --output gh-pages-dist/index.html --repo-dir gh-pages-dist
-          cd gh-pages-dist
           
-          # Commit and Push
+          cd gh-pages-dist
           git config user.name "Monitoring Hub Bot"
           git config user.email "bot@monitoring-hub.local"
           git add .
