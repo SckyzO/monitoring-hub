@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.0] - 2025-12-31
+
+### 🚀 Features
+- **Advanced Customization Support:** Added the ability to override default build artifacts per exporter.
+- **Local Template Overrides:** Exporters can now provide their own Jinja2 templates for RPM Specs and Dockerfiles in `exporters/<name>/templates/`.
+    - Support for `<name>.spec.j2` and `Dockerfile.j2`.
+    - Local templates take priority over global core templates while still receiving all dynamic variables.
+- **Static File Overrides:** Initial support for custom `Dockerfile` detection.
+
 ## [0.5.0] - 2025-12-31
 
 ### 🚀 Features

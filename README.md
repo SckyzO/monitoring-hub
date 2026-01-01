@@ -72,7 +72,14 @@ artifacts:
 ### 3. Add Optional Assets
 Place any configuration files or scripts in the `assets/` folder and reference them in the manifest.
 
-### 4. Local Validation (Optional)
+### 4. Template Overrides (Advanced)
+If the default templates don't fit your needs, you can provide your own Jinja2 templates in `exporters/<exporter_name>/templates/`:
+- `<exporter_name>.spec.j2`: Custom RPM Spec template.
+- `Dockerfile.j2`: Custom Dockerfile template.
+
+The engine will automatically detect these and use them instead of the global defaults while still providing all dynamic variables.
+
+### 5. Local Validation (Optional)
 ```bash
 # Generate build files
 python core/builder.py --manifest exporters/my_exporter/manifest.yaml --arch amd64
