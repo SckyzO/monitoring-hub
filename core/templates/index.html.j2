@@ -135,12 +135,13 @@
                             <th>{{ dist | upper }}</th>
                             {% for arch in ['x86_64', 'aarch64'] %}
                             <td>
-                                {% if dist in exporter.artifacts.rpm.targets %}
-                                <a href="{{ dist }}/{{ arch }}/{{ exporter.name }}-{{ exporter.version }}-1.{{ dist }}.{{ arch }}.rpm" class="dl-link" title="Download RPM">
+                                {% set rpm_path = exporter.availability[dist][arch] %}
+                                {% if rpm_path %}
+                                <a href="{{ rpm_path }}" class="dl-link" title="Download RPM">
                                     <i class="fas fa-download"></i> RPM
                                 </a>
                                 {% else %}
-                                <span class="na">N/A</span>
+                                <span class="na">Not Available</span>
                                 {% endif %}
                             </td>
                             {% endfor %}
