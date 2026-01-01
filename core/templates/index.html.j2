@@ -26,70 +26,61 @@
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; line-height: 1.6; transition: background 0.3s, color 0.3s; }
         .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
         
-        /* New Header Style */
         .site-header { background: var(--header-gradient); color: white; padding: 60px 0; margin-bottom: 40px; position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
         .header-content { display: flex; justify-content: space-between; align-items: center; }
         .header-left h1 { font-size: 2.8rem; margin: 0; letter-spacing: -1px; display: flex; align-items: center; gap: 15px; }
         .header-left .subtitle { color: rgba(255,255,255,0.8); font-size: 1.2rem; margin-top: 5px; font-weight: 300; }
         
         .header-right { display: flex; align-items: center; gap: 15px; }
-        .github-link { color: white; font-size: 2rem; transition: opacity 0.2s; text-decoration: none; }
-        .github-link:hover { opacity: 0.8; }
 
-        .controls { display: flex; gap: 10px; margin-top: 10px; }
-        .control-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 10px; border-radius: 50%; cursor: pointer; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
-        .control-btn:hover { background: rgba(255,255,255,0.2); transform: scale(1.05); }
+        .controls { display: flex; gap: 10px; }
+        .control-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 10px; border-radius: 50%; cursor: pointer; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; text-decoration: none; }
+        .control-btn:hover { background: rgba(255,255,255,0.2); transform: scale(1.05); color: white; }
 
-        /* Quick Links */
         .quick-links { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 40px; }
         .repo-link { display: inline-flex; align-items: center; gap: 8px; padding: 8px 15px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; text-decoration: none; color: var(--text); font-size: 0.85rem; transition: all 0.2s; }
         .repo-link:hover { border-color: var(--primary); transform: translateY(-2px); }
 
-        /* Search */
         .search-container { margin-bottom: 30px; position: relative; max-width: 600px; margin-left: auto; margin-right: auto; }
         .search-input { width: 100%; padding: 12px 20px 12px 45px; border-radius: 25px; border: 1px solid var(--border); background: var(--card-bg); color: var(--text); font-size: 1rem; outline: none; transition: border-color 0.2s; }
         .search-input:focus { border-color: var(--primary); }
         .search-icon { position: absolute; left: 18px; top: 15px; color: var(--text-secondary); }
 
-        /* Setup Section */
         .setup-section { background: var(--card-bg); border-radius: 12px; padding: 25px; margin-bottom: 40px; border: 1px solid var(--border); }
         .tabs { display: flex; gap: 10px; border-bottom: 2px solid var(--border); margin-bottom: 15px; }
         .tab { padding: 8px 15px; cursor: pointer; font-weight: 600; color: var(--text-secondary); border-bottom: 2px solid transparent; margin-bottom: -2px; }
         .tab.active { color: var(--primary); border-bottom-color: var(--primary); }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-        pre { background: var(--code-bg); color: var(--code-text); padding: 15px; border-radius: 8px; overflow-x: auto; position: relative; margin: 0; font-size: 0.9rem; }
-        .copy-btn { position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.1); border: none; color: #fff; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; }
 
-        /* Packages Grid / List */
+        /* Unified Copy Widget */
+        .copy-widget { background: var(--input-bg); border-radius: 8px; border: 1px solid var(--border); display: flex; align-items: stretch; overflow: hidden; margin-top: 10px; }
+        .copy-text { color: var(--text); padding: 12px; font-family: monospace; font-size: 0.85rem; flex-grow: 1; margin: 0; word-break: break-all; white-space: pre-wrap; line-height: 1.4; background: transparent; border: none; }
+        .copy-trigger { background: var(--border); border: none; color: var(--text); padding: 0 15px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+        .copy-trigger:hover { background: var(--primary); color: #fff; }
+
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px; transition: all 0.3s ease; }
         .card { background: var(--card-bg); border-radius: 12px; padding: 20px; border: 1px solid var(--border); transition: all 0.2s; display: flex; flex-direction: column; }
         .card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
-        .card-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px; }
-        .card-title { margin: 0; font-size: 1.4rem; font-weight: 700; }
+        
+        .card-header { margin-bottom: 15px; }
+        .card-title { margin: 0; font-size: 1.4rem; font-weight: 700; line-height: 1.2; }
         .card-title a { color: var(--primary); text-decoration: none; }
         .card-title a:hover { text-decoration: underline; }
+        .card-meta { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
 
         .version-badge { background: var(--hover-bg); color: var(--primary); padding: 2px 8px; border-radius: 6px; font-size: 0.8rem; font-weight: 700; border: 1px solid var(--border); }
-        .verified-badge { background: #e8f5e9; color: #2e7d32; padding: 2px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; display: inline-flex; align-items: center; gap: 4px; border: 1px solid #c8e6c9; margin-left: 5px; }
+        .verified-badge { background: #e8f5e9; color: #2e7d32; padding: 2px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; display: inline-flex; align-items: center; gap: 4px; border: 1px solid #c8e6c9; }
         [data-theme="dark"] .verified-badge { background: #1b5e20; color: #c8e6c9; border-color: #2e7d32; }
         .description { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 20px; flex-grow: 1; }
 
-        /* Docker Pull Widget */
-        .docker-widget { background: var(--input-bg); border-radius: 8px; border: 1px solid var(--border); display: flex; align-items: stretch; overflow: hidden; margin-top: 15px; }
-        .docker-code { color: var(--text); padding: 10px 12px; font-family: monospace; font-size: 0.8rem; flex-grow: 1; margin: 0; word-break: break-all; white-space: pre-wrap; line-height: 1.4; }
-        .docker-copy { background: var(--border); border: none; color: var(--text); padding: 0 15px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
-        .docker-copy:hover { background: var(--primary); color: #fff; }
-
-        /* List Mode Styling */
         .grid.list-mode { grid-template-columns: 1fr; }
         .grid.list-mode .card { flex-direction: row; align-items: center; gap: 30px; padding: 15px 25px; }
         .grid.list-mode .card-header { margin-bottom: 0; min-width: 250px; flex-direction: column; align-items: start; }
         .grid.list-mode .description { margin-bottom: 0; }
         .grid.list-mode .compat-matrix { margin-top: 0; max-width: 400px; min-width: 350px; }
-        .grid.list-mode .docker-widget { margin-top: 0; min-width: 350px; }
+        .grid.list-mode .copy-widget { margin-top: 0; min-width: 350px; }
 
-        /* Compatibility Matrix */
         .compat-matrix { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin-top: 15px; border: 1px solid var(--border); }
         .compat-matrix th { background: var(--th-bg); padding: 6px; border: 1px solid var(--border); font-weight: 600; text-align: center; }
         .compat-matrix td { padding: 8px; border: 1px solid var(--border); text-align: center; }
@@ -112,10 +103,10 @@
                     <p class="subtitle">The automated Software Factory for Prometheus Exporters</p>
                 </div>
                 <div class="header-right">
-                    <a href="https://github.com/SckyzO/monitoring-hub" target="_blank" class="github-link" title="View Source on GitHub">
-                        <i class="fab fa-github"></i>
-                    </a>
                     <div class="controls">
+                        <a href="https://github.com/SckyzO/monitoring-hub" target="_blank" class="control-btn" title="View Source on GitHub">
+                            <i class="fab fa-github"></i>
+                        </a>
                         <button class="control-btn" id="layout-btn" onclick="toggleLayout()" title="Toggle View">
                             <i class="fas fa-list"></i>
                         </button>
@@ -145,14 +136,24 @@
                 <div class="tab" onclick="switchTab('el8')">EL8</div>
                 <div class="tab" onclick="switchTab('el10')">EL10</div>
             </div>
+            
             <div id="el9" class="tab-content active">
-                <pre><code>sudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el9/$(arch)/</code><button class="copy-btn" onclick="copyToClipboard(this)">Copy</button></pre>
+                <div class="copy-widget">
+                    <pre class="copy-text">sudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el9/$(arch)/</pre>
+                    <button class="copy-trigger" onclick="copyWidgetText(this)" title="Copy Command"><i class="fas fa-copy"></i></button>
+                </div>
             </div>
             <div id="el8" class="tab-content">
-                <pre><code>sudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el8/$(arch)/</code><button class="copy-btn" onclick="copyToClipboard(this)">Copy</button></pre>
+                <div class="copy-widget">
+                    <pre class="copy-text">sudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el8/$(arch)/</pre>
+                    <button class="copy-trigger" onclick="copyWidgetText(this)" title="Copy Command"><i class="fas fa-copy"></i></button>
+                </div>
             </div>
             <div id="el10" class="tab-content">
-                <pre><code>sudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el10/$(arch)/</code><button class="copy-btn" onclick="copyToClipboard(this)">Copy</button></pre>
+                <div class="copy-widget">
+                    <pre class="copy-text">sudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el10/$(arch)/</pre>
+                    <button class="copy-trigger" onclick="copyWidgetText(this)" title="Copy Command"><i class="fas fa-copy"></i></button>
+                </div>
             </div>
         </section>
 
@@ -170,7 +171,7 @@
                             <i class="fas fa-box"></i> {{ exporter.name }}
                         </a>
                     </h2>
-                    <div style="display:flex; align-items:center;">
+                    <div class="card-meta">
                         <span class="version-badge">v{{ exporter.version }}</span>
                         <span class="verified-badge" title="Automated Smoke Test Passed">
                             <i class="fas fa-shield-alt"></i> Verified
@@ -226,13 +227,17 @@
                 </div>
 
                 {% if exporter.artifacts.docker.enabled %}
-                <div class="docker-widget">
-                    <pre class="docker-code">docker pull ghcr.io/sckyzo/monitoring-hub/{{ exporter.name }}:latest</pre>
-                    <button class="docker-copy" onclick="copyDockerWidget(this)" title="Copy Command">
-                        <i class="fas fa-copy"></i>
-                    </button>
+                <div class="copy-widget">
+                    <pre class="copy-text">docker pull ghcr.io/sckyzo/monitoring-hub/{{ exporter.name }}:latest</pre>
+                    <button class="copy-trigger" onclick="copyWidgetText(this)" title="Copy Command"><i class="fas fa-copy"></i></button>
                 </div>
                 {% endif %}
+
+                <div style="margin-top: 15px; display: flex; gap: 10px;">
+                    <a href="https://github.com/SckyzO/monitoring-hub/blob/main/exporters/{{ exporter.name }}/README.md" target="_blank" class="repo-link" style="margin-bottom:0; flex-grow:1; justify-content:center; border-radius:8px; padding:10px;">
+                        <i class="fas fa-book"></i> Full Documentation
+                    </a>
+                </div>
             </div>
             {% endfor %}
         </div>
@@ -280,14 +285,7 @@
             document.querySelectorAll('.list-only').forEach(el => el.style.display = 'table');
         }
 
-        function copyToClipboard(btn) {
-            const code = btn.previousSibling.textContent;
-            navigator.clipboard.writeText(code);
-            const orig = btn.textContent; btn.textContent = "Copied!";
-            setTimeout(() => btn.textContent = orig, 2000);
-        }
-
-        function copyDockerWidget(btn) {
+        function copyWidgetText(btn) {
             const code = btn.previousElementSibling.textContent;
             navigator.clipboard.writeText(code);
             const icon = btn.querySelector('i');
