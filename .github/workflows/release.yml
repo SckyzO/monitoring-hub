@@ -24,7 +24,6 @@ jobs:
       - id: set-matrix
         run: |
           # Find directories in exporters/ containing manifest.yaml
-          # Output simple JSON array of names: ["node_exporter", "prometheus", ...]
           python3 -c "import os, json; print('exporters=' + json.dumps([d for d in os.listdir('exporters') if os.path.isdir(os.path.join('exporters', d)) and os.path.exists(os.path.join('exporters', d, 'manifest.yaml'))]))" >> $GITHUB_OUTPUT
 
   # 2. Build Docker Images (Parallel per exporter)
@@ -62,7 +61,14 @@ jobs:
           exporter="${{ matrix.exporter }}"
           echo "Processing $exporter..."
           
-          # Generate build files (default arch, dockerfile is generic)
+          # Check if docker is enabled in manifest
+          is_enabled=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(m.get('artifacts', {}).get('docker', {}).get('enabled', False))")
+          if [ "$is_enabled" != "True" ]; then
+            echo "Docker build disabled for $exporter. Skipping."
+            exit 0
+          fi
+
+          # Generate build files (FORCE amd64 for Docker)
           python core/builder.py --manifest "exporters/$exporter/manifest.yaml" --output-dir "build/$exporter" --arch amd64
           
           version=$(grep "version:" "exporters/$exporter/manifest.yaml" | awk '{print $2}' | tr -d '"')
@@ -71,7 +77,6 @@ jobs:
              image_id="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/$exporter"
              image_id=$(echo $image_id | tr '[:upper:]' '[:lower:]')
             
-             # Currently building amd64 only for Docker as per previous config
              docker buildx build \
               --file "build/$exporter/Dockerfile" \
               --push \
@@ -82,7 +87,7 @@ jobs:
               "build/$exporter"
           fi
 
-  # 3. Build RPMs (Parallel per exporter AND architecture)
+  # 3. Build RPMs (Parallel per exporter, architecture AND distribution)
   build-rpm:
     needs: discover
     runs-on: ubuntu-latest
@@ -91,10 +96,10 @@ jobs:
       matrix:
         exporter: ${{ fromJson(needs.discover.outputs.exporters) }}
         arch: [amd64, arm64]
+        dist: [el8, el9, el10]
     steps:
       - uses: actions/checkout@v4
       
-      # QEMU needed for arm64
       - name: Set up QEMU
         if: matrix.arch == 'arm64'
         uses: docker/setup-qemu-action@v3
@@ -109,32 +114,47 @@ jobs:
         run: |
           exporter="${{ matrix.exporter }}"
           arch="${{ matrix.arch }}"
-          echo "Building RPM for $exporter ($arch)..."
+          dist="${{ matrix.dist }}"
           
-          build_dir="build/$exporter-$arch"
+          # Check if RPM and this dist are requested in the manifest
+          is_target=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print('$dist' in m.get('artifacts', {}).get('rpm', {}).get('targets', []))")
+          is_enabled=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(m.get('artifacts', {}).get('rpm', {}).get('enabled', False))")
           
-          # Generate Spec and Download binary
+          if [ "$is_enabled" != "True" ] || [ "$is_target" != "True" ]; then
+            echo "RPM build or distribution $dist not requested for $exporter. Skipping."
+            exit 0
+          fi
+
+          echo "Building RPM for $exporter ($arch) on $dist..."
+          
+          # Select correct image for the target distribution
+          case $dist in
+            el8) image="almalinux:8" ;;
+            el9) image="almalinux:9" ;;
+            el10) image="quay.io/centos/centos:stream10" ;;
+            *) image="almalinux:9" ;;
+          esac
+
+          build_dir="build/$exporter-$arch-$dist"
           python core/builder.py --manifest "exporters/$exporter/manifest.yaml" --output-dir "$build_dir" --arch "$arch"
           
           spec_file="$build_dir/$exporter.spec"
           if [ -f "$spec_file" ]; then
             chmod +x core/build_rpm.sh core/utils/rpm_build_entrypoint.sh
-            ./core/build_rpm.sh "$spec_file" "$build_dir/rpms" "$arch"
-          else
-            echo "No spec file generated (RPM disabled for this exporter?), skipping."
+            # Pass BOTH architecture and the specific distribution image
+            ./core/build_rpm.sh "$spec_file" "$build_dir/rpms" "$arch" "$image"
           fi
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          # Unique name per artifact
-          name: rpm-${{ matrix.exporter }}-${{ matrix.arch }}
+          name: rpm-${{ matrix.exporter }}-${{ matrix.arch }}-${{ matrix.dist }}
           path: build/**/rpms/**/*.rpm
           if-no-files-found: ignore
 
   # 4. Publish YUM Repo & Website (Fan-in)
   publish-yum:
-    needs: build-rpm
+    needs: [build-rpm, build-docker]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -148,7 +168,7 @@ jobs:
           pattern: rpm-*
           merge-multiple: true
 
-      - name: Set up Python (for site gen)
+      - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
@@ -156,38 +176,39 @@ jobs:
 
       - name: Update Repository and Site
         run: |
-          # Checkout gh-pages
           git fetch origin gh-pages
           git worktree add -B gh-pages gh-pages-dist origin/gh-pages
           
           cd gh-pages-dist
           
-          # Prepare structure
-          mkdir -p el9/x86_64 el9/aarch64
-          
-          # Copy downloaded RPMs to correct folders
-          # Artifacts are flat in all_rpms/ because of merge-multiple
-          echo "Moving RPMs..."
-          find ../all_rpms -name "*.x86_64.rpm" -exec cp {} el9/x86_64/ \;
-          find ../all_rpms -name "*.aarch64.rpm" -exec cp {} el9/aarch64/ \;
-          
-          # Update metadata (needs docker but no QEMU needed here as createrepo is arch-agnostic usually, 
-          # but we run it inside almalinux container which is x86_64)
-          # We also fix permissions because docker runs as root and we need to write index.html later
-          docker run --rm -v $(pwd):/repo almalinux:9 /bin/bash -c "dnf install -y createrepo_c && \
-             createrepo_c /repo/el9/x86_64 && \
-             createrepo_c /repo/el9/aarch64 && \
-             chown -R $(id -u):$(id -g) /repo"
+          # Initialize and Update ALL target repositories
+          for dist in el8 el9 el10; do
+            for arch_name in x86_64 aarch64; do
+              mkdir -p "$dist/$arch_name"
+              
+              # Find and copy matching RPMs
+              # Matrix used amd64/arm64, but RPM files use x86_64/aarch64
+              echo "Moving RPMs for $dist/$arch_name..."
+              # We use a broad pattern to find matching RPMs for this dist and arch
+              find ../all_rpms -name "*.$dist.$arch_name.rpm" -exec cp -v {} "$dist/$arch_name/" \;
+              
+              # Rebuild Repository Metadata if RPMs exist
+              if [ "$(ls -A $dist/$arch_name/*.rpm 2>/dev/null)" ]; then
+                echo "Generating YUM metadata for $dist/$arch_name..."
+                docker run --rm -v $(pwd):/repo almalinux:9 /bin/bash -c "dnf install -y createrepo_c && \
+                   createrepo_c /repo/$dist/$arch_name && \
+                   chown -R $(id -u):$(id -g) /repo"
+              fi
+            done
+          done
 
-          # Recursive Index Generation
+          # Recursive Index Generation for ALL directories
           find . -type d -not -path '*/.*' | while read dir; do
             if [ ! -f "$dir/index.html" ]; then
               echo "Generating index for $dir"
               echo "<!DOCTYPE html><html><head><title>Index of $dir</title><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><style>body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif;padding:20px;line-height:1.5}h1{margin-bottom:20px;font-size:1.5em}a{text-decoration:none;color:#0366d6}a:hover{text-decoration:underline}ul{list-style-type:none;padding:0}li{padding:5px 0;border-bottom:1px solid #eee}</style></head><body>" > "$dir/index.html"
               echo "<h1>Index of $dir</h1>" >> "$dir/index.html"
               echo "<ul><li><a href=\"../\">📂 Parent Directory</a></li>" >> "$dir/index.html"
-              
-              # List files and directories
               for f in "$dir"/*; do
                 fname=$(basename "$f")
                 if [ "$fname" != "index.html" ]; then
@@ -203,7 +224,7 @@ jobs:
             fi
           done
 
-          # Generate Main Site
+          # Generate Main Portal
           cd ..
           python core/gen_site.py --output gh-pages-dist/index.html
           cd gh-pages-dist
@@ -216,6 +237,6 @@ jobs:
           if git diff --staged --quiet; then
             echo "No changes to commit."
           else
-            git commit -m "chore: update yum repository and landing page [skip ci]"
+            git commit -m "chore: update all yum repositories and portal [skip ci]"
             git push origin gh-pages
           fi
