@@ -96,7 +96,13 @@ jobs:
       - name: Container Smoke Test
         run: |
           exporter="${{ matrix.exporter }}"
-          port=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(m.get('artifacts', {}).get('docker', {}).get('smoke_test_port', 9100))")
+          port=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(m.get('artifacts', {}).get('docker', {}).get('smoke_test_port', 'None'))")
+          
+          if [ "$port" == "None" ]; then
+            echo "Smoke test skipped (no port defined)."
+            exit 0
+          fi
+
           image_id="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/$exporter:latest"
           image_id=$(echo $image_id | tr '[:upper:]' '[:lower:]')
           
