@@ -15,24 +15,19 @@ rpmdev-setuptree
 # Copy spec file to SPECS
 cp "$SPEC_FILE" ~/rpmbuild/SPECS/
 
-# Copy all files from spec dir to SOURCES (for local sources like config files)
+# Copy all files from spec dir to SOURCES (including the pre-extracted binary and config files)
 SPEC_DIR=$(dirname "$SPEC_FILE")
-cp "$SPEC_DIR"/* ~/rpmbuild/SOURCES/ || true
-
-# Download sources
-# spectool is part of rpmdevtools
-echo "Downloading sources..."
-spectool -g -R ~/rpmbuild/SPECS/$(basename "$SPEC_FILE")
-
-# Install build dependencies
-echo "Installing build dependencies..."
-dnf builddep -y ~/rpmbuild/SPECS/$(basename "$SPEC_FILE")
+cp -v "$SPEC_DIR"/* ~/rpmbuild/SOURCES/ || true
 
 # Extract architecture from spec file to support cross-building (repack)
 TARGET_ARCH=$(grep "BuildArch:" "$SPEC_FILE" | awk '{print $2}')
 if [ -z "$TARGET_ARCH" ]; then
     TARGET_ARCH="x86_64"
 fi
+
+# Install build dependencies
+echo "Installing build dependencies..."
+dnf builddep -y ~/rpmbuild/SPECS/$(basename "$SPEC_FILE")
 
 # Build RPM
 echo "Building RPM for target: $TARGET_ARCH..."

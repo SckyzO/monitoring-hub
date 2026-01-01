@@ -154,6 +154,7 @@ jobs:
 
   # 4. Publish YUM Repo & Website (Fan-in)
   publish-yum:
+    if: always() && !cancelled() # Run even if some builds failed
     needs: [build-rpm, build-docker]
     runs-on: ubuntu-latest
     permissions:
@@ -167,6 +168,7 @@ jobs:
           path: all_rpms
           pattern: rpm-*
           merge-multiple: true
+        continue-on-error: true # Don't crash if NO artifacts found (unlikely but safer)
 
       - name: Set up Python
         uses: actions/setup-python@v5
