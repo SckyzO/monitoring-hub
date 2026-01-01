@@ -26,7 +26,9 @@
         h1 { font-size: 2.5rem; color: var(--primary); margin: 0; letter-spacing: -1px; }
         .subtitle { color: var(--text-secondary); font-size: 1.1rem; margin-top: 10px; font-weight: 300; }
         
-        .theme-toggle { position: absolute; top: 0; right: 20px; background: var(--card-bg); border: 1px solid var(--border); color: var(--text); padding: 10px; border-radius: 50%; cursor: pointer; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .controls { position: absolute; top: 0; right: 20px; display: flex; gap: 10px; }
+        .control-btn { background: var(--card-bg); border: 1px solid var(--border); color: var(--text); padding: 10px; border-radius: 50%; cursor: pointer; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: all 0.2s; }
+        .control-btn:hover { border-color: var(--primary); color: var(--primary); transform: scale(1.05); }
 
         /* Quick Links */
         .quick-links { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 40px; }
@@ -49,17 +51,25 @@
         pre { background: var(--code-bg); color: var(--code-text); padding: 15px; border-radius: 8px; overflow-x: auto; position: relative; margin: 0; font-size: 0.9rem; }
         .copy-btn { position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.1); border: none; color: #fff; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; }
 
-        /* Packages Grid */
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px; }
-        .card { background: var(--card-bg); border-radius: 12px; padding: 20px; border: 1px solid var(--border); transition: transform 0.2s; display: flex; flex-direction: column; }
+        /* Packages Grid / List */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px; transition: all 0.3s ease; }
+        
+        .card { background: var(--card-bg); border-radius: 12px; padding: 20px; border: 1px solid var(--border); transition: all 0.2s; display: flex; flex-direction: column; }
         .card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
         .card-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px; }
         .card-title { margin: 0; font-size: 1.4rem; font-weight: 700; color: var(--primary); }
         .version-badge { background: var(--hover-bg); color: var(--primary); padding: 2px 8px; border-radius: 6px; font-size: 0.8rem; font-weight: 700; border: 1px solid var(--border); }
         .verified-badge { background: #e8f5e9; color: #2e7d32; padding: 2px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; display: inline-flex; align-items: center; gap: 4px; border: 1px solid #c8e6c9; margin-left: 5px; }
         [data-theme="dark"] .verified-badge { background: #1b5e20; color: #c8e6c9; border-color: #2e7d32; }
-
         .description { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 20px; flex-grow: 1; }
+
+        /* List Mode Styling */
+        .grid.list-mode { grid-template-columns: 1fr; }
+        .grid.list-mode .card { flex-direction: row; align-items: center; gap: 30px; padding: 15px 25px; }
+        .grid.list-mode .card-header { margin-bottom: 0; min-width: 250px; flex-direction: column; align-items: start; }
+        .grid.list-mode .description { margin-bottom: 0; }
+        .grid.list-mode .compat-matrix { margin-top: 0; max-width: 300px; min-width: 250px; }
+        .grid.list-mode .btn-docker-action { margin-top: 0; width: auto; min-width: 180px; }
 
         /* Compatibility Matrix */
         .compat-matrix { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin-top: 15px; border: 1px solid var(--border); }
@@ -81,7 +91,14 @@
 <body>
     <div class="container">
         <header>
-            <button class="theme-toggle" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
+            <div class="controls">
+                <button class="control-btn" id="layout-btn" onclick="toggleLayout()" title="Toggle Grid/List View">
+                    <i class="fas fa-list"></i>
+                </button>
+                <button class="control-btn" id="theme-btn" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
             <h1>🏭 Monitoring Hub</h1>
             <p class="subtitle">Automated Software Factory for Prometheus Tools</p>
         </header>
@@ -187,17 +204,32 @@
             document.getElementById(id).classList.add('active');
         }
 
+        // Theme Logic
         function toggleTheme() {
             const current = document.documentElement.getAttribute("data-theme");
             const next = current === "dark" ? "light" : "dark";
             document.documentElement.setAttribute("data-theme", next);
             localStorage.setItem("theme", next);
-            document.querySelector(".theme-toggle i").className = next === "dark" ? "fas fa-sun" : "fas fa-moon";
+            document.querySelector("#theme-btn i").className = next === "dark" ? "fas fa-sun" : "fas fa-moon";
         }
 
-        if (localStorage.getItem("theme") === "dark") {
-            document.documentElement.setAttribute("data-theme", "dark");
-            document.querySelector(".theme-toggle i").className = "fas fa-sun";
+        // Layout Logic
+        function toggleLayout() {
+            const grid = document.getElementById("exporter-grid");
+            const isList = grid.classList.toggle("list-mode");
+            localStorage.setItem("layout", isList ? "list" : "grid");
+            document.querySelector("#layout-btn i").className = isList ? "fas fa-th" : "fas fa-list";
+        }
+
+        // Initialization
+        const savedTheme = localStorage.getItem("theme") || "light";
+        document.documentElement.setAttribute("data-theme", savedTheme);
+        document.querySelector("#theme-btn i").className = savedTheme === "dark" ? "fas fa-sun" : "fas fa-moon";
+
+        const savedLayout = localStorage.getItem("layout") || "grid";
+        if (savedLayout === "list") {
+            document.getElementById("exporter-grid").classList.add("list-mode");
+            document.querySelector("#layout-btn i").className = "fas fa-th";
         }
 
         function copyToClipboard(btn) {
@@ -220,7 +252,8 @@
             cards.forEach(card => {
                 const name = card.getAttribute('data-name').toLowerCase();
                 const desc = card.getAttribute('data-desc').toLowerCase();
-                card.style.display = (name.includes(val) || desc.includes(val)) ? 'flex' : 'none';
+                card.style.display = (name.includes(val) || desc.includes(val)) ? (document.getElementById("exporter-grid").classList.contains("list-mode") ? "flex" : "flex") : "none";
+                // Note: flex or block depending on layout, but 'flex' works for both here.
             });
         }
     </script>
