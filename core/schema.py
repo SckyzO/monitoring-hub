@@ -38,6 +38,10 @@ class BuildSchema(Schema):
     binary_name = fields.Str(required=True)
     extra_binaries = fields.List(fields.Str(), load_default=[])
 
+class ArtifactsSchema(Schema):
+    rpm = fields.Nested(RPMSchema)
+    docker = fields.Nested(DockerSchema)
+
 class ManifestSchema(Schema):
     name = fields.Str(required=True)
     description = fields.Str(required=True)
