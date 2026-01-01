@@ -13,92 +13,100 @@
 | Resource | Description | URL |
 | :--- | :--- | :--- |
 | **🌐 Web Portal** | Browser, Installation Guide, Dark Mode | [**sckyzo.github.io/monitoring-hub**](https://sckyzo.github.io/monitoring-hub/) |
-| **📦 YUM Repo** | Direct file access (EL9/x86_64) | [**.../el9/x86_64/**](https://sckyzo.github.io/monitoring-hub/el9/x86_64/) |
-| **🐳 Docker Images** | GitHub Container Registry | [**ghcr.io/sckyzo/monitoring-hub**](https://github.com/SckyzO/monitoring-hub/pkgs/container/monitoring-hub%2Fnode_exporter) |
-| **🐛 Issues** | Report bugs or request exporters | [**GitHub Issues**](https://github.com/SckyzO/monitoring-hub/issues) |
+| **🐳 Docker Hub** | Container Registry (GHCR) | [**Packages List**](https://github.com/SckyzO/monitoring-hub/packages) |
+| **📜 Changelog** | Version history and updates | [**CHANGELOG.md**](CHANGELOG.md) |
 
 ---
 
 ## 🎯 Project Goal
 
-**Monitoring Hub** is an automated "Software Factory" designed to package Prometheus exporters and monitoring tools with a focus on enterprise-grade standards.
-
-By defining an exporter's intent in a simple `manifest.yaml`, the system automatically handles:
-- 🛠️ **Building:** Cross-architecture support (x86_64, aarch64).
-- 📦 **Packaging:** Professional RPMs (EL8, EL9, EL10) and Docker Images.
-- 🚀 **Publishing:** Automated YUM repository and Container Registry.
-- 🤖 **Updating:** Daily scans for new upstream releases.
+**Monitoring Hub** is an automated Factory that transforms simple YAML manifests into production-ready monitoring tools. It focuses on **Enterprise Standards**, **Multi-Architecture support**, and **Full Automation**.
 
 ## 🚀 Key Features
 
-*   **Multi-Arch by Design:** Native support for `x86_64` and `aarch64` (ARM64) for all RPM packages.
-*   **Enterprise Security:** All Docker images are based on **Red Hat Universal Base Image (UBI 9 Minimal)**.
-*   **Full Automation:** A "Watcher" bot detects new versions and opens PRs automatically.
-*   **Production Ready:** Packages include dedicated system users, configuration files, and systemd units.
-*   **Modern Portal:** Browse our exporters on our [Automated Portal](https://sckyzo.github.io/monitoring-hub/) with built-in Dark Mode.
+*   **Native Multi-Arch:** Every tool is built for `x86_64` and `aarch64` (ARM64).
+*   **Hardened Security:** All Docker images use **Red Hat UBI 9 Minimal**.
+*   **Linux Standard (FHS):** RPMs include system users, standard paths (`/etc`, `/var/lib`), and systemd integration.
+*   **Always Up-to-Date:** An automated Watcher opens PRs as soon as a new version is released upstream.
 
-## 📦 Usage
+---
 
-### 1. Using RPM Packages (Alma/Rocky/RHEL)
+## 🛠️ Developer Guide: Adding an Exporter
 
-Add the repository for your architecture and OS version:
+Adding a new tool takes less than 5 minutes.
 
+### 1. Create the Directory
 ```bash
-# Example for EL9 on x86_64
-sudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el9/x86_64/
-sudo dnf install node_exporter
+mkdir -p exporters/my_exporter/assets
 ```
 
-Browse all available packages at: [sckyzo.github.io/monitoring-hub/](https://sckyzo.github.io/monitoring-hub/)
-
-### 2. Using Docker Images
-
-Images are published to **GHCR** and are linked to this repository:
-
-```bash
-docker pull ghcr.io/sckyzo/monitoring-hub/node_exporter:latest
-```
-
-## 🛠️ Development & Contributing
-
-### Adding a new Exporter
-
-Adding a tool is as simple as creating a folder in `exporters/` with a `manifest.yaml`:
+### 2. Create the `manifest.yaml`
+Define your tool's identity and requirements:
 
 ```yaml
 name: my_exporter
-description: "My awesome exporter"
-version: "1.0.0"
+description: "Brief description of the tool"
+version: "1.0.0" # Watcher will update this automatically
 upstream:
   type: github
-  repo: owner/my_exporter
+  repo: owner/repo
 build:
   method: binary_repack
   binary_name: my_exporter
+  extra_binaries: [tool_helper] # Optional
 artifacts:
   rpm:
     enabled: true
-    system_user: my_user
+    targets: [el8, el9, el10]
+    system_user: my_user # Automates user/group creation
+    extra_files:
+      - source: assets/config.yml
+        dest: /etc/my_exporter/config.yml
+        config: true # Protects from overwrite on update
   docker:
     enabled: true
+    entrypoint: ["/usr/bin/my_exporter"]
+    cmd: ["--config=/etc/my_exporter/config.yml"]
 ```
 
-### Local Build
+### 3. Add Optional Assets
+Place any configuration files or scripts in the `assets/` folder and reference them in the manifest.
 
+### 4. Local Validation (Optional)
 ```bash
-# Setup
-python3 -m venv .venv && source .venv/bin/activate
-pip install -r core/requirements.txt
-
-# Build (generates spec, dockerfile and downloads binary)
-python core/builder.py --manifest exporters/node_exporter/manifest.yaml --arch amd64
+# Generate build files
+python core/builder.py --manifest exporters/my_exporter/manifest.yaml --arch amd64
 ```
 
-## 📂 Repository Structure
+---
 
-- **`core/`**: The Python engine, Jinja2 templates, and build scripts.
-- **`exporters/`**: Manifests and custom assets for each tool.
-- **`ARCHITECTURE/`**: Detailed design documents and roadmap.
+## 🏗️ Architecture
+
+The "Magic" happens in the `core/` engine:
+1.  **Parser:** Reads the YAML and validates it against a strict schema (`marshmallow`).
+2.  **Fetcher:** Downloads the correct architecture-specific binary from GitHub.
+3.  **Templater:** Uses **Jinja2** to render professional `.spec` files and `Dockerfiles`.
+4.  **Publisher:** A parallelized Matrix CI builds all targets and updates the YUM repository.
+
+## 📦 Distribution
+
+### YUM Repository (RPM)
+```bash
+# Example for EL9
+sudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el9/$(arch)/
+sudo dnf install <exporter_name>
+```
+
+### Container Registry (Docker)
+```bash
+docker pull ghcr.io/sckyzo/monitoring-hub/<exporter_name>:latest
+```
+
+## 🤝 Contributing
+
+We welcome new exporters! Feel free to open a Pull Request following the guide above.
+
+---
 
 ## 📜 License
 

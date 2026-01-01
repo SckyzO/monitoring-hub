@@ -10,7 +10,7 @@
             --primary: #0066cc; --bg: #f8f9fa; --card-bg: #ffffff;
             --text: #2c3e50; --text-secondary: #6c757d; --border: #e9ecef;
             --code-bg: #2d3436; --code-text: #dfe6e9; --th-bg: #f8f9fa; --hover-bg: #f1f3f5;
-            --success: #27ae60;
+            --success: #27ae60; --danger: #e74c3c; --warning: #f39c12;
         }
 
         [data-theme="dark"] {
@@ -62,8 +62,11 @@
         .compat-matrix { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin-top: 15px; border: 1px solid var(--border); }
         .compat-matrix th { background: var(--th-bg); padding: 6px; border: 1px solid var(--border); font-weight: 600; text-align: center; }
         .compat-matrix td { padding: 8px; border: 1px solid var(--border); text-align: center; }
-        .dl-link { color: var(--primary); text-decoration: none; display: flex; flex-direction: column; align-items: center; gap: 2px; }
-        .dl-link:hover { text-decoration: underline; }
+        
+        /* Status Badges */
+        .status-success { color: var(--success); font-weight: 600; text-decoration: none; display: flex; flex-direction: column; align-items: center; }
+        .status-success:hover { text-decoration: underline; }
+        .status-failed { color: var(--danger); font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
         .na { color: #ccc; font-style: italic; }
 
         .btn-docker-action { margin-top: 15px; width: 100%; background: var(--hover-bg); border: 1px solid var(--border); color: var(--text); padding: 8px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; gap: 8px; }
@@ -135,13 +138,17 @@
                             <th>{{ dist | upper }}</th>
                             {% for arch in ['x86_64', 'aarch64'] %}
                             <td>
-                                {% set rpm_path = exporter.availability[dist][arch] %}
-                                {% if rpm_path %}
-                                <a href="{{ rpm_path }}" class="dl-link" title="Download RPM">
-                                    <i class="fas fa-download"></i> RPM
+                                {% set info = exporter.availability[dist][arch] %}
+                                {% if info.status == 'success' %}
+                                <a href="{{ info.path }}" class="status-success" title="Download RPM">
+                                    <i class="fas fa-check-circle"></i> RPM
                                 </a>
+                                {% elif info.status == 'failed' %}
+                                <span class="status-failed" title="Build Failed or Pending">
+                                    <i class="fas fa-times-circle"></i> Failed
+                                </span>
                                 {% else %}
-                                <span class="na">Not Available</span>
+                                <span class="na">N/A</span>
                                 {% endif %}
                             </td>
                             {% endfor %}
@@ -196,7 +203,7 @@
             navigator.clipboard.writeText(`docker pull ${image}`);
             const orig = btn.innerHTML;
             btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
-            setTimeout(() => btn.innerHTML = orig, 2000);
+            setTimeout(() => btn.innerHTML = original, 2000);
         }
 
         function filterExporters(val) {
