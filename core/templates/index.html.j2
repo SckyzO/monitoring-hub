@@ -56,6 +56,9 @@
         .card-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px; }
         .card-title { margin: 0; font-size: 1.4rem; font-weight: 700; color: var(--primary); }
         .version-badge { background: var(--hover-bg); color: var(--primary); padding: 2px 8px; border-radius: 6px; font-size: 0.8rem; font-weight: 700; border: 1px solid var(--border); }
+        .verified-badge { background: #e8f5e9; color: #2e7d32; padding: 2px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; display: inline-flex; align-items: center; gap: 4px; border: 1px solid #c8e6c9; margin-left: 5px; }
+        [data-theme="dark"] .verified-badge { background: #1b5e20; color: #c8e6c9; border-color: #2e7d32; }
+
         .description { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 20px; flex-grow: 1; }
 
         /* Compatibility Matrix */
@@ -120,7 +123,12 @@
             <div class="card" data-name="{{ exporter.name }}" data-desc="{{ exporter.description }}">
                 <div class="card-header">
                     <h2 class="card-title">{{ exporter.name }}</h2>
-                    <span class="version-badge">v{{ exporter.version }}</span>
+                    <div style="display:flex; align-items:center;">
+                        <span class="version-badge">v{{ exporter.version }}</span>
+                        <span class="verified-badge" title="Automated Smoke Test Passed">
+                            <i class="fas fa-shield-alt"></i> Verified
+                        </span>
+                    </div>
                 </div>
                 <p class="description">{{ exporter.description }}</p>
                 
