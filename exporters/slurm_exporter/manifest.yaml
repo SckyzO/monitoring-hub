@@ -5,6 +5,7 @@ upstream:
   type: github
   repo: sckyzo/slurm_exporter
   strategy: latest_release
+  archive_name: "{name}-{clean_version}-linux-{arch}.tar.gz"
 build:
   method: binary_repack
   binary_name: slurm_exporter
