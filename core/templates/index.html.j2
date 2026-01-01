@@ -26,26 +26,29 @@
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; line-height: 1.6; transition: background 0.3s, color 0.3s; }
         .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
         
+        /* Header Style */
         .site-header { background: var(--header-gradient); color: white; padding: 60px 0; margin-bottom: 40px; position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
         .header-content { display: flex; justify-content: space-between; align-items: center; }
         .header-left h1 { font-size: 2.8rem; margin: 0; letter-spacing: -1px; display: flex; align-items: center; gap: 15px; }
         .header-left .subtitle { color: rgba(255,255,255,0.8); font-size: 1.2rem; margin-top: 5px; font-weight: 300; }
         
-        .header-right { display: flex; align-items: center; gap: 15px; }
-
+        .header-right { display: flex; align-items: center; }
         .controls { display: flex; gap: 10px; }
         .control-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 10px; border-radius: 50%; cursor: pointer; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; text-decoration: none; }
         .control-btn:hover { background: rgba(255,255,255,0.2); transform: scale(1.05); color: white; }
 
+        /* Quick Links */
         .quick-links { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 40px; }
         .repo-link { display: inline-flex; align-items: center; gap: 8px; padding: 8px 15px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; text-decoration: none; color: var(--text); font-size: 0.85rem; transition: all 0.2s; }
         .repo-link:hover { border-color: var(--primary); transform: translateY(-2px); }
 
+        /* Search */
         .search-container { margin-bottom: 30px; position: relative; max-width: 600px; margin-left: auto; margin-right: auto; }
         .search-input { width: 100%; padding: 12px 20px 12px 45px; border-radius: 25px; border: 1px solid var(--border); background: var(--card-bg); color: var(--text); font-size: 1rem; outline: none; transition: border-color 0.2s; }
         .search-input:focus { border-color: var(--primary); }
         .search-icon { position: absolute; left: 18px; top: 15px; color: var(--text-secondary); }
 
+        /* Setup Section */
         .setup-section { background: var(--card-bg); border-radius: 12px; padding: 25px; margin-bottom: 40px; border: 1px solid var(--border); }
         .tabs { display: flex; gap: 10px; border-bottom: 2px solid var(--border); margin-bottom: 15px; }
         .tab { padding: 8px 15px; cursor: pointer; font-weight: 600; color: var(--text-secondary); border-bottom: 2px solid transparent; margin-bottom: -2px; }
@@ -92,6 +95,8 @@
 
         footer { text-align: center; margin-top: 60px; color: var(--text-secondary); font-size: 0.9rem; padding-bottom: 40px; border-top: 1px solid var(--border); padding-top: 40px; }
         footer a { color: var(--primary); text-decoration: none; font-weight: 600; }
+        .footer-github { display: block; font-size: 1.5rem; margin-bottom: 15px; transition: color 0.2s; }
+        .footer-github:hover { color: var(--primary); }
     </style>
 </head>
 <body>
@@ -104,9 +109,6 @@
                 </div>
                 <div class="header-right">
                     <div class="controls">
-                        <a href="https://github.com/SckyzO/monitoring-hub" target="_blank" class="control-btn" title="View Source on GitHub">
-                            <i class="fab fa-github"></i>
-                        </a>
                         <button class="control-btn" id="layout-btn" onclick="toggleLayout()" title="Toggle View">
                             <i class="fas fa-list"></i>
                         </button>
@@ -243,7 +245,10 @@
         </div>
 
         <footer>
-            <p>Developed with ❤️ by <a href="https://github.com/SckyzO" target="_blank">SckyzO</a></p>
+            <a href="https://github.com/SckyzO/monitoring-hub" target="_blank" class="footer-github" title="View Source on GitHub">
+                <i class="fab fa-github"></i>
+            </a>
+            <p>Developed with ❤️ by <a href="https://github.com/SckyzO" target="_blank">SckyzO - Thomas Bourcey</a></p>
             <p style="margin-top:10px; font-size:0.8rem; opacity:0.7">Generated automatically by Monitoring Hub Factory. <a href="https://github.com/SckyzO/monitoring-hub">View Source</a></p>
         </footer>
     </div>
