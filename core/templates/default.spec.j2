@@ -24,7 +24,8 @@ Requires(pre):  shadow-utils
 {{ description }}
 
 %prep
-# No extraction needed, files are provided in the source directory
+%setup -q -c -T
+# Files are already present in the SOURCES directory
 
 %build
 # Nothing to build, binary repack

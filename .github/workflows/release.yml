@@ -224,9 +224,9 @@ jobs:
             echo "</ul></body></html>" >> "$dir/index.html"
           done
 
-          # Generate Main Portal
+          # Generate Main Portal with reality check
           cd ..
-          python core/gen_site.py --output gh-pages-dist/index.html
+          python core/gen_site.py --output gh-pages-dist/index.html --repo-dir gh-pages-dist
           cd gh-pages-dist
           
           # Commit and Push
