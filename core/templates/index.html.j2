@@ -26,7 +26,6 @@
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; line-height: 1.6; transition: background 0.3s, color 0.3s; }
         .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
         
-        /* Header Style */
         .site-header { background: var(--header-gradient); color: white; padding: 60px 0; margin-bottom: 40px; position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
         .header-content { display: flex; justify-content: space-between; align-items: center; }
         .header-left h1 { font-size: 2.8rem; margin: 0; letter-spacing: -1px; display: flex; align-items: center; gap: 15px; }
@@ -37,18 +36,15 @@
         .control-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 10px; border-radius: 50%; cursor: pointer; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; text-decoration: none; }
         .control-btn:hover { background: rgba(255,255,255,0.2); transform: scale(1.05); color: white; }
 
-        /* Quick Links */
         .quick-links { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 40px; }
         .repo-link { display: inline-flex; align-items: center; gap: 8px; padding: 8px 15px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; text-decoration: none; color: var(--text); font-size: 0.85rem; transition: all 0.2s; }
         .repo-link:hover { border-color: var(--primary); transform: translateY(-2px); }
 
-        /* Search */
         .search-container { margin-bottom: 30px; position: relative; max-width: 600px; margin-left: auto; margin-right: auto; }
         .search-input { width: 100%; padding: 12px 20px 12px 45px; border-radius: 25px; border: 1px solid var(--border); background: var(--card-bg); color: var(--text); font-size: 1rem; outline: none; transition: border-color 0.2s; }
         .search-input:focus { border-color: var(--primary); }
         .search-icon { position: absolute; left: 18px; top: 15px; color: var(--text-secondary); }
 
-        /* Setup Section */
         .setup-section { background: var(--card-bg); border-radius: 12px; padding: 25px; margin-bottom: 40px; border: 1px solid var(--border); }
         .tabs { display: flex; gap: 10px; border-bottom: 2px solid var(--border); margin-bottom: 15px; }
         .tab { padding: 8px 15px; cursor: pointer; font-weight: 600; color: var(--text-secondary); border-bottom: 2px solid transparent; margin-bottom: -2px; }
@@ -56,33 +52,37 @@
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
-        /* Unified Copy Widget */
         .copy-widget { background: var(--input-bg); border-radius: 8px; border: 1px solid var(--border); display: flex; align-items: stretch; overflow: hidden; margin-top: 10px; }
         .copy-text { color: var(--text); padding: 12px; font-family: monospace; font-size: 0.85rem; flex-grow: 1; margin: 0; word-break: break-all; white-space: pre-wrap; line-height: 1.4; background: transparent; border: none; }
         .copy-trigger { background: var(--border); border: none; color: var(--text); padding: 0 15px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
         .copy-trigger:hover { background: var(--primary); color: #fff; }
 
+        /* Grid / Card Style */
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px; transition: all 0.3s ease; }
         .card { background: var(--card-bg); border-radius: 12px; padding: 20px; border: 1px solid var(--border); transition: all 0.2s; display: flex; flex-direction: column; }
         .card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
         
-        .card-header { margin-bottom: 15px; }
+        .card-left { display: flex; flex-direction: column; flex-grow: 1; }
         .card-title { margin: 0; font-size: 1.4rem; font-weight: 700; line-height: 1.2; }
         .card-title a { color: var(--primary); text-decoration: none; }
         .card-title a:hover { text-decoration: underline; }
-        .card-meta { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
+        .card-meta { display: flex; align-items: center; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
 
         .version-badge { background: var(--hover-bg); color: var(--primary); padding: 2px 8px; border-radius: 6px; font-size: 0.8rem; font-weight: 700; border: 1px solid var(--border); }
         .verified-badge { background: #e8f5e9; color: #2e7d32; padding: 2px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; display: inline-flex; align-items: center; gap: 4px; border: 1px solid #c8e6c9; }
         [data-theme="dark"] .verified-badge { background: #1b5e20; color: #c8e6c9; border-color: #2e7d32; }
-        .description { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 20px; flex-grow: 1; }
+        .doc-link { display: inline-flex; align-items: center; gap: 5px; color: var(--primary); text-decoration: none; font-size: 0.8rem; font-weight: 600; padding: 2px 8px; border-radius: 6px; border: 1px solid var(--primary); transition: all 0.2s; }
+        .doc-link:hover { background: var(--primary); color: white; }
 
+        .description { color: var(--text-secondary); font-size: 0.9rem; margin: 15px 0; }
+
+        /* List Mode Styling */
         .grid.list-mode { grid-template-columns: 1fr; }
-        .grid.list-mode .card { flex-direction: row; align-items: center; gap: 30px; padding: 15px 25px; }
-        .grid.list-mode .card-header { margin-bottom: 0; min-width: 250px; flex-direction: column; align-items: start; }
-        .grid.list-mode .description { margin-bottom: 0; }
-        .grid.list-mode .compat-matrix { margin-top: 0; max-width: 400px; min-width: 350px; }
-        .grid.list-mode .copy-widget { margin-top: 0; min-width: 350px; }
+        .grid.list-mode .card { flex-direction: row; align-items: center; gap: 40px; padding: 20px 30px; }
+        .grid.list-mode .card-left { min-width: 300px; max-width: 450px; flex-grow: 1; flex-shrink: 1; }
+        .grid.list-mode .matrix-wrapper { min-width: 280px; flex-shrink: 0; }
+        .grid.list-mode .compat-matrix { margin-top: 0; width: 100%; }
+        .grid.list-mode .copy-widget { margin-top: 0; min-width: 320px; flex-shrink: 0; }
 
         .compat-matrix { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin-top: 15px; border: 1px solid var(--border); }
         .compat-matrix th { background: var(--th-bg); padding: 6px; border: 1px solid var(--border); font-weight: 600; text-align: center; }
@@ -167,22 +167,28 @@
         <div class="grid" id="exporter-grid">
             {% for exporter in exporters %}
             <div class="card" data-name="{{ exporter.name }}" data-desc="{{ exporter.description }}">
-                <div class="card-header">
-                    <h2 class="card-title">
-                        <a href="https://github.com/SckyzO/monitoring-hub/pkgs/container/monitoring-hub%2F{{ exporter.name }}" target="_blank">
-                            <i class="fas fa-box"></i> {{ exporter.name }}
-                        </a>
-                    </h2>
-                    <div class="card-meta">
-                        <span class="version-badge">v{{ exporter.version }}</span>
-                        <span class="verified-badge" title="Automated Smoke Test Passed">
-                            <i class="fas fa-shield-alt"></i> Verified
-                        </span>
+                <div class="card-left">
+                    <div class="card-identity">
+                        <h2 class="card-title">
+                            <a href="https://github.com/SckyzO/monitoring-hub/pkgs/container/monitoring-hub%2F{{ exporter.name }}" target="_blank">
+                                <i class="fas fa-box"></i> {{ exporter.name }}
+                            </a>
+                        </h2>
+                        <div class="card-meta">
+                            <span class="version-badge">v{{ exporter.version }}</span>
+                            <span class="verified-badge" title="Automated Smoke Test Passed">
+                                <i class="fas fa-shield-alt"></i> Verified
+                            </span>
+                            <a href="https://github.com/SckyzO/monitoring-hub/blob/main/exporters/{{ exporter.name }}/README.md" target="_blank" class="doc-link" title="Full Documentation">
+                                <i class="fas fa-book"></i> README
+                            </a>
+                        </div>
                     </div>
+                    <p class="description">{{ exporter.description }}</p>
                 </div>
-                <p class="description">{{ exporter.description }}</p>
                 
                 <div class="matrix-wrapper">
+                    <!-- Standard Matrix (Grid mode) -->
                     <table class="compat-matrix grid-only">
                         <thead>
                             <tr><th>OS</th><th>x86_64</th><th>aarch64</th></tr>
@@ -205,6 +211,7 @@
                         </tbody>
                     </table>
 
+                    <!-- Flat Matrix (List mode) -->
                     <table class="compat-matrix list-only" style="display:none">
                         <thead>
                             <tr><th>Arch</th><th>EL8</th><th>EL9</th><th>EL10</th></tr>
@@ -234,12 +241,6 @@
                     <button class="copy-trigger" onclick="copyWidgetText(this)" title="Copy Command"><i class="fas fa-copy"></i></button>
                 </div>
                 {% endif %}
-
-                <div style="margin-top: 15px; display: flex; gap: 10px;">
-                    <a href="https://github.com/SckyzO/monitoring-hub/blob/main/exporters/{{ exporter.name }}/README.md" target="_blank" class="repo-link" style="margin-bottom:0; flex-grow:1; justify-content:center; border-radius:8px; padding:10px;">
-                        <i class="fas fa-book"></i> Full Documentation
-                    </a>
-                </div>
             </div>
             {% endfor %}
         </div>
