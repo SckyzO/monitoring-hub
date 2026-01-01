@@ -12,6 +12,7 @@
             --code-bg: #2d3436; --code-text: #dfe6e9; --th-bg: #f8f9fa; --hover-bg: #f1f3f5;
             --success: #27ae60; --danger: #e74c3c; --warning: #f39c12;
             --input-bg: #f1f3f5;
+            --header-gradient: linear-gradient(135deg, #0066cc 0%, #004a99 100%);
         }
 
         [data-theme="dark"] {
@@ -19,18 +20,25 @@
             --text: #e0e0e0; --text-secondary: #a0a0a0; --border: #333;
             --code-bg: #000; --code-text: #b0b0b0; --th-bg: #252525; --hover-bg: #2d2d2d;
             --input-bg: #2d2d2d;
+            --header-gradient: linear-gradient(135deg, #1a1a1a 0%, #000000 100%);
         }
 
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; line-height: 1.6; transition: background 0.3s, color 0.3s; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
         
-        header { text-align: center; margin-bottom: 40px; position: relative; }
-        h1 { font-size: 2.5rem; color: var(--primary); margin: 0; letter-spacing: -1px; }
-        .subtitle { color: var(--text-secondary); font-size: 1.1rem; margin-top: 10px; font-weight: 300; }
+        /* New Header Style */
+        .site-header { background: var(--header-gradient); color: white; padding: 60px 0; margin-bottom: 40px; position: relative; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .header-content { display: flex; justify-content: space-between; align-items: center; }
+        .header-left h1 { font-size: 2.8rem; margin: 0; letter-spacing: -1px; display: flex; align-items: center; gap: 15px; }
+        .header-left .subtitle { color: rgba(255,255,255,0.8); font-size: 1.2rem; margin-top: 5px; font-weight: 300; }
         
-        .controls { position: absolute; top: 0; right: 20px; display: flex; gap: 10px; }
-        .control-btn { background: var(--card-bg); border: 1px solid var(--border); color: var(--text); padding: 10px; border-radius: 50%; cursor: pointer; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: all 0.2s; }
-        .control-btn:hover { border-color: var(--primary); color: var(--primary); transform: scale(1.05); }
+        .header-right { display: flex; align-items: center; gap: 15px; }
+        .github-link { color: white; font-size: 2rem; transition: opacity 0.2s; text-decoration: none; }
+        .github-link:hover { opacity: 0.8; }
+
+        .controls { display: flex; gap: 10px; margin-top: 10px; }
+        .control-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; padding: 10px; border-radius: 50%; cursor: pointer; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+        .control-btn:hover { background: rgba(255,255,255,0.2); transform: scale(1.05); }
 
         /* Quick Links */
         .quick-links { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 40px; }
@@ -55,7 +63,6 @@
 
         /* Packages Grid / List */
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px; transition: all 0.3s ease; }
-        
         .card { background: var(--card-bg); border-radius: 12px; padding: 20px; border: 1px solid var(--border); transition: all 0.2s; display: flex; flex-direction: column; }
         .card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
         .card-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px; }
@@ -69,16 +76,11 @@
         .description { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 20px; flex-grow: 1; }
 
         /* Docker Pull Widget */
-        .docker-widget { background: var(--input-bg); border-radius: 8px; border: 1px solid var(--border); display: flex; align-items: center; overflow: hidden; margin-top: 15px; }
-        .docker-widget input { background: transparent; border: none; color: var(--text); padding: 8px 12px; font-family: monospace; font-size: 0.8rem; flex-grow: 1; outline: none; }
-        .docker-copy { background: var(--border); border: none; color: var(--text); padding: 8px 12px; cursor: pointer; transition: all 0.2s; }
+        .docker-widget { background: var(--input-bg); border-radius: 8px; border: 1px solid var(--border); display: flex; align-items: stretch; overflow: hidden; margin-top: 15px; }
+        .docker-code { color: var(--text); padding: 10px 12px; font-family: monospace; font-size: 0.8rem; flex-grow: 1; margin: 0; word-break: break-all; white-space: pre-wrap; line-height: 1.4; }
+        .docker-copy { background: var(--border); border: none; color: var(--text); padding: 0 15px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
         .docker-copy:hover { background: var(--primary); color: #fff; }
 
-        /* Compatibility Matrix */
-        .compat-matrix { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin-top: 15px; border: 1px solid var(--border); }
-        .compat-matrix th { background: var(--th-bg); padding: 6px; border: 1px solid var(--border); font-weight: 600; text-align: center; }
-        .compat-matrix td { padding: 8px; border: 1px solid var(--border); text-align: center; }
-        
         /* List Mode Styling */
         .grid.list-mode { grid-template-columns: 1fr; }
         .grid.list-mode .card { flex-direction: row; align-items: center; gap: 30px; padding: 15px 25px; }
@@ -87,31 +89,46 @@
         .grid.list-mode .compat-matrix { margin-top: 0; max-width: 400px; min-width: 350px; }
         .grid.list-mode .docker-widget { margin-top: 0; min-width: 350px; }
 
-        /* Status Badges */
+        /* Compatibility Matrix */
+        .compat-matrix { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin-top: 15px; border: 1px solid var(--border); }
+        .compat-matrix th { background: var(--th-bg); padding: 6px; border: 1px solid var(--border); font-weight: 600; text-align: center; }
+        .compat-matrix td { padding: 8px; border: 1px solid var(--border); text-align: center; }
+        
         .status-success { color: var(--success); font-weight: 600; text-decoration: none; display: flex; flex-direction: column; align-items: center; }
         .status-success:hover { text-decoration: underline; }
         .status-failed { color: var(--danger); font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
         .na { color: #ccc; font-style: italic; }
 
-        footer { text-align: center; margin-top: 60px; color: var(--text-secondary); font-size: 0.85rem; padding-bottom: 40px; }
+        footer { text-align: center; margin-top: 60px; color: var(--text-secondary); font-size: 0.9rem; padding-bottom: 40px; border-top: 1px solid var(--border); padding-top: 40px; }
+        footer a { color: var(--primary); text-decoration: none; font-weight: 600; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <div class="controls">
-                <button class="control-btn" id="layout-btn" onclick="toggleLayout()" title="Toggle Grid/List View">
-                    <i class="fas fa-list"></i>
-                </button>
-                <button class="control-btn" id="theme-btn" onclick="toggleTheme()" title="Toggle Dark/Light Mode">
-                    <i class="fas fa-moon"></i>
-                </button>
+    <header class="site-header">
+        <div class="container">
+            <div class="header-content">
+                <div class="header-left">
+                    <h1><i class="fab fa-hubspot"></i> Monitoring Hub</h1>
+                    <p class="subtitle">The automated Software Factory for Prometheus Exporters</p>
+                </div>
+                <div class="header-right">
+                    <a href="https://github.com/SckyzO/monitoring-hub" target="_blank" class="github-link" title="View Source on GitHub">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    <div class="controls">
+                        <button class="control-btn" id="layout-btn" onclick="toggleLayout()" title="Toggle View">
+                            <i class="fas fa-list"></i>
+                        </button>
+                        <button class="control-btn" id="theme-btn" onclick="toggleTheme()" title="Toggle Theme">
+                            <i class="fas fa-moon"></i>
+                        </button>
+                    </div>
+                </div>
             </div>
-            <h1>🏭 Monitoring Hub</h1>
-            <p class="subtitle">Automated Software Factory for Prometheus Tools</p>
-        </header>
+        </div>
+    </header>
 
-        <!-- (Quick links and Setup sections remain the same) -->
+    <div class="container">
         <div class="quick-links">
             <a href="el8/x86_64/" class="repo-link"><i class="fas fa-folder"></i> EL8 x86_64</a>
             <a href="el8/aarch64/" class="repo-link"><i class="fas fa-folder"></i> EL8 ARM64</a>
@@ -162,9 +179,7 @@
                 </div>
                 <p class="description">{{ exporter.description }}</p>
                 
-                <!-- Matrix: Grid mode (Vertical) vs List mode (Horizontal via JS/CSS) -->
                 <div class="matrix-wrapper">
-                    <!-- Standard Matrix (OS x Arch) -->
                     <table class="compat-matrix grid-only">
                         <thead>
                             <tr><th>OS</th><th>x86_64</th><th>aarch64</th></tr>
@@ -178,7 +193,7 @@
                                     {% set info = exporter.availability[dist][arch] %}
                                     {% if info.status == 'success' %}
                                     <a href="{{ info.path }}" class="status-success"><i class="fas fa-check-circle"></i> RPM</a>
-                                    {% elif info.status == 'failed' %}<span class="status-failed"><i class="fas fa-times-circle"></i> Failed</span>
+                                    {% elif info.status == 'failed' %}<span class="status-failed">Failed</span>
                                     {% else %}<span class="na">N/A</span>{% endif %}
                                 </td>
                                 {% endfor %}
@@ -187,7 +202,6 @@
                         </tbody>
                     </table>
 
-                    <!-- Inverted Matrix for List Mode (Arch x OS) - Hidden by default -->
                     <table class="compat-matrix list-only" style="display:none">
                         <thead>
                             <tr><th>Arch</th><th>EL8</th><th>EL9</th><th>EL10</th></tr>
@@ -213,7 +227,7 @@
 
                 {% if exporter.artifacts.docker.enabled %}
                 <div class="docker-widget">
-                    <input type="text" readonly value="docker pull ghcr.io/sckyzo/monitoring-hub/{{ exporter.name }}:latest">
+                    <pre class="docker-code">docker pull ghcr.io/sckyzo/monitoring-hub/{{ exporter.name }}:latest</pre>
                     <button class="docker-copy" onclick="copyDockerWidget(this)" title="Copy Command">
                         <i class="fas fa-copy"></i>
                     </button>
@@ -224,7 +238,8 @@
         </div>
 
         <footer>
-            <p>Generated by Monitoring Hub Factory. <a href="https://github.com/SckyzO/monitoring-hub">Source on GitHub</a>.</p>
+            <p>Developed with ❤️ by <a href="https://github.com/SckyzO" target="_blank">SckyzO</a></p>
+            <p style="margin-top:10px; font-size:0.8rem; opacity:0.7">Generated automatically by Monitoring Hub Factory. <a href="https://github.com/SckyzO/monitoring-hub">View Source</a></p>
         </footer>
     </div>
 
@@ -249,13 +264,10 @@
             const isList = grid.classList.toggle("list-mode");
             localStorage.setItem("layout", isList ? "list" : "grid");
             document.querySelector("#layout-btn i").className = isList ? "fas fa-th" : "fas fa-list";
-            
-            // Toggle table visibility
             document.querySelectorAll('.grid-only').forEach(el => el.style.display = isList ? 'none' : 'table');
             document.querySelectorAll('.list-only').forEach(el => el.style.display = isList ? 'table' : 'none');
         }
 
-        // Initialization
         const savedTheme = localStorage.getItem("theme") || "light";
         document.documentElement.setAttribute("data-theme", savedTheme);
         document.querySelector("#theme-btn i").className = savedTheme === "dark" ? "fas fa-sun" : "fas fa-moon";
@@ -276,9 +288,8 @@
         }
 
         function copyDockerWidget(btn) {
-            const input = btn.previousElementSibling;
-            input.select();
-            navigator.clipboard.writeText(input.value);
+            const code = btn.previousElementSibling.textContent;
+            navigator.clipboard.writeText(code);
             const icon = btn.querySelector('i');
             icon.className = 'fas fa-check';
             setTimeout(() => icon.className = 'fas fa-copy', 2000);
