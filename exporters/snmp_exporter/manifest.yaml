@@ -8,7 +8,6 @@ upstream:
 build:
   method: binary_repack
   binary_name: snmp_exporter
-  extra_binaries: [snmp_generator]
   extra_sources:
     - url: https://raw.githubusercontent.com/prometheus/snmp_exporter/refs/heads/main/snmp.yml
       filename: snmp.yml

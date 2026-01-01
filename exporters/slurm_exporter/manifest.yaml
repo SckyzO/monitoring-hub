@@ -24,4 +24,4 @@ artifacts:
     base_image: registry.access.redhat.com/ubi9/ubi-minimal
     entrypoint:
     - /usr/bin/slurm_exporter
-    smoke_test_port: 9323
+    smoke_test_port: 9341
