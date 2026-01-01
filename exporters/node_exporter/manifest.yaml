@@ -1,5 +1,5 @@
 name: node_exporter
-description: Prometheus exporter for machine metrics
+description: Hardware and OS metrics exporter for Prometheus
 version: 1.10.2
 upstream:
   type: github

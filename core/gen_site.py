@@ -9,7 +9,7 @@ from jinja2 import Environment, FileSystemLoader
 @click.option('--repo-dir', '-r', help='Path to the YUM repo root', default='.')
 def generate(output, repo_dir):
     """
-    Generate the static site index.html with reality check on existing RPMs.
+    Generate the static site index.html with reality check and build status.
     """
     manifests = glob.glob("exporters/*/manifest.yaml")
     exporters_data = []
@@ -20,8 +20,9 @@ def generate(output, repo_dir):
                 data = yaml.safe_load(f)
                 
                 # Check reality for each target/arch in the built repository
-                # This ensures we only show what was actually built successfully
                 data['availability'] = {}
+                rpm_targets = data.get('artifacts', {}).get('rpm', {}).get('targets', [])
+                
                 for dist in ['el8', 'el9', 'el10']:
                     data['availability'][dist] = {}
                     for arch in ['x86_64', 'aarch64']:
@@ -29,17 +30,28 @@ def generate(output, repo_dir):
                         pattern = os.path.join(repo_dir, dist, arch, f"{data['name']}-*.{dist}*.{arch}.rpm")
                         found_files = glob.glob(pattern)
                         
+                        is_target = dist in rpm_targets
+                        
                         if found_files:
-                            # Store the relative path to the first found RPM for direct link
-                            data['availability'][dist][arch] = os.path.relpath(found_files[0], repo_dir)
+                            data['availability'][dist][arch] = {
+                                'status': 'success',
+                                'path': os.path.relpath(found_files[0], repo_dir)
+                            }
+                        elif is_target:
+                            data['availability'][dist][arch] = {
+                                'status': 'failed',
+                                'path': None
+                            }
                         else:
-                            data['availability'][dist][arch] = None
+                            data['availability'][dist][arch] = {
+                                'status': 'na',
+                                'path': None
+                            }
                 
                 exporters_data.append(data)
         except Exception as e:
             print(f"Error processing {manifest_path}: {e}")
 
-    # Sort by name
     exporters_data.sort(key=lambda x: x['name'])
 
     template_dir = os.path.join(os.path.dirname(__file__), 'templates')
