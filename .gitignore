@@ -43,3 +43,6 @@ ARCHITECTURE/
 
 build/
 .venv/
+
+.gemini/
+gha-creds-*.json

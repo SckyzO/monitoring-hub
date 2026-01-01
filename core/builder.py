@@ -127,12 +127,14 @@ def build(manifest, output_dir, arch):
         # Create output directory
         os.makedirs(output_dir, exist_ok=True)
         
+        # Always download and extract upstream binaries on the host
+        # This avoids using 'tar' inside emulated containers which can fail (QEMU/EL10 issues)
+        download_and_extract(data, output_dir, arch)
+
         # Generate RPM Spec
         artifacts = data.get('artifacts', {})
         if artifacts.get('rpm', {}).get('enabled'):
-            # Only generate spec if the arch is supported (add check later if needed)
-            
-            # Copy extra files to build dir (only needed once per dir really, but ok)
+            # Copy extra files to build dir
             for extra_file in artifacts['rpm'].get('extra_files', []):
                 src = os.path.join(os.path.dirname(manifest), extra_file['source'])
                 dst_name = os.path.basename(extra_file['source'])
