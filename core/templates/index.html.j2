@@ -3,226 +3,167 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Monitoring Hub</title>
+    <title>Monitoring Hub | Software Factory</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary: #0066cc;
-            --bg: #f8f9fa;
-            --card-bg: #ffffff;
-            --text: #2c3e50;
-            --text-secondary: #6c757d;
-            --border: #e9ecef;
-            --code-bg: #2d3436;
-            --code-text: #dfe6e9;
-            --header-subtitle: #6c757d;
-            --th-bg: #f8f9fa;
-            --hover-bg: #f1f3f5;
+            --primary: #0066cc; --bg: #f8f9fa; --card-bg: #ffffff;
+            --text: #2c3e50; --text-secondary: #6c757d; --border: #e9ecef;
+            --code-bg: #2d3436; --code-text: #dfe6e9; --th-bg: #f8f9fa; --hover-bg: #f1f3f5;
+            --success: #27ae60;
         }
 
         [data-theme="dark"] {
-            --primary: #4dabf7;
-            --bg: #121212;
-            --card-bg: #1e1e1e;
-            --text: #e0e0e0;
-            --text-secondary: #a0a0a0;
-            --border: #333;
-            --code-bg: #000;
-            --code-text: #b0b0b0;
-            --header-subtitle: #a0a0a0;
-            --th-bg: #252525;
-            --hover-bg: #2d2d2d;
+            --primary: #4dabf7; --bg: #121212; --card-bg: #1e1e1e;
+            --text: #e0e0e0; --text-secondary: #a0a0a0; --border: #333;
+            --code-bg: #000; --code-text: #b0b0b0; --th-bg: #252525; --hover-bg: #2d2d2d;
         }
 
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; line-height: 1.6; transition: background 0.3s, color 0.3s; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
         
-        /* Layout */
-        .container { max-width: 1200px; margin: 0 auto; padding: 40px 20px; position: relative; }
-        header { text-align: center; margin-bottom: 60px; position: relative; }
-        h1 { font-size: 3rem; color: var(--primary); margin: 0; letter-spacing: -1px; }
-        .subtitle { color: var(--header-subtitle); font-size: 1.25rem; margin-top: 10px; font-weight: 300; }
+        header { text-align: center; margin-bottom: 40px; position: relative; }
+        h1 { font-size: 2.5rem; color: var(--primary); margin: 0; letter-spacing: -1px; }
+        .subtitle { color: var(--text-secondary); font-size: 1.1rem; margin-top: 10px; font-weight: 300; }
         
-        /* Dark Mode Toggle */
-        .theme-toggle {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            color: var(--text);
-            padding: 10px;
-            border-radius: 50%;
-            cursor: pointer;
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        .theme-toggle:hover { transform: scale(1.1); }
+        .theme-toggle { position: absolute; top: 0; right: 20px; background: var(--card-bg); border: 1px solid var(--border); color: var(--text); padding: 10px; border-radius: 50%; cursor: pointer; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+
+        /* Quick Links */
+        .quick-links { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 40px; }
+        .repo-link { display: inline-flex; align-items: center; gap: 8px; padding: 8px 15px; background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; text-decoration: none; color: var(--text); font-size: 0.85rem; transition: all 0.2s; }
+        .repo-link:hover { border-color: var(--primary); transform: translateY(-2px); }
+
+        /* Search */
+        .search-container { margin-bottom: 30px; position: relative; max-width: 600px; margin-left: auto; margin-right: auto; }
+        .search-input { width: 100%; padding: 12px 20px 12px 45px; border-radius: 25px; border: 1px solid var(--border); background: var(--card-bg); color: var(--text); font-size: 1rem; outline: none; transition: border-color 0.2s; }
+        .search-input:focus { border-color: var(--primary); }
+        .search-icon { position: absolute; left: 18px; top: 15px; color: var(--text-secondary); }
 
         /* Setup Section */
-        .setup-section { background: var(--card-bg); border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); padding: 30px; margin-bottom: 50px; border: 1px solid var(--border); transition: background 0.3s; }
-        .tabs { display: flex; gap: 10px; border-bottom: 2px solid var(--border); margin-bottom: 20px; }
-        .tab { padding: 10px 20px; cursor: pointer; font-weight: 600; color: var(--text-secondary); border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all 0.2s; }
-        .tab:hover { color: var(--primary); }
+        .setup-section { background: var(--card-bg); border-radius: 12px; padding: 25px; margin-bottom: 40px; border: 1px solid var(--border); }
+        .tabs { display: flex; gap: 10px; border-bottom: 2px solid var(--border); margin-bottom: 15px; }
+        .tab { padding: 8px 15px; cursor: pointer; font-weight: 600; color: var(--text-secondary); border-bottom: 2px solid transparent; margin-bottom: -2px; }
         .tab.active { color: var(--primary); border-bottom-color: var(--primary); }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-        
-        /* Code Blocks */
-        pre { background: var(--code-bg); color: var(--code-text); padding: 20px; border-radius: 8px; overflow-x: auto; position: relative; border: 1px solid var(--border); }
-        code { font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace; }
-        .copy-btn { position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.1); border: none; color: #fff; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; transition: background 0.2s; }
-        .copy-btn:hover { background: rgba(255,255,255,0.2); }
-        
-        /* Packages Table */
-        .table-container { background: var(--card-bg); border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); overflow: hidden; border: 1px solid var(--border); transition: background 0.3s; }
-        table { width: 100%; border-collapse: collapse; }
-        th { background: var(--th-bg); padding: 15px 20px; text-align: left; font-weight: 600; color: var(--text-secondary); border-bottom: 1px solid var(--border); }
-        td { padding: 15px 20px; border-bottom: 1px solid var(--border); vertical-align: middle; color: var(--text); }
-        tr:last-child td { border-bottom: none; }
-        tr:hover td { background: var(--hover-bg); }
-        
-        /* Elements */
-        .pkg-name { font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 10px; }
-        .version-badge { background: #e3f2fd; color: #0d47a1; padding: 4px 8px; border-radius: 12px; font-size: 0.8rem; font-weight: 700; }
-        [data-theme="dark"] .version-badge { background: #1565c0; color: #e3f2fd; }
+        pre { background: var(--code-bg); color: var(--code-text); padding: 15px; border-radius: 8px; overflow-x: auto; position: relative; margin: 0; font-size: 0.9rem; }
+        .copy-btn { position: absolute; top: 10px; right: 10px; background: rgba(255,255,255,0.1); border: none; color: #fff; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 0.75rem; }
 
-        .action-btn { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 6px; text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: all 0.2s; border: 1px solid transparent; cursor: pointer; }
-        
-        .btn-docker { background: #e3f2fd; color: #1565c0; border-color: #bbdefb; }
-        .btn-docker:hover { background: #bbdefb; }
-        [data-theme="dark"] .btn-docker { background: #0d47a1; color: #e3f2fd; border-color: #1565c0; }
-        [data-theme="dark"] .btn-docker:hover { background: #1565c0; }
+        /* Packages Grid */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px; }
+        .card { background: var(--card-bg); border-radius: 12px; padding: 20px; border: 1px solid var(--border); transition: transform 0.2s; display: flex; flex-direction: column; }
+        .card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
+        .card-header { display: flex; justify-content: space-between; align-items: start; margin-bottom: 15px; }
+        .card-title { margin: 0; font-size: 1.4rem; font-weight: 700; color: var(--primary); }
+        .version-badge { background: var(--hover-bg); color: var(--primary); padding: 2px 8px; border-radius: 6px; font-size: 0.8rem; font-weight: 700; border: 1px solid var(--border); }
+        .description { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 20px; flex-grow: 1; }
 
-        .btn-rpm { background: #f3f0ff; color: #673ab7; border-color: #d1c4e9; }
-        .btn-rpm:hover { background: #d1c4e9; }
-        [data-theme="dark"] .btn-rpm { background: #4527a0; color: #ede7f6; border-color: #512da8; }
-        [data-theme="dark"] .btn-rpm:hover { background: #512da8; }
+        /* Compatibility Matrix */
+        .compat-matrix { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin-top: 15px; border: 1px solid var(--border); }
+        .compat-matrix th { background: var(--th-bg); padding: 6px; border: 1px solid var(--border); font-weight: 600; text-align: center; }
+        .compat-matrix td { padding: 8px; border: 1px solid var(--border); text-align: center; }
+        .dl-link { color: var(--primary); text-decoration: none; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+        .dl-link:hover { text-decoration: underline; }
+        .na { color: #ccc; font-style: italic; }
 
-        .download-links a { margin-right: 5px; font-size: 0.85rem; }
-        
-        footer { text-align: center; margin-top: 60px; color: var(--text-secondary); font-size: 0.9rem; }
+        .btn-docker-action { margin-top: 15px; width: 100%; background: var(--hover-bg); border: 1px solid var(--border); color: var(--text); padding: 8px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-docker-action:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+        footer { text-align: center; margin-top: 60px; color: var(--text-secondary); font-size: 0.85rem; padding-bottom: 40px; }
     </style>
 </head>
 <body>
-    <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Dark Mode">
-        <i class="fas fa-moon"></i>
-    </button>
-
     <div class="container">
         <header>
+            <button class="theme-toggle" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
             <h1>🏭 Monitoring Hub</h1>
-            <p class="subtitle">The definitive Software Factory for Prometheus Exporters</p>
+            <p class="subtitle">Automated Software Factory for Prometheus Tools</p>
         </header>
 
-        <!-- SETUP SECTION -->
+        <div class="quick-links">
+            <a href="el8/x86_64/" class="repo-link"><i class="fas fa-folder"></i> EL8 x86_64</a>
+            <a href="el8/aarch64/" class="repo-link"><i class="fas fa-folder"></i> EL8 ARM64</a>
+            <a href="el9/x86_64/" class="repo-link"><i class="fas fa-folder"></i> EL9 x86_64</a>
+            <a href="el9/aarch64/" class="repo-link"><i class="fas fa-folder"></i> EL9 ARM64</a>
+            <a href="el10/x86_64/" class="repo-link"><i class="fas fa-folder"></i> EL10 x86_64</a>
+            <a href="el10/aarch64/" class="repo-link"><i class="fas fa-folder"></i> EL10 ARM64</a>
+        </div>
+
         <section class="setup-section">
-            <h2 style="margin-top:0"><i class="fas fa-cog"></i> Quick Setup</h2>
+            <h3 style="margin-top:0"><i class="fas fa-terminal"></i> Quick Repo Setup</h3>
             <div class="tabs">
                 <div class="tab active" onclick="switchTab('el9')">EL9 (Alma/Rocky)</div>
                 <div class="tab" onclick="switchTab('el8')">EL8</div>
                 <div class="tab" onclick="switchTab('el10')">EL10</div>
             </div>
-
             <div id="el9" class="tab-content active">
-                <pre><code>sudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el9/x86_64/
-sudo dnf install &lt;package_name&gt;</code><button class="copy-btn" onclick="copyToClipboard(this)">Copy</button></pre>
+                <pre><code>sudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el9/$(arch)/</code><button class="copy-btn" onclick="copyToClipboard(this)">Copy</button></pre>
             </div>
             <div id="el8" class="tab-content">
-                <pre><code>sudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el8/x86_64/
-sudo dnf install &lt;package_name&gt;</code><button class="copy-btn" onclick="copyToClipboard(this)">Copy</button></pre>
+                <pre><code>sudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el8/$(arch)/</code><button class="copy-btn" onclick="copyToClipboard(this)">Copy</button></pre>
             </div>
             <div id="el10" class="tab-content">
-                <pre><code>sudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el10/x86_64/
-sudo dnf install &lt;package_name&gt;</code><button class="copy-btn" onclick="copyToClipboard(this)">Copy</button></pre>
+                <pre><code>sudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el10/$(arch)/</code><button class="copy-btn" onclick="copyToClipboard(this)">Copy</button></pre>
             </div>
         </section>
 
-        <!-- PACKAGES TABLE -->
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Package</th>
-                        <th>Version</th>
-                        <th>Description</th>
-                        <th>Docker</th>
-                        <th>RPM Downloads</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for exporter in exporters %}
-                    <tr>
-                        <td>
-                            <div class="pkg-name">
-                                <i class="fas fa-box"></i> {{ exporter.name }}
-                            </div>
-                        </td>
-                        <td><span class="version-badge">{{ exporter.version }}</span></td>
-                        <td style="color:var(--text-secondary); font-size:0.9rem;">{{ exporter.description }}</td>
-                        <td>
-                            {% if exporter.artifacts.docker.enabled %}
-                            <button class="action-btn btn-docker" onclick="copyDocker('ghcr.io/sckyzo/monitoring-hub/{{ exporter.name }}:latest', this)">
-                                <i class="fab fa-docker"></i> Pull
-                            </button>
-                            {% else %}
-                            <span style="color:var(--text-secondary)">—</span>
-                            {% endif %}
-                        </td>
-                        <td class="download-links">
-                            {% if exporter.artifacts.rpm.enabled %}
-                                {% for target in exporter.artifacts.rpm.targets %}
-                                <a href="{{ target }}/x86_64/{{ exporter.name }}-{{ exporter.version }}-1.{{ target }}.x86_64.rpm" class="action-btn btn-rpm" title="Download for {{ target }}">
-                                    {{ target | upper }}
+        <div class="search-container">
+            <i class="fas fa-search search-icon"></i>
+            <input type="text" class="search-input" placeholder="Search exporters..." onkeyup="filterExporters(this.value)">
+        </div>
+
+        <div class="grid" id="exporter-grid">
+            {% for exporter in exporters %}
+            <div class="card" data-name="{{ exporter.name }}" data-desc="{{ exporter.description }}">
+                <div class="card-header">
+                    <h2 class="card-title">{{ exporter.name }}</h2>
+                    <span class="version-badge">v{{ exporter.version }}</span>
+                </div>
+                <p class="description">{{ exporter.description }}</p>
+                
+                <table class="compat-matrix">
+                    <thead>
+                        <tr>
+                            <th>OS</th>
+                            <th>x86_64</th>
+                            <th>aarch64</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for dist in ['el8', 'el9', 'el10'] %}
+                        <tr>
+                            <th>{{ dist | upper }}</th>
+                            {% for arch in ['x86_64', 'aarch64'] %}
+                            <td>
+                                {% if dist in exporter.artifacts.rpm.targets %}
+                                <a href="{{ dist }}/{{ arch }}/{{ exporter.name }}-{{ exporter.version }}-1.{{ dist }}.{{ arch }}.rpm" class="dl-link" title="Download RPM">
+                                    <i class="fas fa-download"></i> RPM
                                 </a>
-                                {% endfor %}
-                            {% else %}
-                            <span style="color:var(--text-secondary)">—</span>
-                            {% endif %}
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                                {% else %}
+                                <span class="na">N/A</span>
+                                {% endif %}
+                            </td>
+                            {% endfor %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                {% if exporter.artifacts.docker.enabled %}
+                <button class="btn-docker-action" onclick="copyDocker('ghcr.io/sckyzo/monitoring-hub/{{ exporter.name }}:latest', this)">
+                    <i class="fab fa-docker"></i> Copy Pull Command
+                </button>
+                {% endif %}
+            </div>
+            {% endfor %}
         </div>
 
         <footer>
-            <p>Generated automatically by Monitoring Hub. <a href="https://github.com/SckyzO/monitoring-hub">View Source on GitHub</a>.</p>
+            <p>Generated by Monitoring Hub Factory. <a href="https://github.com/SckyzO/monitoring-hub">Source on GitHub</a>.</p>
         </footer>
     </div>
 
     <script>
-        // Theme Logic
-        function toggleTheme() {
-            const currentTheme = document.documentElement.getAttribute("data-theme");
-            const newTheme = currentTheme === "dark" ? "light" : "dark";
-            
-            document.documentElement.setAttribute("data-theme", newTheme);
-            localStorage.setItem("theme", newTheme);
-            updateIcon(newTheme);
-        }
-
-        function updateIcon(theme) {
-            const icon = document.querySelector(".theme-toggle i");
-            if (theme === "dark") {
-                icon.classList.remove("fa-moon");
-                icon.classList.add("fa-sun");
-            } else {
-                icon.classList.remove("fa-sun");
-                icon.classList.add("fa-moon");
-            }
-        }
-
-        // Initialize Theme
-        const savedTheme = localStorage.getItem("theme") || "light";
-        document.documentElement.setAttribute("data-theme", savedTheme);
-        updateIcon(savedTheme);
-
-        // Tab Logic
         function switchTab(id) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
@@ -230,19 +171,41 @@ sudo dnf install &lt;package_name&gt;</code><button class="copy-btn" onclick="co
             document.getElementById(id).classList.add('active');
         }
 
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute("data-theme");
+            const next = current === "dark" ? "light" : "dark";
+            document.documentElement.setAttribute("data-theme", next);
+            localStorage.setItem("theme", next);
+            document.querySelector(".theme-toggle i").className = next === "dark" ? "fas fa-sun" : "fas fa-moon";
+        }
+
+        if (localStorage.getItem("theme") === "dark") {
+            document.documentElement.setAttribute("data-theme", "dark");
+            document.querySelector(".theme-toggle i").className = "fas fa-sun";
+        }
+
         function copyToClipboard(btn) {
             const code = btn.previousSibling.textContent;
             navigator.clipboard.writeText(code);
-            const original = btn.textContent;
-            btn.textContent = "Copied!";
-            setTimeout(() => btn.textContent = original, 2000);
+            const orig = btn.textContent; btn.textContent = "Copied!";
+            setTimeout(() => btn.textContent = orig, 2000);
         }
 
         function copyDocker(image, btn) {
             navigator.clipboard.writeText(`docker pull ${image}`);
-            const original = btn.innerHTML;
+            const orig = btn.innerHTML;
             btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
-            setTimeout(() => btn.innerHTML = original, 2000);
+            setTimeout(() => btn.innerHTML = orig, 2000);
+        }
+
+        function filterExporters(val) {
+            const cards = document.querySelectorAll('.card');
+            val = val.toLowerCase();
+            cards.forEach(card => {
+                const name = card.getAttribute('data-name').toLowerCase();
+                const desc = card.getAttribute('data-desc').toLowerCase();
+                card.style.display = (name.includes(val) || desc.includes(val)) ? 'flex' : 'none';
+            });
         }
     </script>
 </body>
