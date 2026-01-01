@@ -61,10 +61,12 @@ jobs:
           exporter="${{ matrix.exporter }}"
           echo "Processing $exporter..."
           
-          # Check if docker is enabled in manifest
+          # Check if docker is enabled and arch is supported in manifest
           is_enabled=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(m.get('artifacts', {}).get('docker', {}).get('enabled', False))")
-          if [ "$is_enabled" != "True" ]; then
-            echo "Docker build disabled for $exporter. Skipping."
+          is_arch_supported=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print('amd64' in m.get('build', {}).get('archs', ['amd64', 'arm64']))")
+          
+          if [ "$is_enabled" != "True" ] || [ "$is_arch_supported" != "True" ]; then
+            echo "Docker build disabled or architecture not supported for $exporter. Skipping."
             exit 0
           fi
 
@@ -99,8 +101,10 @@ jobs:
           image_id=$(echo $image_id | tr '[:upper:]' '[:lower:]')
           
           is_enabled=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(m.get('artifacts', {}).get('docker', {}).get('enabled', False))")
-          if [ "$is_enabled" != "True" ]; then
-            echo "Docker disabled, skipping smoke test."
+          is_arch_supported=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print('amd64' in m.get('build', {}).get('archs', ['amd64', 'arm64']))")
+          
+          if [ "$is_enabled" != "True" ] || [ "$is_arch_supported" != "True" ]; then
+            echo "Docker disabled or architecture not supported, skipping smoke test."
             exit 0
           fi
 
@@ -157,19 +161,20 @@ jobs:
           
           is_target=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print('$dist' in m.get('artifacts', {}).get('rpm', {}).get('targets', []))")
           is_enabled=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(m.get('artifacts', {}).get('rpm', {}).get('enabled', False))")
+          is_arch_supported=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print('$arch' in m.get('build', {}).get('archs', ['amd64', 'arm64']))")
           
-          if [ "$is_enabled" != "True" ] || [ "$is_target" != "True" ]; then
-            echo "RPM build or distribution $dist not requested for $exporter. Skipping."
+          if [ "$is_enabled" != "True" ] || [ "$is_target" != "True" ] || [ "$is_arch_supported" != "True" ]; then
+            echo "RPM build, distribution $dist or architecture $arch not requested for $exporter. Skipping."
             exit 0
           fi
 
           echo "Building RPM for $exporter ($arch) on $dist..."
           
           case $dist in
-            el8) image="almalinux:8" ;; 
-            el9) image="almalinux:9" ;; 
-            el10) image="quay.io/centos/centos:stream10" ;; 
-            *) image="almalinux:9" ;; 
+            el8) image="almalinux:8" ;;
+            el9) image="almalinux:9" ;;
+            el10) image="quay.io/centos/centos:stream10" ;;
+            *) image="almalinux:9" ;;
           esac
 
           build_dir="build/$exporter-$arch-$dist"
@@ -235,12 +240,14 @@ jobs:
             done
           done
 
-          find . -type d -not -path '*/.*' | while read dir; do
+          find . -type d -not -path '*/.*' | while read dir;
+          do
             echo "Generating index for $dir"
             echo "<!DOCTYPE html><html><head><title>Index of $dir</title><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><style>body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif;padding:20px;line-height:1.5}h1{margin-bottom:20px;font-size:1.5em}a{text-decoration:none;color:#0366d6}a:hover{text-decoration:underline}ul{list-style-type:none;padding:0}li{padding:5px 0;border-bottom:1px solid #eee}</style></head><body>" > "$dir/index.html"
             echo "<h1>Index of $dir</h1>" >> "$dir/index.html"
             echo "<ul><li><a href=\"../\">📂 Parent Directory</a></li>" >> "$dir/index.html"
-            for f in "$dir"/*; do
+            for f in "$dir"/*;
+            do
               fname=$(basename "$f")
               if [ "$fname" != "index.html" ]; then
                  if [ -d "$f" ]; then
