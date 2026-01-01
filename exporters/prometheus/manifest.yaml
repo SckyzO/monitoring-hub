@@ -1,6 +1,6 @@
 name: prometheus
 description: The Prometheus monitoring system and time series database.
-version: 3.8.1
+version: v3.8.1
 upstream:
   type: github
   repo: prometheus/prometheus
