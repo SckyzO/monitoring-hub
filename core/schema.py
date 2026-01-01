@@ -42,6 +42,7 @@ class BuildSchema(Schema):
     binary_name = fields.Str(required=True)
     extra_binaries = fields.List(fields.Str(), load_default=[])
     extra_sources = fields.List(fields.Nested(ExtraSourceSchema), load_default=[])
+    archs = fields.List(fields.Str(), load_default=["amd64", "arm64"])
 
 class ArtifactsSchema(Schema):
     rpm = fields.Nested(RPMSchema)

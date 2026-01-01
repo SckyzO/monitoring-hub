@@ -8,6 +8,7 @@ upstream:
 build:
   method: binary_repack
   binary_name: gpfs_exporter
+  archs: [amd64]
 artifacts:
   rpm:
     enabled: true
