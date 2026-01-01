@@ -1,4 +1,4 @@
-# Monitoring Hub 🏭
+# Monitoring Hub 🕸️
 
 **The definitive Software Factory for Prometheus Exporters.**
 
