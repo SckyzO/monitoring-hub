@@ -187,6 +187,7 @@ jobs:
           name: rpm-${{ matrix.exporter }}-${{ matrix.arch }}-${{ matrix.dist }}
           path: build/**/rpms/**/*.rpm
           if-no-files-found: ignore
+          retention-days: 1
 
   # 4. Publish YUM Repo & Website (Fan-in)
   publish-yum:
