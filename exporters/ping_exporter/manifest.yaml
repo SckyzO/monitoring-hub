@@ -1,10 +1,11 @@
 name: ping_exporter
 description: "Prometheus exporter for ICMP ping metrics"
-version: 1.1.0
+version: 1.1.4
 upstream:
   type: github
-  repo: jaxxstorm/ping_exporter
+  repo: czerwonk/ping_exporter
   strategy: latest_release
+  archive_name: "{name}_{version}_linux_{arch}.tar.gz"
 build:
   method: binary_repack
   binary_name: ping_exporter

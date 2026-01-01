@@ -27,10 +27,25 @@ def download_and_extract(data, output_dir, arch):
     version = data['version']
     repo = data['upstream']['repo']
     binary_name = data['build']['binary_name']
+    archive_pattern = data['upstream'].get('archive_name')
     
-    upstream_arch = f"linux-{arch}"
-    filename = f"{name}-{version}.{upstream_arch}.tar.gz"
-    url = f"https://github.com/{repo}/releases/download/v{version}/{filename}"
+    # Map arch names
+    arch_map = {'amd64': 'amd64', 'arm64': 'arm64', 'x86_64': 'amd64', 'aarch64': 'arm64'}
+    
+    if archive_pattern:
+        # Custom pattern support
+        filename = archive_pattern.format(
+            name=name, 
+            version=version, 
+            arch=arch,
+            rpm_arch='x86_64' if arch == 'amd64' else 'aarch64'
+        )
+    else:
+        # Default Prometheus-style naming
+        upstream_arch = f"linux-{arch}"
+        filename = f"{name}-{version}.{upstream_arch}.tar.gz"
+    
+    url = f"https://github.com/{repo}/releases/download/{version}/{filename}"
     
     click.echo(f"Downloading {url}...")
     local_tar = os.path.join(output_dir, filename)

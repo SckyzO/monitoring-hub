@@ -32,6 +32,7 @@ class UpstreamSchema(Schema):
     type = fields.Str(required=True, validate=validate.OneOf(["github"]))
     repo = fields.Str(required=True)
     strategy = fields.Str(load_default="latest_release")
+    archive_name = fields.Str(allow_none=True) # Pattern like "{name}_{version}_linux_{arch}.tar.gz"
 
 class ExtraSourceSchema(Schema):
     url = fields.Str(required=True)
