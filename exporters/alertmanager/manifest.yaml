@@ -1,6 +1,6 @@
 name: alertmanager
 description: Handle alerts and notifications for the Prometheus ecosystem
-version: 0.30.0
+version: v0.30.0
 upstream:
   type: github
   repo: prometheus/alertmanager

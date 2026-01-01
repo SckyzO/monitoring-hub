@@ -1,6 +1,6 @@
 name: process-exporter
 description: Prometheus exporter for process metrics (cpu, mem, io)
-version: 0.8.7
+version: v0.8.7
 upstream:
   type: github
   repo: ncabatoff/process-exporter
