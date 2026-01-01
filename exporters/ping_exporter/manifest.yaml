@@ -1,0 +1,22 @@
+name: ping_exporter
+description: "Prometheus exporter for ICMP ping metrics"
+version: 1.1.0
+upstream:
+  type: github
+  repo: jaxxstorm/ping_exporter
+  strategy: latest_release
+build:
+  method: binary_repack
+  binary_name: ping_exporter
+artifacts:
+  rpm:
+    enabled: true
+    targets: [el8, el9, el10]
+    summary: Prometheus exporter for ICMP ping metrics
+    service_file: true
+    system_user: prometheus
+  docker:
+    enabled: true
+    base_image: registry.access.redhat.com/ubi9/ubi-minimal
+    entrypoint: [/usr/bin/ping_exporter]
+    smoke_test_port: 9427
