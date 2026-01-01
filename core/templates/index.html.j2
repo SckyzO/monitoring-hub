@@ -78,11 +78,11 @@
 
         /* List Mode Styling */
         .grid.list-mode { grid-template-columns: 1fr; }
-        .grid.list-mode .card { flex-direction: row; align-items: center; gap: 40px; padding: 20px 30px; }
-        .grid.list-mode .card-left { min-width: 300px; max-width: 450px; flex-grow: 1; flex-shrink: 1; }
-        .grid.list-mode .matrix-wrapper { min-width: 280px; flex-shrink: 0; }
+        .grid.list-mode .card { display: grid; grid-template-columns: 1.2fr 0.8fr 1fr; align-items: center; gap: 30px; padding: 20px 30px; }
+        .grid.list-mode .card-left { min-width: 0; margin-bottom: 0; }
+        .grid.list-mode .matrix-wrapper { min-width: 0; }
         .grid.list-mode .compat-matrix { margin-top: 0; width: 100%; }
-        .grid.list-mode .copy-widget { margin-top: 0; min-width: 320px; flex-shrink: 0; }
+        .grid.list-mode .copy-widget { margin-top: 0; min-width: 0; width: 100%; }
 
         .compat-matrix { width: 100%; border-collapse: collapse; font-size: 0.8rem; margin-top: 15px; border: 1px solid var(--border); }
         .compat-matrix th { background: var(--th-bg); padding: 6px; border: 1px solid var(--border); font-weight: 600; text-align: center; }
