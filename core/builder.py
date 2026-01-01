@@ -120,9 +120,14 @@ def build(manifest, output_dir, arch):
         
         click.echo(f"Loaded and validated manifest for: {data['name']}")
         
-        # Setup Jinja2 environment
-        template_dir = os.path.join(os.path.dirname(__file__), 'templates')
-        env = Environment(loader=FileSystemLoader(template_dir))
+        # Setup Jinja2 environment with multiple search paths for overrides
+        # 1. Look in exporters/<name>/templates/
+        # 2. Fallback to core/templates/
+        template_dirs = [
+            os.path.join(os.path.dirname(manifest), 'templates'),
+            os.path.join(os.path.dirname(__file__), 'templates')
+        ]
+        env = Environment(loader=FileSystemLoader(template_dirs))
         
         # Create output directory
         os.makedirs(output_dir, exist_ok=True)
@@ -141,7 +146,14 @@ def build(manifest, output_dir, arch):
                 shutil.copy(src, os.path.join(output_dir, dst_name))
                 extra_file['build_source'] = dst_name
 
-            template = env.get_template('default.spec.j2')
+            # Look for exporter-specific template first, then fallback to default
+            try:
+                template = env.get_template(f"{data['name']}.spec.j2")
+                click.echo(f"Using custom spec template for {data['name']}")
+            except:
+                template = env.get_template('default.spec.j2')
+                click.echo(f"Using default spec template")
+
             output_content = template.render(data)
             # Differentiate spec file name if building multiple archs in same dir
             output_file = os.path.join(output_dir, f"{data['name']}.spec")
@@ -151,9 +163,15 @@ def build(manifest, output_dir, arch):
             
         # Generate Dockerfile
         if artifacts.get('docker', {}).get('enabled'):
-            # For Docker, we need the actual binary
-            download_and_extract(data, output_dir, arch)
-            
+            # Look for exporter-specific template first, then fallback to default
+            try:
+                template = env.get_template('Dockerfile.j2')
+                # Note: if it's in the local folder, it will be picked up first
+                # We can differentiate if we want (e.g. check search path)
+                click.echo(f"Searching for Dockerfile template...")
+            except:
+                template = env.get_template('Dockerfile.j2')
+
             template = env.get_template('Dockerfile.j2')
             output_content = template.render(data)
             output_file = os.path.join(output_dir, "Dockerfile")
