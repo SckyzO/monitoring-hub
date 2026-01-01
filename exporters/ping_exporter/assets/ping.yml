@@ -1,0 +1,16 @@
+targets:
+  - 127.0.0.1
+  - 8.8.8.8
+
+dns:
+  refresh: 2m15s
+  nameserver: 1.1.1.1
+
+ping:
+  interval: 2s
+  timeout: 3s
+  history-size: 42
+  payload-size: 120
+
+options:
+  disableIPv6: true
