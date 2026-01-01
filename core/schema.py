@@ -1,20 +1,10 @@
 from marshmallow import Schema, fields, validate
 
-class UpstreamSchema(Schema):
-    type = fields.Str(required=True, validate=validate.OneOf(["github"]))
-    repo = fields.Str(required=True)
-    strategy = fields.Str(load_default="latest_release")
-
-class BuildSchema(Schema):
-    method = fields.Str(required=True, validate=validate.OneOf(["binary_repack", "source_build"]))
-    binary_name = fields.Str(required=True)
-    extra_binaries = fields.List(fields.Str(), load_default=[])
-
 class FileInstallSchema(Schema):
     source = fields.Str(required=True)
     dest = fields.Str(required=True)
     mode = fields.Str(load_default="0644")
-    config = fields.Bool(load_default=False) # Mark as %config(noreplace)
+    config = fields.Bool(load_default=False)
 
 class DirectorySchema(Schema):
     path = fields.Str(required=True)
@@ -36,11 +26,17 @@ class DockerSchema(Schema):
     base_image = fields.Str(load_default="registry.access.redhat.com/ubi9/ubi-minimal")
     entrypoint = fields.List(fields.Str())
     cmd = fields.List(fields.Str(), load_default=[])
-    smoke_test_port = fields.Int(load_default=9100) # Port to check for metrics
+    smoke_test_port = fields.Int(load_default=9100)
 
-class ArtifactsSchema(Schema):
-    rpm = fields.Nested(RPMSchema)
-    docker = fields.Nested(DockerSchema)
+class UpstreamSchema(Schema):
+    type = fields.Str(required=True, validate=validate.OneOf(["github"]))
+    repo = fields.Str(required=True)
+    strategy = fields.Str(load_default="latest_release")
+
+class BuildSchema(Schema):
+    method = fields.Str(required=True, validate=validate.OneOf(["binary_repack", "source_build"]))
+    binary_name = fields.Str(required=True)
+    extra_binaries = fields.List(fields.Str(), load_default=[])
 
 class ManifestSchema(Schema):
     name = fields.Str(required=True)

@@ -82,7 +82,8 @@ jobs:
              docker buildx build \
               --file "build/$exporter/Dockerfile" \
               --push \
-              --label "org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}" \
+              --label "org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}/tree/main/exporters/$exporter" \
+              --label "org.opencontainers.image.documentation=https://sckyzo.github.io/monitoring-hub/" \
               --label "org.opencontainers.image.description=$description" \
               --tag "$image_id:$version" \
               --tag "$image_id:latest" \
