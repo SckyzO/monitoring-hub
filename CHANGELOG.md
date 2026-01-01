@@ -7,52 +7,75 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.10.1] - 2026-01-01
 
-### 🐛 Fixes
+### 🐛 Fixes & Improvements
 - **Ping Exporter:** Added default configuration file to fix startup crash and smoke test failure.
 - **Slurm Exporter:** Fixed archive naming pattern to match upstream (using hyphens instead of dots).
-- **SNMP Exporter:** Removed `snmp_generator` from extra binaries as it's not included in the release archive.
-- **GPFS Exporter:** Skipped smoke test as it requires specific environment capabilities not available in CI.
+- **SNMP Exporter:** Removed `snmp_generator` from Docker extra binaries as it's not included in the release archive.
+- **GPFS Exporter:** Disabled smoke test as it requires a specific environment not available in CI, preventing unnecessary build failures.
+- **Core Engine:** Improved `builder.py` with architectural comments and docstrings.
+- **Documentation:** Added developer guide and advanced features to `README.md`.
 
 ## [0.10.0] - 2025-12-31
 
 ### 🚀 Features
-- **Custom Archive Naming:** Added support for `archive_name` patterns in manifests.
-- **Flexible Tagging:** Removed hardcoded 'v' prefix in engine URLs.
-- **Improved Ping Monitoring:** Migrated `ping_exporter` to `czerwonk/ping_exporter`.
+- **Custom Archive Naming:** Added support for `archive_name` patterns in manifests to handle non-standard release filenames (e.g., `{name}_{version}_linux_{arch}.tar.gz`).
+- **Flexible Tagging:** Removed hardcoded 'v' prefix in engine URLs, allowing exact tag specification in manifests.
+- **Improved Ping Monitoring:** Migrated `ping_exporter` to `czerwonk/ping_exporter` with full pattern support and ARM64 compatibility.
 
 ### 🐛 Fixes
-- Resolved widespread 404 download errors.
+- Resolved widespread 404 download errors by aligning manifest versions with precise upstream tags.
 
 ## [0.9.0] - 2025-12-31
 
 ### 🚀 Features
-- **External Assets Support:** Implemented `extra_sources` download.
-- **Automated SNMP Configuration:** Auto-fetch latest `snmp.yml`.
+- **External Assets Support:** Implemented `extra_sources` in the build engine to download additional files (like `snmp.yml`) directly during the build process.
+- **Automated SNMP Configuration:** `snmp_exporter` now automatically includes the latest official MIB-mapped configuration from upstream.
 
 ## [0.8.0] - 2025-12-31
 
 ### 🚀 Features
-- **Container Smoke Tests:** Automated verification of Docker images.
-- **Portal UX Overhaul:** Dark Mode, Grid/List toggle, Docker Pull Widget.
-- **Storage Optimization:** Reduced artifact retention to 1 day.
-
-### 🐛 Fixes
-- Fixed RPM build source indexing and bash syntax errors.
+- **Container Smoke Tests:** Automated verification of Docker images during the CI pipeline.
+- **Portal UX Overhaul:** Dark Mode, Grid/List toggle, and improved Docker Pull widget.
+- **Storage Optimization:** Reduced temporary build artifact retention to 1 day.
 
 ## [0.6.0] - 2025-12-31
-- Advanced Customization Support (Local Template Overrides).
+
+### 🚀 Features
+- **Advanced Customization Support:** Added the ability to override default build artifacts per exporter.
+- **Local Template Overrides:** Exporters can now provide their own Jinja2 templates for RPM Specs and Dockerfiles.
 
 ## [0.5.0] - 2025-12-31
-- Web Portal V2, Reality-Check Engine, Search, and Multi-Arch documentation.
+
+### 🚀 Features
+- **Web Portal V2:** Complete redesign with "Reality-Check Engine" to only show successful builds.
+- **Compatibility Matrix:** Per-exporter status grid (OS x Architecture) with direct download links.
+- **Instant Search:** Added a real-time search bar to filter exporters.
 
 ## [0.4.0] - 2025-12-31
-- Parallel Matrix CI, Native Multi-Arch (aarch64), QEMU Integration.
+
+### 🚀 Features
+- **Parallel Matrix CI:** Refactored the release pipeline for massive parallelism.
+- **Native Multi-Arch (aarch64):** Full support for ARM64 builds via QEMU emulation.
+- **Host-Side Extraction:** Resolved QEMU/EL10 extraction issues by moving archive processing to the host.
 
 ## [0.3.0] - 2025-12-31
-- Enterprise Hardening (UBI 9), Advanced RPM Packaging, Alertmanager.
+
+### 🚀 Features
+- **Enterprise Hardening:** Switched all base images to **Red Hat UBI 9 Minimal**.
+- **Advanced RPM Packaging:** Added support for system users, groups, and data directories.
+- **New Exporter:** Added full support for **Alertmanager**.
 
 ## [0.2.0] - 2025-12-31
-- The Watcher, RPM Factory, Prometheus Support.
+
+### 🚀 Features
+- **The Watcher:** Implemented a daily bot to scan for upstream updates.
+- **The RPM Factory:** Established the first functional RPM build pipeline.
+- **Prometheus Support:** Added the Prometheus server to the factory.
 
 ## [0.1.0] - 2025-12-31
-- Core Engine, Schema Validation, Docker Integration.
+
+### 🚀 Features
+- **Core Engine:** Initial release of the Python build engine and Jinja2 template system.
+- **Schema Validation:** Implemented manifest validation using `marshmallow`.
+- **Docker Integration:** First automated push to GitHub Container Registry (GHCR).
+- **Proof of Concept:** Initial `node_exporter` manifest and build.
