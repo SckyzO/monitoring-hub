@@ -1,0 +1,26 @@
+name: process-exporter
+description: Prometheus exporter for process metrics (cpu, mem, io)
+version: 0.8.7
+upstream:
+  type: github
+  repo: ncabatoff/process-exporter
+  strategy: latest_release
+build:
+  method: binary_repack
+  binary_name: process-exporter
+artifacts:
+  rpm:
+    enabled: true
+    targets:
+    - el8
+    - el9
+    - el10
+    summary: Prometheus exporter for process metrics
+    service_file: true
+    system_user: prometheus
+  docker:
+    enabled: true
+    base_image: registry.access.redhat.com/ubi9/ubi-minimal
+    entrypoint:
+    - /usr/bin/process-exporter
+    smoke_test_port: 9256
