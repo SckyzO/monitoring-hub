@@ -189,10 +189,9 @@ jobs:
               mkdir -p "$dist/$arch_name"
               
               # Find and copy matching RPMs
-              # Matrix used amd64/arm64, but RPM files use x86_64/aarch64
+              # We use a broader match for dist (e.g. .el8*) to handle variations like .el8_10
               echo "Moving RPMs for $dist/$arch_name..."
-              # We use a broad pattern to find matching RPMs for this dist and arch
-              find ../all_rpms -name "*.$dist.$arch_name.rpm" -exec cp -v {} "$dist/$arch_name/" \;
+              find ../all_rpms -name "*.$dist*.$arch_name.rpm" -exec cp -v {} "$dist/$arch_name/" \;
               
               # Rebuild Repository Metadata if RPMs exist
               if [ "$(ls -A $dist/$arch_name/*.rpm 2>/dev/null)" ]; then
@@ -206,24 +205,23 @@ jobs:
 
           # Recursive Index Generation for ALL directories
           find . -type d -not -path '*/.*' | while read dir; do
-            if [ ! -f "$dir/index.html" ]; then
-              echo "Generating index for $dir"
-              echo "<!DOCTYPE html><html><head><title>Index of $dir</title><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><style>body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif;padding:20px;line-height:1.5}h1{margin-bottom:20px;font-size:1.5em}a{text-decoration:none;color:#0366d6}a:hover{text-decoration:underline}ul{list-style-type:none;padding:0}li{padding:5px 0;border-bottom:1px solid #eee}</style></head><body>" > "$dir/index.html"
-              echo "<h1>Index of $dir</h1>" >> "$dir/index.html"
-              echo "<ul><li><a href=\"../\">📂 Parent Directory</a></li>" >> "$dir/index.html"
-              for f in "$dir"/*; do
-                fname=$(basename "$f")
-                if [ "$fname" != "index.html" ]; then
-                   if [ -d "$f" ]; then
-                     echo "<li><a href=\"$fname/\">📁 $fname/</a></li>" >> "$dir/index.html"
-                   else
-                     size=$(du -h "$f" | cut -f1)
-                     echo "<li><a href=\"$fname\">📄 $fname</a> <span style=\"color:#666;font-size:0.85em;float:right\">$size</span></li>" >> "$dir/index.html"
-                   fi
-                fi
-              done
-              echo "</ul></body></html>" >> "$dir/index.html"
-            fi
+            echo "Generating index for $dir"
+            echo "<!DOCTYPE html><html><head><title>Index of $dir</title><meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\"><style>body{font-family:-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif;padding:20px;line-height:1.5}h1{margin-bottom:20px;font-size:1.5em}a{text-decoration:none;color:#0366d6}a:hover{text-decoration:underline}ul{list-style-type:none;padding:0}li{padding:5px 0;border-bottom:1px solid #eee}</style></head><body>" > "$dir/index.html"
+            echo "<h1>Index of $dir</h1>" >> "$dir/index.html"
+            echo "<ul><li><a href=\"../\">📂 Parent Directory</a></li>" >> "$dir/index.html"
+            for f in "$dir"/*; do
+              fname=$(basename "$f")
+              if [ "$fname" != "index.html" ]; then
+                 if [ -d "$f" ]; then
+                   echo "<li><a href=\"$fname/\">📁 $fname/</a></li>" >> "$dir/index.html"
+                 else
+                   # Note: du -h fails inside the container if file not owned by user, but here we are outside
+                   size=$(du -h "$f" | cut -f1)
+                   echo "<li><a href=\"$fname\">📄 $fname</a> <span style=\"color:#666;font-size:0.85em;float:right\">$size</span></li>" >> "$dir/index.html"
+                 fi
+              fi
+            done
+            echo "</ul></body></html>" >> "$dir/index.html"
           done
 
           # Generate Main Portal
