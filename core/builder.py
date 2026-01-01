@@ -32,18 +32,21 @@ def download_and_extract(data, output_dir, arch):
     # Map arch names
     arch_map = {'amd64': 'amd64', 'arm64': 'arm64', 'x86_64': 'amd64', 'aarch64': 'arm64'}
     
+    clean_version = version.lstrip('v') if version.startswith('v') else version
+
     if archive_pattern:
         # Custom pattern support
         filename = archive_pattern.format(
             name=name, 
-            version=version, 
+            version=version,
+            clean_version=clean_version,
             arch=arch,
             rpm_arch='x86_64' if arch == 'amd64' else 'aarch64'
         )
     else:
-        # Default Prometheus-style naming
+        # Default Prometheus-style naming (usually without 'v' in filename)
         upstream_arch = f"linux-{arch}"
-        filename = f"{name}-{version}.{upstream_arch}.tar.gz"
+        filename = f"{name}-{clean_version}.{upstream_arch}.tar.gz"
     
     url = f"https://github.com/{repo}/releases/download/{version}/{filename}"
     
@@ -146,13 +149,25 @@ def build(manifest, output_dir, arch):
 
         artifacts = data.get('artifacts', {})
         if artifacts.get('rpm', {}).get('enabled'):
-            # Also include extra_sources in the build_source logic for RPM
-            extra_sources_files = [s['filename'] for s in data.get('build', {}).get('extra_sources', [])]
-            
+            # Copy extra files to build dir
             for extra_file in artifacts['rpm'].get('extra_files', []):
-                src = os.path.join(os.path.dirname(manifest), extra_file['source'])
-                dst_name = os.path.basename(extra_file['source'])
-                shutil.copy(src, os.path.join(output_dir, dst_name))
+                source_path = extra_file['source']
+                # Check if it's a local asset
+                local_src = os.path.join(os.path.dirname(manifest), source_path)
+                # Check if it's a downloaded extra source (already in output_dir)
+                downloaded_src = os.path.join(output_dir, source_path)
+                
+                dst_name = os.path.basename(source_path)
+                
+                if os.path.exists(local_src):
+                    shutil.copy(local_src, os.path.join(output_dir, dst_name))
+                elif os.path.exists(downloaded_src):
+                    # Already there, just ensure name matches if needed (usually it does)
+                    if downloaded_src != os.path.join(output_dir, dst_name):
+                         shutil.copy(downloaded_src, os.path.join(output_dir, dst_name))
+                else:
+                    click.echo(f"Warning: Source file {source_path} not found in local assets or downloaded sources.")
+                
                 extra_file['build_source'] = dst_name
 
             try:
