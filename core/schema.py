@@ -36,6 +36,7 @@ class DockerSchema(Schema):
     base_image = fields.Str(load_default="registry.access.redhat.com/ubi9/ubi-minimal")
     entrypoint = fields.List(fields.Str())
     cmd = fields.List(fields.Str(), load_default=[])
+    smoke_test_port = fields.Int(load_default=9100) # Port to check for metrics
 
 class ArtifactsSchema(Schema):
     rpm = fields.Nested(RPMSchema)

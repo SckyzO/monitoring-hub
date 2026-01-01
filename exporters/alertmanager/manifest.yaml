@@ -41,3 +41,4 @@ artifacts:
     cmd:
     - --config.file=/etc/alertmanager/alertmanager.yml
     - --storage.path=/var/lib/alertmanager
+    smoke_test_port: 9093

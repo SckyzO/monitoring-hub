@@ -86,11 +86,46 @@ jobs:
               --label "org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}" \
               --label "org.opencontainers.image.description=$description" \
               --tag "$image_id:$version" \
-              --tag "$image_id:latest" \
-              --platform linux/amd64 \
-              "build/$exporter"
-          fi
-
+                                --tag "$image_id:latest" \
+                                --platform linux/amd64 \
+                                "build/$exporter"
+                           fi
+              
+                    - name: Container Smoke Test
+                      run: |
+                        exporter="${{ matrix.exporter }}"
+                        # Extract port from manifest
+                        port=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(m.get('artifacts', {}).get('docker', {}).get('smoke_test_port', 9100))")
+                        image_id="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/$exporter:latest"
+                        image_id=$(echo $image_id | tr '[:upper:]' '[:lower:]')
+                        
+                        echo "🚀 Starting Smoke Test for $image_id on port $port..."
+                        
+                        # Run container (use a random local port to avoid conflicts)
+                        container_id=$(docker run -d -p 9999:$port $image_id)
+                        
+                        # Retry loop (max 10 seconds)
+                        success=false
+                        for i in {1..5}; do
+                          echo "Attempt $i: Checking metrics at http://localhost:9999/metrics..."
+                          if curl -s --fail http://localhost:9999/metrics | grep -qiE "prometheus|exporter|metrics|alertmanager" ; then
+                            echo "✅ Smoke test PASSED!"
+                            success=true
+                            break
+                          fi
+                          sleep 2
+                        done
+                        
+                        if [ "$success" = false ]; then
+                          echo "❌ Smoke test FAILED!"
+                          echo "--- Container Logs ---"
+                          docker logs $container_id
+                          docker rm -f $container_id
+                          exit 1
+                        fi
+                        
+                        # Cleanup
+                        docker rm -f $container_id
   # 3. Build RPMs (Parallel per exporter, architecture AND distribution)
   build-rpm:
     needs: discover
