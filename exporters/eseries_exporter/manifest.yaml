@@ -1,5 +1,5 @@
 name: eseries_exporter
-description: "Prometheus exporter for NetApp E-Series storage systems"
+description: "Prometheus exporter for NetApp/Lenovo E-Series storage systems"
 version: v2.0.0
 upstream:
   type: github
