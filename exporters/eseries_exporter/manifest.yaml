@@ -1,38 +1,33 @@
 name: eseries_exporter
-description: Prometheus exporter for NetApp E-Series storage systems
-version: 2.0.0
+description: "Prometheus exporter for NetApp E-Series storage systems"
+version: v2.0.0
 upstream:
   type: github
   repo: sckyzo/eseries_exporter
   strategy: latest_release
-  archive_name: '{name}-{clean_version}-linux-{arch}.tar.gz'
+  archive_name: "{name}_linux_{arch}.tar.gz"
 build:
   method: binary_repack
   binary_name: eseries_exporter
 artifacts:
   rpm:
     enabled: true
-    targets:
-    - el8
-    - el9
-    - el10
+    targets: [el8, el9, el10]
     summary: Prometheus exporter for E-Series
     service_file: true
     system_user: prometheus
     extra_files:
-    - source: assets/eseries_exporter.yml
-      dest: /etc/eseries_exporter/eseries_exporter.yml
-      config: true
+      - source: assets/eseries_exporter.yml
+        dest: /etc/eseries_exporter/eseries_exporter.yml
+        config: true
     directories:
-    - path: /etc/eseries_exporter
-      mode: '0755'
-      owner: root
-      group: root
+      - path: /etc/eseries_exporter
+        mode: '0755'
+        owner: root
+        group: root
   docker:
     enabled: true
     base_image: registry.access.redhat.com/ubi9/ubi-minimal
-    entrypoint:
-    - /usr/bin/eseries_exporter
-    cmd:
-    - --config.file=/etc/eseries_exporter/eseries_exporter.yml
+    entrypoint: [/usr/bin/eseries_exporter]
+    cmd: ["--config.file=/etc/eseries_exporter/eseries_exporter.yml"]
     smoke_test_port: 9128
