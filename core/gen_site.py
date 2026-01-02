@@ -19,6 +19,8 @@ def generate(output, repo_dir):
             with open(manifest_path, 'r') as f:
                 data = yaml.safe_load(f)
                 
+                data['version'] = data['version'].lstrip('v')
+                
                 data['availability'] = {}
                 rpm_targets = data.get('artifacts', {}).get('rpm', {}).get('targets', [])
                 
