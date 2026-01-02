@@ -118,11 +118,36 @@ COPY {{ build.binary_name }} /usr/bin/{{ name }}
 ENTRYPOINT {{ artifacts.docker.entrypoint | tojson }}
 ```
 
-### 5. Local Validation (Optional)
-```bash
-# Generate build files
-python core/builder.py --manifest exporters/my_exporter/manifest.yaml --arch amd64
-```
+### 5. Local Build Guide (Optional)
+You can build RPMs and Docker images locally for testing or custom use.
+
+#### Prerequisites
+- **Python 3.9+**
+- **Docker** (used for RPM isolation and image building)
+
+#### Step-by-Step Example (node_exporter)
+
+1. **Install Python dependencies:**
+   ```bash
+   pip install -r core/requirements.txt
+   ```
+
+2. **Generate build files:**
+   This downloads the upstream binary and renders the `.spec` and `Dockerfile`.
+   ```bash
+   python core/builder.py --manifest exporters/node_exporter/manifest.yaml --arch amd64 --output-dir build/node_exporter
+   ```
+
+3. **Build the RPM:**
+   Uses a containerized environment (AlmaLinux) to build the package.
+   ```bash
+   ./core/build_rpm.sh build/node_exporter/node_exporter.spec build/node_exporter/rpms
+   ```
+
+4. **Build the Docker Image:**
+   ```bash
+   docker build -t monitoring-hub/node_exporter:local build/node_exporter
+   ```
 
 ---
 
