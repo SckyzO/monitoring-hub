@@ -117,10 +117,12 @@ jobs:
           echo "🚀 Starting Smoke Test for $image_id on port $port..."
           container_id=$(docker run -d -p 9999:$port $image_id)
           
+          # Retry loop (max 10 seconds)
           success=false
           for i in {1..5}; do
             echo "Attempt $i: Checking metrics at http://localhost:9999/metrics..."
-            if curl -s --fail http://localhost:9999/metrics | grep -qiE "prometheus|exporter|metrics|alertmanager" ; then
+            # Check for 200 OK or any content that looks like Prometheus metrics
+            if curl -s --fail http://localhost:9999/metrics | grep -qiE "prometheus|exporter|metrics|alertmanager|# HELP|# TYPE" ; then
               echo "✅ Smoke test PASSED!"
               success=true
               break
