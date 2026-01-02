@@ -1,11 +1,11 @@
 name: slurm_exporter
 description: Prometheus exporter for Slurm workload manager metrics
-version: v1.1.1
+version: 1.2.0
 upstream:
   type: github
   repo: sckyzo/slurm_exporter
   strategy: latest_release
-  archive_name: "{name}-{clean_version}-linux-{arch}.tar.gz"
+  archive_name: '{name}-{clean_version}-linux-{arch}.tar.gz'
 build:
   method: binary_repack
   binary_name: slurm_exporter
