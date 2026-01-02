@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.10.1] - 2026-01-01
 
+### 🚀 Features
+- **New Exporter:** Added full support for **eseries_exporter** (NetApp E-Series storage systems).
+    - Automated user creation, default configuration and multi-arch builds.
+
 ### 🐛 Fixes & Improvements
 - **Ping Exporter:** Added default configuration file to fix startup crash and smoke test failure.
 - **Slurm Exporter:** Fixed archive naming pattern to match upstream (using hyphens instead of dots).
