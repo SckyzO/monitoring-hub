@@ -41,43 +41,82 @@ mkdir -p exporters/my_exporter/assets
 ```
 
 ### 2. Create the `manifest.yaml`
-Define your tool's identity and requirements:
+Define your tool's identity and requirements using the full schema below:
 
 ```yaml
 name: my_exporter
 description: "Brief description of the tool"
 version: "1.0.0" # Watcher will update this automatically
+
 upstream:
   type: github
   repo: owner/repo
+  # Optional: Custom archive pattern if upstream uses non-standard naming
+  # Available vars: {name}, {version}, {clean_version}, {arch}, {rpm_arch}
+  # archive_name: "{name}_{version}_{arch}.tar.gz" 
+
 build:
   method: binary_repack
   binary_name: my_exporter
-  extra_binaries: [tool_helper] # Optional
+  extra_binaries: [tool_helper] # Optional: other binaries to include from the archive
+  # Optional: Download external files not present in the release tarball
+  extra_sources:
+    - url: https://raw.githubusercontent.com/.../config.yml
+      filename: config.yml
+  # Optional: Restrict architectures if upstream doesn't support all
+  # archs: [amd64] 
+
 artifacts:
   rpm:
     enabled: true
     targets: [el8, el9, el10]
     system_user: my_user # Automates user/group creation
+    # Install files (local assets or downloaded extra_sources)
     extra_files:
       - source: assets/config.yml
         dest: /etc/my_exporter/config.yml
-        config: true # Protects from overwrite on update
+        config: true # Protects from overwrite on update (%config(noreplace))
+    # Create directories with permissions
+    directories:
+      - path: /var/lib/my_exporter
+        owner: my_user
+        group: my_user
+        mode: "0755"
+
   docker:
     enabled: true
+    # Default is UBI 9 Minimal, can be overridden but not recommended
+    # base_image: registry.access.redhat.com/ubi9/ubi-minimal
     entrypoint: ["/usr/bin/my_exporter"]
     cmd: ["--config=/etc/my_exporter/config.yml"]
+    # Port to check for automated smoke testing (metrics endpoint)
+    smoke_test_port: 9100 
 ```
 
 ### 3. Add Optional Assets
 Place any configuration files or scripts in the `assets/` folder and reference them in the manifest.
 
 ### 4. Template Overrides (Advanced)
-If the default templates don't fit your needs, you can provide your own Jinja2 templates in `exporters/<exporter_name>/templates/`:
-- `<exporter_name>.spec.j2`: Custom RPM Spec template.
-- `Dockerfile.j2`: Custom Dockerfile template.
+If the default templates don't fit your needs, you can provide your own **Jinja2** templates. The engine will automatically detect these and use them instead of the global defaults while still providing all dynamic variables from the manifest.
 
-The engine will automatically detect these and use them instead of the global defaults while still providing all dynamic variables.
+- **Custom RPM Spec:** Place a template named `<exporter_name>.spec.j2` in `exporters/<exporter_name>/templates/`.
+- **Custom Dockerfile:** Place a template named `Dockerfile.j2` in `exporters/<exporter_name>/templates/`.
+
+This allows for complex packaging logic (e.g., custom `%post` scripts in RPM or multi-stage builds in Docker) while keeping the benefit of automated versioning.
+
+#### Example: Custom Dockerfile
+To install extra packages in your container, create `exporters/my_exporter/templates/Dockerfile.j2`:
+
+```dockerfile
+FROM {{ artifacts.docker.base_image }}
+
+# Custom logic: Install specific tools
+RUN microdnf install -y curl && microdnf clean all
+
+# Standard logic (using variables from manifest)
+COPY {{ build.binary_name }} /usr/bin/{{ name }}
+ENTRYPOINT {{ artifacts.docker.entrypoint | tojson }}
+```
 
 ### 5. Local Validation (Optional)
 ```bash
