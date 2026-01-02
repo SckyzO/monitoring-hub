@@ -30,4 +30,4 @@ artifacts:
     base_image: registry.access.redhat.com/ubi9/ubi-minimal
     entrypoint: [/usr/bin/eseries_exporter]
     cmd: ["--config.file=/etc/eseries_exporter/eseries_exporter.yml"]
-    smoke_test_port: 9128
+    smoke_test_port: 9313
