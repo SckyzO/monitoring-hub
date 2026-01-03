@@ -1,0 +1,11 @@
+FROM {{ artifacts.docker.base_image }}
+
+# Podman Exporter specific: Default to standard socket path
+ENV CONTAINER_HOST="unix:///run/podman/podman.sock"
+
+# Standard Install Logic
+COPY {{ build.binary_name }} /usr/bin/{{ name }}
+ENTRYPOINT {{ artifacts.docker.entrypoint | tojson }}
+{% if artifacts.docker.cmd %}
+CMD {{ artifacts.docker.cmd | tojson }}
+{% endif %}
