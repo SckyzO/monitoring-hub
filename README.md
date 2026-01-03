@@ -128,27 +128,35 @@ You can build RPMs and Docker images locally for testing or custom use.
 #### Step-by-Step Example (node_exporter)
 
 1. **Setup a Virtual Environment:**
-   Modern Linux systems (PEP 668) require a virtual environment to install Python packages safely.
    ```bash
    python -m venv .venv
    source .venv/bin/activate
    pip install -r core/requirements.txt
    ```
 
-2. **Generate build files:**
-   This downloads the upstream binary and renders the `.spec` and `Dockerfile`.
+2. **Run the Test Script:**
+   We provide a helper script to automate generation, RPM build, and Docker build in one go.
+   ```bash
+   # Usage: ./core/local_test.sh <exporter> [arch] [distro]
+   ./core/local_test.sh node_exporter
+   ```
+
+   *That's it!* Artifacts will be in `build/node_exporter/`.
+
+#### Manual Build (Advanced)
+If you need to debug a specific step:
+
+1. **Generate build files:**
    ```bash
    python core/builder.py --manifest exporters/node_exporter/manifest.yaml --arch amd64 --output-dir build/node_exporter
    ```
 
-3. **Build the RPM:**
-   Uses a containerized environment. You can specify the target distribution image (default: `almalinux:9`).
+2. **Build the RPM:**
    ```bash
-   # Syntax: ./core/build_rpm.sh <spec_path> <output_dir> <arch> <docker_image>
    ./core/build_rpm.sh build/node_exporter/node_exporter.spec build/node_exporter/rpms amd64 almalinux:9
    ```
 
-4. **Build the Docker Image:**
+3. **Build the Docker Image:**
    ```bash
    docker build -t monitoring-hub/node_exporter:local build/node_exporter
    ```
