@@ -27,9 +27,11 @@ artifacts:
         mode: '0755'
         owner: root
         group: root
-  docker:
-    enabled: true
-    base_image: registry.access.redhat.com/ubi9/ubi-minimal
-    entrypoint: [/usr/bin/snmp_exporter]
-    cmd: ["--config.file=/etc/snmp_exporter/snmp.yml"]
-    smoke_test_port: 9116
+    docker:
+      enabled: true
+      base_image: registry.access.redhat.com/ubi9/ubi-minimal
+      entrypoint: [/usr/bin/snmp_exporter]
+      cmd: ["--config.file=/etc/snmp_exporter/snmp.yml"]
+      validation:
+        port: 9116
+  

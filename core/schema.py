@@ -21,12 +21,17 @@ class RPMSchema(Schema):
     extra_files = fields.List(fields.Nested(FileInstallSchema), load_default=[])
     directories = fields.List(fields.Nested(DirectorySchema), load_default=[])
 
+class ValidationSchema(Schema):
+    enabled = fields.Bool(load_default=True)
+    port = fields.Int(allow_none=True)
+    command = fields.Str(allow_none=True)
+
 class DockerSchema(Schema):
     enabled = fields.Bool(load_default=False)
     base_image = fields.Str(load_default="registry.access.redhat.com/ubi9/ubi-minimal")
     entrypoint = fields.List(fields.Str())
     cmd = fields.List(fields.Str(), load_default=[])
-    smoke_test_port = fields.Int(load_default=9100)
+    validation = fields.Nested(ValidationSchema, load_default={})
 
 class UpstreamSchema(Schema):
     type = fields.Str(required=True, validate=validate.OneOf(["github"]))

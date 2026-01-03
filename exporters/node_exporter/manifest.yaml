@@ -19,6 +19,10 @@ artifacts:
     service_file: true
   docker:
     enabled: true
-    base_image: registry.access.redhat.com/ubi9/ubi-minimal
-    entrypoint:
-    - /usr/bin/node_exporter
+    # Default is UBI 9 Minimal, can be overridden but not recommended
+    # base_image: registry.access.redhat.com/ubi9/ubi-minimal
+    entrypoint: ["/usr/bin/node_exporter"]
+    cmd: []
+    # Port to check for automated smoke testing (metrics endpoint)
+    validation:
+      port: 9100

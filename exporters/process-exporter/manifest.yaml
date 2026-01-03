@@ -23,4 +23,5 @@ artifacts:
     base_image: registry.access.redhat.com/ubi9/ubi-minimal
     entrypoint:
     - /usr/bin/process-exporter
-    smoke_test_port: 9256
+    validation:
+      port: 9256

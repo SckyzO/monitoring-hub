@@ -35,10 +35,7 @@ artifacts:
       group: prometheus
   docker:
     enabled: true
-    base_image: registry.access.redhat.com/ubi9/ubi-minimal
-    entrypoint:
-    - /usr/bin/prometheus
-    cmd:
-    - --config.file=/etc/prometheus/prometheus.yml
-    - --storage.tsdb.path=/var/lib/prometheus
-    smoke_test_port: 9090
+    entrypoint: ["/usr/bin/prometheus"]
+    cmd: ["--config.file=/etc/prometheus/prometheus.yml"]
+    validation:
+      port: 9090

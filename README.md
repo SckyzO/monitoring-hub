@@ -89,8 +89,16 @@ artifacts:
     # base_image: registry.access.redhat.com/ubi9/ubi-minimal
     entrypoint: ["/usr/bin/my_exporter"]
     cmd: ["--config=/etc/my_exporter/config.yml"]
-    # Port to check for automated smoke testing (metrics endpoint)
-    smoke_test_port: 9100 
+    # Automated image validation (smoke test)
+    # All enabled tests must pass for the validation to be successful.
+    # You can use port, command, or both.
+    validation:
+      enabled: true        # Set to false to skip all tests
+      port: 9100           # Checks if http://localhost:9100/metrics is reachable
+      command: "--version" # Custom command to validate.
+                           # This value is passed as an argument to the Docker ENTRYPOINT.
+                           # Example: if ENTRYPOINT is ["/usr/bin/exporter"]
+                           # then the test runs: /usr/bin/exporter --version
 ```
 
 ### 3. Add Optional Assets
