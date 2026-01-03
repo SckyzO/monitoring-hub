@@ -21,4 +21,4 @@ artifacts:
     base_image: registry.access.redhat.com/ubi9/ubi-minimal
     entrypoint: [/usr/bin/ha_cluster_exporter]
     validation:
-      port: 9664
+      command: "--version"
