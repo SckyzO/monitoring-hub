@@ -1,0 +1,32 @@
+name: podman_exporter
+description: "Prometheus exporter for Podman containers"
+version: "v1.20.0"
+
+upstream:
+  type: github
+  repo: SckyzO/prometheus-podman-exporter
+  # Pattern: prometheus-podman-exporter-v1.20.0.linux-amd64.tar.gz
+  archive_name: "prometheus-podman-exporter-{version}.linux-{arch}.tar.gz"
+
+build:
+  method: binary_repack
+  binary_name: podman_exporter
+
+artifacts:
+  rpm:
+    enabled: true
+    summary: "Prometheus exporter for Podman containers"
+    targets: [el8, el9, el10]
+    system_user: prometheus
+    extra_files: []
+    directories:
+      - path: /var/lib/prometheus
+        owner: prometheus
+        group: prometheus
+        mode: "0755"
+
+  docker:
+    enabled: true
+    entrypoint: ["/usr/bin/podman_exporter"]
+    cmd: ["--exporter.enable-all"]
+    smoke_test_port: 9832
