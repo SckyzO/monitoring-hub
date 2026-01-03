@@ -30,4 +30,4 @@ artifacts:
     entrypoint: ["/usr/bin/podman_exporter"]
     cmd: ["--collector.enable-all"]
     validation:
-      command: "--version"
+      command: "--help"
