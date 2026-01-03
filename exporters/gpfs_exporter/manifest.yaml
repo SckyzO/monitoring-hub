@@ -20,3 +20,5 @@ artifacts:
     enabled: true
     base_image: registry.access.redhat.com/ubi9/ubi-minimal
     entrypoint: [/usr/bin/gpfs_exporter]
+    validation:
+      enabled: false

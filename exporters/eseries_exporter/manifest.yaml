@@ -25,9 +25,11 @@ artifacts:
         mode: '0755'
         owner: root
         group: root
-  docker:
-    enabled: true
-    base_image: registry.access.redhat.com/ubi9/ubi-minimal
-    entrypoint: [/usr/bin/eseries_exporter]
-    cmd: ["--config.file=/etc/eseries_exporter/eseries_exporter.yml"]
-    smoke_test_port: 9313
+    docker:
+      enabled: true
+      base_image: registry.access.redhat.com/ubi9/ubi-minimal
+      entrypoint: [/usr/bin/eseries_exporter]
+      cmd: ["--config.file=/etc/eseries_exporter/eseries_exporter.yml"]
+      validation:
+        port: 9313
+  

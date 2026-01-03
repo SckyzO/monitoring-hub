@@ -96,10 +96,18 @@ jobs:
       - name: Container Smoke Test
         run: |
           exporter="${{ matrix.exporter }}"
-          port=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(m.get('artifacts', {}).get('docker', {}).get('smoke_test_port', 'None'))")
+          # Get validation settings
+          v_enabled=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(m.get('artifacts', {}).get('docker', {}).get('validation', {}).get('enabled', True))")
+          v_port=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(m.get('artifacts', {}).get('docker', {}).get('validation', {}).get('port', 'None'))")
+          v_cmd=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(m.get('artifacts', {}).get('docker', {}).get('validation', {}).get('command', 'None'))")
           
-          if [ "$port" == "None" ]; then
-            echo "Smoke test skipped (no port defined)."
+          if [ "$v_enabled" != "True" ]; then
+            echo "Smoke test disabled for $exporter."
+            exit 0
+          fi
+
+          if [ "$v_port" == "None" ] && [ "$v_cmd" == "None" ]; then
+            echo "Smoke test skipped (no port or command defined)."
             exit 0
           fi
 
@@ -114,29 +122,43 @@ jobs:
             exit 0
           fi
 
-          echo "🚀 Starting Smoke Test for $image_id on port $port..."
-          container_id=$(docker run -d -p 9999:$port $image_id)
-          
-          # Retry loop (max 10 seconds)
-          success=false
-          for i in {1..5}; do
-            echo "Attempt $i: Checking metrics at http://localhost:9999/metrics..."
-            # Check for 200 OK or any content that looks like Prometheus metrics
-            if curl -s --fail http://localhost:9999/metrics | grep -qiE "prometheus|exporter|metrics|alertmanager|# HELP|# TYPE" ; then
-              echo "✅ Smoke test PASSED!"
-              success=true
-              break
-            fi
-            sleep 2
-          done
-          
-          if [ "$success" = false ]; then
-            echo "❌ Smoke test FAILED!"
-            docker logs $container_id
-            docker rm -f $container_id
-            exit 1
+          # 1. Command-based validation
+          if [ "$v_cmd" != "None" ]; then
+             echo "🚀 Validating $image_id with command: $v_cmd"
+             if docker run --rm $image_id $v_cmd; then
+               echo "✅ Command validation PASSED!"
+             else
+               echo "❌ Command validation FAILED!"
+               exit 1
+             fi
           fi
-          docker rm -f $container_id
+
+          # 2. Port-based validation
+          if [ "$v_port" != "None" ]; then
+              echo "🚀 Validating $image_id on port $v_port..."
+              container_id=$(docker run -d -p 9999:$v_port $image_id)
+              
+              # Retry loop (max 10 seconds)
+              success=false
+              for i in {1..5}; do
+                echo "Attempt $i: Checking metrics at http://localhost:9999/metrics..."
+                # Check for 200 OK or any content that looks like Prometheus metrics
+                if curl -s --fail http://localhost:9999/metrics | grep -qiE "prometheus|exporter|metrics|alertmanager|# HELP|# TYPE" ; then
+                  echo "✅ Port validation PASSED!"
+                  success=true
+                  break
+                fi
+                sleep 2
+              done
+              
+              if [ "$success" = false ]; then
+                echo "❌ Port validation FAILED!"
+                docker logs $container_id
+                docker rm -f $container_id
+                exit 1
+              fi
+              docker rm -f $container_id
+          fi
 
   # 3. Build RPMs (Parallel per exporter, architecture AND distribution)
   build-rpm:

@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.11.0] - 2026-01-02
+
+### 🚀 Features
+- **New Exporter:** Added **podman_exporter** support.
+    - Integrated via custom automated build upstream (SckyzO fork).
+    - Custom Dockerfile with default `CONTAINER_HOST` socket path.
+- **Flexible Image Validation:** Refactored the smoke test system into a more powerful `validation` schema.
+    - Support for port-based HTTP checks.
+    - Support for command-based validation (e.g., `--version`).
+    - Ability to disable validation per exporter.
+- **Local Build Utility:** Added `core/local_test.sh` to allow developers to test the full pipeline (Generation -> RPM -> Docker) locally before committing.
+
+### 🐛 Fixes & Improvements
+- **Schema Hardening:** Migrated all manifests to the new nested validation structure.
+- **Documentation:** Updated local build guide and manifest schema references.
+
 ## [0.10.1] - 2026-01-01
 
 ### 🚀 Features

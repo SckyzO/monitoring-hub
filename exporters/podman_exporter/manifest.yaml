@@ -29,4 +29,5 @@ artifacts:
     enabled: true
     entrypoint: ["/usr/bin/podman_exporter"]
     cmd: ["--collector.enable-all"]
-    smoke_test_port: 9832
+    validation:
+      command: "--version"
