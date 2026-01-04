@@ -18,10 +18,10 @@ artifacts:
     system_user: mysqld_exporter
     service_file: true
     extra_files:
-      - source: assets/.my.cnf
+      - source: assets/my.cnf
         dest: /var/lib/mysqld_exporter/.my.cnf
         config: true
-        mode: "0600" # Important: secured file
+        mode: "0600"
     directories:
       - path: /var/lib/mysqld_exporter
         owner: mysqld_exporter
@@ -31,7 +31,6 @@ artifacts:
   docker:
     enabled: true
     entrypoint: ["/usr/bin/mysqld_exporter"]
-    # We mount the config file at runtime or use env vars
     cmd: ["--config.my-cnf=/var/lib/mysqld_exporter/.my.cnf"]
     validation:
       port: 9104
