@@ -24,7 +24,9 @@ cp "$SPEC_FILE" ~/rpmbuild/SPECS/
 
 # Copy all files from spec dir to SOURCES (including the pre-extracted binary and config files)
 SPEC_DIR=$(dirname "$SPEC_FILE")
-cp -v "$SPEC_DIR"/* ~/rpmbuild/SOURCES/ || true
+# Use find to copy all files including hidden ones, but excluding . and ..
+# Or simply copy the directory content recursively
+cp -a "$SPEC_DIR"/. ~/rpmbuild/SOURCES/
 
 # Extract architecture from spec file to support cross-building (repack)
 TARGET_ARCH=$(grep "BuildArch:" "$SPEC_FILE" | awk '{print $2}')
