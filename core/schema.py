@@ -16,6 +16,7 @@ class RPMSchema(Schema):
     enabled = fields.Bool(load_default=False)
     targets = fields.List(fields.Str(), load_default=["el8", "el9", "el10"])
     summary = fields.Str()
+    dependencies = fields.List(fields.Str(), load_default=[])
     service_file = fields.Bool(load_default=False)
     system_user = fields.Str(allow_none=True)
     extra_files = fields.List(fields.Nested(FileInstallSchema), load_default=[])
