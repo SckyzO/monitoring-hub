@@ -6,7 +6,8 @@ import tarfile
 import shutil
 import gzip
 from jinja2 import Environment, FileSystemLoader
-from schema import ManifestSchema
+from core.engine.schema import ManifestSchema
+from core.config.settings import ARCH_MAP, TEMPLATES_DIR
 from marshmallow import ValidationError
 
 def load_manifest(path):
@@ -165,13 +166,12 @@ def build(manifest, output_dir, arch):
     try:
         data = load_manifest(manifest)
         data['arch'] = arch
-        rpm_arch_map = {'amd64': 'x86_64', 'arm64': 'aarch64'}
-        data['rpm_arch'] = rpm_arch_map.get(arch, arch)
+        data['rpm_arch'] = ARCH_MAP.get(arch, arch)
         
         # Setup Jinja2 with Override Logic
         template_dirs = [
             os.path.join(os.path.dirname(manifest), 'templates'),
-            os.path.join(os.path.dirname(__file__), 'templates')
+            TEMPLATES_DIR
         ]
         env = Environment(loader=FileSystemLoader(template_dirs))
         

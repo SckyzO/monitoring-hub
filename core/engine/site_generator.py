@@ -3,6 +3,7 @@ import glob
 import yaml
 import os
 from jinja2 import Environment, FileSystemLoader
+from core.config.settings import SUPPORTED_DISTROS, EXPORTERS_DIR, TEMPLATES_DIR
 
 @click.command()
 @click.option('--output', '-o', help='Output HTML file', default='index.html')
@@ -11,7 +12,7 @@ def generate(output, repo_dir):
     """
     Generate the portal with reality check and build status.
     """
-    manifests = glob.glob("exporters/*/manifest.yaml")
+    manifests = glob.glob(f"{EXPORTERS_DIR}/*/manifest.yaml")
     exporters_data = []
 
     for manifest_path in manifests:
@@ -24,7 +25,7 @@ def generate(output, repo_dir):
                 data['availability'] = {}
                 rpm_targets = data.get('artifacts', {}).get('rpm', {}).get('targets', [])
                 
-                for dist in ['el8', 'el9', 'el10']:
+                for dist in SUPPORTED_DISTROS:
                     data['availability'][dist] = {}
                     for arch in ['x86_64', 'aarch64']:
                         pattern = os.path.join(repo_dir, dist, arch, f"{data['name']}-*.{dist}*.{arch}.rpm")
@@ -46,8 +47,7 @@ def generate(output, repo_dir):
             print(f"Error: {e}")
 
     exporters_data.sort(key=lambda x: x['name'])
-    template_dir = os.path.join(os.path.dirname(__file__), 'templates')
-    env = Environment(loader=FileSystemLoader(template_dir))
+    env = Environment(loader=FileSystemLoader(TEMPLATES_DIR))
     template = env.get_template('index.html.j2')
     rendered = template.render(exporters=exporters_data)
 

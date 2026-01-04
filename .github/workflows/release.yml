@@ -37,9 +37,9 @@ jobs:
       - id: smart-filter
         env:
           FORCE_REBUILD: ${{ inputs.force_rebuild }}
-          CATALOG_URL: "https://sckyzo.github.io/monitoring-hub/catalog.json"
+          PYTHONPATH: ${{ github.workspace }}
         run: |
-          python3 core/smart_filter.py
+          python3 -m core.engine.state_manager
 
   # 2. Build Docker Images (Parallel per exporter)
   build-docker:
@@ -86,7 +86,8 @@ jobs:
           fi
 
           # Generate build files (FORCE amd64 for Docker)
-          python core/builder.py --manifest "exporters/$exporter/manifest.yaml" --output-dir "build/$exporter" --arch amd64
+          export PYTHONPATH=${{ github.workspace }}
+          python3 -m core.engine.builder --manifest "exporters/$exporter/manifest.yaml" --output-dir "build/$exporter" --arch amd64
           
           version=$(grep "version:" "exporters/$exporter/manifest.yaml" | awk '{print $2}' | tr -d '"')
           
@@ -223,12 +224,13 @@ jobs:
           esac
 
           build_dir="build/$exporter-$arch-$dist"
-          python core/builder.py --manifest "exporters/$exporter/manifest.yaml" --output-dir "$build_dir" --arch "$arch"
+          export PYTHONPATH=${{ github.workspace }}
+          python3 -m core.engine.builder --manifest "exporters/$exporter/manifest.yaml" --output-dir "$build_dir" --arch "$arch"
           
           spec_file="$build_dir/$exporter.spec"
           if [ -f "$spec_file" ]; then
-            chmod +x core/build_rpm.sh core/utils/rpm_build_entrypoint.sh
-            ./core/build_rpm.sh "$spec_file" "$build_dir/rpms" "$arch" "$image"
+            chmod +x core/scripts/build_rpm.sh core/scripts/rpm_entrypoint.sh
+            ./core/scripts/build_rpm.sh "$spec_file" "$build_dir/rpms" "$arch" "$image"
           fi
 
       - name: Upload Artifact
@@ -307,7 +309,8 @@ jobs:
           done
 
           cd ..
-          python core/gen_site.py --output gh-pages-dist/index.html --repo-dir gh-pages-dist
+          export PYTHONPATH=${{ github.workspace }}
+          python3 -m core.engine.site_generator --output gh-pages-dist/index.html --repo-dir gh-pages-dist
           
           cd gh-pages-dist
           git config user.name "Monitoring Hub Bot"

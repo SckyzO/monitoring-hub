@@ -33,6 +33,6 @@ docker run --rm \
     "$DOCKER_IMAGE" \
     /bin/bash -c "dnf install -y rpmdevtools epel-release && \
                   dnf install -y 'dnf-command(builddep)' && \
-                  /workspace/core/utils/rpm_build_entrypoint.sh '/workspace/$SPEC_PATH_REL' /output"
+                  /workspace/core/scripts/rpm_entrypoint.sh '/workspace/$SPEC_PATH_REL' /output"
 
 echo "RPM build finished."

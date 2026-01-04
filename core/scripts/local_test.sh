@@ -42,12 +42,13 @@ fi
 # 2. Generate Build Files
 echo "------------------------------------------------"
 echo ">> [1/3] Generating build files for $EXPORTER ($ARCH)..."
-python3 core/builder.py --manifest "exporters/$EXPORTER/manifest.yaml" --arch "$ARCH" --output-dir "build/$EXPORTER"
+export PYTHONPATH="$PROJECT_ROOT"
+python3 -m core.engine.builder --manifest "exporters/$EXPORTER/manifest.yaml" --arch "$ARCH" --output-dir "build/$EXPORTER"
 
 # 3. Build RPM
 echo "------------------------------------------------"
 echo ">> [2/3] Building RPM using $DISTRO..."
-./core/build_rpm.sh "build/$EXPORTER/$EXPORTER.spec" "build/$EXPORTER/rpms" "$ARCH" "$DISTRO"
+./core/scripts/build_rpm.sh "build/$EXPORTER/$EXPORTER.spec" "build/$EXPORTER/rpms" "$ARCH" "$DISTRO"
 
 # 4. Build Docker Image
 echo "------------------------------------------------"
@@ -60,7 +61,7 @@ if [ "$RUN_SMOKE" = true ]; then
     echo ">> [4/3] Running Smoke Tests..."
 
     # Extract validation config using python
-    VAL_CONFIG=$(python3 -c "
+    VAL_CONFIG=$(export PYTHONPATH="$PROJECT_ROOT"; python3 -c "
 import yaml
 try:
     with open('exporters/$EXPORTER/manifest.yaml', 'r') as f:
