@@ -1044,6 +1044,74 @@
       }
     },
     {
+      "name": "process_exporter",
+      "description": "Prometheus exporter for process metrics",
+      "version": "0.8.7",
+      "upstream": {
+        "type": "github",
+        "repo": "ncabatoff/process-exporter",
+        "archive_name": "process-exporter-{clean_version}.linux-{arch}.tar.gz"
+      },
+      "build": {
+        "method": "binary_repack",
+        "binary_name": "process-exporter"
+      },
+      "artifacts": {
+        "rpm": {
+          "enabled": true,
+          "targets": [
+            "el8",
+            "el9",
+            "el10"
+          ],
+          "summary": "Prometheus exporter for process metrics",
+          "service_file": true,
+          "system_user": "prometheus"
+        },
+        "docker": {
+          "enabled": true,
+          "entrypoint": [
+            "/usr/bin/process_exporter"
+          ],
+          "validation": {
+            "port": 9256
+          }
+        }
+      },
+      "availability": {
+        "el8": {
+          "x86_64": {
+            "status": "success",
+            "path": "el8/x86_64/process_exporter-v0.8.7-1.el8.x86_64.rpm"
+          },
+          "aarch64": {
+            "status": "success",
+            "path": "el8/aarch64/process_exporter-v0.8.7-1.el8.aarch64.rpm"
+          }
+        },
+        "el9": {
+          "x86_64": {
+            "status": "success",
+            "path": "el9/x86_64/process_exporter-v0.8.7-1.el9.x86_64.rpm"
+          },
+          "aarch64": {
+            "status": "success",
+            "path": "el9/aarch64/process_exporter-v0.8.7-1.el9.aarch64.rpm"
+          }
+        },
+        "el10": {
+          "x86_64": {
+            "status": "success",
+            "path": "el10/x86_64/process_exporter-v0.8.7-1.el10.x86_64.rpm"
+          },
+          "aarch64": {
+            "status": "success",
+            "path": "el10/aarch64/process_exporter-v0.8.7-1.el10.aarch64.rpm"
+          }
+        }
+      }
+    },
+    {
       "name": "prometheus",
       "description": "The Prometheus monitoring system and time series database.",
       "version": "3.8.1",
