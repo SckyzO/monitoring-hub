@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.12.0] - 2026-01-02
+
+### 🚀 Major Features
+*   **Smart Incremental Build:** Introduced state management via `catalog.json` to only rebuild updated exporters, drastically reducing CI time.
+*   **Podman Exporter:** Added support for `prometheus-podman-exporter` (v1.20.0) via custom upstream build.
+
+### 🐛 Fixes & Improvements
+*   **Documentation:** Updated Architecture, Vision, and Notes to reflect the new stateful build system.
+*   **Core:** `gen_site.py` now exports a machine-readable `catalog.json`.
+*   **CI:** Updated `release.yml` to use `smart_filter.py`.
+
 ## [0.11.0] - 2026-01-02
 
 ### 🚀 Features

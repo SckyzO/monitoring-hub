@@ -8,23 +8,38 @@ on:
       - 'core/**'
       - '.github/workflows/**'
   workflow_dispatch:
+    inputs:
+      force_rebuild:
+        description: 'Force rebuild of all exporters'
+        required: false
+        default: 'false'
+        type: boolean
 
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  # 1. Discover all exporters dynamically
+  # 1. Smart Discovery (Incremental Build)
   discover:
     runs-on: ubuntu-latest
     outputs:
-      exporters: ${{ steps.set-matrix.outputs.exporters }}
+      exporters: ${{ steps.smart-filter.outputs.exporters }}
     steps:
       - uses: actions/checkout@v4
-      - id: set-matrix
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r core/requirements.txt
+
+      - id: smart-filter
+        env:
+          FORCE_REBUILD: ${{ inputs.force_rebuild }}
+          CATALOG_URL: "https://sckyzo.github.io/monitoring-hub/catalog.json"
         run: |
-          # Find directories in exporters/ containing manifest.yaml
-          python3 -c "import os, json; print('exporters=' + json.dumps([d for d in os.listdir('exporters') if os.path.isdir(os.path.join('exporters', d)) and os.path.exists(os.path.join('exporters', d, 'manifest.yaml'))]))" >> $GITHUB_OUTPUT
+          python3 core/smart_filter.py
 
   # 2. Build Docker Images (Parallel per exporter)
   build-docker:
