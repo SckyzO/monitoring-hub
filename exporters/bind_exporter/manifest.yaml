@@ -1,0 +1,32 @@
+name: bind_exporter
+description: "Prometheus exporter for Bind (DNS) statistics"
+version: "v0.8.0"
+
+upstream:
+  type: github
+  repo: prometheus-community/bind_exporter
+
+build:
+  method: binary_repack
+  binary_name: bind_exporter
+
+artifacts:
+  rpm:
+    enabled: true
+    summary: "Prometheus Bind Exporter"
+    targets: [el8, el9, el10]
+    system_user: bind_exporter
+    service_file: true
+    extra_files: []
+    directories:
+      - path: /var/lib/bind_exporter
+        owner: bind_exporter
+        group: bind_exporter
+        mode: "0755"
+
+  docker:
+    enabled: true
+    entrypoint: ["/usr/bin/bind_exporter"]
+    # Default URL usually assumes localhost:8053/ works if bind is configured
+    validation:
+      port: 9119
