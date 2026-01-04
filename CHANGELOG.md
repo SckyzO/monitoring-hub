@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.14.0] - 2026-01-04
+
+### ♻️ Refactoring
+*   **Modular Core Engine:** Completely reorganized the `core/` directory.
+    *   Moved logic to `core/engine/` (builder, schema, state_manager).
+    *   Centralized configuration in `core/config/settings.py`.
+    *   Moved scripts to `core/scripts/`.
+*   **Workflow Updates:** Updated all GitHub Actions workflows to use the new modular Python structure (`python -m core.engine...`).
+
+### 🛡️ Security Hardening
+*   **Dependency Pinning:** Locked all Python dependencies to specific versions in `requirements.txt` to prevent supply chain attacks.
+*   **Automated Maintenance:** Enabled **Dependabot** for Python and GitHub Actions dependencies.
+*   **XSS Protection:** Enabled Jinja2 auto-escaping in the site generator.
+*   **Secret Sanitization:** Removed hardcoded example credentials from `assets/` configuration files.
+*   **Build Isolation:** Hardened `build_rpm.sh` to prevent command injection risks.
+
+### 🧪 Quality Assurance
+*   **Integration Tests:** Added a "belt and suspenders" check in CI (`build-pr.yml`) that runs a full build + smoke test on `node_exporter` for every Pull Request.
+
 ## [0.13.0] - 2026-01-02
 
 ### 🚀 Features
