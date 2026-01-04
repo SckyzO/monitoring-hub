@@ -1,5 +1,7 @@
 # Redis Exporter
 
+[![Upstream](https://img.shields.io/badge/Upstream-oliver006/redis_exporter-blue)](https://github.com/oliver006/redis_exporter)
+
 Prometheus exporter for Redis metrics.
 
 ## Overview

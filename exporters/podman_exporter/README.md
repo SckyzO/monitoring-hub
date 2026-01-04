@@ -1,5 +1,7 @@
 # Podman Exporter
 
+[![Upstream](https://img.shields.io/badge/Upstream-SckyzO/prometheus--podman--exporter-blue)](https://github.com/SckyzO/prometheus-podman-exporter)
+
 Prometheus exporter for Podman containers.
 
 ## Overview
@@ -29,4 +31,3 @@ docker run -d -p 9882:9882 \
   -e CONTAINER_HOST=unix:///run/podman/podman.sock \
   ghcr.io/sckyzo/monitoring-hub/podman_exporter:latest
 ```
-

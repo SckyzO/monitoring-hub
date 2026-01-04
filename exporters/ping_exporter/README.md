@@ -1,5 +1,7 @@
 # Monitoring Hub: ping_exporter
 
+[![Upstream](https://img.shields.io/badge/Upstream-czerwonk/ping_exporter-blue)](https://github.com/czerwonk/ping_exporter)
+
 Enterprise-grade packaging of the Prometheus ping_exporter.
 
 ## 🚀 Features

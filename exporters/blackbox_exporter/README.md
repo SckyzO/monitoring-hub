@@ -1,5 +1,7 @@
 # Blackbox Exporter
 
+[![Upstream](https://img.shields.io/badge/Upstream-prometheus/blackbox_exporter-blue)](https://github.com/prometheus/blackbox_exporter)
+
 The Blackbox Exporter allows probing of endpoints over HTTP, HTTPS, DNS, TCP, ICMP, and gRPC.
 
 ## Overview

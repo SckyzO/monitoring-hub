@@ -1,5 +1,7 @@
 # Nginx Exporter
 
+[![Upstream](https://img.shields.io/badge/Upstream-nginx/nginx--prometheus--exporter-blue)](https://github.com/nginx/nginx-prometheus-exporter)
+
 Prometheus exporter for NGINX metrics.
 
 ## Overview

@@ -1,5 +1,7 @@
 # Textfile Exporter
 
+[![Upstream](https://img.shields.io/badge/Upstream-SckyzO/textfile_exporter-blue)](https://github.com/SckyzO/textfile_exporter)
+
 Prometheus exporter for local text files metrics.
 
 ## Overview
