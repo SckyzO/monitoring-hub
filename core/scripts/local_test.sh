@@ -95,7 +95,7 @@ except Exception as e:
 
         # Port Validation
         if [ "$V_PORT" != "None" ]; then
-            echo "🚀 Validating on port $V_PORT..."
+            echo "🚀 Validating on port $V_PORT (mapped to localhost:9999)..."
             CONTAINER_ID=$(docker run -d -p 9999:$V_PORT "$IMAGE_ID")
             
             # Give it a moment to start

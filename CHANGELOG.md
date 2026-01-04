@@ -5,6 +5,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.15.0] - 2026-01-04
+
+### 🚀 New Exporters
+*   **Bind Exporter:** Added support for Bind (DNS) statistics.
+*   **Apache Exporter:** Added support for Apache HTTP Server metrics.
+*   **Nginx Exporter:** Added support for NGINX stub_status metrics.
+*   **Redis Exporter:** Added support for Redis metrics (v2.x to v7.x).
+*   **Textfile Exporter:** Added support for custom `.prom` files monitoring.
+
+### ♻️ Refactoring
+*   **Standardization:** Renamed `process-exporter` to `process_exporter` to enforce snake_case convention across the project.
+*   **Naming Fixes:** Fixed archive pattern matching for upstream projects using non-standard naming conventions (nginx, process-exporter).
+
+### 📚 Documentation
+*   **Readme Completeness:** Added comprehensive `README.md` files for all new exporters and retroactively for `blackbox_exporter`, `ipmi_exporter` and `podman_exporter`.
+
 ## [0.14.0] - 2026-01-04
 
 ### ♻️ Refactoring
