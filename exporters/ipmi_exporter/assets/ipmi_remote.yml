@@ -10,7 +10,7 @@ modules:
     # specified module doesn't exist, or of course if
     # module=default is specified.
     user: "default_user"
-    pass: "example_pw"
+    pass: "<YOUR_PASSWORD_HERE>"
     # The below settings correspond to driver-type, privilege-level, and
     # session-timeout respectively, see `man 5 freeipmi.conf` (and e.g.
     # `man 8 ipmi-sensors` for a list of driver types).
@@ -39,7 +39,7 @@ modules:
   dcmi:
     # Use these settings when scraped with module=dcmi.
     user: "admin_user"
-    pass: "another_pw"
+    pass: "<YOUR_PASSWORD_HERE>"
     privilege: "admin"
     driver: "LAN_2_0"
     collectors:
@@ -47,7 +47,7 @@ modules:
   thatspecialhost:
     # Use these settings when scraped with module=thatspecialhost.
     user: "some_user"
-    pass: "secret_pw"
+    pass: "<YOUR_PASSWORD_HERE>"
     privilege: "admin"
     driver: "LAN"
     collectors:
