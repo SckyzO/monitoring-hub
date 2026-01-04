@@ -1,0 +1,33 @@
+name: textfile_exporter
+description: "Prometheus exporter for local text files metrics"
+version: "v0.1.4"
+
+upstream:
+  type: github
+  repo: SckyzO/textfile_exporter
+  archive_name: "textfile_exporter-{clean_version}-linux-{arch}.tar.gz"
+
+build:
+  method: binary_repack
+  binary_name: textfile_exporter
+
+artifacts:
+  rpm:
+    enabled: true
+    summary: "Prometheus Textfile Exporter"
+    targets: [el8, el9, el10]
+    system_user: textfile_exporter
+    service_file: true
+    extra_files: []
+    directories:
+      - path: /var/lib/textfile_exporter
+        owner: textfile_exporter
+        group: textfile_exporter
+        mode: "0755"
+
+  docker:
+    enabled: true
+    entrypoint: ["/usr/bin/textfile_exporter"]
+    cmd: ["--textfile.directory=/var/lib/textfile_exporter"]
+    validation:
+      port: 9014
