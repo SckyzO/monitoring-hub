@@ -1,0 +1,960 @@
+{
+  "exporters": [
+    {
+      "name": "alertmanager",
+      "description": "Handle alerts and notifications for the Prometheus ecosystem",
+      "version": "0.30.0",
+      "upstream": {
+        "type": "github",
+        "repo": "prometheus/alertmanager",
+        "strategy": "latest_release"
+      },
+      "build": {
+        "method": "binary_repack",
+        "binary_name": "alertmanager",
+        "extra_binaries": [
+          "amtool"
+        ]
+      },
+      "artifacts": {
+        "rpm": {
+          "enabled": true,
+          "targets": [
+            "el8",
+            "el9",
+            "el10"
+          ],
+          "summary": "Prometheus Alertmanager",
+          "service_file": true,
+          "system_user": "alertmanager",
+          "extra_files": [
+            {
+              "source": "assets/alertmanager.yml",
+              "dest": "/etc/alertmanager/alertmanager.yml",
+              "config": true
+            }
+          ],
+          "directories": [
+            {
+              "path": "/etc/alertmanager",
+              "mode": "0755",
+              "owner": "root",
+              "group": "root"
+            },
+            {
+              "path": "/var/lib/alertmanager",
+              "mode": "0755",
+              "owner": "alertmanager",
+              "group": "alertmanager"
+            }
+          ]
+        },
+        "docker": {
+          "enabled": true,
+          "entrypoint": [
+            "/usr/bin/alertmanager"
+          ],
+          "cmd": [
+            "--config.file=/etc/alertmanager/alertmanager.yml"
+          ],
+          "validation": {
+            "port": 9093
+          }
+        }
+      },
+      "availability": {
+        "el8": {
+          "x86_64": {
+            "status": "success",
+            "path": "el8/x86_64/alertmanager-0.30.0-1.el8.x86_64.rpm"
+          },
+          "aarch64": {
+            "status": "success",
+            "path": "el8/aarch64/alertmanager-0.30.0-1.el8.aarch64.rpm"
+          }
+        },
+        "el9": {
+          "x86_64": {
+            "status": "success",
+            "path": "el9/x86_64/alertmanager-v0.30.0-1.el9.x86_64.rpm"
+          },
+          "aarch64": {
+            "status": "success",
+            "path": "el9/aarch64/alertmanager-0.30.0-1.el9.aarch64.rpm"
+          }
+        },
+        "el10": {
+          "x86_64": {
+            "status": "success",
+            "path": "el10/x86_64/alertmanager-0.30.0-1.el10.x86_64.rpm"
+          },
+          "aarch64": {
+            "status": "success",
+            "path": "el10/aarch64/alertmanager-v0.30.0-1.el10.aarch64.rpm"
+          }
+        }
+      }
+    },
+    {
+      "name": "eseries_exporter",
+      "description": "Prometheus exporter for NetApp/Lenovo E-Series storage systems",
+      "version": "2.0.0",
+      "upstream": {
+        "type": "github",
+        "repo": "sckyzo/eseries_exporter",
+        "strategy": "latest_release",
+        "archive_name": "{name}_linux_{arch}.tar.gz"
+      },
+      "build": {
+        "method": "binary_repack",
+        "binary_name": "eseries_exporter"
+      },
+      "artifacts": {
+        "rpm": {
+          "enabled": true,
+          "targets": [
+            "el8",
+            "el9",
+            "el10"
+          ],
+          "summary": "Prometheus exporter for E-Series",
+          "service_file": true,
+          "system_user": "prometheus",
+          "extra_files": [
+            {
+              "source": "assets/eseries_exporter.yml",
+              "dest": "/etc/eseries_exporter/eseries_exporter.yml",
+              "config": true
+            }
+          ],
+          "directories": [
+            {
+              "path": "/etc/eseries_exporter",
+              "mode": "0755",
+              "owner": "root",
+              "group": "root"
+            }
+          ]
+        },
+        "docker": {
+          "enabled": true,
+          "base_image": "registry.access.redhat.com/ubi9/ubi-minimal",
+          "entrypoint": [
+            "/usr/bin/eseries_exporter"
+          ],
+          "cmd": [
+            "--config.file=/etc/eseries_exporter/eseries_exporter.yml"
+          ],
+          "validation": {
+            "port": 9313
+          }
+        }
+      },
+      "availability": {
+        "el8": {
+          "x86_64": {
+            "status": "success",
+            "path": "el8/x86_64/eseries_exporter-v2.0.0-1.el8.x86_64.rpm"
+          },
+          "aarch64": {
+            "status": "success",
+            "path": "el8/aarch64/eseries_exporter-v2.0.0-1.el8.aarch64.rpm"
+          }
+        },
+        "el9": {
+          "x86_64": {
+            "status": "success",
+            "path": "el9/x86_64/eseries_exporter-v2.0.0-1.el9.x86_64.rpm"
+          },
+          "aarch64": {
+            "status": "success",
+            "path": "el9/aarch64/eseries_exporter-v2.0.0-1.el9.aarch64.rpm"
+          }
+        },
+        "el10": {
+          "x86_64": {
+            "status": "success",
+            "path": "el10/x86_64/eseries_exporter-v2.0.0-1.el10.x86_64.rpm"
+          },
+          "aarch64": {
+            "status": "success",
+            "path": "el10/aarch64/eseries_exporter-v2.0.0-1.el10.aarch64.rpm"
+          }
+        }
+      }
+    },
+    {
+      "name": "gpfs_exporter",
+      "description": "Prometheus exporter for IBM GPFS (Spectrum Scale) metrics",
+      "version": "3.2.0",
+      "upstream": {
+        "type": "github",
+        "repo": "treydock/gpfs_exporter",
+        "strategy": "latest_release"
+      },
+      "build": {
+        "method": "binary_repack",
+        "binary_name": "gpfs_exporter",
+        "archs": [
+          "amd64"
+        ]
+      },
+      "artifacts": {
+        "rpm": {
+          "enabled": true,
+          "targets": [
+            "el8",
+            "el9",
+            "el10"
+          ],
+          "summary": "Prometheus exporter for IBM GPFS",
+          "service_file": true,
+          "system_user": "prometheus"
+        },
+        "docker": {
+          "enabled": true,
+          "base_image": "registry.access.redhat.com/ubi9/ubi-minimal",
+          "entrypoint": [
+            "/usr/bin/gpfs_exporter"
+          ],
+          "validation": {
+            "enabled": false
+          }
+        }
+      },
+      "availability": {
+        "el8": {
+          "x86_64": {
+            "status": "success",
+            "path": "el8/x86_64/gpfs_exporter-v3.2.0-1.el8.x86_64.rpm"
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el9": {
+          "x86_64": {
+            "status": "success",
+            "path": "el9/x86_64/gpfs_exporter-v3.2.0-1.el9.x86_64.rpm"
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el10": {
+          "x86_64": {
+            "status": "success",
+            "path": "el10/x86_64/gpfs_exporter-v3.2.0-1.el10.x86_64.rpm"
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        }
+      }
+    },
+    {
+      "name": "ha_cluster_exporter",
+      "description": "Prometheus exporter for High Availability clusters (Pacemaker, Corosync)",
+      "version": "1.4.0",
+      "upstream": {
+        "type": "github",
+        "repo": "ClusterLabs/ha_cluster_exporter",
+        "strategy": "latest_release",
+        "archive_name": "{name}-{arch}.gz"
+      },
+      "build": {
+        "method": "binary_repack",
+        "binary_name": "ha_cluster_exporter"
+      },
+      "artifacts": {
+        "rpm": {
+          "enabled": true,
+          "targets": [
+            "el8",
+            "el9",
+            "el10"
+          ],
+          "summary": "Prometheus HA Cluster Exporter",
+          "service_file": true,
+          "system_user": "prometheus"
+        },
+        "docker": {
+          "enabled": true,
+          "base_image": "registry.access.redhat.com/ubi9/ubi-minimal",
+          "entrypoint": [
+            "/usr/bin/ha_cluster_exporter"
+          ],
+          "validation": {
+            "command": "--version"
+          }
+        }
+      },
+      "availability": {
+        "el8": {
+          "x86_64": {
+            "status": "success",
+            "path": "el8/x86_64/ha_cluster_exporter-1.4.0-1.el8.x86_64.rpm"
+          },
+          "aarch64": {
+            "status": "success",
+            "path": "el8/aarch64/ha_cluster_exporter-1.4.0-1.el8.aarch64.rpm"
+          }
+        },
+        "el9": {
+          "x86_64": {
+            "status": "success",
+            "path": "el9/x86_64/ha_cluster_exporter-1.4.0-1.el9.x86_64.rpm"
+          },
+          "aarch64": {
+            "status": "success",
+            "path": "el9/aarch64/ha_cluster_exporter-1.4.0-1.el9.aarch64.rpm"
+          }
+        },
+        "el10": {
+          "x86_64": {
+            "status": "success",
+            "path": "el10/x86_64/ha_cluster_exporter-1.4.0-1.el10.x86_64.rpm"
+          },
+          "aarch64": {
+            "status": "success",
+            "path": "el10/aarch64/ha_cluster_exporter-1.4.0-1.el10.aarch64.rpm"
+          }
+        }
+      }
+    },
+    {
+      "name": "node_exporter",
+      "description": "Hardware and OS metrics exporter for Prometheus",
+      "version": "1.10.2",
+      "upstream": {
+        "type": "github",
+        "repo": "prometheus/node_exporter",
+        "strategy": "latest_release"
+      },
+      "build": {
+        "method": "binary_repack",
+        "binary_name": "node_exporter"
+      },
+      "artifacts": {
+        "rpm": {
+          "enabled": true,
+          "targets": [
+            "el8",
+            "el9",
+            "el10"
+          ],
+          "summary": "Prometheus exporter for hardware and OS metrics",
+          "service_file": true
+        },
+        "docker": {
+          "enabled": true,
+          "entrypoint": [
+            "/usr/bin/node_exporter"
+          ],
+          "cmd": [],
+          "validation": {
+            "port": 9100
+          }
+        }
+      },
+      "availability": {
+        "el8": {
+          "x86_64": {
+            "status": "success",
+            "path": "el8/x86_64/node_exporter-v1.10.2-1.el8.x86_64.rpm"
+          },
+          "aarch64": {
+            "status": "success",
+            "path": "el8/aarch64/node_exporter-v1.10.2-1.el8.aarch64.rpm"
+          }
+        },
+        "el9": {
+          "x86_64": {
+            "status": "success",
+            "path": "el9/x86_64/node_exporter-v1.10.2-1.el9.x86_64.rpm"
+          },
+          "aarch64": {
+            "status": "success",
+            "path": "el9/aarch64/node_exporter-v1.10.2-1.el9.aarch64.rpm"
+          }
+        },
+        "el10": {
+          "x86_64": {
+            "status": "success",
+            "path": "el10/x86_64/node_exporter-v1.10.2-1.el10.x86_64.rpm"
+          },
+          "aarch64": {
+            "status": "success",
+            "path": "el10/aarch64/node_exporter-1.10.2-1.el10.aarch64.rpm"
+          }
+        }
+      }
+    },
+    {
+      "name": "ping_exporter",
+      "description": "Prometheus exporter for ICMP ping metrics",
+      "version": "1.1.4",
+      "upstream": {
+        "type": "github",
+        "repo": "czerwonk/ping_exporter",
+        "strategy": "latest_release",
+        "archive_name": "{name}_{version}_linux_{arch}.tar.gz"
+      },
+      "build": {
+        "method": "binary_repack",
+        "binary_name": "ping_exporter"
+      },
+      "artifacts": {
+        "rpm": {
+          "enabled": true,
+          "targets": [
+            "el8",
+            "el9",
+            "el10"
+          ],
+          "summary": "Prometheus exporter for ICMP ping metrics",
+          "service_file": true,
+          "system_user": "prometheus",
+          "extra_files": [
+            {
+              "source": "assets/ping.yml",
+              "dest": "/etc/ping_exporter/ping.yml",
+              "config": true
+            }
+          ],
+          "directories": [
+            {
+              "path": "/etc/ping_exporter",
+              "mode": "0755",
+              "owner": "root",
+              "group": "root"
+            }
+          ]
+        },
+        "docker": {
+          "enabled": true,
+          "base_image": "registry.access.redhat.com/ubi9/ubi-minimal",
+          "entrypoint": [
+            "/usr/bin/ping_exporter"
+          ],
+          "cmd": [
+            "--config.path=/etc/ping_exporter/ping.yml"
+          ],
+          "validation": {
+            "port": 9427
+          }
+        }
+      },
+      "availability": {
+        "el8": {
+          "x86_64": {
+            "status": "success",
+            "path": "el8/x86_64/ping_exporter-1.1.4-1.el8.x86_64.rpm"
+          },
+          "aarch64": {
+            "status": "success",
+            "path": "el8/aarch64/ping_exporter-1.1.4-1.el8.aarch64.rpm"
+          }
+        },
+        "el9": {
+          "x86_64": {
+            "status": "success",
+            "path": "el9/x86_64/ping_exporter-1.1.4-1.el9.x86_64.rpm"
+          },
+          "aarch64": {
+            "status": "success",
+            "path": "el9/aarch64/ping_exporter-1.1.4-1.el9.aarch64.rpm"
+          }
+        },
+        "el10": {
+          "x86_64": {
+            "status": "success",
+            "path": "el10/x86_64/ping_exporter-1.1.4-1.el10.x86_64.rpm"
+          },
+          "aarch64": {
+            "status": "success",
+            "path": "el10/aarch64/ping_exporter-1.1.4-1.el10.aarch64.rpm"
+          }
+        }
+      }
+    },
+    {
+      "name": "podman_exporter",
+      "description": "Prometheus exporter for Podman containers",
+      "version": "1.20.0",
+      "upstream": {
+        "type": "github",
+        "repo": "SckyzO/prometheus-podman-exporter",
+        "archive_name": "prometheus-podman-exporter-{version}.linux-{arch}.tar.gz"
+      },
+      "build": {
+        "method": "binary_repack",
+        "binary_name": "podman_exporter"
+      },
+      "artifacts": {
+        "rpm": {
+          "enabled": true,
+          "summary": "Prometheus exporter for Podman containers",
+          "targets": [
+            "el8",
+            "el9",
+            "el10"
+          ],
+          "system_user": "prometheus",
+          "extra_files": [],
+          "directories": [
+            {
+              "path": "/var/lib/prometheus",
+              "owner": "prometheus",
+              "group": "prometheus",
+              "mode": "0755"
+            }
+          ]
+        },
+        "docker": {
+          "enabled": true,
+          "entrypoint": [
+            "/usr/bin/podman_exporter"
+          ],
+          "cmd": [
+            "--collector.enable-all"
+          ],
+          "validation": {
+            "command": "--help"
+          }
+        }
+      },
+      "availability": {
+        "el8": {
+          "x86_64": {
+            "status": "success",
+            "path": "el8/x86_64/podman_exporter-v1.20.0-1.el8.x86_64.rpm"
+          },
+          "aarch64": {
+            "status": "success",
+            "path": "el8/aarch64/podman_exporter-v1.20.0-1.el8.aarch64.rpm"
+          }
+        },
+        "el9": {
+          "x86_64": {
+            "status": "success",
+            "path": "el9/x86_64/podman_exporter-v1.20.0-1.el9.x86_64.rpm"
+          },
+          "aarch64": {
+            "status": "success",
+            "path": "el9/aarch64/podman_exporter-v1.20.0-1.el9.aarch64.rpm"
+          }
+        },
+        "el10": {
+          "x86_64": {
+            "status": "success",
+            "path": "el10/x86_64/podman_exporter-v1.20.0-1.el10.x86_64.rpm"
+          },
+          "aarch64": {
+            "status": "success",
+            "path": "el10/aarch64/podman_exporter-v1.20.0-1.el10.aarch64.rpm"
+          }
+        }
+      }
+    },
+    {
+      "name": "process-exporter",
+      "description": "Prometheus exporter for process metrics (cpu, mem, io)",
+      "version": "0.8.7",
+      "upstream": {
+        "type": "github",
+        "repo": "ncabatoff/process-exporter",
+        "strategy": "latest_release"
+      },
+      "build": {
+        "method": "binary_repack",
+        "binary_name": "process-exporter"
+      },
+      "artifacts": {
+        "rpm": {
+          "enabled": true,
+          "targets": [
+            "el8",
+            "el9",
+            "el10"
+          ],
+          "summary": "Prometheus exporter for process metrics",
+          "service_file": true,
+          "system_user": "prometheus"
+        },
+        "docker": {
+          "enabled": true,
+          "base_image": "registry.access.redhat.com/ubi9/ubi-minimal",
+          "entrypoint": [
+            "/usr/bin/process-exporter"
+          ],
+          "validation": {
+            "port": 9256
+          }
+        }
+      },
+      "availability": {
+        "el8": {
+          "x86_64": {
+            "status": "success",
+            "path": "el8/x86_64/process-exporter-v0.8.7-1.el8.x86_64.rpm"
+          },
+          "aarch64": {
+            "status": "success",
+            "path": "el8/aarch64/process-exporter-v0.8.7-1.el8.aarch64.rpm"
+          }
+        },
+        "el9": {
+          "x86_64": {
+            "status": "success",
+            "path": "el9/x86_64/process-exporter-v0.8.7-1.el9.x86_64.rpm"
+          },
+          "aarch64": {
+            "status": "success",
+            "path": "el9/aarch64/process-exporter-v0.8.7-1.el9.aarch64.rpm"
+          }
+        },
+        "el10": {
+          "x86_64": {
+            "status": "success",
+            "path": "el10/x86_64/process-exporter-v0.8.7-1.el10.x86_64.rpm"
+          },
+          "aarch64": {
+            "status": "success",
+            "path": "el10/aarch64/process-exporter-v0.8.7-1.el10.aarch64.rpm"
+          }
+        }
+      }
+    },
+    {
+      "name": "prometheus",
+      "description": "The Prometheus monitoring system and time series database.",
+      "version": "3.8.1",
+      "upstream": {
+        "type": "github",
+        "repo": "prometheus/prometheus",
+        "strategy": "latest_release"
+      },
+      "build": {
+        "method": "binary_repack",
+        "binary_name": "prometheus",
+        "extra_binaries": [
+          "promtool"
+        ]
+      },
+      "artifacts": {
+        "rpm": {
+          "enabled": true,
+          "targets": [
+            "el8",
+            "el9",
+            "el10"
+          ],
+          "summary": "The Prometheus monitoring system and time series database.",
+          "service_file": true,
+          "system_user": "prometheus",
+          "extra_files": [
+            {
+              "source": "assets/prometheus.yml",
+              "dest": "/etc/prometheus/prometheus.yml",
+              "config": true
+            }
+          ],
+          "directories": [
+            {
+              "path": "/etc/prometheus",
+              "mode": "0755",
+              "owner": "root",
+              "group": "root"
+            },
+            {
+              "path": "/var/lib/prometheus",
+              "mode": "0755",
+              "owner": "prometheus",
+              "group": "prometheus"
+            }
+          ]
+        },
+        "docker": {
+          "enabled": true,
+          "entrypoint": [
+            "/usr/bin/prometheus"
+          ],
+          "cmd": [
+            "--config.file=/etc/prometheus/prometheus.yml"
+          ],
+          "validation": {
+            "port": 9090
+          }
+        }
+      },
+      "availability": {
+        "el8": {
+          "x86_64": {
+            "status": "success",
+            "path": "el8/x86_64/prometheus-v3.8.1-1.el8.x86_64.rpm"
+          },
+          "aarch64": {
+            "status": "success",
+            "path": "el8/aarch64/prometheus-v3.8.1-1.el8.aarch64.rpm"
+          }
+        },
+        "el9": {
+          "x86_64": {
+            "status": "success",
+            "path": "el9/x86_64/prometheus-v3.8.1-1.el9.x86_64.rpm"
+          },
+          "aarch64": {
+            "status": "success",
+            "path": "el9/aarch64/prometheus-3.8.1-1.el9.aarch64.rpm"
+          }
+        },
+        "el10": {
+          "x86_64": {
+            "status": "success",
+            "path": "el10/x86_64/prometheus-v3.8.1-1.el10.x86_64.rpm"
+          },
+          "aarch64": {
+            "status": "success",
+            "path": "el10/aarch64/prometheus-3.8.1-1.el10.aarch64.rpm"
+          }
+        }
+      }
+    },
+    {
+      "name": "slurm_exporter",
+      "description": "Prometheus exporter for Slurm workload manager metrics",
+      "version": "1.2.0",
+      "upstream": {
+        "type": "github",
+        "repo": "sckyzo/slurm_exporter",
+        "strategy": "latest_release",
+        "archive_name": "{name}-{clean_version}-linux-{arch}.tar.gz"
+      },
+      "build": {
+        "method": "binary_repack",
+        "binary_name": "slurm_exporter"
+      },
+      "artifacts": {
+        "rpm": {
+          "enabled": true,
+          "targets": [
+            "el8",
+            "el9",
+            "el10"
+          ],
+          "summary": "Prometheus exporter for Slurm metrics",
+          "service_file": true,
+          "system_user": "prometheus"
+        },
+        "docker": {
+          "enabled": true,
+          "base_image": "registry.access.redhat.com/ubi9/ubi-minimal",
+          "entrypoint": [
+            "/usr/bin/slurm_exporter"
+          ],
+          "validation": {
+            "port": 9341
+          }
+        }
+      },
+      "availability": {
+        "el8": {
+          "x86_64": {
+            "status": "success",
+            "path": "el8/x86_64/slurm_exporter-v1.2.0-1.el8.x86_64.rpm"
+          },
+          "aarch64": {
+            "status": "success",
+            "path": "el8/aarch64/slurm_exporter-v1.2.0-1.el8.aarch64.rpm"
+          }
+        },
+        "el9": {
+          "x86_64": {
+            "status": "success",
+            "path": "el9/x86_64/slurm_exporter-v1.1.1-1.el9.x86_64.rpm"
+          },
+          "aarch64": {
+            "status": "success",
+            "path": "el9/aarch64/slurm_exporter-v1.2.0-1.el9.aarch64.rpm"
+          }
+        },
+        "el10": {
+          "x86_64": {
+            "status": "success",
+            "path": "el10/x86_64/slurm_exporter-v1.2.0-1.el10.x86_64.rpm"
+          },
+          "aarch64": {
+            "status": "success",
+            "path": "el10/aarch64/slurm_exporter-v1.2.0-1.el10.aarch64.rpm"
+          }
+        }
+      }
+    },
+    {
+      "name": "smartctl_exporter",
+      "description": "Prometheus exporter for S.M.A.R.T. storage devices metrics",
+      "version": "0.14.0",
+      "upstream": {
+        "type": "github",
+        "repo": "prometheus-community/smartctl_exporter",
+        "strategy": "latest_release"
+      },
+      "build": {
+        "method": "binary_repack",
+        "binary_name": "smartctl_exporter"
+      },
+      "artifacts": {
+        "rpm": {
+          "enabled": true,
+          "targets": [
+            "el8",
+            "el9",
+            "el10"
+          ],
+          "summary": "Prometheus exporter for S.M.A.R.T. metrics",
+          "service_file": true,
+          "system_user": "root"
+        },
+        "docker": {
+          "enabled": true,
+          "base_image": "registry.access.redhat.com/ubi9/ubi-minimal",
+          "entrypoint": [
+            "/usr/bin/smartctl_exporter"
+          ],
+          "validation": {
+            "port": 9633
+          }
+        }
+      },
+      "availability": {
+        "el8": {
+          "x86_64": {
+            "status": "success",
+            "path": "el8/x86_64/smartctl_exporter-v0.14.0-1.el8.x86_64.rpm"
+          },
+          "aarch64": {
+            "status": "success",
+            "path": "el8/aarch64/smartctl_exporter-v0.14.0-1.el8.aarch64.rpm"
+          }
+        },
+        "el9": {
+          "x86_64": {
+            "status": "success",
+            "path": "el9/x86_64/smartctl_exporter-v0.14.0-1.el9.x86_64.rpm"
+          },
+          "aarch64": {
+            "status": "success",
+            "path": "el9/aarch64/smartctl_exporter-v0.14.0-1.el9.aarch64.rpm"
+          }
+        },
+        "el10": {
+          "x86_64": {
+            "status": "success",
+            "path": "el10/x86_64/smartctl_exporter-v0.14.0-1.el10.x86_64.rpm"
+          },
+          "aarch64": {
+            "status": "success",
+            "path": "el10/aarch64/smartctl_exporter-v0.14.0-1.el10.aarch64.rpm"
+          }
+        }
+      }
+    },
+    {
+      "name": "snmp_exporter",
+      "description": "Prometheus exporter for SNMP-enabled devices",
+      "version": "0.29.0",
+      "upstream": {
+        "type": "github",
+        "repo": "prometheus/snmp_exporter",
+        "strategy": "latest_release"
+      },
+      "build": {
+        "method": "binary_repack",
+        "binary_name": "snmp_exporter",
+        "extra_sources": [
+          {
+            "url": "https://raw.githubusercontent.com/prometheus/snmp_exporter/refs/heads/main/snmp.yml",
+            "filename": "snmp.yml"
+          }
+        ]
+      },
+      "artifacts": {
+        "rpm": {
+          "enabled": true,
+          "targets": [
+            "el8",
+            "el9",
+            "el10"
+          ],
+          "summary": "Prometheus exporter for SNMP metrics",
+          "service_file": true,
+          "system_user": "prometheus",
+          "extra_files": [
+            {
+              "source": "snmp.yml",
+              "dest": "/etc/snmp_exporter/snmp.yml",
+              "config": true
+            }
+          ],
+          "directories": [
+            {
+              "path": "/etc/snmp_exporter",
+              "mode": "0755",
+              "owner": "root",
+              "group": "root"
+            }
+          ]
+        },
+        "docker": {
+          "enabled": true,
+          "base_image": "registry.access.redhat.com/ubi9/ubi-minimal",
+          "entrypoint": [
+            "/usr/bin/snmp_exporter"
+          ],
+          "cmd": [
+            "--config.file=/etc/snmp_exporter/snmp.yml"
+          ],
+          "validation": {
+            "port": 9116
+          }
+        }
+      },
+      "availability": {
+        "el8": {
+          "x86_64": {
+            "status": "success",
+            "path": "el8/x86_64/snmp_exporter-v0.29.0-1.el8.x86_64.rpm"
+          },
+          "aarch64": {
+            "status": "success",
+            "path": "el8/aarch64/snmp_exporter-v0.29.0-1.el8.aarch64.rpm"
+          }
+        },
+        "el9": {
+          "x86_64": {
+            "status": "success",
+            "path": "el9/x86_64/snmp_exporter-v0.29.0-1.el9.x86_64.rpm"
+          },
+          "aarch64": {
+            "status": "success",
+            "path": "el9/aarch64/snmp_exporter-v0.29.0-1.el9.aarch64.rpm"
+          }
+        },
+        "el10": {
+          "x86_64": {
+            "status": "success",
+            "path": "el10/x86_64/snmp_exporter-v0.29.0-1.el10.x86_64.rpm"
+          },
+          "aarch64": {
+            "status": "success",
+            "path": "el10/aarch64/snmp_exporter-v0.29.0-1.el10.aarch64.rpm"
+          }
+        }
+      }
+    }
+  ]
+}
