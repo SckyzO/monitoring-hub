@@ -55,5 +55,12 @@ def generate(output, repo_dir):
         f.write(rendered)
     click.echo(f"Portal generated at {output}")
 
+    # Generate Machine Readable Catalog
+    import json
+    json_output = os.path.join(os.path.dirname(output), 'catalog.json')
+    with open(json_output, 'w') as f:
+        json.dump({'exporters': exporters_data}, f, indent=2)
+    click.echo(f"Catalog generated at {json_output}")
+
 if __name__ == '__main__':
     generate()
