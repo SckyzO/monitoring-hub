@@ -1,0 +1,37 @@
+name: mysqld_exporter
+description: "Prometheus exporter for MySQL server metrics"
+version: "v0.18.0"
+
+upstream:
+  type: github
+  repo: prometheus/mysqld_exporter
+
+build:
+  method: binary_repack
+  binary_name: mysqld_exporter
+
+artifacts:
+  rpm:
+    enabled: true
+    summary: "Prometheus MySQL Exporter"
+    targets: [el8, el9, el10]
+    system_user: mysqld_exporter
+    service_file: true
+    extra_files:
+      - source: assets/.my.cnf
+        dest: /var/lib/mysqld_exporter/.my.cnf
+        config: true
+        mode: "0600" # Important: secured file
+    directories:
+      - path: /var/lib/mysqld_exporter
+        owner: mysqld_exporter
+        group: mysqld_exporter
+        mode: "0700"
+
+  docker:
+    enabled: true
+    entrypoint: ["/usr/bin/mysqld_exporter"]
+    # We mount the config file at runtime or use env vars
+    cmd: ["--config.my-cnf=/var/lib/mysqld_exporter/.my.cnf"]
+    validation:
+      port: 9104
