@@ -31,7 +31,7 @@ jobs:
     outputs:
       exporters: ${{ steps.smart-filter.outputs.exporters }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -58,7 +58,7 @@ jobs:
       contents: read
       packages: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -192,7 +192,7 @@ jobs:
         arch: [amd64, arm64]
         dist: [el8, el9, el10]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       
       - name: Set up QEMU
         if: matrix.arch == 'arm64'
@@ -254,7 +254,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Download All Artifacts
         uses: actions/download-artifact@v4
