@@ -1,0 +1,28 @@
+name: process_exporter
+description: "Prometheus exporter for process metrics"
+version: v0.8.7
+upstream:
+  type: github
+  repo: ncabatoff/process-exporter
+  archive_name: "process-exporter-{clean_version}.linux-{arch}.tar.gz"
+
+build:
+  method: binary_repack
+  binary_name: process-exporter
+
+artifacts:
+  rpm:
+    enabled: true
+    targets:
+    - el8
+    - el9
+    - el10
+    summary: Prometheus exporter for process metrics
+    service_file: true
+    system_user: prometheus
+  docker:
+    enabled: true
+    entrypoint: ["/usr/bin/process_exporter"]
+    validation:
+      port: 9256
+
