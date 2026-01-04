@@ -37,3 +37,24 @@ jobs:
         with:
           name: generated-build-files
           path: build/
+
+  # Ceinture et Bretelles : Test d'intégration complet sur un exporter témoin
+  integration-test:
+    runs-on: ubuntu-latest
+    needs: generate-artifacts
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r core/requirements.txt
+
+      - name: Full Pipeline Test (Node Exporter)
+        run: |
+          chmod +x core/scripts/*.sh
+          # On utilise node_exporter comme "Canary" pour valider la chaîne
+          ./core/scripts/local_test.sh node_exporter --smoke
