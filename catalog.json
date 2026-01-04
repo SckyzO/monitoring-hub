@@ -96,6 +96,82 @@
       }
     },
     {
+      "name": "bind_exporter",
+      "description": "Prometheus exporter for Bind (DNS) statistics",
+      "version": "0.8.0",
+      "upstream": {
+        "type": "github",
+        "repo": "prometheus-community/bind_exporter"
+      },
+      "build": {
+        "method": "binary_repack",
+        "binary_name": "bind_exporter"
+      },
+      "artifacts": {
+        "rpm": {
+          "enabled": true,
+          "summary": "Prometheus Bind Exporter",
+          "targets": [
+            "el8",
+            "el9",
+            "el10"
+          ],
+          "system_user": "bind_exporter",
+          "service_file": true,
+          "extra_files": [],
+          "directories": [
+            {
+              "path": "/var/lib/bind_exporter",
+              "owner": "bind_exporter",
+              "group": "bind_exporter",
+              "mode": "0755"
+            }
+          ]
+        },
+        "docker": {
+          "enabled": true,
+          "entrypoint": [
+            "/usr/bin/bind_exporter"
+          ],
+          "validation": {
+            "port": 9119
+          }
+        }
+      },
+      "availability": {
+        "el8": {
+          "x86_64": {
+            "status": "success",
+            "path": "el8/x86_64/bind_exporter-v0.8.0-1.el8.x86_64.rpm"
+          },
+          "aarch64": {
+            "status": "success",
+            "path": "el8/aarch64/bind_exporter-v0.8.0-1.el8.aarch64.rpm"
+          }
+        },
+        "el9": {
+          "x86_64": {
+            "status": "success",
+            "path": "el9/x86_64/bind_exporter-v0.8.0-1.el9.x86_64.rpm"
+          },
+          "aarch64": {
+            "status": "success",
+            "path": "el9/aarch64/bind_exporter-v0.8.0-1.el9.aarch64.rpm"
+          }
+        },
+        "el10": {
+          "x86_64": {
+            "status": "success",
+            "path": "el10/x86_64/bind_exporter-v0.8.0-1.el10.x86_64.rpm"
+          },
+          "aarch64": {
+            "status": "success",
+            "path": "el10/aarch64/bind_exporter-v0.8.0-1.el10.aarch64.rpm"
+          }
+        }
+      }
+    },
+    {
       "name": "blackbox_exporter",
       "description": "Prometheus blackbox exporter for network probing (HTTP, DNS, TCP, ICMP)",
       "version": "0.28.0",
