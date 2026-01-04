@@ -23,11 +23,12 @@ jobs:
 
       - name: Build Exporters
         run: |
+          export PYTHONPATH=$GITHUB_WORKSPACE
           for exporter in exporters/*/; do
             if [ -f "${exporter}manifest.yaml" ]; then
               name=$(basename "$exporter")
               echo "Building $name..."
-              python core/builder.py --manifest "${exporter}manifest.yaml" --output-dir "build/$name"
+              python3 -m core.engine.builder --manifest "${exporter}manifest.yaml" --output-dir "build/$name"
             fi
           done
 

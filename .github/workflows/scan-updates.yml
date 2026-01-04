@@ -25,7 +25,8 @@ jobs:
       - name: Run Watcher
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: python core/watcher.py --update
+          PYTHONPATH: ${{ github.workspace }}
+        run: python3 -m core.engine.watcher --update
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v6
