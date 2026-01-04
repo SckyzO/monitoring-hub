@@ -9,6 +9,13 @@ if [ -z "$SPEC_FILE" ]; then
     exit 1
 fi
 
+# Install minimal build requirements if missing
+# This allows moving complex logic out of the docker run command
+if ! command -v rpmdev-setuptree &> /dev/null; then
+    echo "Installing base build tools..."
+    dnf install -y rpmdevtools epel-release 'dnf-command(builddep)'
+fi
+
 # Setup RPM build tree
 rpmdev-setuptree
 

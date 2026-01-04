@@ -1,6 +1,6 @@
 modules:
   default:
     user: admin
-    password: password
+    password: <YOUR_PASSWORD_HERE>
     proxy_url: http://localhost:8443
     timeout: 5

@@ -2,7 +2,7 @@ import click
 import glob
 import yaml
 import os
-from jinja2 import Environment, FileSystemLoader
+from jinja2 import Environment, FileSystemLoader, select_autoescape
 from core.config.settings import SUPPORTED_DISTROS, EXPORTERS_DIR, TEMPLATES_DIR
 
 @click.command()
@@ -47,7 +47,10 @@ def generate(output, repo_dir):
             print(f"Error: {e}")
 
     exporters_data.sort(key=lambda x: x['name'])
-    env = Environment(loader=FileSystemLoader(TEMPLATES_DIR))
+    env = Environment(
+        loader=FileSystemLoader(TEMPLATES_DIR),
+        autoescape=select_autoescape(['html', 'xml'])
+    )
     template = env.get_template('index.html.j2')
     rendered = template.render(exporters=exporters_data)
 

@@ -1,7 +1,7 @@
-PyYAML
-Jinja2
-click
-requests
-semver
-marshmallow
-packaging
+PyYAML==6.0.3
+Jinja2==3.1.6
+click==8.3.1
+requests==2.32.5
+semver==3.0.4
+marshmallow==4.1.2
+packaging==25.0
