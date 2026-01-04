@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.13.0] - 2026-01-02
+
+### 🚀 Features
+- **New Exporters:**
+    - Added **ipmi_exporter** (v1.10.0) with support for `freeipmi` and remote configuration.
+    - Added **blackbox_exporter** (v0.28.0) for network probing (HTTP, DNS, TCP, ICMP).
+- **RPM Dependencies Support:** The build engine now supports mandatory package requirements in RPM specs via the `dependencies` field in manifests.
+- **Local Testing Improvements:** Added a `--smoke` (or `-s`) flag to `core/local_test.sh` to optionally run Docker validation tests locally.
+
+### 🐛 Fixes & Improvements
+- **Schema:** Updated `RPMSchema` to include the new `dependencies` field.
+- **Templates:** Enhanced `default.spec.j2` to dynamically generate `Requires:` tags based on manifest dependencies.
+
 ## [0.12.0] - 2026-01-02
 
 ### 🚀 Major Features
