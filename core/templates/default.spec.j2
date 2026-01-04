@@ -16,6 +16,10 @@ Source{{ loop.index }}: {{ file.build_source }}
 
 BuildArch:      {{ rpm_arch }}
 
+{% for dep in artifacts.rpm.dependencies %}
+Requires:       {{ dep }}
+{% endfor %}
+
 {% if artifacts.rpm.system_user %}
 Requires(pre):  shadow-utils
 {% endif %}

@@ -1,0 +1,40 @@
+name: ipmi_exporter
+description: "Prometheus exporter for IPMI devices"
+version: "v1.10.0"
+
+upstream:
+  type: github
+  repo: prometheus-community/ipmi_exporter
+
+build:
+  method: binary_repack
+  binary_name: ipmi_exporter
+
+artifacts:
+  rpm:
+    enabled: true
+    summary: "Prometheus exporter for IPMI devices"
+    targets: [el8, el9, el10]
+    dependencies: ["freeipmi"]
+    system_user: ipmi_exporter
+    service_file: true
+    extra_files:
+      - source: assets/ipmi_remote.yml
+        dest: /etc/ipmi_exporter/ipmi_remote.yml
+        config: true
+    directories:
+      - path: /var/lib/ipmi_exporter
+        owner: ipmi_exporter
+        group: ipmi_exporter
+        mode: "0755"
+      - path: /etc/ipmi_exporter
+        owner: root
+        group: root
+        mode: "0755"
+
+  docker:
+    enabled: true
+    entrypoint: ["/usr/bin/ipmi_exporter"]
+    cmd: ["--config.file=/etc/ipmi_exporter/ipmi_remote.yml"]
+    validation:
+      port: 9290
