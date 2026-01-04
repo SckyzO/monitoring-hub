@@ -174,22 +174,14 @@ If you need to debug a specific step:
 
 ## 🏗️ Architecture
 
-The project follows a strict **"Factory" pipeline**:
-
-1.  **🧠 Smart Build (State Management):**
-    The engine compares local manifests against the production `catalog.json`. Only new or updated exporters trigger a build, drastically reducing CI time.
-
-2.  **⚙️ Core Engine (`builder.py`):**
-    *   **Parser:** Validates YAML manifests against a strict schema (`marshmallow`).
-    *   **Fetcher:** Downloads architecture-specific binaries (AMD64/ARM64) from upstream.
-    *   **Templater:** Renders professional `.spec` files and `Dockerfiles` using **Jinja2**.
-
-3.  **🏭 Parallel Factory:**
-    A dynamic CI Matrix spins up concurrent jobs to build RPMs (EL8/9/10) and Docker images (UBI9) for all architectures.
-
-4.  **🚀 Distribution:**
-    *   **YUM Repo:** Artifacts are published to GitHub Pages with auto-generated metadata.
-    *   **Registry:** Containers are pushed to GHCR with OCI labels.
+The "Magic" happens in the `core/` engine:
+1.  **Smart Filter:** Compares local manifests against the deployed `catalog.json` (State Management) to only rebuild what changed.
+2.  **Modular Engine (`core/engine/`):**
+    *   **Builder:** Downloads binaries and orchestrates the build.
+    *   **Schema:** Validates YAML manifests (`marshmallow`).
+    *   **State Manager:** Handles the incremental build logic.
+3.  **Templater:** Uses **Jinja2** (with auto-escape enabled) to render `.spec` files and `Dockerfiles`.
+4.  **Publisher:** A parallelized Matrix CI builds all targets and updates the YUM repository.
 
 ## 📦 Distribution
 
