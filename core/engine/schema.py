@@ -1,4 +1,5 @@
 from marshmallow import Schema, fields, validate
+from core.config.settings import SUPPORTED_DISTROS, DEFAULT_BASE_IMAGE
 
 class FileInstallSchema(Schema):
     source = fields.Str(required=True)
@@ -14,7 +15,7 @@ class DirectorySchema(Schema):
 
 class RPMSchema(Schema):
     enabled = fields.Bool(load_default=False)
-    targets = fields.List(fields.Str(), load_default=["el8", "el9", "el10"])
+    targets = fields.List(fields.Str(), load_default=SUPPORTED_DISTROS)
     summary = fields.Str()
     dependencies = fields.List(fields.Str(), load_default=[])
     service_file = fields.Bool(load_default=False)
@@ -29,7 +30,7 @@ class ValidationSchema(Schema):
 
 class DockerSchema(Schema):
     enabled = fields.Bool(load_default=False)
-    base_image = fields.Str(load_default="registry.access.redhat.com/ubi9/ubi-minimal")
+    base_image = fields.Str(load_default=DEFAULT_BASE_IMAGE)
     entrypoint = fields.List(fields.Str())
     cmd = fields.List(fields.Str(), load_default=[])
     validation = fields.Nested(ValidationSchema, load_default={})

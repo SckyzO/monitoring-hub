@@ -3,8 +3,9 @@ import json
 import yaml
 import requests
 import sys
+from core.config.settings import DEFAULT_CATALOG_URL, EXPORTERS_DIR
 
-def get_remote_catalog(catalog_url="https://sckyzo.github.io/monitoring-hub/catalog.json"):
+def get_remote_catalog(catalog_url=DEFAULT_CATALOG_URL):
     """
     Fetches the current state of the repository from the deployed catalog.json.
     Returns a dictionary keyed by exporter name with version info.
@@ -23,7 +24,7 @@ def get_remote_catalog(catalog_url="https://sckyzo.github.io/monitoring-hub/cata
         print(f"Warning: Could not fetch remote catalog: {e}. Assuming empty state.", file=sys.stderr)
         return {}
 
-def get_local_state(exporters_dir="exporters"):
+def get_local_state(exporters_dir=EXPORTERS_DIR):
     """
     Reads all local manifest.yaml files to build the current desired state.
     """
@@ -46,7 +47,7 @@ def get_local_state(exporters_dir="exporters"):
 
 def main():
     # Allow overriding catalog URL for testing or forks
-    catalog_url = os.environ.get('CATALOG_URL', "https://sckyzo.github.io/monitoring-hub/catalog.json")
+    catalog_url = os.environ.get('CATALOG_URL', DEFAULT_CATALOG_URL)
     force_rebuild = os.environ.get('FORCE_REBUILD', 'false').lower() == 'true'
     # Allow filtering by specific exporter if running manually
     target_exporter = os.environ.get('TARGET_EXPORTER')

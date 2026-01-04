@@ -145,8 +145,8 @@ You can build RPMs and Docker images locally for testing or custom use.
 2. **Run the Test Script:**
    We provide a helper script to automate generation, RPM build, and Docker build in one go.
    ```bash
-   # Usage: ./core/local_test.sh <exporter> [arch] [distro]
-   ./core/local_test.sh node_exporter
+   # Usage: ./core/scripts/local_test.sh <exporter> [arch] [distro] [--smoke]
+   ./core/scripts/local_test.sh node_exporter
    ```
 
    *That's it!* Artifacts will be in `build/node_exporter/`.
@@ -156,12 +156,13 @@ If you need to debug a specific step:
 
 1. **Generate build files:**
    ```bash
-   python core/builder.py --manifest exporters/node_exporter/manifest.yaml --arch amd64 --output-dir build/node_exporter
+   export PYTHONPATH=$(pwd)
+   python3 -m core.engine.builder --manifest exporters/node_exporter/manifest.yaml --arch amd64 --output-dir build/node_exporter
    ```
 
 2. **Build the RPM:**
    ```bash
-   ./core/build_rpm.sh build/node_exporter/node_exporter.spec build/node_exporter/rpms amd64 almalinux:9
+   ./core/scripts/build_rpm.sh build/node_exporter/node_exporter.spec build/node_exporter/rpms amd64 almalinux:9
    ```
 
 3. **Build the Docker Image:**
