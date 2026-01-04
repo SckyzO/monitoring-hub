@@ -96,6 +96,97 @@
       }
     },
     {
+      "name": "blackbox_exporter",
+      "description": "Prometheus blackbox exporter for network probing (HTTP, DNS, TCP, ICMP)",
+      "version": "0.28.0",
+      "upstream": {
+        "type": "github",
+        "repo": "prometheus/blackbox_exporter"
+      },
+      "build": {
+        "method": "binary_repack",
+        "binary_name": "blackbox_exporter"
+      },
+      "artifacts": {
+        "rpm": {
+          "enabled": true,
+          "summary": "Prometheus blackbox exporter",
+          "targets": [
+            "el8",
+            "el9",
+            "el10"
+          ],
+          "system_user": "blackbox_exporter",
+          "service_file": true,
+          "extra_files": [
+            {
+              "source": "assets/blackbox.yml",
+              "dest": "/etc/blackbox_exporter/blackbox.yml",
+              "config": true
+            }
+          ],
+          "directories": [
+            {
+              "path": "/etc/blackbox_exporter",
+              "owner": "root",
+              "group": "root",
+              "mode": "0755"
+            },
+            {
+              "path": "/var/lib/blackbox_exporter",
+              "owner": "blackbox_exporter",
+              "group": "blackbox_exporter",
+              "mode": "0755"
+            }
+          ]
+        },
+        "docker": {
+          "enabled": true,
+          "entrypoint": [
+            "/usr/bin/blackbox_exporter"
+          ],
+          "cmd": [
+            "--config.file=/etc/blackbox_exporter/blackbox.yml"
+          ],
+          "validation": {
+            "port": 9115
+          }
+        }
+      },
+      "availability": {
+        "el8": {
+          "x86_64": {
+            "status": "success",
+            "path": "el8/x86_64/blackbox_exporter-v0.28.0-1.el8.x86_64.rpm"
+          },
+          "aarch64": {
+            "status": "success",
+            "path": "el8/aarch64/blackbox_exporter-v0.28.0-1.el8.aarch64.rpm"
+          }
+        },
+        "el9": {
+          "x86_64": {
+            "status": "success",
+            "path": "el9/x86_64/blackbox_exporter-v0.28.0-1.el9.x86_64.rpm"
+          },
+          "aarch64": {
+            "status": "success",
+            "path": "el9/aarch64/blackbox_exporter-v0.28.0-1.el9.aarch64.rpm"
+          }
+        },
+        "el10": {
+          "x86_64": {
+            "status": "success",
+            "path": "el10/x86_64/blackbox_exporter-v0.28.0-1.el10.x86_64.rpm"
+          },
+          "aarch64": {
+            "status": "success",
+            "path": "el10/aarch64/blackbox_exporter-v0.28.0-1.el10.aarch64.rpm"
+          }
+        }
+      }
+    },
+    {
       "name": "eseries_exporter",
       "description": "Prometheus exporter for NetApp/Lenovo E-Series storage systems",
       "version": "2.0.0",
