@@ -1,0 +1,33 @@
+name: nginx_exporter
+description: "Prometheus exporter for NGINX metrics"
+version: "v1.5.1"
+
+upstream:
+  type: github
+  repo: nginx/nginx-prometheus-exporter
+  archive_name: "nginx-prometheus-exporter_{clean_version}_linux_{arch}.tar.gz"
+
+build:
+  method: binary_repack
+  binary_name: nginx-prometheus-exporter
+
+artifacts:
+  rpm:
+    enabled: true
+    summary: "Prometheus Nginx Exporter"
+    targets: [el8, el9, el10]
+    system_user: nginx_exporter
+    service_file: true
+    extra_files: []
+    directories:
+      - path: /var/lib/nginx_exporter
+        owner: nginx_exporter
+        group: nginx_exporter
+        mode: "0755"
+
+  docker:
+    enabled: true
+    entrypoint: ["/usr/bin/nginx_exporter"]
+    # Scrapes http://localhost:8080/stub_status by default
+    validation:
+      port: 9113
