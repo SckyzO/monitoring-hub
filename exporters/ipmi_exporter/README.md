@@ -1,5 +1,7 @@
 # IPMI Exporter
 
+[![Upstream](https://img.shields.io/badge/Upstream-prometheus--community/ipmi_exporter-blue)](https://github.com/prometheus-community/ipmi_exporter)
+
 Prometheus exporter for IPMI devices (Intelligent Platform Management Interface).
 
 ## Overview

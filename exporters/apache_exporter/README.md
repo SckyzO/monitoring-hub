@@ -1,5 +1,7 @@
 # Apache Exporter
 
+[![Upstream](https://img.shields.io/badge/Upstream-Lusitaniae/apache_exporter-blue)](https://github.com/Lusitaniae/apache_exporter)
+
 Prometheus exporter for Apache HTTP Server metrics.
 
 ## Overview

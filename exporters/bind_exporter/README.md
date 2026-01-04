@@ -1,5 +1,7 @@
 # Bind Exporter
 
+[![Upstream](https://img.shields.io/badge/Upstream-prometheus--community/bind_exporter-blue)](https://github.com/prometheus-community/bind_exporter)
+
 Prometheus exporter for Bind (DNS) statistics.
 
 ## Overview
