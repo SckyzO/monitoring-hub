@@ -19,6 +19,11 @@ env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
 
+# Ensure only one release job runs at a time to prevent gh-pages conflicts
+concurrency:
+  group: release-publish
+  cancel-in-progress: false
+
 jobs:
   # 1. Smart Discovery (Incremental Build)
   discover:
