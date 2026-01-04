@@ -1,0 +1,32 @@
+name: apache_exporter
+description: "Prometheus exporter for Apache HTTP Server"
+version: "v1.0.10"
+
+upstream:
+  type: github
+  repo: Lusitaniae/apache_exporter
+
+build:
+  method: binary_repack
+  binary_name: apache_exporter
+
+artifacts:
+  rpm:
+    enabled: true
+    summary: "Prometheus Apache Exporter"
+    targets: [el8, el9, el10]
+    system_user: apache_exporter
+    service_file: true
+    extra_files: []
+    directories:
+      - path: /var/lib/apache_exporter
+        owner: apache_exporter
+        group: apache_exporter
+        mode: "0755"
+
+  docker:
+    enabled: true
+    entrypoint: ["/usr/bin/apache_exporter"]
+    # By default it tries to scrape http://localhost/server-status?auto
+    validation:
+      port: 9117
