@@ -663,6 +663,92 @@
       }
     },
     {
+      "name": "mysqld_exporter",
+      "description": "Prometheus exporter for MySQL server metrics",
+      "version": "0.18.0",
+      "upstream": {
+        "type": "github",
+        "repo": "prometheus/mysqld_exporter"
+      },
+      "build": {
+        "method": "binary_repack",
+        "binary_name": "mysqld_exporter"
+      },
+      "artifacts": {
+        "rpm": {
+          "enabled": true,
+          "summary": "Prometheus MySQL Exporter",
+          "targets": [
+            "el8",
+            "el9",
+            "el10"
+          ],
+          "system_user": "mysqld_exporter",
+          "service_file": true,
+          "extra_files": [
+            {
+              "source": "assets/my.cnf",
+              "dest": "/var/lib/mysqld_exporter/.my.cnf",
+              "config": true,
+              "mode": "0600"
+            }
+          ],
+          "directories": [
+            {
+              "path": "/var/lib/mysqld_exporter",
+              "owner": "mysqld_exporter",
+              "group": "mysqld_exporter",
+              "mode": "0700"
+            }
+          ]
+        },
+        "docker": {
+          "enabled": true,
+          "entrypoint": [
+            "/usr/bin/mysqld_exporter"
+          ],
+          "cmd": [
+            "--config.my-cnf=/var/lib/mysqld_exporter/.my.cnf"
+          ],
+          "validation": {
+            "port": 9104
+          }
+        }
+      },
+      "availability": {
+        "el8": {
+          "x86_64": {
+            "status": "success",
+            "path": "el8/x86_64/mysqld_exporter-v0.18.0-1.el8.x86_64.rpm"
+          },
+          "aarch64": {
+            "status": "success",
+            "path": "el8/aarch64/mysqld_exporter-v0.18.0-1.el8.aarch64.rpm"
+          }
+        },
+        "el9": {
+          "x86_64": {
+            "status": "success",
+            "path": "el9/x86_64/mysqld_exporter-v0.18.0-1.el9.x86_64.rpm"
+          },
+          "aarch64": {
+            "status": "success",
+            "path": "el9/aarch64/mysqld_exporter-v0.18.0-1.el9.aarch64.rpm"
+          }
+        },
+        "el10": {
+          "x86_64": {
+            "status": "success",
+            "path": "el10/x86_64/mysqld_exporter-v0.18.0-1.el10.x86_64.rpm"
+          },
+          "aarch64": {
+            "status": "success",
+            "path": "el10/aarch64/mysqld_exporter-v0.18.0-1.el10.aarch64.rpm"
+          }
+        }
+      }
+    },
+    {
       "name": "nginx_exporter",
       "description": "Prometheus exporter for NGINX metrics",
       "version": "1.5.1",
@@ -970,75 +1056,6 @@
           "aarch64": {
             "status": "success",
             "path": "el10/aarch64/podman_exporter-v1.20.0-1.el10.aarch64.rpm"
-          }
-        }
-      }
-    },
-    {
-      "name": "process-exporter",
-      "description": "Prometheus exporter for process metrics (cpu, mem, io)",
-      "version": "0.8.7",
-      "upstream": {
-        "type": "github",
-        "repo": "ncabatoff/process-exporter",
-        "strategy": "latest_release"
-      },
-      "build": {
-        "method": "binary_repack",
-        "binary_name": "process-exporter"
-      },
-      "artifacts": {
-        "rpm": {
-          "enabled": true,
-          "targets": [
-            "el8",
-            "el9",
-            "el10"
-          ],
-          "summary": "Prometheus exporter for process metrics",
-          "service_file": true,
-          "system_user": "prometheus"
-        },
-        "docker": {
-          "enabled": true,
-          "base_image": "registry.access.redhat.com/ubi9/ubi-minimal",
-          "entrypoint": [
-            "/usr/bin/process-exporter"
-          ],
-          "validation": {
-            "port": 9256
-          }
-        }
-      },
-      "availability": {
-        "el8": {
-          "x86_64": {
-            "status": "success",
-            "path": "el8/x86_64/process-exporter-v0.8.7-1.el8.x86_64.rpm"
-          },
-          "aarch64": {
-            "status": "success",
-            "path": "el8/aarch64/process-exporter-v0.8.7-1.el8.aarch64.rpm"
-          }
-        },
-        "el9": {
-          "x86_64": {
-            "status": "success",
-            "path": "el9/x86_64/process-exporter-v0.8.7-1.el9.x86_64.rpm"
-          },
-          "aarch64": {
-            "status": "success",
-            "path": "el9/aarch64/process-exporter-v0.8.7-1.el9.aarch64.rpm"
-          }
-        },
-        "el10": {
-          "x86_64": {
-            "status": "success",
-            "path": "el10/x86_64/process-exporter-v0.8.7-1.el10.x86_64.rpm"
-          },
-          "aarch64": {
-            "status": "success",
-            "path": "el10/aarch64/process-exporter-v0.8.7-1.el10.aarch64.rpm"
           }
         }
       }
