@@ -30,6 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       exporters: ${{ steps.smart-filter.outputs.exporters }}
+      build_needed: ${{ steps.smart-filter.outputs.build_needed }}
     steps:
       - uses: actions/checkout@v6
       
@@ -49,6 +50,7 @@ jobs:
   # 2. Build Docker Images (Parallel per exporter)
   build-docker:
     needs: discover
+    if: needs.discover.outputs.build_needed == 'true'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -184,6 +186,7 @@ jobs:
   # 3. Build RPMs (Parallel per exporter, architecture AND distribution)
   build-rpm:
     needs: discover
+    if: needs.discover.outputs.build_needed == 'true'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -248,7 +251,7 @@ jobs:
 
   # 4. Publish YUM Repo & Website (Fan-in)
   publish-yum:
-    if: always() && !cancelled()
+    if: always() && !cancelled() && needs.discover.outputs.build_needed == 'true'
     needs: [build-rpm, build-docker]
     runs-on: ubuntu-latest
     permissions:

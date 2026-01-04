@@ -79,13 +79,15 @@ def main():
             print(f"[SKIP]  {name}: Up to date ({local_version}).", file=sys.stderr)
 
     # Output for GitHub Actions
-    # We dump ONLY the JSON array to stdout so it can be captured easily
+    # Use json.dumps to ensure it's a valid JSON string for the matrix
     json_output = json.dumps(to_build)
     
-    # Write to GITHUB_OUTPUT if running in Actions
+    # Write to GITHUB_OUTPUT if running in Actions, otherwise stdout
     if 'GITHUB_OUTPUT' in os.environ:
         with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
             f.write(f"exporters={json_output}\n")
+            # Set build_needed to true if list is not empty, else false
+            f.write(f"build_needed={'true' if to_build else 'false'}\n")
     else:
         # If running locally, print just the JSON to stdout for piping
         print(json_output)
