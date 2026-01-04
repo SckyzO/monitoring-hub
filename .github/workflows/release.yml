@@ -321,5 +321,7 @@ jobs:
             echo "No changes to commit."
           else
             git commit -m "chore: update all yum repositories and portal [skip ci]"
+            # Pull latest changes to avoid conflicts
+            git pull --rebase origin gh-pages
             git push origin gh-pages
           fi
