@@ -571,7 +571,7 @@
     {
       "name": "ipmi_exporter",
       "description": "Prometheus exporter for IPMI devices",
-      "version": "1.10.0",
+      "version": "1.10.1",
       "upstream": {
         "type": "github",
         "repo": "prometheus-community/ipmi_exporter"
@@ -633,17 +633,17 @@
         "el8": {
           "x86_64": {
             "status": "success",
-            "path": "el8/x86_64/ipmi_exporter-v1.10.0-1.el8.x86_64.rpm"
+            "path": "el8/x86_64/ipmi_exporter-v1.10.1-1.el8.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el8/aarch64/ipmi_exporter-v1.10.0-1.el8.aarch64.rpm"
+            "path": "el8/aarch64/ipmi_exporter-v1.10.1-1.el8.aarch64.rpm"
           }
         },
         "el9": {
           "x86_64": {
             "status": "success",
-            "path": "el9/x86_64/ipmi_exporter-v1.10.0-1.el9.x86_64.rpm"
+            "path": "el9/x86_64/ipmi_exporter-v1.10.1-1.el9.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
@@ -657,7 +657,7 @@
           },
           "aarch64": {
             "status": "success",
-            "path": "el10/aarch64/ipmi_exporter-v1.10.0-1.el10.aarch64.rpm"
+            "path": "el10/aarch64/ipmi_exporter-v1.10.1-1.el10.aarch64.rpm"
           }
         }
       }
