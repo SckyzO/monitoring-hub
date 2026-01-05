@@ -122,9 +122,9 @@
                     <!-- Repo Browser -->
                     <div class="relative" x-data="{ open: false }">
                         <button @click="open = !open" @click.away="open = false" 
+                                @mouseenter="showTip($event, 'Browse Repos')" @mouseleave="hideTip()"
                                 class="p-2.5 rounded-xl transition-all active:scale-90" 
-                                :class="theme === 'light' ? 'hover:bg-zinc-100 text-zinc-600' : 'hover:bg-white/5 text-zinc-400'"
-                                title="Browse Repos">
+                                :class="theme === 'light' ? 'hover:bg-zinc-100 text-zinc-600' : 'hover:bg-white/5 text-zinc-400'">
                             <i data-lucide="folder" class="w-5 h-5"></i>
                         </button>
                         
@@ -164,16 +164,29 @@
                     </div>
 
                     <div class="relative" x-data="{ open: false }">
-                        <button @click="open = !open" @click.away="open = false" class="p-2.5 rounded-xl transition-all active:scale-90" :class="theme === 'light' ? 'hover:bg-zinc-100 text-zinc-600' : 'hover:bg-white/5 text-zinc-400'"><i data-lucide="palette" class="w-5 h-5"></i></button>
+                        <button @click="open = !open" @click.away="open = false" 
+                                @mouseenter="showTip($event, 'Theme Settings')" @mouseleave="hideTip()"
+                                class="p-2.5 rounded-xl transition-all active:scale-90" 
+                                :class="theme === 'light' ? 'hover:bg-zinc-100 text-zinc-600' : 'hover:bg-white/5 text-zinc-400'">
+                            <i data-lucide="palette" class="w-5 h-5"></i>
+                        </button>
                         <div x-show="open" x-transition.origin.top.right class="absolute right-0 mt-3 w-72 rounded-3xl shadow-2xl border p-6 z-50 space-y-6 backdrop-blur-2xl bg-white dark:bg-zinc-900 border-zinc-200 dark:border-white/10" x-cloak>
                             <div class="space-y-4"><p class="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">Appearance</p><div class="grid grid-cols-3 gap-2"><button @click="theme = 'light'; localStorage.setItem('appearance', 'light')" :class="theme === 'light' ? 'border-primary-500 bg-primary-500/5' : 'border-transparent bg-zinc-100'" class="flex flex-col items-center gap-2 p-3 rounded-2xl border-2 transition-all text-zinc-500"><i data-lucide="sun" class="w-4 h-4"></i><span class="text-[9px] font-bold uppercase">Light</span></button><button @click="theme = 'deep'; localStorage.setItem('appearance', 'deep')" :class="theme === 'deep' ? 'border-primary-500 ring-2 ring-primary-500/20' : 'border-transparent bg-zinc-800'" class="flex flex-col items-center gap-2 p-3 rounded-2xl border-2 transition-all text-zinc-500"><i data-lucide="moon" class="w-4 h-4"></i><span class="text-[9px] font-bold uppercase text-zinc-400">Deep</span></button><button @click="theme = 'oled'; localStorage.setItem('appearance', 'oled')" :class="theme === 'oled' ? 'border-primary-500 ring-2 ring-primary-500/20' : 'border-transparent bg-black'" class="flex flex-col items-center gap-2 p-3 rounded-2xl border-2 transition-all text-zinc-500"><i data-lucide="zap" class="w-4 h-4"></i><span class="text-[9px] font-bold uppercase text-zinc-200">OLED</span></button></div></div>
                             <div class="space-y-4"><p class="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">Accent Color</p><div class="grid grid-cols-5 gap-3"><template x-for="c in colors" :key="c.name"><button @click="setThemeColor(c)" class="w-9 h-9 rounded-full border-2 transition-all hover:scale-110 active:scale-90" :style="`background-color: rgb(${c.value})`" :class="currentColor === c.name ? 'border-white ring-4 ring-primary-500/20' : 'border-transparent opacity-80'"></button></template></div></div>
                         </div>
                     </div>
-                    <button @click="document.getElementById('manual').scrollIntoView({behavior: 'smooth'})" class="p-2.5 rounded-xl transition-all active:scale-90" :class="theme === 'light' ? 'hover:bg-zinc-100 text-zinc-600' : 'hover:bg-white/5 text-zinc-400'" title="View Help">
+                    <button @click="document.getElementById('manual').scrollIntoView({behavior: 'smooth'})" 
+                            @mouseenter="showTip($event, 'Technical Specs')" @mouseleave="hideTip()"
+                            class="p-2.5 rounded-xl transition-all active:scale-90" 
+                            :class="theme === 'light' ? 'hover:bg-zinc-100 text-zinc-600' : 'hover:bg-white/5 text-zinc-400'">
                         <i data-lucide="help-circle" class="w-5 h-5"></i>
                     </button>
-                    <a href="https://github.com/SckyzO/monitoring-hub" target="_blank" class="p-2.5 rounded-xl transition-all active:scale-90" :class="theme === 'light' ? 'hover:bg-zinc-100 text-zinc-600' : 'hover:bg-white/5 text-zinc-400'" title="GitHub"><i data-lucide="github" class="w-5 h-5"></i></a>
+                    <a href="https://github.com/SckyzO/monitoring-hub" target="_blank" 
+                       @mouseenter="showTip($event, 'Source Code')" @mouseleave="hideTip()"
+                       class="p-2.5 rounded-xl transition-all active:scale-90" 
+                       :class="theme === 'light' ? 'hover:bg-zinc-100 text-zinc-600' : 'hover:bg-white/5 text-zinc-400'">
+                        <i data-lucide="github" class="w-5 h-5"></i>
+                    </a>
                 </div>
             </div>
         </div>
@@ -440,16 +453,16 @@
                         </div>
                         <div class="space-y-4">
                             <h4 class="text-[10px] font-black text-zinc-400 uppercase tracking-widest italic">03 / Direct Binary Download</h4>
-                            <div class="grid grid-cols-1 gap-2">
-                                <template x-for="dist in (selectedItem?.artifacts?.rpm?.targets || [])"><div class="flex items-center justify-between p-4 rounded-xl border transition-all" :class="theme === 'light' ? 'bg-zinc-50 border-zinc-200 shadow-sm' : 'bg-zinc-800/30 border-white/5'"><span class="text-[11px] font-black text-zinc-500 uppercase tracking-widest" x-text="dist"></span><div class="flex gap-2"><template x-for="arch in ['x86_64', 'aarch64']"><a :href="`${dist}/${arch}/${selectedItem.name}-${selectedItem.version}-1.${dist}.${arch}.rpm`" class="px-4 py-2 rounded-xl bg-primary-500/10 text-primary-500 hover:bg-primary-600 hover:text-white text-[10px] font-black uppercase flex items-center gap-2 transition-all border-none" title="Direct Download"><i data-lucide="download" class="w-3.5 h-3.5"></i> <span x-text="arch"></span></a></template></div></div></template>
+                            <div class="grid grid-cols-1 gap-2 text-left">
+                                <template x-for="dist in (selectedItem?.artifacts?.rpm?.targets || [])"><div class="flex items-center justify-between p-4 rounded-xl border text-left transition-all" :class="theme === 'light' ? 'bg-zinc-50 border-zinc-200 shadow-sm' : 'bg-zinc-800/30 border-white/5'"><span class="text-[11px] font-black text-zinc-500 uppercase tracking-widest" x-text="dist"></span><div class="flex gap-2"><template x-for="arch in ['x86_64', 'aarch64']"><a :href="`${dist}/${arch}/${selectedItem.name}-${selectedItem.version}-1.${dist}.${arch}.rpm`" @mouseenter="showTip($event, `Download ${arch} RPM`)" @mouseleave="hideTip()" class="px-4 py-2 rounded-xl bg-primary-500/10 text-primary-500 hover:bg-primary-600 hover:text-white text-[10px] font-black uppercase flex items-center gap-2 transition-all border-none" title="Direct Download"><i data-lucide="download" class="w-3.5 h-3.5"></i> <span x-text="arch"></span></a></template></div></div></template>
                             </div>
                         </div>
                     </div>
-                    <div x-show="tab === 'docker'" x-transition class="space-y-8">
+                    <div x-show="tab === 'docker'" x-transition class="space-y-8 text-left">
                         <div class="rounded-2xl border p-8 font-mono text-xs space-y-10" :class="theme === 'light' ? 'bg-zinc-100 border-zinc-200' : 'bg-black border-white/10'">
-                            <div class="space-y-4"><div class="flex justify-between items-center"><p class="text-[9px] font-black text-zinc-600 mb-2 uppercase tracking-widest">Registry Pull</p><button @click="copyToClipboard(`docker pull ghcr.io/sckyzo/monitoring-hub/${selectedItem?.name}:latest`); copied = true; setTimeout(() => copied = false, 2000)" class="text-primary-500 hover:underline">Copy</button></div><code class="block break-all text-primary-500 text-sm leading-relaxed" x-text="`docker pull ghcr.io/sckyzo/monitoring-hub/${selectedItem?.name}:latest`"></code></div>
+                            <div class="space-y-4 text-left"><div class="flex justify-between items-center"><p class="text-[9px] font-black text-zinc-600 mb-2 uppercase tracking-widest text-left">Registry Pull</p><button @click="copyToClipboard(`docker pull ghcr.io/sckyzo/monitoring-hub/${selectedItem?.name}:latest`); copied = true; setTimeout(() => copied = false, 2000)" @mouseenter="showTip($event, 'Copy Command')" @mouseleave="hideTip()" class="text-primary-500 hover:underline">Copy</button></div><code class="block break-all text-primary-500 text-sm leading-relaxed" x-text="`docker pull ghcr.io/sckyzo/monitoring-hub/${selectedItem?.name}:latest`"></code></div>
                             <div class="h-px bg-white/5"></div>
-                            <div class="space-y-4"><div class="flex justify-between items-center"><p class="text-[9px] font-black text-zinc-600 mb-2 uppercase tracking-widest">Standard Run</p><button @click="copyToClipboard(`docker run -d -p 9100:9100 ghcr.io/sckyzo/monitoring-hub/${selectedItem?.name}:latest`); copied = true; setTimeout(() => copied = false, 2000)" class="text-primary-500 hover:underline">Copy</button></div><code class="block break-all text-primary-500 text-sm leading-relaxed font-bold" x-text="`docker run -d -p 9100:9100 ghcr.io/sckyzo/monitoring-hub/${selectedItem?.name}:latest`"></code></div>
+                            <div class="space-y-4 text-left"><div class="flex justify-between items-center"><p class="text-[9px] font-black text-zinc-600 mb-2 uppercase tracking-widest text-left">Standard Run</p><button @click="copyToClipboard(`docker run -d -p 9100:9100 ghcr.io/sckyzo/monitoring-hub/${selectedItem?.name}:latest`); copied = true; setTimeout(() => copied = false, 2000)" @mouseenter="showTip($event, 'Copy Command')" @mouseleave="hideTip()" class="text-primary-500 hover:underline">Copy</button></div><code class="block break-all text-primary-500 text-sm leading-relaxed font-bold text-left" x-text="`docker run -d -p 9100:9100 ghcr.io/sckyzo/monitoring-hub/${selectedItem?.name}:latest`"></code></div>
                         </div>
                     </div>
                 </div>
@@ -520,7 +533,7 @@
                     </div>
                 </div>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-8 gap-12 border-t border-zinc-100 dark:border-white/5 pt-20">
+            <div class="grid grid-cols-1 md:grid-cols-8 gap-12 border-t border-zinc-100 dark:border-white/5 pt-20 text-left text-left">
                 <!-- Col 1: Distribution (Left Aligned - 2/8) -->
                 <div class="space-y-6 flex flex-col md:items-start md:text-left md:col-span-2">
                     <h4 class="text-[10px] font-black uppercase tracking-[0.4em] text-primary-500">Distribution</h4>
@@ -528,20 +541,20 @@
                         <li class="flex items-center gap-3">
                             <i data-lucide="database" class="w-4 h-4 text-zinc-600"></i>
                             <div class="flex gap-2 text-[10px] font-black uppercase tracking-widest">
-                                <a href="https://sckyzo.github.io/monitoring-hub/el8/" target="_blank" class="hover:text-primary-500 transition-colors">EL8</a>
+                                <a href="https://sckyzo.github.io/monitoring-hub/el8/" target="_blank" @mouseenter="showTip($event, 'Browse EL8 Repository')" @mouseleave="hideTip()" class="hover:text-primary-500 transition-colors">EL8</a>
                                 <span class="text-zinc-800">/</span>
-                                <a href="https://sckyzo.github.io/monitoring-hub/el9/" target="_blank" class="hover:text-primary-500 transition-colors">EL9</a>
+                                <a href="https://sckyzo.github.io/monitoring-hub/el9/" target="_blank" @mouseenter="showTip($event, 'Browse EL9 Repository')" @mouseleave="hideTip()" class="hover:text-primary-500 transition-colors">EL9</a>
                                 <span class="text-zinc-800">/</span>
-                                <a href="https://sckyzo.github.io/monitoring-hub/el10/" target="_blank" class="hover:text-primary-500 transition-colors">EL10</a>
+                                <a href="https://sckyzo.github.io/monitoring-hub/el10/" target="_blank" @mouseenter="showTip($event, 'Browse EL10 Repository')" @mouseleave="hideTip()" class="hover:text-primary-500 transition-colors">EL10</a>
                             </div>
                         </li>
                         <li>
-                            <a href="https://github.com/SckyzO?tab=packages&repo_name=monitoring-hub" target="_blank" class="group flex items-center gap-3 text-xs font-bold uppercase tracking-widest transition-all hover:text-primary-500">
+                            <a href="https://github.com/SckyzO?tab=packages&repo_name=monitoring-hub" target="_blank" @mouseenter="showTip($event, 'View Docker Images')" @mouseleave="hideTip()" class="group flex items-center gap-3 text-xs font-bold uppercase tracking-widest transition-all hover:text-primary-500">
                                 <i data-lucide="container" class="w-4 h-4 opacity-50 group-hover:opacity-100"></i> OCI Registry
                             </a>
                         </li>
                         <li>
-                            <a href="https://github.com/SckyzO/monitoring-hub" target="_blank" class="group flex items-center gap-3 text-xs font-bold uppercase tracking-widest transition-all hover:text-primary-500">
+                            <a href="https://github.com/SckyzO/monitoring-hub" target="_blank" @mouseenter="showTip($event, 'View Source Code')" @mouseleave="hideTip()" class="group flex items-center gap-3 text-xs font-bold uppercase tracking-widest transition-all hover:text-primary-500">
                                 <i data-lucide="github" class="w-4 h-4 opacity-50 group-hover:opacity-100"></i> Source Code
                             </a>
                         </li>
@@ -573,10 +586,10 @@
                                 <p class="text-[9px] font-black text-primary-500 uppercase tracking-widest">Lead Factory Engineer</p>
                             </div>
                             <div class="flex gap-3 mt-1">
-                                <a href="https://github.com/SckyzO" target="_blank" class="w-8 h-8 rounded-xl flex items-center justify-center bg-white/5 hover:bg-primary-500/20 hover:text-primary-500 transition-all text-zinc-500" title="GitHub Profile">
+                                <a href="https://github.com/SckyzO" target="_blank" @mouseenter="showTip($event, 'GitHub Profile')" @mouseleave="hideTip()" class="w-8 h-8 rounded-xl flex items-center justify-center bg-white/5 hover:bg-primary-500/20 hover:text-primary-500 transition-all text-zinc-500" title="GitHub Profile">
                                     <i data-lucide="github" class="w-4 h-4"></i>
                                 </a>
-                                <a href="https://www.linkedin.com/in/thomasbourcey/" target="_blank" class="w-8 h-8 rounded-xl flex items-center justify-center bg-white/5 hover:bg-[#0a66c2]/20 hover:text-[#0a66c2] transition-all text-zinc-500" title="LinkedIn Profile">
+                                <a href="https://www.linkedin.com/in/thomasbourcey/" target="_blank" @mouseenter="showTip($event, 'LinkedIn Profile')" @mouseleave="hideTip()" class="w-8 h-8 rounded-xl flex items-center justify-center bg-white/5 hover:bg-[#0a66c2]/20 hover:text-[#0a66c2] transition-all text-zinc-500" title="LinkedIn Profile">
                                     <i data-lucide="linkedin" class="w-4 h-4"></i>
                                 </a>
                             </div>
@@ -595,6 +608,7 @@
 
     <!-- Back to Top Button -->
     <button @click="document.getElementById('top').scrollIntoView()" 
+            @mouseenter="showTip($event, 'Back to Top')" @mouseleave="hideTip()"
             x-show="showBackToTop"
             x-transition:enter="transition ease-out duration-300"
             x-transition:enter-start="opacity-0 translate-y-10"
@@ -603,9 +617,24 @@
             x-transition:leave-start="opacity-100 translate-y-0"
             x-transition:leave-end="opacity-0 translate-y-10"
             class="fixed bottom-10 right-10 w-14 h-14 rounded-full bg-primary-600 text-white shadow-2xl z-50 flex items-center justify-center hover:bg-primary-500 transition-all hover:scale-110 active:scale-90 shadow-primary-500/20 border border-white/10"
-            title="Back to Top" x-cloak>
+            x-cloak>
         <i data-lucide="arrow-up" class="w-6 h-6"></i>
     </button>
+
+    <!-- Smart Custom Tooltip -->
+    <div x-show="tooltip.visible" 
+         x-cloak
+         class="fixed z-[9999] pointer-events-none px-3 py-1.5 rounded-lg border shadow-xl backdrop-blur-md transition-all duration-75 ease-out flex items-center gap-2"
+         :class="theme === 'light' ? 'bg-zinc-900/90 border-zinc-800 text-white' : 'bg-white/90 border-white/20 text-zinc-900'"
+         :style="`top: ${tooltip.y}px; left: ${tooltip.x}px`"
+         x-transition:enter="transition ease-out duration-100"
+         x-transition:enter-start="opacity-0 scale-90"
+         x-transition:enter-end="opacity-100 scale-100"
+         x-transition:leave="transition ease-in duration-75"
+         x-transition:leave-start="opacity-100 scale-100"
+         x-transition:leave-end="opacity-0 scale-90">
+        <span class="text-[10px] font-black uppercase tracking-widest" x-text="tooltip.text"></span>
+    </div>
 
     <!-- Data -->
     <script id="exporters-data" type="application/json">{{ exporters_json | safe }}</script>
@@ -617,6 +646,7 @@
                 exporters: [], categories: [], search: '', filterCategory: 'all', view: 'grid', drawerOpen: false, selectedItem: null, theme: 'deep', currentColor: 'Blue', currentColorRGBA: '59, 130, 246', showCommandPalette: false, sortKey: 'version', isScrolled: false,
                 showBackToTop: false,
                 showWelcomeTip: false,
+                tooltip: { visible: false, text: '', x: 0, y: 0 },
                 colors: [{ name: 'Blue', value: '59, 130, 246' }, { name: 'Emerald', value: '16, 185, 129' }, { name: 'Violet', value: '139, 92, 246' }, { name: 'Amber', value: '245, 158, 11' }, { name: 'Rose', value: '244, 63, 94' }, { name: 'Sky', value: '14, 165, 233' }, { name: 'Orange', value: '249, 115, 22' }, { name: 'Teal', value: '20, 184, 166' }, { name: 'Cyan', value: '6, 182, 212' }, { name: 'Fuchsia', value: '217, 70, 239' }],
                 init() {
                     try { this.exporters = JSON.parse(document.getElementById('exporters-data').textContent); this.categories = JSON.parse(document.getElementById('categories-data').textContent); } catch(e) {}
@@ -626,6 +656,12 @@
                     window.addEventListener('scroll', () => { 
                         this.isScrolled = window.scrollY > 100; 
                         this.showBackToTop = window.scrollY > 400;
+                    });
+                    window.addEventListener('mousemove', (e) => {
+                        if (this.tooltip.visible) {
+                            this.tooltip.x = e.clientX + 15;
+                            this.tooltip.y = e.clientY + 15;
+                        }
                     });
                     
                     // Welcome Tip Logic
@@ -655,7 +691,9 @@
                 getCardClass() { if (this.theme === 'light') return 'bg-white border-zinc-200 shadow-sm'; if (this.theme === 'deep') return 'bg-dark-800 border-white/5 shadow-xl'; return 'bg-dark-900 border-white/5'; },
                 openDrawer(item) { this.selectedItem = item; this.drawerOpen = true; this.$nextTick(() => lucide.createIcons()); },
                 renderMarkdown(text) { return marked.parse(text || ''); },
-                copyToClipboard(text) { navigator.clipboard.writeText(text); }
+                copyToClipboard(text) { navigator.clipboard.writeText(text); },
+                showTip(e, text) { this.tooltip.text = text; this.tooltip.x = e.clientX + 15; this.tooltip.y = e.clientY + 15; this.tooltip.visible = true; },
+                hideTip() { this.tooltip.visible = false; }
             }
         }
     </script>
