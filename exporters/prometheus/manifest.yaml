@@ -1,5 +1,6 @@
 name: prometheus
 description: The Prometheus monitoring system and time series database.
+category: Infrastructure
 version: v3.8.1
 upstream:
   type: github

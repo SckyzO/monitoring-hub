@@ -1,5 +1,6 @@
 name: blackbox_exporter
 description: "Prometheus blackbox exporter for network probing (HTTP, DNS, TCP, ICMP)"
+category: Network
 version: "v0.28.0"
 
 upstream:

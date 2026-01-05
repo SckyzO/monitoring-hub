@@ -22,6 +22,14 @@ def generate(output, repo_dir):
                 
                 data['version'] = data['version'].lstrip('v')
                 
+                # Read README.md content if exists
+                readme_path = os.path.join(os.path.dirname(manifest_path), 'README.md')
+                if os.path.exists(readme_path):
+                    with open(readme_path, 'r') as r:
+                        data['readme'] = r.read()
+                else:
+                    data['readme'] = "No documentation available."
+
                 data['availability'] = {}
                 rpm_targets = data.get('artifacts', {}).get('rpm', {}).get('targets', [])
                 
@@ -47,6 +55,15 @@ def generate(output, repo_dir):
             print(f"Error: {e}")
 
     exporters_data.sort(key=lambda x: x['name'])
+    
+    # Collect unique categories dynamically
+    categories = sorted(list(set([e.get('category', 'System') for e in exporters_data])))
+
+    # Pre-serialize to JSON for the template
+    import json
+    exporters_json = json.dumps(exporters_data)
+    categories_json = json.dumps(categories)
+
     env = Environment(
         loader=FileSystemLoader(TEMPLATES_DIR),
         autoescape=select_autoescape(['html', 'xml'])
@@ -58,12 +75,16 @@ def generate(output, repo_dir):
         f.write(rendered)
     click.echo(f"Portal generated at {output}")
 
-    # Generate V2 Portal if template exists (for testing)
+    # Generate V2 Portal if template exists
     v2_template_path = os.path.join(TEMPLATES_DIR, 'index_v2.html.j2')
     if os.path.exists(v2_template_path):
         v2_output = os.path.join(os.path.dirname(output), 'index_v2.html')
         v2_template = env.get_template('index_v2.html.j2')
-        v2_rendered = v2_template.render(exporters=exporters_data)
+        v2_rendered = v2_template.render(
+            exporters=exporters_data,
+            exporters_json=exporters_json,
+            categories_json=categories_json
+        )
         with open(v2_output, 'w') as f:
             f.write(v2_rendered)
         click.echo(f"V2 Portal generated at {v2_output}")
