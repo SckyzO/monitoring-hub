@@ -14,6 +14,9 @@ def load_manifest(path):
     return data
 
 def save_manifest(path, data):
+    # Ensure version is stored as string
+    if 'version' in data:
+        data['version'] = str(data['version'])
     with open(path, 'w') as f:
         yaml.dump(data, f, sort_keys=False, default_flow_style=False)
 
@@ -32,11 +35,6 @@ def get_latest_github_release(repo_name, token=None):
         click.echo(f"Error fetching release for {repo_name}: {e}", err=True)
         return None
 
-def normalize_version(tag):
-    if tag and tag.startswith('v'):
-        return tag[1:]
-    return tag
-
 @click.command()
 @click.option('--update/--no-update', default=False, help='Update manifest files in place')
 @click.option('--token', envvar='GITHUB_TOKEN', help='GitHub API Token')
@@ -51,7 +49,7 @@ def watch(update, token):
         try:
             data = load_manifest(manifest_path)
             name = data.get('name')
-            current_version = data.get('version')
+            current_version = str(data.get('version')) # Ensure string
             upstream = data.get('upstream', {})
             
             if upstream.get('type') != 'github':
@@ -63,16 +61,15 @@ def watch(update, token):
             latest_tag = get_latest_github_release(repo, token)
             if not latest_tag:
                 continue
-                
-            latest_version = normalize_version(latest_tag)
             
-            if parse_version(latest_version) > parse_version(current_version):
-                click.secho(f"  -> New version available: {latest_version} (Current: {current_version})", fg='green')
+            # Compare using semantic versioning, but KEEP original tag for the manifest
+            if parse_version(latest_tag) > parse_version(current_version):
+                click.secho(f"  -> New version available: {latest_tag} (Current: {current_version})", fg='green')
                 updates_found = True
                 
                 if update:
                     click.echo(f"  -> Updating {manifest_path}...")
-                    data['version'] = latest_version
+                    data['version'] = latest_tag
                     save_manifest(manifest_path, data)
                     click.echo("  -> Updated.")
             else:
