@@ -32,7 +32,7 @@ jobs:
         id: cpr
         uses: peter-evans/create-pull-request@v8
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GH_PAT }}
           commit-message: "chore: update exporters versions"
           title: "chore: update exporters versions"
           body: |
@@ -45,5 +45,5 @@ jobs:
       - name: Enable Pull Request Automerge
         if: steps.cpr.outputs.pull-request-operation == 'created'
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_PAT }}
         run: gh pr merge "${{ steps.cpr.outputs.pull-request-number }}" --auto --squash
