@@ -50,6 +50,18 @@ def generate(output, repo_dir):
                         else:
                             data['availability'][dist][arch] = {'status': 'na', 'path': None}
                 
+                # Aggregate Build Statuses
+                rpm_enabled = data.get('artifacts', {}).get('rpm', {}).get('enabled', True)
+                if rpm_enabled:
+                    # Success only if ALL targeted distributions have at least one arch successful
+                    targets = data.get('artifacts', {}).get('rpm', {}).get('targets', [])
+                    failed_targets = [t for t in targets if not any(data['availability'].get(t, {}).get(a, {}).get('status') == 'success' for a in ['x86_64', 'aarch64'])]
+                    data['rpm_status'] = 'failed' if failed_targets else 'success'
+                else:
+                    data['rpm_status'] = 'na'
+
+                data['docker_status'] = 'success' if data.get('artifacts', {}).get('docker', {}).get('enabled', False) else 'na'
+                
                 exporters_data.append(data)
         except Exception as e:
             print(f"Error: {e}")
