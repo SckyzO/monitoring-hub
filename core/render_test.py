@@ -11,6 +11,8 @@ MOCK_EXPORTERS = [
         "category": "System",
         "new": False,
         "updated": True,
+        "rpm_status": "success",
+        "docker_status": "success",
         "upstream": {"repo": "prometheus/node_exporter"},
         "artifacts": {
             "rpm": {"targets": ["el8", "el9", "el10"]},
@@ -26,12 +28,76 @@ MOCK_EXPORTERS = [
         "category": "Database",
         "new": True,
         "updated": False,
+        "rpm_status": "failed",
+        "docker_status": "success",
         "upstream": {"repo": "prometheus/mysqld_exporter"},
         "artifacts": {
             "rpm": {"targets": ["el9"]},
             "docker": {"enabled": True}
         },
         "build": {"archs": ["amd64"]}
+    },
+    {
+        "name": "blackbox_exporter",
+        "version": "0.25.0",
+        "description": "Allows blackbox probing of endpoints over HTTP, HTTPS, DNS, TCP and ICMP.",
+        "category": "Network",
+        "new": False,
+        "updated": False,
+        "rpm_status": "na",
+        "docker_status": "success",
+        "upstream": {"repo": "prometheus/blackbox_exporter"},
+        "artifacts": {
+            "rpm": {"enabled": False},
+            "docker": {"enabled": True}
+        },
+        "build": {"archs": ["amd64", "arm64"]}
+    },
+    {
+        "name": "redis_exporter",
+        "version": "1.58.0",
+        "description": "Prometheus exporter for Redis metrics. Supports 2.x, 3.x, 4.x, 5.x, and 6.x.",
+        "category": "Database",
+        "new": False,
+        "updated": True,
+        "rpm_status": "success",
+        "docker_status": "success",
+        "upstream": {"repo": "oliver006/redis_exporter"},
+        "artifacts": {
+            "rpm": {"targets": ["el8", "el9"]},
+            "docker": {"enabled": True}
+        },
+        "build": {"archs": ["amd64", "arm64"]}
+    },
+    {
+        "name": "process_exporter",
+        "version": "0.7.10",
+        "description": "Restrictive process exporter for prometheus.",
+        "category": "System",
+        "new": False,
+        "updated": False,
+        "rpm_status": "failed",
+        "docker_status": "failed",
+        "upstream": {"repo": "ncabatoff/process-exporter"},
+        "artifacts": {
+            "rpm": {"targets": ["el9"]},
+            "docker": {"enabled": True}
+        }
+    },
+    {
+        "name": "apache_exporter",
+        "version": "1.0.1",
+        "description": "Export Apache mod_status statistics via HTTP.",
+        "category": "Web",
+        "new": True,
+        "updated": False,
+        "rpm_status": "success",
+        "docker_status": "na",
+        "upstream": {"repo": "Lusitaniae/apache_exporter"},
+        "artifacts": {
+            "rpm": {"targets": ["el8", "el9"]},
+            "docker": {"enabled": False}
+        }
     }
 ]
 
