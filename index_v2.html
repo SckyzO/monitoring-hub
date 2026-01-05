@@ -90,7 +90,30 @@
                 </div>
             </div>
             <div class="flex items-center gap-6">
-                <div class="flex items-center gap-3 border-l pl-6" :class="theme === 'light' ? 'border-zinc-200' : 'border-white/10'">
+                <div class="flex items-center gap-3 border-l pl-6 relative" :class="theme === 'light' ? 'border-zinc-200' : 'border-white/10'">
+                    <!-- Onboarding Tooltip -->
+                    <div x-show="showWelcomeTip" 
+                         x-transition:enter="transition opacity ease-out duration-500"
+                         x-transition:enter-start="opacity-0"
+                         x-transition:enter-end="opacity-100"
+                         x-transition:leave="transition opacity ease-in duration-500"
+                         x-transition:leave-start="opacity-100"
+                         x-transition:leave-end="opacity-0"
+                         class="absolute top-full right-0 mt-4 w-80 p-6 rounded-2xl bg-primary-600 text-white shadow-2xl z-[100] pointer-events-auto shadow-primary-500/20" x-cloak>
+                        <button @click="showWelcomeTip = false; localStorage.setItem('hub-factory-visited', 'true')" class="absolute top-4 right-4 text-white/50 hover:text-white transition-colors">
+                            <i data-lucide="x" class="w-4 h-4"></i>
+                        </button>
+                        <div class="flex items-start gap-4">
+                            <div class="w-10 h-10 rounded-xl bg-white/20 flex-shrink-0 flex items-center justify-center">
+                                <i data-lucide="sparkles" class="w-5 h-5 text-white"></i>
+                            </div>
+                            <div class="pr-4">
+                                <p class="text-sm font-black mb-1">Welcome to the Factory 🏭</p>
+                                <p class="text-[11px] font-medium opacity-90 leading-relaxed">Personalize your theme, switch layouts, and access our technical specifications right here.</p>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="relative" x-data="{ open: false }">
                         <button @click="open = !open" @click.away="open = false" class="p-2.5 rounded-xl transition-all active:scale-90" :class="theme === 'light' ? 'hover:bg-zinc-100 text-zinc-600' : 'hover:bg-white/5 text-zinc-400'"><i data-lucide="palette" class="w-5 h-5"></i></button>
                         <div x-show="open" x-transition.origin.top.right class="absolute right-0 mt-3 w-72 rounded-3xl shadow-2xl border p-6 z-50 space-y-6 backdrop-blur-2xl bg-white dark:bg-zinc-900 border-zinc-200 dark:border-white/10" x-cloak>
@@ -398,6 +421,7 @@
         function registry() {
             return {
                 exporters: [], categories: [], search: '', filterCategory: 'all', view: 'grid', drawerOpen: false, selectedItem: null, theme: 'deep', currentColor: 'Blue', currentColorRGBA: '59, 130, 246', showCommandPalette: false, sortKey: 'version', isScrolled: false,
+                showWelcomeTip: false,
                 colors: [{ name: 'Blue', value: '59, 130, 246' }, { name: 'Emerald', value: '16, 185, 129' }, { name: 'Violet', value: '139, 92, 246' }, { name: 'Amber', value: '245, 158, 11' }, { name: 'Rose', value: '244, 63, 94' }, { name: 'Sky', value: '14, 165, 233' }],
                 init() {
                     try { this.exporters = JSON.parse(document.getElementById('exporters-data').textContent); this.categories = JSON.parse(document.getElementById('categories-data').textContent); } catch(e) {}
@@ -405,6 +429,13 @@
                     const savedColor = localStorage.getItem('color-theme');
                     if (savedColor) { const colorObj = this.colors.find(c => c.name === savedColor); if (colorObj) this.setThemeColor(colorObj); } else { this.setThemeColor(this.colors[0]); }
                     window.addEventListener('scroll', () => { this.isScrolled = window.scrollY > 100; });
+                    
+                    // Welcome Tip Logic
+                    if (!localStorage.getItem('hub-factory-visited')) {
+                        setTimeout(() => { this.showWelcomeTip = true; }, 1000);
+                        setTimeout(() => { this.showWelcomeTip = false; localStorage.setItem('hub-factory-visited', 'true'); }, 10000);
+                    }
+
                     this.$nextTick(() => { lucide.createIcons(); });
                     this.$watch('filteredItems', () => this.$nextTick(() => lucide.createIcons()));
                     this.$watch('showCommandPalette', (v) => { if(v) this.$nextTick(() => this.$refs.commandInput.focus()); });
