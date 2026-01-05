@@ -1,0 +1,1658 @@
+{
+  "exporters": [
+    {
+      "name": "alertmanager",
+      "description": "Handle alerts and notifications for the Prometheus ecosystem",
+      "category": "Infrastructure",
+      "version": "0.30.0",
+      "upstream": {
+        "type": "github",
+        "repo": "prometheus/alertmanager",
+        "strategy": "latest_release"
+      },
+      "build": {
+        "method": "binary_repack",
+        "binary_name": "alertmanager",
+        "extra_binaries": [
+          "amtool"
+        ]
+      },
+      "artifacts": {
+        "rpm": {
+          "enabled": true,
+          "targets": [
+            "el8",
+            "el9",
+            "el10"
+          ],
+          "summary": "Prometheus Alertmanager",
+          "service_file": true,
+          "system_user": "alertmanager",
+          "extra_files": [
+            {
+              "source": "assets/alertmanager.yml",
+              "dest": "/etc/alertmanager/alertmanager.yml",
+              "config": true
+            }
+          ],
+          "directories": [
+            {
+              "path": "/etc/alertmanager",
+              "mode": "0755",
+              "owner": "root",
+              "group": "root"
+            },
+            {
+              "path": "/var/lib/alertmanager",
+              "mode": "0755",
+              "owner": "alertmanager",
+              "group": "alertmanager"
+            }
+          ]
+        },
+        "docker": {
+          "enabled": true,
+          "entrypoint": [
+            "/usr/bin/alertmanager"
+          ],
+          "cmd": [
+            "--config.file=/etc/alertmanager/alertmanager.yml"
+          ],
+          "validation": {
+            "port": 9093
+          }
+        }
+      },
+      "readme": "# Monitoring Hub: alertmanager\n\nEnterprise-grade packaging of the official Prometheus Alertmanager.\n\n## \ud83d\ude80 Features\n- **Base Image:** Red Hat UBI 9 Minimal.\n- **Components:** Includes `alertmanager` and `amtool`.\n- **Pre-configured:** Default configuration path at `/etc/alertmanager/alertmanager.yml`.\n\n## \ud83d\udce6 Usage\n\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/alertmanager:latest\ndocker run -d -p 9093:9093 ghcr.io/sckyzo/monitoring-hub/alertmanager:latest\n```\n\n## \ud83c\udf10 Documentation\nSee official documentation: [prometheus/alertmanager](https://github.com/prometheus/alertmanager)\n",
+      "availability": {
+        "el8": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el9": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el10": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        }
+      }
+    },
+    {
+      "name": "apache_exporter",
+      "description": "Prometheus exporter for Apache HTTP Server",
+      "category": "Web",
+      "version": "1.0.10",
+      "upstream": {
+        "type": "github",
+        "repo": "Lusitaniae/apache_exporter"
+      },
+      "build": {
+        "method": "binary_repack",
+        "binary_name": "apache_exporter"
+      },
+      "artifacts": {
+        "rpm": {
+          "enabled": true,
+          "summary": "Prometheus Apache Exporter",
+          "targets": [
+            "el8",
+            "el9",
+            "el10"
+          ],
+          "system_user": "apache_exporter",
+          "service_file": true,
+          "extra_files": [],
+          "directories": [
+            {
+              "path": "/var/lib/apache_exporter",
+              "owner": "apache_exporter",
+              "group": "apache_exporter",
+              "mode": "0755"
+            }
+          ]
+        },
+        "docker": {
+          "enabled": true,
+          "entrypoint": [
+            "/usr/bin/apache_exporter"
+          ],
+          "validation": {
+            "port": 9117
+          }
+        }
+      },
+      "readme": "# Apache Exporter\n\n[![Upstream](https://img.shields.io/badge/Upstream-Lusitaniae/apache_exporter-blue)](https://github.com/Lusitaniae/apache_exporter)\n\nPrometheus exporter for Apache HTTP Server metrics.\n\n## Overview\nThis exporter scrapes Apache `mod_status` statistics and exports them in Prometheus format.\n\n## Configuration\nThe exporter requires `mod_status` to be enabled in Apache with `ExtendedStatus On`.\n\n### Common Flags\n*   `--scrape_uri`: URL to Apache status page (default `http://localhost/server-status?auto`).\n*   `--telemetry.address`: Address to listen on (default `:9117`).\n\n## Usage\n\n### RPM\n```bash\nsudo dnf install apache_exporter\nsudo systemctl enable --now apache_exporter\n```\n\n### Docker\n```bash\ndocker run -d -p 9117:9117 ghcr.io/sckyzo/monitoring-hub/apache_exporter:latest --scrape_uri=\"http://YOUR_APACHE_SERVER/server-status?auto\"\n```",
+      "availability": {
+        "el8": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el9": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el10": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        }
+      }
+    },
+    {
+      "name": "bind_exporter",
+      "description": "Prometheus exporter for Bind (DNS) statistics",
+      "category": "Network",
+      "version": "0.8.0",
+      "upstream": {
+        "type": "github",
+        "repo": "prometheus-community/bind_exporter"
+      },
+      "build": {
+        "method": "binary_repack",
+        "binary_name": "bind_exporter"
+      },
+      "artifacts": {
+        "rpm": {
+          "enabled": true,
+          "summary": "Prometheus Bind Exporter",
+          "targets": [
+            "el8",
+            "el9",
+            "el10"
+          ],
+          "system_user": "bind_exporter",
+          "service_file": true,
+          "extra_files": [],
+          "directories": [
+            {
+              "path": "/var/lib/bind_exporter",
+              "owner": "bind_exporter",
+              "group": "bind_exporter",
+              "mode": "0755"
+            }
+          ]
+        },
+        "docker": {
+          "enabled": true,
+          "entrypoint": [
+            "/usr/bin/bind_exporter"
+          ],
+          "validation": {
+            "port": 9119
+          }
+        }
+      },
+      "readme": "# Bind Exporter\n\n[![Upstream](https://img.shields.io/badge/Upstream-prometheus--community/bind_exporter-blue)](https://github.com/prometheus-community/bind_exporter)\n\nPrometheus exporter for Bind (DNS) statistics.\n\n## Overview\nThis exporter probes a Bind server via its HTTP statistics channel and exports metrics in Prometheus format.\n\n## Configuration\nThe exporter is configured via command-line flags. By default, it listens on port `9119`.\n\n### Common Flags\n*   `-bind.stats-url`: URL of the Bind statistics channel (default `http://localhost:8053/`).\n*   `-bind.pid-file`: Path to the Bind PID file.\n*   `-web.listen-address`: Address to listen on for web interface and telemetry (default `:9119`).\n\n## Usage\n\n### RPM\n```bash\nsudo dnf install bind_exporter\nsudo systemctl enable --now bind_exporter\n```\n\n### Docker\n```bash\ndocker run -d -p 9119:9119 ghcr.io/sckyzo/monitoring-hub/bind_exporter:latest\n```",
+      "availability": {
+        "el8": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el9": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el10": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        }
+      }
+    },
+    {
+      "name": "blackbox_exporter",
+      "description": "Prometheus blackbox exporter for network probing (HTTP, DNS, TCP, ICMP)",
+      "category": "Network",
+      "version": "0.28.0",
+      "upstream": {
+        "type": "github",
+        "repo": "prometheus/blackbox_exporter"
+      },
+      "build": {
+        "method": "binary_repack",
+        "binary_name": "blackbox_exporter"
+      },
+      "artifacts": {
+        "rpm": {
+          "enabled": true,
+          "summary": "Prometheus blackbox exporter",
+          "targets": [
+            "el8",
+            "el9",
+            "el10"
+          ],
+          "system_user": "blackbox_exporter",
+          "service_file": true,
+          "extra_files": [
+            {
+              "source": "assets/blackbox.yml",
+              "dest": "/etc/blackbox_exporter/blackbox.yml",
+              "config": true
+            }
+          ],
+          "directories": [
+            {
+              "path": "/etc/blackbox_exporter",
+              "owner": "root",
+              "group": "root",
+              "mode": "0755"
+            },
+            {
+              "path": "/var/lib/blackbox_exporter",
+              "owner": "blackbox_exporter",
+              "group": "blackbox_exporter",
+              "mode": "0755"
+            }
+          ]
+        },
+        "docker": {
+          "enabled": true,
+          "entrypoint": [
+            "/usr/bin/blackbox_exporter"
+          ],
+          "cmd": [
+            "--config.file=/etc/blackbox_exporter/blackbox.yml"
+          ],
+          "validation": {
+            "port": 9115
+          }
+        }
+      },
+      "readme": "# Blackbox Exporter\n\n[![Upstream](https://img.shields.io/badge/Upstream-prometheus/blackbox_exporter-blue)](https://github.com/prometheus/blackbox_exporter)\n\nThe Blackbox Exporter allows probing of endpoints over HTTP, HTTPS, DNS, TCP, ICMP, and gRPC.\n\n## Overview\nUnlike most exporters that run on the target machine, the Blackbox Exporter runs centrally and probes targets remotely. It is essential for \"Canary\" testing and availability monitoring.\n\n## Configuration\nThe exporter requires a configuration file (`blackbox.yml`) defining modules (e.g., `http_2xx`, `icmp`). A default configuration file is provided in `/etc/blackbox_exporter/blackbox.yml`.\n\n### Common Flags\n*   `--config.file`: Path to configuration file (default `/etc/blackbox_exporter/blackbox.yml`).\n*   `--web.listen-address`: Address to listen on (default `:9115`).\n\n## Usage\n\n### RPM\n```bash\nsudo dnf install blackbox_exporter\nsudo systemctl enable --now blackbox_exporter\n```\n\n### Docker\n```bash\ndocker run -d -p 9115:9115 -v /path/to/blackbox.yml:/etc/blackbox_exporter/blackbox.yml ghcr.io/sckyzo/monitoring-hub/blackbox_exporter:latest\n```\n\n## Example Scrape Config (Prometheus)\n```yaml\nscrape_configs:\n  - job_name: 'blackbox'\n    metrics_path: /probe\n    params:\n      module: [http_2xx]  # Look for a HTTP 200 response.\n    static_configs:\n      - targets:\n        - http://prometheus.io    # Target to probe with http_2xx\n    relabel_configs:\n      - source_labels: [__address__]\n        target_label: __param_target\n      - source_labels: [__param_target]\n        target_label: instance\n      - target_label: __address__\n        replacement: 127.0.0.1:9115  # The blackbox exporter's real hostname:port.\n```",
+      "availability": {
+        "el8": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el9": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el10": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        }
+      }
+    },
+    {
+      "name": "eseries_exporter",
+      "description": "Prometheus exporter for NetApp/Lenovo E-Series storage systems",
+      "category": "Storage",
+      "version": "2.0.0",
+      "upstream": {
+        "type": "github",
+        "repo": "sckyzo/eseries_exporter",
+        "strategy": "latest_release",
+        "archive_name": "{name}_linux_{arch}.tar.gz"
+      },
+      "build": {
+        "method": "binary_repack",
+        "binary_name": "eseries_exporter"
+      },
+      "artifacts": {
+        "rpm": {
+          "enabled": true,
+          "targets": [
+            "el8",
+            "el9",
+            "el10"
+          ],
+          "summary": "Prometheus exporter for E-Series",
+          "service_file": true,
+          "system_user": "prometheus",
+          "extra_files": [
+            {
+              "source": "assets/eseries_exporter.yml",
+              "dest": "/etc/eseries_exporter/eseries_exporter.yml",
+              "config": true
+            }
+          ],
+          "directories": [
+            {
+              "path": "/etc/eseries_exporter",
+              "mode": "0755",
+              "owner": "root",
+              "group": "root"
+            }
+          ]
+        },
+        "docker": {
+          "enabled": true,
+          "base_image": "registry.access.redhat.com/ubi9/ubi-minimal",
+          "entrypoint": [
+            "/usr/bin/eseries_exporter"
+          ],
+          "cmd": [
+            "--config.file=/etc/eseries_exporter/eseries_exporter.yml"
+          ],
+          "validation": {
+            "port": 9313
+          }
+        }
+      },
+      "readme": "# Monitoring Hub: eseries_exporter\n\nEnterprise-grade packaging of the NetApp/Lenovo E-Series storage exporter.\n\n## \ud83d\ude80 Features\n- **Base Image:** Red Hat UBI 9 Minimal.\n- **Security:** Built from official upstream sources.\n- **Multi-Arch:** Support for x86_64 and aarch64.\n\n## \ud83d\udce6 Usage\n\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/eseries_exporter:latest\ndocker run -d -p 9128:9128 \\\n  -v /path/to/config.yml:/etc/eseries_exporter/eseries_exporter.yml \\\n  ghcr.io/sckyzo/monitoring-hub/eseries_exporter:latest\n```\n\n## \ud83c\udf10 Documentation\nSee official documentation: [sckyzo/eseries_exporter](https://github.com/sckyzo/eseries_exporter)\n\n```",
+      "availability": {
+        "el8": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el9": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el10": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        }
+      }
+    },
+    {
+      "name": "gpfs_exporter",
+      "description": "Prometheus exporter for IBM GPFS (Spectrum Scale) metrics",
+      "category": "HPC",
+      "version": "3.2.0",
+      "upstream": {
+        "type": "github",
+        "repo": "treydock/gpfs_exporter",
+        "strategy": "latest_release"
+      },
+      "build": {
+        "method": "binary_repack",
+        "binary_name": "gpfs_exporter",
+        "archs": [
+          "amd64"
+        ]
+      },
+      "artifacts": {
+        "rpm": {
+          "enabled": true,
+          "targets": [
+            "el8",
+            "el9",
+            "el10"
+          ],
+          "summary": "Prometheus exporter for IBM GPFS",
+          "service_file": true,
+          "system_user": "prometheus"
+        },
+        "docker": {
+          "enabled": true,
+          "base_image": "registry.access.redhat.com/ubi9/ubi-minimal",
+          "entrypoint": [
+            "/usr/bin/gpfs_exporter"
+          ],
+          "validation": {
+            "enabled": false
+          }
+        }
+      },
+      "readme": "# Monitoring Hub: gpfs_exporter\n\nEnterprise-grade packaging of the GPFS (IBM Spectrum Scale) exporter.\n\n## \ud83d\ude80 Features\n- **Base Image:** Red Hat UBI 9 Minimal.\n- **Security:** Built from official upstream sources.\n- **Multi-Arch:** Support for x86_64 and aarch64.\n\n## \ud83d\udce6 Usage\n\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/gpfs_exporter:latest\ndocker run -d -p 9303:9303 ghcr.io/sckyzo/monitoring-hub/gpfs_exporter:latest\n```\n\n## \ud83c\udf10 Documentation\nSee official documentation: [treydock/gpfs_exporter](https://github.com/treydock/gpfs_exporter)\n",
+      "availability": {
+        "el8": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el9": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el10": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        }
+      }
+    },
+    {
+      "name": "ha_cluster_exporter",
+      "description": "Prometheus exporter for High Availability clusters (Pacemaker, Corosync)",
+      "category": "System",
+      "version": "1.4.0",
+      "upstream": {
+        "type": "github",
+        "repo": "ClusterLabs/ha_cluster_exporter",
+        "strategy": "latest_release",
+        "archive_name": "{name}-{arch}.gz"
+      },
+      "build": {
+        "method": "binary_repack",
+        "binary_name": "ha_cluster_exporter"
+      },
+      "artifacts": {
+        "rpm": {
+          "enabled": true,
+          "targets": [
+            "el8",
+            "el9",
+            "el10"
+          ],
+          "summary": "Prometheus HA Cluster Exporter",
+          "service_file": true,
+          "system_user": "prometheus"
+        },
+        "docker": {
+          "enabled": true,
+          "base_image": "registry.access.redhat.com/ubi9/ubi-minimal",
+          "entrypoint": [
+            "/usr/bin/ha_cluster_exporter"
+          ],
+          "validation": {
+            "command": "--version"
+          }
+        }
+      },
+      "readme": "# Monitoring Hub: ha_cluster_exporter\n\nEnterprise-grade packaging of the ClusterLabs HA Cluster Exporter (Pacemaker/Corosync).\n\n## \ud83d\ude80 Features\n- **Base Image:** Red Hat UBI 9 Minimal.\n- **Support:** Pacemaker, Corosync, and SBD metrics.\n- **Multi-Arch:** Support for x86_64 and aarch64.\n\n## \ud83d\udce6 Usage\n\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/ha_cluster_exporter:latest\ndocker run -d -p 9664:9664 ghcr.io/sckyzo/monitoring-hub/ha_cluster_exporter:latest\n```\n\n## \ud83c\udf10 Documentation\nSee official documentation: [ClusterLabs/ha_cluster_exporter](https://github.com/ClusterLabs/ha_cluster_exporter)",
+      "availability": {
+        "el8": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el9": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el10": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        }
+      }
+    },
+    {
+      "name": "ipmi_exporter",
+      "description": "Prometheus exporter for IPMI devices",
+      "category": "Hardware",
+      "version": "1.10.1",
+      "upstream": {
+        "type": "github",
+        "repo": "prometheus-community/ipmi_exporter"
+      },
+      "build": {
+        "method": "binary_repack",
+        "binary_name": "ipmi_exporter"
+      },
+      "artifacts": {
+        "rpm": {
+          "enabled": true,
+          "summary": "Prometheus exporter for IPMI devices",
+          "targets": [
+            "el8",
+            "el9",
+            "el10"
+          ],
+          "dependencies": [
+            "freeipmi"
+          ],
+          "system_user": "ipmi_exporter",
+          "service_file": true,
+          "extra_files": [
+            {
+              "source": "assets/ipmi_remote.yml",
+              "dest": "/etc/ipmi_exporter/ipmi_remote.yml",
+              "config": true
+            }
+          ],
+          "directories": [
+            {
+              "path": "/var/lib/ipmi_exporter",
+              "owner": "ipmi_exporter",
+              "group": "ipmi_exporter",
+              "mode": "0755"
+            },
+            {
+              "path": "/etc/ipmi_exporter",
+              "owner": "root",
+              "group": "root",
+              "mode": "0755"
+            }
+          ]
+        },
+        "docker": {
+          "enabled": true,
+          "entrypoint": [
+            "/usr/bin/ipmi_exporter"
+          ],
+          "cmd": [
+            "--config.file=/etc/ipmi_exporter/ipmi_remote.yml"
+          ],
+          "validation": {
+            "port": 9290
+          }
+        }
+      },
+      "readme": "# IPMI Exporter\n\n[![Upstream](https://img.shields.io/badge/Upstream-prometheus--community/ipmi_exporter-blue)](https://github.com/prometheus-community/ipmi_exporter)\n\nPrometheus exporter for IPMI devices (Intelligent Platform Management Interface).\n\n## Overview\nThis exporter collects hardware health metrics (temperatures, fans, voltages, power state) from servers via IPMI. It supports both local (in-band) and remote (out-of-band/LAN) monitoring.\n\n## Configuration\nFor remote monitoring, a configuration file defining modules (user/password/driver) is recommended.\n\n### Common Flags\n*   `--config.file`: Path to configuration file (default `/etc/ipmi_exporter/ipmi_remote.yml`).\n*   `--web.listen-address`: Address to listen on (default `:9290`).\n\n### Dependencies (RPM)\nThe RPM package automatically installs `freeipmi` as a dependency, which provides the necessary underlying tools (`ipmimonitoring`, etc.).\n\n## Usage\n\n### RPM\n```bash\nsudo dnf install ipmi_exporter\nsudo systemctl enable --now ipmi_exporter\n```\n\n### Docker\n```bash\ndocker run -d -p 9290:9290 -v /path/to/ipmi_remote.yml:/etc/ipmi_exporter/ipmi_remote.yml ghcr.io/sckyzo/monitoring-hub/ipmi_exporter:latest\n```",
+      "availability": {
+        "el8": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el9": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el10": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        }
+      }
+    },
+    {
+      "name": "mysqld_exporter",
+      "description": "Prometheus exporter for MySQL server metrics",
+      "category": "Database",
+      "version": "0.18.0",
+      "upstream": {
+        "type": "github",
+        "repo": "prometheus/mysqld_exporter"
+      },
+      "build": {
+        "method": "binary_repack",
+        "binary_name": "mysqld_exporter"
+      },
+      "artifacts": {
+        "rpm": {
+          "enabled": true,
+          "summary": "Prometheus MySQL Exporter",
+          "targets": [
+            "el8",
+            "el9",
+            "el10"
+          ],
+          "system_user": "mysqld_exporter",
+          "service_file": true,
+          "extra_files": [
+            {
+              "source": "assets/my.cnf",
+              "dest": "/var/lib/mysqld_exporter/.my.cnf",
+              "config": true,
+              "mode": "0600"
+            }
+          ],
+          "directories": [
+            {
+              "path": "/var/lib/mysqld_exporter",
+              "owner": "mysqld_exporter",
+              "group": "mysqld_exporter",
+              "mode": "0700"
+            }
+          ]
+        },
+        "docker": {
+          "enabled": true,
+          "entrypoint": [
+            "/usr/bin/mysqld_exporter"
+          ],
+          "cmd": [
+            "--config.my-cnf=/var/lib/mysqld_exporter/.my.cnf"
+          ],
+          "validation": {
+            "port": 9104
+          }
+        }
+      },
+      "readme": "# MySQL Exporter\n\n[![Upstream](https://img.shields.io/badge/Upstream-prometheus/mysqld_exporter-blue)](https://github.com/prometheus/mysqld_exporter)\n\nPrometheus exporter for MySQL server metrics.\n\n## Overview\nThis exporter collects metrics from a MySQL or MariaDB server. It uses the official Prometheus Go client and supports a wide range of MySQL versions.\n\n## Configuration\nThe exporter requires database credentials. The recommended way is to use a `.my.cnf` file.\n\n### Default Configuration\nA default configuration file is provided at `/var/lib/mysqld_exporter/.my.cnf`:\n\n```ini\n[client]\nuser=exporter\npassword=exporter_password\nhost=localhost\n```\n\n**Security Note:** This file should be readable ONLY by the `mysqld_exporter` user (`chmod 600`).\n\n### Common Flags\n*   `--config.my-cnf`: Path to `.my.cnf` file (default `~/.my.cnf`).\n*   `--web.listen-address`: Address to listen on (default `:9104`).\n\n## Usage\n\n### RPM\n```bash\n# 1. Edit credentials\nsudo vi /var/lib/mysqld_exporter/.my.cnf\n\n# 2. Start service\nsudo systemctl enable --now mysqld_exporter\n```\n\n### Docker\n```bash\ndocker run -d -p 9104:9104 \\\n  -v /path/to/.my.cnf:/var/lib/mysqld_exporter/.my.cnf \\\n  ghcr.io/sckyzo/monitoring-hub/mysqld_exporter:latest\n```\n\n## Database Permissions\nThe database user needs `PROCESS`, `REPLICATION CLIENT`, and `SELECT` privileges.\n\n```sql\nCREATE USER 'exporter'@'localhost' IDENTIFIED BY 'exporter_password';\nGRANT PROCESS, REPLICATION CLIENT, SELECT ON *.* TO 'exporter'@'localhost';\n```\n\n",
+      "availability": {
+        "el8": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el9": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el10": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        }
+      }
+    },
+    {
+      "name": "nginx_exporter",
+      "description": "Prometheus exporter for NGINX metrics",
+      "category": "Web",
+      "version": "1.5.1",
+      "upstream": {
+        "type": "github",
+        "repo": "nginx/nginx-prometheus-exporter",
+        "archive_name": "nginx-prometheus-exporter_{clean_version}_linux_{arch}.tar.gz"
+      },
+      "build": {
+        "method": "binary_repack",
+        "binary_name": "nginx-prometheus-exporter"
+      },
+      "artifacts": {
+        "rpm": {
+          "enabled": true,
+          "summary": "Prometheus Nginx Exporter",
+          "targets": [
+            "el8",
+            "el9",
+            "el10"
+          ],
+          "system_user": "nginx_exporter",
+          "service_file": true,
+          "extra_files": [],
+          "directories": [
+            {
+              "path": "/var/lib/nginx_exporter",
+              "owner": "nginx_exporter",
+              "group": "nginx_exporter",
+              "mode": "0755"
+            }
+          ]
+        },
+        "docker": {
+          "enabled": true,
+          "entrypoint": [
+            "/usr/bin/nginx_exporter"
+          ],
+          "validation": {
+            "port": 9113
+          }
+        }
+      },
+      "readme": "# Nginx Exporter\n\n[![Upstream](https://img.shields.io/badge/Upstream-nginx/nginx--prometheus--exporter-blue)](https://github.com/nginx/nginx-prometheus-exporter)\n\nPrometheus exporter for NGINX metrics.\n\n## Overview\nThis exporter scrapes metrics from an NGINX `stub_status` page and exports them in Prometheus format.\n\n## Configuration\nRequires `stub_status` module enabled in Nginx.\n\n### Common Flags\n*   `-nginx.scrape-uri`: Address to scrape NGINX metrics from (default `http://127.0.0.1:8080/stub_status`).\n*   `-web.listen-address`: Address to listen on (default `:9113`).\n\n## Usage\n\n### RPM\n```bash\nsudo dnf install nginx_exporter\nsudo systemctl enable --now nginx_exporter\n```\n\n### Docker\n```bash\ndocker run -d -p 9113:9113 ghcr.io/sckyzo/monitoring-hub/nginx_exporter:latest -nginx.scrape-uri http://<NGINX_ADDR>:<PORT>/stub_status\n```",
+      "availability": {
+        "el8": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el9": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el10": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        }
+      }
+    },
+    {
+      "name": "node_exporter",
+      "description": "Hardware and OS metrics exporter for Prometheus",
+      "category": "System",
+      "version": "1.10.2",
+      "updated": true,
+      "upstream": {
+        "type": "github",
+        "repo": "prometheus/node_exporter",
+        "strategy": "latest_release"
+      },
+      "build": {
+        "method": "binary_repack",
+        "binary_name": "node_exporter"
+      },
+      "artifacts": {
+        "rpm": {
+          "enabled": true,
+          "targets": [
+            "el8",
+            "el9",
+            "el10"
+          ],
+          "summary": "Prometheus exporter for hardware and OS metrics",
+          "service_file": true
+        },
+        "docker": {
+          "enabled": true,
+          "entrypoint": [
+            "/usr/bin/node_exporter"
+          ],
+          "cmd": [],
+          "validation": {
+            "port": 9100
+          }
+        }
+      },
+      "readme": "# Monitoring Hub: node_exporter\n\nEnterprise-grade packaging of the official Prometheus node_exporter.\n\n## \ud83d\ude80 Features\n- **Base Image:** Red Hat UBI 9 Minimal.\n- **Security:** Scanned and built from official upstream sources.\n- **Multi-Arch:** Native support for x86_64 and aarch64.\n\n## \ud83d\udce6 Usage\n\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/node_exporter:latest\ndocker run -d -p 9100:9100 ghcr.io/sckyzo/monitoring-hub/node_exporter:latest\n```\n\n## \ud83c\udf10 Documentation\nSee official documentation: [prometheus/node_exporter](https://github.com/prometheus/node_exporter)\n",
+      "availability": {
+        "el8": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el9": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el10": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        }
+      }
+    },
+    {
+      "name": "ping_exporter",
+      "description": "Prometheus exporter for ICMP ping metrics",
+      "category": "Network",
+      "version": "1.1.4",
+      "upstream": {
+        "type": "github",
+        "repo": "czerwonk/ping_exporter",
+        "strategy": "latest_release",
+        "archive_name": "{name}_{version}_linux_{arch}.tar.gz"
+      },
+      "build": {
+        "method": "binary_repack",
+        "binary_name": "ping_exporter"
+      },
+      "artifacts": {
+        "rpm": {
+          "enabled": true,
+          "targets": [
+            "el8",
+            "el9",
+            "el10"
+          ],
+          "summary": "Prometheus exporter for ICMP ping metrics",
+          "service_file": true,
+          "system_user": "prometheus",
+          "extra_files": [
+            {
+              "source": "assets/ping.yml",
+              "dest": "/etc/ping_exporter/ping.yml",
+              "config": true
+            }
+          ],
+          "directories": [
+            {
+              "path": "/etc/ping_exporter",
+              "mode": "0755",
+              "owner": "root",
+              "group": "root"
+            }
+          ]
+        },
+        "docker": {
+          "enabled": true,
+          "base_image": "registry.access.redhat.com/ubi9/ubi-minimal",
+          "entrypoint": [
+            "/usr/bin/ping_exporter"
+          ],
+          "cmd": [
+            "--config.path=/etc/ping_exporter/ping.yml"
+          ],
+          "validation": {
+            "port": 9427
+          }
+        }
+      },
+      "readme": "# Monitoring Hub: ping_exporter\n\n[![Upstream](https://img.shields.io/badge/Upstream-czerwonk/ping_exporter-blue)](https://github.com/czerwonk/ping_exporter)\n\nEnterprise-grade packaging of the Prometheus ping_exporter.\n\n## \ud83d\ude80 Features\n- **Base Image:** Red Hat UBI 9 Minimal.\n- **Security:** Built from official upstream sources.\n- **Multi-Arch:** Support for x86_64 and aarch64.\n\n## \ud83d\udce6 Usage\n\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/ping_exporter:latest\ndocker run -d -p 9427:9427 --privileged ghcr.io/sckyzo/monitoring-hub/ping_exporter:latest\n```\n\n## \ud83c\udf10 Documentation\nSee official documentation: [jaxxstorm/ping_exporter](https://github.com/jaxxstorm/ping_exporter)",
+      "availability": {
+        "el8": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el9": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el10": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        }
+      }
+    },
+    {
+      "name": "podman_exporter",
+      "description": "Prometheus exporter for Podman containers",
+      "category": "Containers",
+      "version": "1.20.0",
+      "upstream": {
+        "type": "github",
+        "repo": "SckyzO/prometheus-podman-exporter",
+        "archive_name": "prometheus-podman-exporter-{version}.linux-{arch}.tar.gz"
+      },
+      "build": {
+        "method": "binary_repack",
+        "binary_name": "podman_exporter"
+      },
+      "artifacts": {
+        "rpm": {
+          "enabled": true,
+          "summary": "Prometheus exporter for Podman containers",
+          "targets": [
+            "el8",
+            "el9",
+            "el10"
+          ],
+          "system_user": "prometheus",
+          "extra_files": [],
+          "directories": [
+            {
+              "path": "/var/lib/prometheus",
+              "owner": "prometheus",
+              "group": "prometheus",
+              "mode": "0755"
+            }
+          ]
+        },
+        "docker": {
+          "enabled": true,
+          "entrypoint": [
+            "/usr/bin/podman_exporter"
+          ],
+          "cmd": [
+            "--collector.enable-all"
+          ],
+          "validation": {
+            "command": "--help"
+          }
+        }
+      },
+      "readme": "# Podman Exporter\n\n[![Upstream](https://img.shields.io/badge/Upstream-SckyzO/prometheus--podman--exporter-blue)](https://github.com/SckyzO/prometheus-podman-exporter)\n\nPrometheus exporter for Podman containers.\n\n## Overview\nThis exporter exposes metrics about Podman containers, images, and volumes. It connects to the Podman socket to gather information.\n\n## Configuration\nThe exporter connects to the Podman socket (default `unix:///run/podman/podman.sock`).\n\n### Common Flags\n*   `--collector.enable-all`: Enable all available collectors.\n*   `--web.listen-address`: Address to listen on (default `:9882`).\n\n## Usage\n\n### RPM\n```bash\nsudo dnf install podman_exporter\nsudo systemctl enable --now podman_exporter\n```\n\n### Docker\nTo monitor the host's Podman instance from a container, you must mount the Podman socket.\n\n```bash\ndocker run -d -p 9882:9882 \\\n  -v /run/podman/podman.sock:/run/podman/podman.sock \\\n  -e CONTAINER_HOST=unix:///run/podman/podman.sock \\\n  ghcr.io/sckyzo/monitoring-hub/podman_exporter:latest\n```\n",
+      "availability": {
+        "el8": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el9": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el10": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        }
+      }
+    },
+    {
+      "name": "process_exporter",
+      "description": "Prometheus exporter for process metrics",
+      "category": "System",
+      "version": "0.8.7",
+      "upstream": {
+        "type": "github",
+        "repo": "ncabatoff/process-exporter",
+        "archive_name": "process-exporter-{clean_version}.linux-{arch}.tar.gz"
+      },
+      "build": {
+        "method": "binary_repack",
+        "binary_name": "process-exporter"
+      },
+      "artifacts": {
+        "rpm": {
+          "enabled": true,
+          "targets": [
+            "el8",
+            "el9",
+            "el10"
+          ],
+          "summary": "Prometheus exporter for process metrics",
+          "service_file": true,
+          "system_user": "prometheus"
+        },
+        "docker": {
+          "enabled": true,
+          "entrypoint": [
+            "/usr/bin/process_exporter"
+          ],
+          "validation": {
+            "port": 9256
+          }
+        }
+      },
+      "readme": "# Process Exporter\n\nEnterprise-grade packaging of the Prometheus process-exporter.\n\n## \ud83d\ude80 Features\n- **Base Image:** Red Hat UBI 9 Minimal.\n- **Security:** Built from official upstream sources.\n- **Multi-Arch:** Support for x86_64 and aarch64.\n\n## \ud83d\udce6 Usage\n\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/process-exporter:latest\ndocker run -d -p 9256:9256 --privileged ghcr.io/sckyzo/monitoring-hub/process-exporter:latest\n```\n\n## \ud83c\udf10 Documentation\nSee official documentation: [ncabatoff/process-exporter](https://github.com/ncabatoff/process-exporter)\n",
+      "availability": {
+        "el8": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el9": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el10": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        }
+      }
+    },
+    {
+      "name": "prometheus",
+      "description": "The Prometheus monitoring system and time series database.",
+      "category": "Infrastructure",
+      "version": "3.8.1",
+      "upstream": {
+        "type": "github",
+        "repo": "prometheus/prometheus",
+        "strategy": "latest_release"
+      },
+      "build": {
+        "method": "binary_repack",
+        "binary_name": "prometheus",
+        "extra_binaries": [
+          "promtool"
+        ]
+      },
+      "artifacts": {
+        "rpm": {
+          "enabled": true,
+          "targets": [
+            "el8",
+            "el9",
+            "el10"
+          ],
+          "summary": "The Prometheus monitoring system and time series database.",
+          "service_file": true,
+          "system_user": "prometheus",
+          "extra_files": [
+            {
+              "source": "assets/prometheus.yml",
+              "dest": "/etc/prometheus/prometheus.yml",
+              "config": true
+            }
+          ],
+          "directories": [
+            {
+              "path": "/etc/prometheus",
+              "mode": "0755",
+              "owner": "root",
+              "group": "root"
+            },
+            {
+              "path": "/var/lib/prometheus",
+              "mode": "0755",
+              "owner": "prometheus",
+              "group": "prometheus"
+            }
+          ]
+        },
+        "docker": {
+          "enabled": true,
+          "entrypoint": [
+            "/usr/bin/prometheus"
+          ],
+          "cmd": [
+            "--config.file=/etc/prometheus/prometheus.yml"
+          ],
+          "validation": {
+            "port": 9090
+          }
+        }
+      },
+      "readme": "# Monitoring Hub: prometheus\n\nEnterprise-grade packaging of the official Prometheus server.\n\n## \ud83d\ude80 Features\n- **Base Image:** Red Hat UBI 9 Minimal.\n- **Components:** Includes `prometheus` and `promtool`.\n- **Pre-configured:** Default configuration path at `/etc/prometheus/prometheus.yml`.\n\n## \ud83d\udce6 Usage\n\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/prometheus:latest\ndocker run -d -p 9090:9090 ghcr.io/sckyzo/monitoring-hub/prometheus:latest\n```\n\n## \ud83c\udf10 Documentation\nSee official documentation: [prometheus/prometheus](https://github.com/prometheus/prometheus)\n",
+      "availability": {
+        "el8": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el9": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el10": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        }
+      }
+    },
+    {
+      "name": "redis_exporter",
+      "description": "Prometheus exporter for Redis metrics",
+      "category": "Database",
+      "version": "1.80.1",
+      "upstream": {
+        "type": "github",
+        "repo": "oliver006/redis_exporter",
+        "archive_name": "redis_exporter-v{clean_version}.linux-{arch}.tar.gz"
+      },
+      "build": {
+        "method": "binary_repack",
+        "binary_name": "redis_exporter"
+      },
+      "artifacts": {
+        "rpm": {
+          "enabled": true,
+          "summary": "Prometheus Redis Exporter",
+          "targets": [
+            "el8",
+            "el9",
+            "el10"
+          ],
+          "system_user": "redis_exporter",
+          "service_file": true,
+          "extra_files": [],
+          "directories": [
+            {
+              "path": "/var/lib/redis_exporter",
+              "owner": "redis_exporter",
+              "group": "redis_exporter",
+              "mode": "0755"
+            }
+          ]
+        },
+        "docker": {
+          "enabled": true,
+          "entrypoint": [
+            "/usr/bin/redis_exporter"
+          ],
+          "validation": {
+            "port": 9121
+          }
+        }
+      },
+      "readme": "# Redis Exporter\n\n[![Upstream](https://img.shields.io/badge/Upstream-oliver006/redis_exporter-blue)](https://github.com/oliver006/redis_exporter)\n\nPrometheus exporter for Redis metrics.\n\n## Overview\nThis exporter supports Redis versions 2.x, 3.x, 4.x, 5.x, 6.x, and 7.x.\n\n## Configuration\nThe exporter is configured via command-line flags or environment variables.\n\n### Common Flags\n*   `-redis.addr`: Address of one or more Redis nodes (default `redis://localhost:6379`).\n*   `-redis.password`: Password for the Redis instance.\n*   `-web.listen-address`: Address to listen on (default `:9121`).\n\n## Usage\n\n### RPM\n```bash\nsudo dnf install redis_exporter\nsudo systemctl enable --now redis_exporter\n```\n\n### Docker\n```bash\ndocker run -d -p 9121:9121 ghcr.io/sckyzo/monitoring-hub/redis_exporter:latest -redis.addr redis://<REDIS_ADDR>:6379\n```",
+      "availability": {
+        "el8": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el9": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el10": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        }
+      }
+    },
+    {
+      "name": "slurm_exporter",
+      "description": "Prometheus exporter for Slurm workload manager metrics",
+      "category": "HPC",
+      "new": true,
+      "version": "1.2.0",
+      "upstream": {
+        "type": "github",
+        "repo": "sckyzo/slurm_exporter",
+        "strategy": "latest_release",
+        "archive_name": "{name}-{clean_version}-linux-{arch}.tar.gz"
+      },
+      "build": {
+        "method": "binary_repack",
+        "binary_name": "slurm_exporter"
+      },
+      "artifacts": {
+        "rpm": {
+          "enabled": true,
+          "targets": [
+            "el8",
+            "el9",
+            "el10"
+          ],
+          "summary": "Prometheus exporter for Slurm metrics",
+          "service_file": true,
+          "system_user": "prometheus"
+        },
+        "docker": {
+          "enabled": true,
+          "base_image": "registry.access.redhat.com/ubi9/ubi-minimal",
+          "entrypoint": [
+            "/usr/bin/slurm_exporter"
+          ],
+          "validation": {
+            "port": 9341
+          }
+        }
+      },
+      "readme": "# Monitoring Hub: slurm_exporter\n\nEnterprise-grade packaging of the Slurm cluster metrics exporter.\n\n## \ud83d\ude80 Features\n- **Base Image:** Red Hat UBI 9 Minimal.\n- **Security:** Built from official upstream sources.\n- **Multi-Arch:** Support for x86_64 and aarch64.\n\n## \ud83d\udce6 Usage\n\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/slurm_exporter:latest\ndocker run -d -p 9323:9323 ghcr.io/sckyzo/monitoring-hub/slurm_exporter:latest\n```\n\n## \ud83c\udf10 Documentation\nSee official documentation: [sckyzo/slurm_exporter](https://github.com/sckyzo/slurm_exporter)\n",
+      "availability": {
+        "el8": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el9": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el10": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        }
+      }
+    },
+    {
+      "name": "smartctl_exporter",
+      "description": "Prometheus exporter for S.M.A.R.T. storage devices metrics",
+      "category": "System",
+      "version": "0.14.0",
+      "upstream": {
+        "type": "github",
+        "repo": "prometheus-community/smartctl_exporter",
+        "strategy": "latest_release"
+      },
+      "build": {
+        "method": "binary_repack",
+        "binary_name": "smartctl_exporter"
+      },
+      "artifacts": {
+        "rpm": {
+          "enabled": true,
+          "targets": [
+            "el8",
+            "el9",
+            "el10"
+          ],
+          "summary": "Prometheus exporter for S.M.A.R.T. metrics",
+          "service_file": true,
+          "system_user": "root"
+        },
+        "docker": {
+          "enabled": true,
+          "base_image": "registry.access.redhat.com/ubi9/ubi-minimal",
+          "entrypoint": [
+            "/usr/bin/smartctl_exporter"
+          ],
+          "validation": {
+            "port": 9633
+          }
+        }
+      },
+      "readme": "# Monitoring Hub: smartctl_exporter\n\nEnterprise-grade packaging of the Prometheus smartctl_exporter.\n\n## \ud83d\ude80 Features\n- **Base Image:** Red Hat UBI 9 Minimal.\n- **Security:** Built from official upstream sources.\n- **Multi-Arch:** Support for x86_64 and aarch64.\n\n## \ud83d\udce6 Usage\n\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/smartctl_exporter:latest\ndocker run -d -p 9633:9633 --privileged ghcr.io/sckyzo/monitoring-hub/smartctl_exporter:latest\n```\n\n## \ud83c\udf10 Documentation\nSee official documentation: [prometheus-community/smartctl_exporter](https://github.com/prometheus-community/smartctl_exporter)\n",
+      "availability": {
+        "el8": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el9": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el10": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        }
+      }
+    },
+    {
+      "name": "snmp_exporter",
+      "description": "Prometheus exporter for SNMP-enabled devices",
+      "category": "Network",
+      "version": "0.29.0",
+      "upstream": {
+        "type": "github",
+        "repo": "prometheus/snmp_exporter",
+        "strategy": "latest_release"
+      },
+      "build": {
+        "method": "binary_repack",
+        "binary_name": "snmp_exporter",
+        "extra_sources": [
+          {
+            "url": "https://raw.githubusercontent.com/prometheus/snmp_exporter/refs/heads/main/snmp.yml",
+            "filename": "snmp.yml"
+          }
+        ]
+      },
+      "artifacts": {
+        "rpm": {
+          "enabled": true,
+          "targets": [
+            "el8",
+            "el9",
+            "el10"
+          ],
+          "summary": "Prometheus exporter for SNMP metrics",
+          "service_file": true,
+          "system_user": "prometheus",
+          "extra_files": [
+            {
+              "source": "snmp.yml",
+              "dest": "/etc/snmp_exporter/snmp.yml",
+              "config": true
+            }
+          ],
+          "directories": [
+            {
+              "path": "/etc/snmp_exporter",
+              "mode": "0755",
+              "owner": "root",
+              "group": "root"
+            }
+          ]
+        },
+        "docker": {
+          "enabled": true,
+          "base_image": "registry.access.redhat.com/ubi9/ubi-minimal",
+          "entrypoint": [
+            "/usr/bin/snmp_exporter"
+          ],
+          "cmd": [
+            "--config.file=/etc/snmp_exporter/snmp.yml"
+          ],
+          "validation": {
+            "port": 9116
+          }
+        }
+      },
+      "readme": "# Monitoring Hub: snmp_exporter\n\nEnterprise-grade packaging of the official Prometheus SNMP Exporter.\n\n## \ud83d\ude80 Features\n- **Base Image:** Red Hat UBI 9 Minimal.\n- **Components:** Includes `snmp_exporter` and `snmp_generator`.\n- **Multi-Arch:** Support for x86_64 and aarch64.\n\n## \ud83d\udce6 Usage\n\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/snmp_exporter:latest\ndocker run -d -p 9116:9116 ghcr.io/sckyzo/monitoring-hub/snmp_exporter:latest\n```\n\n## \ud83c\udf10 Documentation\nSee official documentation: [prometheus/snmp_exporter](https://github.com/prometheus/snmp_exporter)\n",
+      "availability": {
+        "el8": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el9": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el10": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        }
+      }
+    },
+    {
+      "name": "textfile_exporter",
+      "description": "Prometheus exporter for local text files metrics",
+      "category": "System",
+      "version": "0.1.4",
+      "upstream": {
+        "type": "github",
+        "repo": "SckyzO/textfile_exporter",
+        "archive_name": "textfile_exporter-{clean_version}-linux-{arch}.tar.gz"
+      },
+      "build": {
+        "method": "binary_repack",
+        "binary_name": "textfile_exporter"
+      },
+      "artifacts": {
+        "rpm": {
+          "enabled": true,
+          "summary": "Prometheus Textfile Exporter",
+          "targets": [
+            "el8",
+            "el9",
+            "el10"
+          ],
+          "system_user": "textfile_exporter",
+          "service_file": true,
+          "extra_files": [],
+          "directories": [
+            {
+              "path": "/var/lib/textfile_exporter",
+              "owner": "textfile_exporter",
+              "group": "textfile_exporter",
+              "mode": "0755"
+            }
+          ]
+        },
+        "docker": {
+          "enabled": true,
+          "entrypoint": [
+            "/usr/bin/textfile_exporter"
+          ],
+          "cmd": [
+            "--textfile.directory=/var/lib/textfile_exporter"
+          ],
+          "validation": {
+            "port": 9014
+          }
+        }
+      },
+      "readme": "# Textfile Exporter\n\n[![Upstream](https://img.shields.io/badge/Upstream-SckyzO/textfile_exporter-blue)](https://github.com/SckyzO/textfile_exporter)\n\nPrometheus exporter for local text files metrics.\n\n## Overview\nThis exporter reads `.prom` files from a directory and exports them in Prometheus format. It's useful for monitoring cron jobs or batch scripts.\n\n## Configuration\nThe exporter is configured via command-line flags.\n\n### Common Flags\n*   `-directory`: Directory to read `.prom` files from (default `/var/lib/textfile_exporter`).\n*   `-addr`: Address to listen on (default `:9106`).\n\n## Usage\n\n### RPM\n```bash\nsudo dnf install textfile_exporter\nsudo systemctl enable --now textfile_exporter\n```\n\n### Docker\n```bash\ndocker run -d -p 9106:9106 -v /path/to/metrics:/var/lib/textfile_exporter ghcr.io/sckyzo/monitoring-hub/textfile_exporter:latest\n```",
+      "availability": {
+        "el8": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el9": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el10": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        }
+      }
+    }
+  ]
+}

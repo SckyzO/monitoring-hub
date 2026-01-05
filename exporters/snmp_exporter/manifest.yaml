@@ -1,5 +1,6 @@
 name: snmp_exporter
 description: "Prometheus exporter for SNMP-enabled devices"
+category: Network
 version: v0.29.0
 upstream:
   type: github

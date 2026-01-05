@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitoring Hub | The Exporter Registry</title>
+    <script src="https://cdn.tailwindcss.com?plugins=typography"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        slate: { 950: '#020617' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        [x-cloak] { display: none !important; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #020617; }
+        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+        .glass { background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.05); }
+        .card-glow:hover { box-shadow: 0 0 40px 5px rgba(99, 102, 241, 0.15); border-color: rgba(99, 102, 241, 0.4); }
+        .kbd { background: #1e293b; border: 1px solid #334155; border-radius: 4px; padding: 2px 6px; font-size: 10px; font-weight: 800; color: #94a3b8; }
+    </style>
+</head>
+<body class="bg-[#020617] text-slate-300 font-sans antialiased text-left" 
+      x-data="registryApp()"
+      x-init="init()"
+      @keydown.window.prevent.ctrl.k="showSearch = true"
+      @keydown.window.prevent.cmd.k="showSearch = true">
+
+    <!-- Search Modal -->
+    <div x-show="showSearch" 
+         class="fixed inset-0 z-[200] flex items-start justify-center pt-24 sm:pt-40 px-4"
+         x-cloak>
+        <div class="absolute inset-0 bg-slate-950/90 backdrop-blur-sm" @click="showSearch = false" x-transition.opacity></div>
+        <div class="relative w-full max-w-xl bg-slate-900 border border-white/10 rounded-2xl shadow-2xl overflow-hidden shadow-indigo-500/20"
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="scale-95 opacity-0"
+             x-transition:enter-end="scale-100 opacity-100">
+            <div class="p-6 border-b border-white/5 flex items-center gap-4 text-left">
+                <i data-lucide="search" class="w-6 h-6 text-indigo-500"></i>
+                <input type="text" 
+                       x-model="search"
+                       x-ref="searchInput"
+                       @keydown.escape="showSearch = false"
+                       placeholder="Find your exporter..."
+                       class="flex-1 bg-transparent border-none text-white focus:outline-none text-xl font-medium">
+                <span class="kbd uppercase">ESC</span>
+            </div>
+            <div class="max-h-[400px] overflow-y-auto p-4 space-y-2">
+                <template x-for="exporter in filteredExporters" :key="exporter.name">
+                    <div @click="selectedExporter = exporter; showSearch = false" 
+                         class="flex items-center justify-between p-4 rounded-2xl hover:bg-white/5 cursor-pointer group transition-all text-left">
+                        <div class="flex items-center gap-4">
+                            <div class="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center text-slate-400 group-hover:bg-indigo-500/20 group-hover:text-indigo-400 transition-all">
+                                <i :data-lucide="getIcon(exporter.category)" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <div class="font-bold text-white group-hover:text-indigo-400 transition-colors" x-text="exporter.name"></div>
+                                <div class="text-xs text-slate-500 line-clamp-1 text-left" x-text="exporter.description"></div>
+                            </div>
+                        </div>
+                        <i data-lucide="arrow-right" class="w-4 h-4 text-slate-700 group-hover:text-indigo-400 group-hover:translate-x-1 transition-all"></i>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </div>
+
+    <!--Navbar -->
+    <nav class="sticky top-0 z-50 w-full border-b border-white/5 bg-[#020617]/80 backdrop-blur-xl">
+        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center shadow-lg shadow-indigo-500/20 text-white">
+                    <i data-lucide="boxes" class="w-4 h-4"></i>
+                </div>
+                <span class="text-lg font-black text-white tracking-tighter uppercase italic">Registry</span>
+            </div>
+            
+            <div class="flex items-center gap-4">
+                <button @click="showSearch = true" class="hidden sm:flex items-center gap-3 px-3 py-1.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg text-slate-400 transition-all">
+                    <i data-lucide="search" class="w-4 h-4"></i>
+                    <span class="text-xs font-medium">Search...</span>
+                    <span class="kbd text-left">CTRL K</span>
+                </button>
+                <div class="h-4 w-[1px] bg-white/10 mx-2"></div>
+                <a href="https://github.com/SckyzO/monitoring-hub" target="_blank" class="p-2 hover:bg-white/5 rounded-full text-slate-400 hover:text-white transition-all text-left">
+                    <i data-lucide="github" class="w-5 h-5"></i>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="relative pt-16 pb-12 px-6 text-center border-b border-white/5 bg-slate-900/10 overflow-hidden">
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-indigo-500/10 via-transparent to-transparent opacity-50"></div>
+        <div class="max-w-4xl mx-auto relative z-10">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-[10px] font-bold uppercase tracking-widest mb-6">
+                <span class="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse"></span>
+                Software Factory Active
+            </div>
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-black text-white tracking-tightest mb-4 uppercase italic leading-tight">
+                Monitoring Hub
+            </h1>
+            <p class="text-lg text-slate-400 font-light max-w-xl mx-auto mb-10 leading-relaxed italic">
+                Production-ready Prometheus exporters. Secured & Multi-arch.
+            </p>
+            
+            <!-- Main Search Input -->
+            <div class="max-w-xl mx-auto relative group">
+                <i data-lucide="search" class="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-500 group-focus-within:text-indigo-400 transition-colors"></i>
+                <input type="text" x-model="search" placeholder="Find exporter..."
+                       class="w-full bg-slate-900 border border-white/10 rounded-2xl py-4 pl-14 pr-6 text-white focus:outline-none focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500/50 transition-all text-xl font-medium shadow-3xl">
+            </div>
+        </div>
+    </header>
+
+    <!-- Content & Toolbar -->
+    <main class="max-w-7xl mx-auto px-6 py-12">
+        
+        <div class="flex flex-wrap items-center justify-between gap-6 mb-10 border-b border-white/5 pb-6">
+            <div class="flex items-center gap-8 overflow-x-auto scrollbar-hide">
+                <!-- Categories -->
+                <div class="flex items-center gap-2">
+                    <button @click="category = 'all'" :class="category === 'all' ? 'bg-white text-black' : 'text-slate-500 hover:text-white bg-white/5'" class="px-4 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all">All</button>
+                    <template x-for="cat in categories" :key="cat">
+                        <button @click="category = cat" 
+                                :class="category === cat ? 'bg-indigo-600 text-white' : 'text-slate-500 hover:text-white bg-white/5'"
+                                class="px-4 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all" 
+                                x-text="cat"></button>
+                    </template>
+                </div>
+
+                <div class="h-4 w-[1px] bg-white/10 hidden md:block"></div>
+
+                <!-- OS Filter -->
+                <div class="flex items-center gap-2">
+                    <span class="text-[8px] font-black text-slate-600 uppercase tracking-[0.2em] mr-1">OS</span>
+                    <div class="flex bg-white/5 p-1 rounded-lg border border-white/5">
+                        <button @click="os = 'all'" :class="os === 'all' ? 'bg-white/10 text-indigo-400' : 'text-slate-500 hover:text-white'" class="px-3 py-1 rounded-md text-[8px] font-black uppercase transition-all">Any</button>
+                        <button @click="os = 'el8'" :class="os === 'el8' ? 'bg-white/10 text-indigo-400' : 'text-slate-500 hover:text-white'" class="px-3 py-1 rounded-md text-[8px] font-black uppercase transition-all">EL8</button>
+                        <button @click="os = 'el9'" :class="os === 'el9' ? 'bg-white/10 text-indigo-400' : 'text-slate-500 hover:text-white'" class="px-3 py-1 rounded-md text-[8px] font-black uppercase transition-all">EL9</button>
+                        <button @click="os = 'el10'" :class="os === 'el10' ? 'bg-white/10 text-indigo-400' : 'text-slate-500 hover:text-white'" class="px-3 py-1 rounded-md text-[8px] font-black uppercase transition-all">EL10</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex items-center bg-white/5 p-1 rounded-xl border border-white/5">
+                <button @click="view = 'grid'" :class="view === 'grid' ? 'bg-white text-black' : 'text-slate-500 hover:text-white'" class="p-2 rounded-lg transition-all text-left">
+                    <i data-lucide="grid" class="w-4 h-4"></i>
+                </button>
+                <button @click="view = 'list'" :class="view === 'list' ? 'bg-white text-black' : 'text-slate-500 hover:text-white'" class="p-2 rounded-lg transition-all text-left">
+                    <i data-lucide="list" class="w-4 h-4"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Grid View -->
+        <div x-show="view === 'grid'" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-left">
+            <template x-for="exporter in filteredExporters" :key="exporter.name">
+                <div @click="selectedExporter = exporter" 
+                     class="group relative flex flex-col bg-white/[0.02] border border-white/5 rounded-3xl p-8 hover:bg-white/[0.04] transition-all cursor-pointer card-glow overflow-hidden text-left">
+                    
+                    <div class="flex justify-between items-start mb-8 text-left">
+                        <div class="w-12 h-12 bg-white/5 rounded-xl flex items-center justify-center text-slate-400 group-hover:bg-indigo-600 group-hover:text-white transition-all duration-300 text-left">
+                            <i :data-lucide="getIcon(exporter.category)" class="w-6 h-6"></i>
+                        </div>
+                        <div class="flex flex-col items-end gap-2 text-left">
+                            <template x-if="exporter.new">
+                                <span class="px-2 py-0.5 bg-indigo-500 text-white text-[8px] font-black rounded-full uppercase tracking-widest animate-pulse">New</span>
+                            </template>
+                            <template x-if="exporter.updated && !exporter.new">
+                                <span class="px-2 py-0.5 bg-amber-500 text-black text-[8px] font-black rounded-full uppercase tracking-widest">Updated</span>
+                            </template>
+                            <span class="px-3 py-1 bg-white/5 rounded-full text-[10px] font-black font-mono text-slate-500 group-hover:text-indigo-400 transition-colors uppercase" x-text="`v${exporter.version}`"></span>
+                        </div>
+                    </div>
+
+                    <h3 class="text-xl font-black text-white mb-2 tracking-tight uppercase italic group-hover:translate-x-1 transition-transform text-left" x-text="exporter.name.replace('_', ' ')"></h3>
+                    <p class="text-slate-400 text-sm leading-relaxed mb-8 line-clamp-2 h-10 font-medium text-left" x-text="exporter.description"></p>
+
+                    <div class="mt-auto flex items-center justify-between border-t border-white/5 pt-6 text-left">
+                        <div class="flex gap-1.5 text-left">
+                            <template x-for="arch in (exporter.build?.archs || ['amd64', 'arm64'])">
+                                <span class="text-[8px] font-black text-slate-400 bg-slate-800 px-1.5 py-0.5 rounded text-left" x-text="arch.toUpperCase()"></span>
+                            </template>
+                        </div>
+                        <i data-lucide="arrow-up-right" class="w-4 h-4 text-slate-700 group-hover:text-indigo-500 transition-colors"></i>
+                    </div>
+                </div>
+            </template>
+        </div>
+
+        <!-- List View (v2.4 Compact & Single-Line) -->
+        <div x-show="view === 'list'" class="space-y-1" x-cloak>
+            <template x-for="exporter in filteredExporters" :key="exporter.name">
+                <div @click="selectedExporter = exporter" 
+                     class="flex items-center gap-4 px-4 py-2 bg-white/[0.01] hover:bg-white/[0.04] border border-white/5 rounded-xl transition-all cursor-pointer group">
+                    <div class="w-8 h-8 flex-shrink-0 bg-white/5 rounded-lg flex items-center justify-center text-slate-500 group-hover:text-indigo-400 transition-all">
+                        <i :data-lucide="getIcon(exporter.category)" class="w-4 h-4"></i>
+                    </div>
+                    
+                    <div class="flex-1 flex items-center gap-4 min-w-0">
+                        <h4 class="text-sm font-black text-white uppercase italic tracking-tighter truncate w-48 flex-shrink-0" x-text="exporter.name"></h4>
+                        <div class="h-3 w-[1px] bg-white/10 flex-shrink-0"></div>
+                        <p class="text-[11px] text-slate-500 truncate font-medium" x-text="exporter.description"></p>
+                    </div>
+
+                    <div class="flex items-center gap-3 flex-shrink-0">
+                        <div class="flex gap-1">
+                            <template x-for="arch in (exporter.build?.archs || ['amd64', 'arm64'])">
+                                <span class="text-[7px] font-black text-slate-500 bg-white/5 px-1 py-0.5 rounded uppercase" x-text="arch"></span>
+                            </template>
+                        </div>
+                        <template x-if="exporter.new">
+                            <span class="px-1.5 py-0.5 bg-indigo-500 text-white text-[7px] font-black rounded-full uppercase tracking-tighter animate-pulse">New</span>
+                        </template>
+                        <template x-if="exporter.updated && !exporter.new">
+                            <span class="px-1.5 py-0.5 bg-amber-500 text-black text-[7px] font-black rounded-full uppercase tracking-tighter">Updated</span>
+                        </template>
+                        <span class="text-[10px] font-mono font-bold text-indigo-500 w-16 text-right" x-text="`v${exporter.version}`"></span>
+                        <i data-lucide="chevron-right" class="w-4 h-4 text-slate-800 group-hover:text-indigo-500 group-hover:translate-x-0.5 transition-all"></i>
+                    </div>
+                </div>
+            </template>
+        </div>
+    </main>
+
+    <!-- Side Drawer Details -->
+    <div x-show="selectedExporter" class="fixed inset-0 z-[100] flex justify-end" x-cloak>
+        <div x-show="selectedExporter" x-transition.opacity @click="selectedExporter = null" class="absolute inset-0 bg-slate-950/80 backdrop-blur-sm"></div>
+        <div x-show="selectedExporter" 
+             x-transition:enter="transition transform duration-300" 
+             x-transition:enter-start="translate-x-full" 
+             class="relative w-full max-w-2xl bg-slate-900/90 backdrop-blur-2xl border-l border-white/10 h-full flex flex-col shadow-2xl overflow-hidden">
+            
+            <!-- Drawer Header -->
+            <div class="p-8 border-b border-white/5 flex items-center justify-between bg-white/[0.02]">
+                <div class="flex items-center gap-5">
+                    <button @click="selectedExporter = null" class="p-2 hover:bg-white/5 rounded-full text-slate-500 hover:text-white transition-all">
+                        <i data-lucide="arrow-right" class="w-6 h-6"></i>
+                    </button>
+                    <div class="flex flex-col gap-1">
+                        <div class="flex items-center gap-3">
+                            <h2 class="text-3xl font-black text-white uppercase italic tracking-tighter" x-text="selectedExporter?.name"></h2>
+                            <template x-if="selectedExporter?.new">
+                                <span class="px-2 py-0.5 bg-indigo-500 text-white text-[9px] font-black rounded-full uppercase tracking-widest animate-pulse">New</span>
+                            </template>
+                        </div>
+                        <span class="text-[10px] font-mono font-bold text-indigo-400 uppercase tracking-widest" x-text="`v${selectedExporter?.version}`"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex-1 overflow-y-auto p-10 space-y-12 scrollbar-hide">
+                
+                <!-- Documentation Section (rendered from README) -->
+                <section class="prose prose-invert prose-sm max-w-none">
+                     <!-- Fallback to description if readme is empty or just title -->
+                    <div x-html="marked.parse(selectedExporter?.readme || selectedExporter?.description || '')"></div>
+                </section>
+
+                <section x-data="{ localTab: 'docker' }">
+
+                    <h4 class="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] mb-6 text-left italic">02 / Deployment</h4>
+                    <div class="flex p-1 bg-white/5 rounded-xl w-fit border border-white/5 mb-6 text-left">
+                        <button @click="localTab = 'docker'" :class="localTab === 'docker' ? 'bg-white text-black shadow-lg' : 'text-slate-500 hover:text-white'" class="px-8 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all">DOCKER</button>
+                        <button @click="localTab = 'rpm'" :class="localTab === 'rpm' ? 'bg-white text-black shadow-lg' : 'text-slate-500 hover:text-white'" class="px-8 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all">RPM</button>
+                    </div>
+
+                    <div class="bg-black rounded-2xl border border-white/10 overflow-hidden shadow-2xl text-left">
+                        <div class="flex items-center justify-between px-6 py-3 bg-white/5 border-b border-white/5 text-left">
+                            <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest" x-text="localTab === 'docker' ? 'Container Command' : 'DNF Package'"></span>
+                            <div x-data="{ copied: false }">
+                                <button @click="window.copyToClipboard(localTab === 'docker' ? `docker run -d -p 9999:${selectedExporter?.artifacts?.docker?.validation?.port || 9100} ghcr.io/sckyzo/monitoring-hub/${selectedExporter?.name}:latest` : `sudo dnf install -y ${selectedExporter?.name}`); copied = true; setTimeout(() => copied = false, 2000)" 
+                                        class="text-[10px] font-black tracking-widest transition-all px-3 py-1 rounded bg-indigo-600 text-white hover:bg-indigo-500"
+                                        :class="copied ? 'bg-emerald-500 text-black' : ''">
+                                    <span x-text="copied ? 'DONE!' : 'COPY'"></span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="p-6 text-left">
+                            <pre class="font-mono text-sm overflow-x-auto text-left"><code x-show="localTab === 'docker'" class="text-indigo-300" x-text="`docker run -d \ 
+  -p ${selectedExporter?.artifacts?.docker?.validation?.port || 9100}:${selectedExporter?.artifacts?.docker?.validation?.port || 9100} \ 
+  ghcr.io/sckyzo/monitoring-hub/${selectedExporter?.name}:latest`"></code><code x-show="localTab === 'rpm'" class="text-emerald-400" x-text="`# 1. Setup repository
+sudo dnf install -y ${selectedExporter?.name}
+sudo systemctl enable --now ${selectedExporter?.name}`"></code></pre>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="grid grid-cols-2 gap-8 text-left">
+                    <div class="text-left">
+                        <h4 class="text-[9px] font-black text-slate-600 uppercase tracking-widest mb-4 text-left">Platforms</h4>
+                        <div class="flex gap-2 flex-wrap text-left">
+                            <template x-for="arch in (selectedExporter?.build?.archs || ['amd64', 'arm64'])">
+                                <span class="px-3 py-1 bg-white/5 border border-white/10 rounded-lg text-[10px] font-black text-white uppercase text-left" x-text="arch"></span>
+                            </template>
+                        </div>
+                    </div>
+                    <div class="text-left">
+                        <h4 class="text-[9px] font-black text-slate-600 uppercase tracking-widest mb-4 text-left">Distributions</h4>
+                        <div class="flex gap-2 flex-wrap text-left">
+                            <template x-for="dist in (selectedExporter?.artifacts?.rpm?.targets || [])">
+                                <span class="px-3 py-1 bg-white/5 border border-white/10 rounded-lg text-[10px] font-black text-white uppercase text-left" x-text="dist"></span>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-8 border-t border-white/5 bg-white/[0.02] text-left">
+                <a :href="`https://github.com/${selectedExporter?.upstream?.repo}`" target="_blank"
+                   class="w-full flex items-center justify-center gap-3 py-4 bg-white text-black rounded-2xl font-black uppercase text-xs tracking-widest hover:bg-slate-200 transition-all text-left">
+                    <i data-lucide="external-link" class="w-4 h-4"></i> Official Source
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="py-16 px-6 border-t border-white/5 bg-[#020617] text-left">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center opacity-50 text-left">
+            <div class="text-left">
+                <p class="text-sm font-black text-white uppercase italic tracking-tighter mb-1 text-left">Monitoring Hub</p>
+                <p class="text-slate-600 text-[10px] font-medium uppercase tracking-widest text-left">Registry Factory &copy; 2026</p>
+            </div>
+            <div class="flex gap-8 mt-8 md:mt-0 font-black text-[10px] tracking-widest uppercase text-slate-500 text-left">
+                <a href="#" class="hover:text-white transition-colors text-left">Documentation</a>
+                <a href="#" class="hover:text-white transition-colors text-left">GitHub</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Data Injection -->
+    <script id="exporters-data" type="application/json">[{"name": "alertmanager", "description": "Handle alerts and notifications for the Prometheus ecosystem", "category": "Infrastructure", "version": "0.30.0", "upstream": {"type": "github", "repo": "prometheus/alertmanager", "strategy": "latest_release"}, "build": {"method": "binary_repack", "binary_name": "alertmanager", "extra_binaries": ["amtool"]}, "artifacts": {"rpm": {"enabled": true, "targets": ["el8", "el9", "el10"], "summary": "Prometheus Alertmanager", "service_file": true, "system_user": "alertmanager", "extra_files": [{"source": "assets/alertmanager.yml", "dest": "/etc/alertmanager/alertmanager.yml", "config": true}], "directories": [{"path": "/etc/alertmanager", "mode": "0755", "owner": "root", "group": "root"}, {"path": "/var/lib/alertmanager", "mode": "0755", "owner": "alertmanager", "group": "alertmanager"}]}, "docker": {"enabled": true, "entrypoint": ["/usr/bin/alertmanager"], "cmd": ["--config.file=/etc/alertmanager/alertmanager.yml"], "validation": {"port": 9093}}}, "readme": "# Monitoring Hub: alertmanager\n\nEnterprise-grade packaging of the official Prometheus Alertmanager.\n\n## \ud83d\ude80 Features\n- **Base Image:** Red Hat UBI 9 Minimal.\n- **Components:** Includes `alertmanager` and `amtool`.\n- **Pre-configured:** Default configuration path at `/etc/alertmanager/alertmanager.yml`.\n\n## \ud83d\udce6 Usage\n\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/alertmanager:latest\ndocker run -d -p 9093:9093 ghcr.io/sckyzo/monitoring-hub/alertmanager:latest\n```\n\n## \ud83c\udf10 Documentation\nSee official documentation: [prometheus/alertmanager](https://github.com/prometheus/alertmanager)\n", "availability": {"el8": {"x86_64": {"status": "failed", "path": null}, "aarch64": {"status": "failed", "path": null}}, "el9": {"x86_64": {"status": "failed", "path": null}, "aarch64": {"status": "failed", "path": null}}, "el10": {"x86_64": {"status": "failed", "path": null}, "aarch64": {"status": "failed", "path": null}}}}, {"name": "apache_exporter", "description": "Prometheus exporter for Apache HTTP Server", "category": "Web", "version": "1.0.10", "upstream": {"type": "github", "repo": "Lusitaniae/apache_exporter"}, "build": {"method": "binary_repack", "binary_name": "apache_exporter"}, "artifacts": {"rpm": {"enabled": true, "summary": "Prometheus Apache Exporter", "targets": ["el8", "el9", "el10"], "system_user": "apache_exporter", "service_file": true, "extra_files": [], "directories": [{"path": "/var/lib/apache_exporter", "owner": "apache_exporter", "group": "apache_exporter", "mode": "0755"}]}, "docker": {"enabled": true, "entrypoint": ["/usr/bin/apache_exporter"], "validation": {"port": 9117}}}, "readme": "# Apache Exporter\n\n[![Upstream](https://img.shields.io/badge/Upstream-Lusitaniae/apache_exporter-blue)](https://github.com/Lusitaniae/apache_exporter)\n\nPrometheus exporter for Apache HTTP Server metrics.\n\n## Overview\nThis exporter scrapes Apache `mod_status` statistics and exports them in Prometheus format.\n\n## Configuration\nThe exporter requires `mod_status` to be enabled in Apache with `ExtendedStatus On`.\n\n### Common Flags\n*   `--scrape_uri`: URL to Apache status page (default `http://localhost/server-status?auto`).\n*   `--telemetry.address`: Address to listen on (default `:9117`).\n\n## Usage\n\n### RPM\n```bash\nsudo dnf install apache_exporter\nsudo systemctl enable --now apache_exporter\n```\n\n### Docker\n```bash\ndocker run -d -p 9117:9117 ghcr.io/sckyzo/monitoring-hub/apache_exporter:latest --scrape_uri=\"http://YOUR_APACHE_SERVER/server-status?auto\"\n```", "availability": {"el8": {"x86_64": {"status": "failed", "path": null}, "aarch64": {"status": "failed", "path": null}}, "el9": {"x86_64": {"status": "failed", "path": null}, "aarch64": {"status": "failed", "path": null}}, "el10": {"x86_64": {"status": "failed", "path": null}, "aarch64": {"status": "failed", "path": null}}}}, {"name": "bind_exporter", "description": "Prometheus exporter for Bind (DNS) statistics", "category": "Network", "version": "0.8.0", "upstream": {"type": "github", "repo": "prometheus-community/bind_exporter"}, "build": {"method": "binary_repack", "binary_name": "bind_exporter"}, "artifacts": {"rpm": {"enabled": true, "summary": "Prometheus Bind Exporter", "targets": ["el8", "el9", "el10"], "system_user": "bind_exporter", "service_file": true, "extra_files": [], "directories": [{"path": "/var/lib/bind_exporter", "owner": "bind_exporter", "group": "bind_exporter", "mode": "0755"}]}, "docker": {"enabled": true, "entrypoint": ["/usr/bin/bind_exporter"], "validation": {"port": 9119}}}, "readme": "# Bind Exporter\n\n[![Upstream](https://img.shields.io/badge/Upstream-prometheus--community/bind_exporter-blue)](https://github.com/prometheus-community/bind_exporter)\n\nPrometheus exporter for Bind (DNS) statistics.\n\n## Overview\nThis exporter probes a Bind server via its HTTP statistics channel and exports metrics in Prometheus format.\n\n## Configuration\nThe exporter is configured via command-line flags. By default, it listens on port `9119`.\n\n### Common Flags\n*   `-bind.stats-url`: URL of the Bind statistics channel (default `http://localhost:8053/`).\n*   `-bind.pid-file`: Path to the Bind PID file.\n*   `-web.listen-address`: Address to listen on for web interface and telemetry (default `:9119`).\n\n## Usage\n\n### RPM\n```bash\nsudo dnf install bind_exporter\nsudo systemctl enable --now bind_exporter\n```\n\n### Docker\n```bash\ndocker run -d -p 9119:9119 ghcr.io/sckyzo/monitoring-hub/bind_exporter:latest\n```", "availability": {"el8": {"x86_64": {"status": "failed", "path": null}, "aarch64": {"status": "failed", "path": null}}, "el9": {"x86_64": {"status": "failed", "path": null}, "aarch64": {"status": "failed", "path": null}}, "el10": {"x86_64": {"status": "failed", "path": null}, "aarch64": {"status": "failed", "path": null}}}}, {"name": "blackbox_exporter", "description": "Prometheus blackbox exporter for network probing (HTTP, DNS, TCP, ICMP)", "category": "Network", "version": "0.28.0", "upstream": {"type": "github", "repo": "prometheus/blackbox_exporter"}, "build": {"method": "binary_repack", "binary_name": "blackbox_exporter"}, "artifacts": {"rpm": {"enabled": true, "summary": "Prometheus blackbox exporter", "targets": ["el8", "el9", "el10"], "system_user": "blackbox_exporter", "service_file": true, "extra_files": [{"source": "assets/blackbox.yml", "dest": "/etc/blackbox_exporter/blackbox.yml", "config": true}], "directories": [{"path": "/etc/blackbox_exporter", "owner": "root", "group": "root", "mode": "0755"}, {"path": "/var/lib/blackbox_exporter", "owner": "blackbox_exporter", "group": "blackbox_exporter", "mode": "0755"}]}, "docker": {"enabled": true, "entrypoint": ["/usr/bin/blackbox_exporter"], "cmd": ["--config.file=/etc/blackbox_exporter/blackbox.yml"], "validation": {"port": 9115}}}, "readme": "# Blackbox Exporter\n\n[![Upstream](https://img.shields.io/badge/Upstream-prometheus/blackbox_exporter-blue)](https://github.com/prometheus/blackbox_exporter)\n\nThe Blackbox Exporter allows probing of endpoints over HTTP, HTTPS, DNS, TCP, ICMP, and gRPC.\n\n## Overview\nUnlike most exporters that run on the target machine, the Blackbox Exporter runs centrally and probes targets remotely. It is essential for \"Canary\" testing and availability monitoring.\n\n## Configuration\nThe exporter requires a configuration file (`blackbox.yml`) defining modules (e.g., `http_2xx`, `icmp`). A default configuration file is provided in `/etc/blackbox_exporter/blackbox.yml`.\n\n### Common Flags\n*   `--config.file`: Path to configuration file (default `/etc/blackbox_exporter/blackbox.yml`).\n*   `--web.listen-address`: Address to listen on (default `:9115`).\n\n## Usage\n\n### RPM\n```bash\nsudo dnf install blackbox_exporter\nsudo systemctl enable --now blackbox_exporter\n```\n\n### Docker\n```bash\ndocker run -d -p 9115:9115 -v /path/to/blackbox.yml:/etc/blackbox_exporter/blackbox.yml ghcr.io/sckyzo/monitoring-hub/blackbox_exporter:latest\n```\n\n## Example Scrape Config (Prometheus)\n```yaml\nscrape_configs:\n  - job_name: 'blackbox'\n    metrics_path: /probe\n    params:\n      module: [http_2xx]  # Look for a HTTP 200 response.\n    static_configs:\n      - targets:\n        - http://prometheus.io    # Target to probe with http_2xx\n    relabel_configs:\n      - source_labels: [__address__]\n        target_label: __param_target\n      - source_labels: [__param_target]\n        target_label: instance\n      - target_label: __address__\n        replacement: 127.0.0.1:9115  # The blackbox exporter's real hostname:port.\n```", "availability": {"el8": {"x86_64": {"status": "failed", "path": null}, "aarch64": {"status": "failed", "path": null}}, "el9": {"x86_64": {"status": "failed", "path": null}, "aarch64": {"status": "failed", "path": null}}, "el10": {"x86_64": {"status": "failed", "path": null}, "aarch64": {"status": "failed", "path": null}}}}, {"name": "eseries_exporter", "description": "Prometheus exporter for NetApp/Lenovo E-Series storage systems", "category": "Storage", "version": "2.0.0", "upstream": {"type": "github", "repo": "sckyzo/eseries_exporter", "strategy": "latest_release", "archive_name": "{name}_linux_{arch}.tar.gz"}, "build": {"method": "binary_repack", "binary_name": "eseries_exporter"}, "artifacts": {"rpm": {"enabled": true, "targets": ["el8", "el9", "el10"], "summary": "Prometheus exporter for E-Series", "service_file": true, "system_user": "prometheus", "extra_files": [{"source": "assets/eseries_exporter.yml", "dest": "/etc/eseries_exporter/eseries_exporter.yml", "config": true}], "directories": [{"path": "/etc/eseries_exporter", "mode": "0755", "owner": "root", "group": "root"}]}, "docker": {"enabled": true, "base_image": "registry.access.redhat.com/ubi9/ubi-minimal", "entrypoint": ["/usr/bin/eseries_exporter"], "cmd": ["--config.file=/etc/eseries_exporter/eseries_exporter.yml"], "validation": {"port": 9313}}}, "readme": "# Monitoring Hub: eseries_exporter\n\nEnterprise-grade packaging of the NetApp/Lenovo E-Series storage exporter.\n\n## \ud83d\ude80 Features\n- **Base Image:** Red Hat UBI 9 Minimal.\n- **Security:** Built from official upstream sources.\n- **Multi-Arch:** Support for x86_64 and aarch64.\n\n## \ud83d\udce6 Usage\n\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/eseries_exporter:latest\ndocker run -d -p 9128:9128 \\\n  -v /path/to/config.yml:/etc/eseries_exporter/eseries_exporter.yml \\\n  ghcr.io/sckyzo/monitoring-hub/eseries_exporter:latest\n```\n\n## \ud83c\udf10 Documentation\nSee official documentation: [sckyzo/eseries_exporter](https://github.com/sckyzo/eseries_exporter)\n\n```", "availability": {"el8": {"x86_64": {"status": "failed", "path": null}, "aarch64": {"status": "failed", "path": null}}, "el9": {"x86_64": {"status": "failed", "path": null}, "aarch64": {"status": "failed", "path": null}}, "el10": {"x86_64": {"status": "failed", "path": null}, "aarch64": {"status": "failed", "path": null}}}}, {"name": "gpfs_exporter", "description": "Prometheus exporter for IBM GPFS (Spectrum Scale) metrics", "category": "HPC", "version": "3.2.0", "upstream": {"type": "github", "repo": "treydock/gpfs_exporter", "strategy": "latest_release"}, "build": {"method": "binary_repack", "binary_name": "gpfs_exporter", "archs": ["amd64"]}, "artifacts": {"rpm": {"enabled": true, "targets": ["el8", "el9", "el10"], "summary": "Prometheus exporter for IBM GPFS", "service_file": true, "system_user": "prometheus"}, "docker": {"enabled": true, "base_image": "registry.access.redhat.com/ubi9/ubi-minimal", "entrypoint": ["/usr/bin/gpfs_exporter"], "validation": {"enabled": false}}}, "readme": "# Monitoring Hub: gpfs_exporter\n\nEnterprise-grade packaging of the GPFS (IBM Spectrum Scale) exporter.\n\n## \ud83d\ude80 Features\n- **Base Image:** Red Hat UBI 9 Minimal.\n- **Security:** Built from official upstream sources.\n- **Multi-Arch:** Support for x86_64 and aarch64.\n\n## \ud83d\udce6 Usage\n\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/gpfs_exporter:latest\ndocker run -d -p 9303:9303 ghcr.io/sckyzo/monitoring-hub/gpfs_exporter:latest\n```\n\n## \ud83c\udf10 Documentation\nSee official documentation: [treydock/gpfs_exporter](https://github.com/treydock/gpfs_exporter)\n", "availability": {"el8": {"x86_64": {"status": "failed", "path": null}, "aarch64": {"status": "failed", "path": null}}, "el9": {"x86_64": {"status": "failed", "path": null}, "aarch64": {"status": "failed", "path": null}}, "el10": {"x86_64": {"status": "failed", "path": null}, "aarch64": {"status": "failed", "path": null}}}}, {"name": "ha_cluster_exporter", "description": "Prometheus exporter for High Availability clusters (Pacemaker, Corosync)", "category": "System", "version": "1.4.0", "upstream": {"type": "github", "repo": "ClusterLabs/ha_cluster_exporter", "strategy": "latest_release", "archive_name": "{name}-{arch}.gz"}, "build": {"method": "binary_repack", "binary_name": "ha_cluster_exporter"}, "artifacts": {"rpm": {"enabled": true, "targets": ["el8", "el9", "el10"], "summary": "Prometheus HA Cluster Exporter", "service_file": true, "system_user": "prometheus"}, "docker": {"enabled": true, "base_image": "registry.access.redhat.com/ubi9/ubi-minimal", "entrypoint": ["/usr/bin/ha_cluster_exporter"], "validation": {"command": "--version"}}}, "readme": "# Monitoring Hub: ha_cluster_exporter\n\nEnterprise-grade packaging of the ClusterLabs HA Cluster Exporter (Pacemaker/Corosync).\n\n## \ud83d\ude80 Features\n- **Base Image:** Red Hat UBI 9 Minimal.\n- **Support:** Pacemaker, Corosync, and SBD metrics.\n- **Multi-Arch:** Support for x86_64 and aarch64.\n\n## \ud83d\udce6 Usage\n\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/ha_cluster_exporter:latest\ndocker run -d -p 9664:9664 ghcr.io/sckyzo/monitoring-hub/ha_cluster_exporter:latest\n```\n\n## \ud83c\udf10 Documentation\nSee official documentation: [ClusterLabs/ha_cluster_exporter](https://github.com/ClusterLabs/ha_cluster_exporter)", "availability": {"el8": {"x86_64": {"status": "failed", "path": null}, "aarch64": {"status": "failed", "path": null}}, "el9": {"x86_64": {"status": "failed", "path": null}, "aarch64": {"status": "failed", "path": null}}, "el10": {"x86_64": {"status": "failed", "path": null}, "aarch64": {"status": "failed", "path": null}}}}, {"name": "ipmi_exporter", "description": "Prometheus exporter for IPMI devices", "category": "Hardware", "version": "1.10.1", "upstream": {"type": "github", "repo": "prometheus-community/ipmi_exporter"}, "build": {"method": "binary_repack", "binary_name": "ipmi_exporter"}, "artifacts": {"rpm": {"enabled": true, "summary": "Prometheus exporter for IPMI devices", "targets": ["el8", "el9", "el10"], "dependencies": ["freeipmi"], "system_user": "ipmi_exporter", "service_file": true, "extra_files": [{"source": "assets/ipmi_remote.yml", "dest": "/etc/ipmi_exporter/ipmi_remote.yml", "config": true}], "directories": [{"path": "/var/lib/ipmi_exporter", "owner": "ipmi_exporter", "group": "ipmi_exporter", "mode": "0755"}, {"path": "/etc/ipmi_exporter", "owner": "root", "group": "root", "mode": "0755"}]}, "docker": {"enabled": true, "entrypoint": ["/usr/bin/ipmi_exporter"], "cmd": ["--config.file=/etc/ipmi_exporter/ipmi_remote.yml"], "validation": {"port": 9290}}}, "readme": "# IPMI Exporter\n\n[![Upstream](https://img.shields.io/badge/Upstream-prometheus--community/ipmi_exporter-blue)](https://github.com/prometheus-community/ipmi_exporter)\n\nPrometheus exporter for IPMI devices (Intelligent Platform Management Interface).\n\n## Overview\nThis exporter collects hardware health metrics (temperatures, fans, voltages, power state) from servers via IPMI. It supports both local (in-band) and remote (out-of-band/LAN) monitoring.\n\n## Configuration\nFor remote monitoring, a configuration file defining modules (user/password/driver) is recommended.\n\n### Common Flags\n*   `--config.file`: Path to configuration file (default `/etc/ipmi_exporter/ipmi_remote.yml`).\n*   `--web.listen-address`: Address to listen on (default `:9290`).\n\n### Dependencies (RPM)\nThe RPM package automatically installs `freeipmi` as a dependency, which provides the necessary underlying tools (`ipmimonitoring`, etc.).\n\n## Usage\n\n### RPM\n```bash\nsudo dnf install ipmi_exporter\nsudo systemctl enable --now ipmi_exporter\n```\n\n### Docker\n```bash\ndocker run -d -p 9290:9290 -v /path/to/ipmi_remote.yml:/etc/ipmi_exporter/ipmi_remote.yml ghcr.io/sckyzo/monitoring-hub/ipmi_exporter:latest\n```", "availability": {"el8": {"x86_64": {"status": "failed", "path": null}, "aarch64": {"status": "failed", "path": null}}, "el9": {"x86_64": {"status": "failed", "path": null}, "aarch64": {"status": "failed", "path": null}}, "el10": {"x86_64": {"status": "failed", "path": null}, "aarch64": {"status": "failed", "path": null}}}}, {"name": "mysqld_exporter", "description": "Prometheus exporter for MySQL server metrics", "category": "Database", "version": "0.18.0", "upstream": {"type": "github", "repo": "prometheus/mysqld_exporter"}, "build": {"method": "binary_repack", "binary_name": "mysqld_exporter"}, "artifacts": {"rpm": {"enabled": true, "summary": "Prometheus MySQL Exporter", "targets": ["el8", "el9", "el10"], "system_user": "mysqld_exporter", "service_file": true, "extra_files": [{"source": "assets/my.cnf", "dest": "/var/lib/mysqld_exporter/.my.cnf", "config": true, "mode": "0600"}], "directories": [{"path": "/var/lib/mysqld_exporter", "owner": "mysqld_exporter", "group": "mysqld_exporter", "mode": "0700"}]}, "docker": {"enabled": true, "entrypoint": ["/usr/bin/mysqld_exporter"], "cmd": ["--config.my-cnf=/var/lib/mysqld_exporter/.my.cnf"], "validation": {"port": 9104}}}, "readme": "# MySQL Exporter\n\n[![Upstream](https://img.shields.io/badge/Upstream-prometheus/mysqld_exporter-blue)](https://github.com/prometheus/mysqld_exporter)\n\nPrometheus exporter for MySQL server metrics.\n\n## Overview\nThis exporter collects metrics from a MySQL or MariaDB server. It uses the official Prometheus Go client and supports a wide range of MySQL versions.\n\n## Configuration\nThe exporter requires database credentials. The recommended way is to use a `.my.cnf` file.\n\n### Default Configuration\nA default configuration file is provided at `/var/lib/mysqld_exporter/.my.cnf`:\n\n```ini\n[client]\nuser=exporter\npassword=exporter_password\nhost=localhost\n```\n\n**Security Note:** This file should be readable ONLY by the `mysqld_exporter` user (`chmod 600`).\n\n### Common Flags\n*   `--config.my-cnf`: Path to `.my.cnf` file (default `~/.my.cnf`).\n*   `--web.listen-address`: Address to listen on (default `:9104`).\n\n## Usage\n\n### RPM\n```bash\n# 1. Edit credentials\nsudo vi /var/lib/mysqld_exporter/.my.cnf\n\n# 2. Start service\nsudo systemctl enable --now mysqld_exporter\n```\n\n### Docker\n```bash\ndocker run -d -p 9104:9104 \\\n  -v /path/to/.my.cnf:/var/lib/mysqld_exporter/.my.cnf \\\n  ghcr.io/sckyzo/monitoring-hub/mysqld_exporter:latest\n```\n\n## Database Permissions\nThe database user needs `PROCESS`, `REPLICATION CLIENT`, and `SELECT` privileges.\n\n```sql\nCREATE USER 'exporter'@'localhost' IDENTIFIED BY 'exporter_password';\nGRANT PROCESS, REPLICATION CLIENT, SELECT ON *.* TO 'exporter'@'localhost';\n```\n\n", "availability": {"el8": {"x86_64": {"status": "failed", "path": null}, "aarch64": {"status": "failed", "path": null}}, "el9": {"x86_64": {"status": "failed", "path": null}, "aarch64": {"status": "failed", "path": null}}, "el10": {"x86_64": {"status": "failed", "path": null}, "aarch64": {"status": "failed", "path": null}}}}, {"name": "nginx_exporter", "description": "Prometheus exporter for NGINX metrics", "category": "Web", "version": "1.5.1", "upstream": {"type": "github", "repo": "nginx/nginx-prometheus-exporter", "archive_name": "nginx-prometheus-exporter_{clean_version}_linux_{arch}.tar.gz"}, "build": {"method": "binary_repack", "binary_name": "nginx-prometheus-exporter"}, "artifacts": {"rpm": {"enabled": true, "summary": "Prometheus Nginx Exporter", "targets": ["el8", "el9", "el10"], "system_user": "nginx_exporter", "service_file": true, "extra_files": [], "directories": [{"path": "/var/lib/nginx_exporter", "owner": "nginx_exporter", "group": "nginx_exporter", "mode": "0755"}]}, "docker": {"enabled": true, "entrypoint": ["/usr/bin/nginx_exporter"], "validation": {"port": 9113}}}, "readme": "# Nginx Exporter\n\n[![Upstream](https://img.shields.io/badge/Upstream-nginx/nginx--prometheus--exporter-blue)](https://github.com/nginx/nginx-prometheus-exporter)\n\nPrometheus exporter for NGINX metrics.\n\n## Overview\nThis exporter scrapes metrics from an NGINX `stub_status` page and exports them in Prometheus format.\n\n## Configuration\nRequires `stub_status` module enabled in Nginx.\n\n### Common Flags\n*   `-nginx.scrape-uri`: Address to scrape NGINX metrics from (default `http://127.0.0.1:8080/stub_status`).\n*   `-web.listen-address`: Address to listen on (default `:9113`).\n\n## Usage\n\n### RPM\n```bash\nsudo dnf install nginx_exporter\nsudo systemctl enable --now nginx_exporter\n```\n\n### Docker\n```bash\ndocker run -d -p 9113:9113 ghcr.io/sckyzo/monitoring-hub/nginx_exporter:latest -nginx.scrape-uri http://<NGINX_ADDR>:<PORT>/stub_status\n```", "availability": {"el8": {"x86_64": {"status": "failed", "path": null}, "aarch64": {"status": "failed", "path": null}}, "el9": {"x86_64": {"status": "failed", "path": null}, "aarch64": {"status": "failed", "path": null}}, "el10": {"x86_64": {"status": "failed", "path": null}, "aarch64": {"status": "failed", "path": null}}}}, {"name": "node_exporter", "description": "Hardware and OS metrics exporter for Prometheus", "category": "System", "version": "1.10.2", "updated": true, "upstream": {"type": "github", "repo": "prometheus/node_exporter", "strategy": "latest_release"}, "build": {"method": "binary_repack", "binary_name": "node_exporter"}, "artifacts": {"rpm": {"enabled": true, "targets": ["el8", "el9", "el10"], "summary": "Prometheus exporter for hardware and OS metrics", "service_file": true}, "docker": {"enabled": true, "entrypoint": ["/usr/bin/node_exporter"], "cmd": [], "validation": {"port": 9100}}}, "readme": "# Monitoring Hub: node_exporter\n\nEnterprise-grade packaging of the official Prometheus node_exporter.\n\n## \ud83d\ude80 Features\n- **Base Image:** Red Hat UBI 9 Minimal.\n- **Security:** Scanned and built from official upstream sources.\n- **Multi-Arch:** Native support for x86_64 and aarch64.\n\n## \ud83d\udce6 Usage\n\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/node_exporter:latest\ndocker run -d -p 9100:9100 ghcr.io/sckyzo/monitoring-hub/node_exporter:latest\n```\n\n## \ud83c\udf10 Documentation\nSee official documentation: [prometheus/node_exporter](https://github.com/prometheus/node_exporter)\n", "availability": {"el8": {"x86_64": {"status": "failed", "path": null}, "aarch64": {"status": "failed", "path": null}}, "el9": {"x86_64": {"status": "failed", "path": null}, "aarch64": {"status": "failed", "path": null}}, "el10": {"x86_64": {"status": "failed", "path": null}, "aarch64": {"status": "failed", "path": null}}}}, {"name": "ping_exporter", "description": "Prometheus exporter for ICMP ping metrics", "category": "Network", "version": "1.1.4", "upstream": {"type": "github", "repo": "czerwonk/ping_exporter", "strategy": "latest_release", "archive_name": "{name}_{version}_linux_{arch}.tar.gz"}, "build": {"method": "binary_repack", "binary_name": "ping_exporter"}, "artifacts": {"rpm": {"enabled": true, "targets": ["el8", "el9", "el10"], "summary": "Prometheus exporter for ICMP ping metrics", "service_file": true, "system_user": "prometheus", "extra_files": [{"source": "assets/ping.yml", "dest": "/etc/ping_exporter/ping.yml", "config": true}], "directories": [{"path": "/etc/ping_exporter", "mode": "0755", "owner": "root", "group": "root"}]}, "docker": {"enabled": true, "base_image": "registry.access.redhat.com/ubi9/ubi-minimal", "entrypoint": ["/usr/bin/ping_exporter"], "cmd": ["--config.path=/etc/ping_exporter/ping.yml"], "validation": {"port": 9427}}}, "readme": "# Monitoring Hub: ping_exporter\n\n[![Upstream](https://img.shields.io/badge/Upstream-czerwonk/ping_exporter-blue)](https://github.com/czerwonk/ping_exporter)\n\nEnterprise-grade packaging of the Prometheus ping_exporter.\n\n## \ud83d\ude80 Features\n- **Base Image:** Red Hat UBI 9 Minimal.\n- **Security:** Built from official upstream sources.\n- **Multi-Arch:** Support for x86_64 and aarch64.\n\n## \ud83d\udce6 Usage\n\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/ping_exporter:latest\ndocker run -d -p 9427:9427 --privileged ghcr.io/sckyzo/monitoring-hub/ping_exporter:latest\n```\n\n## \ud83c\udf10 Documentation\nSee official documentation: [jaxxstorm/ping_exporter](https://github.com/jaxxstorm/ping_exporter)", "availability": {"el8": {"x86_64": {"status": "failed", "path": null}, "aarch64": {"status": "failed", "path": null}}, "el9": {"x86_64": {"status": "failed", "path": null}, "aarch64": {"status": "failed", "path": null}}, "el10": {"x86_64": {"status": "failed", "path": null}, "aarch64": {"status": "failed", "path": null}}}}, {"name": "podman_exporter", "description": "Prometheus exporter for Podman containers", "category": "Containers", "version": "1.20.0", "upstream": {"type": "github", "repo": "SckyzO/prometheus-podman-exporter", "archive_name": "prometheus-podman-exporter-{version}.linux-{arch}.tar.gz"}, "build": {"method": "binary_repack", "binary_name": "podman_exporter"}, "artifacts": {"rpm": {"enabled": true, "summary": "Prometheus exporter for Podman containers", "targets": ["el8", "el9", "el10"], "system_user": "prometheus", "extra_files": [], "directories": [{"path": "/var/lib/prometheus", "owner": "prometheus", "group": "prometheus", "mode": "0755"}]}, "docker": {"enabled": true, "entrypoint": ["/usr/bin/podman_exporter"], "cmd": ["--collector.enable-all"], "validation": {"command": "--help"}}}, "readme": "# Podman Exporter\n\n[![Upstream](https://img.shields.io/badge/Upstream-SckyzO/prometheus--podman--exporter-blue)](https://github.com/SckyzO/prometheus-podman-exporter)\n\nPrometheus exporter for Podman containers.\n\n## Overview\nThis exporter exposes metrics about Podman containers, images, and volumes. It connects to the Podman socket to gather information.\n\n## Configuration\nThe exporter connects to the Podman socket (default `unix:///run/podman/podman.sock`).\n\n### Common Flags\n*   `--collector.enable-all`: Enable all available collectors.\n*   `--web.listen-address`: Address to listen on (default `:9882`).\n\n## Usage\n\n### RPM\n```bash\nsudo dnf install podman_exporter\nsudo systemctl enable --now podman_exporter\n```\n\n### Docker\nTo monitor the host's Podman instance from a container, you must mount the Podman socket.\n\n```bash\ndocker run -d -p 9882:9882 \\\n  -v /run/podman/podman.sock:/run/podman/podman.sock \\\n  -e CONTAINER_HOST=unix:///run/podman/podman.sock \\\n  ghcr.io/sckyzo/monitoring-hub/podman_exporter:latest\n```\n", "availability": {"el8": {"x86_64": {"status": "failed", "path": null}, "aarch64": {"status": "failed", "path": null}}, "el9": {"x86_64": {"status": "failed", "path": null}, "aarch64": {"status": "failed", "path": null}}, "el10": {"x86_64": {"status": "failed", "path": null}, "aarch64": {"status": "failed", "path": null}}}}, {"name": "process_exporter", "description": "Prometheus exporter for process metrics", "category": "System", "version": "0.8.7", "upstream": {"type": "github", "repo": "ncabatoff/process-exporter", "archive_name": "process-exporter-{clean_version}.linux-{arch}.tar.gz"}, "build": {"method": "binary_repack", "binary_name": "process-exporter"}, "artifacts": {"rpm": {"enabled": true, "targets": ["el8", "el9", "el10"], "summary": "Prometheus exporter for process metrics", "service_file": true, "system_user": "prometheus"}, "docker": {"enabled": true, "entrypoint": ["/usr/bin/process_exporter"], "validation": {"port": 9256}}}, "readme": "# Process Exporter\n\nEnterprise-grade packaging of the Prometheus process-exporter.\n\n## \ud83d\ude80 Features\n- **Base Image:** Red Hat UBI 9 Minimal.\n- **Security:** Built from official upstream sources.\n- **Multi-Arch:** Support for x86_64 and aarch64.\n\n## \ud83d\udce6 Usage\n\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/process-exporter:latest\ndocker run -d -p 9256:9256 --privileged ghcr.io/sckyzo/monitoring-hub/process-exporter:latest\n```\n\n## \ud83c\udf10 Documentation\nSee official documentation: [ncabatoff/process-exporter](https://github.com/ncabatoff/process-exporter)\n", "availability": {"el8": {"x86_64": {"status": "failed", "path": null}, "aarch64": {"status": "failed", "path": null}}, "el9": {"x86_64": {"status": "failed", "path": null}, "aarch64": {"status": "failed", "path": null}}, "el10": {"x86_64": {"status": "failed", "path": null}, "aarch64": {"status": "failed", "path": null}}}}, {"name": "prometheus", "description": "The Prometheus monitoring system and time series database.", "category": "Infrastructure", "version": "3.8.1", "upstream": {"type": "github", "repo": "prometheus/prometheus", "strategy": "latest_release"}, "build": {"method": "binary_repack", "binary_name": "prometheus", "extra_binaries": ["promtool"]}, "artifacts": {"rpm": {"enabled": true, "targets": ["el8", "el9", "el10"], "summary": "The Prometheus monitoring system and time series database.", "service_file": true, "system_user": "prometheus", "extra_files": [{"source": "assets/prometheus.yml", "dest": "/etc/prometheus/prometheus.yml", "config": true}], "directories": [{"path": "/etc/prometheus", "mode": "0755", "owner": "root", "group": "root"}, {"path": "/var/lib/prometheus", "mode": "0755", "owner": "prometheus", "group": "prometheus"}]}, "docker": {"enabled": true, "entrypoint": ["/usr/bin/prometheus"], "cmd": ["--config.file=/etc/prometheus/prometheus.yml"], "validation": {"port": 9090}}}, "readme": "# Monitoring Hub: prometheus\n\nEnterprise-grade packaging of the official Prometheus server.\n\n## \ud83d\ude80 Features\n- **Base Image:** Red Hat UBI 9 Minimal.\n- **Components:** Includes `prometheus` and `promtool`.\n- **Pre-configured:** Default configuration path at `/etc/prometheus/prometheus.yml`.\n\n## \ud83d\udce6 Usage\n\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/prometheus:latest\ndocker run -d -p 9090:9090 ghcr.io/sckyzo/monitoring-hub/prometheus:latest\n```\n\n## \ud83c\udf10 Documentation\nSee official documentation: [prometheus/prometheus](https://github.com/prometheus/prometheus)\n", "availability": {"el8": {"x86_64": {"status": "failed", "path": null}, "aarch64": {"status": "failed", "path": null}}, "el9": {"x86_64": {"status": "failed", "path": null}, "aarch64": {"status": "failed", "path": null}}, "el10": {"x86_64": {"status": "failed", "path": null}, "aarch64": {"status": "failed", "path": null}}}}, {"name": "redis_exporter", "description": "Prometheus exporter for Redis metrics", "category": "Database", "version": "1.80.1", "upstream": {"type": "github", "repo": "oliver006/redis_exporter", "archive_name": "redis_exporter-v{clean_version}.linux-{arch}.tar.gz"}, "build": {"method": "binary_repack", "binary_name": "redis_exporter"}, "artifacts": {"rpm": {"enabled": true, "summary": "Prometheus Redis Exporter", "targets": ["el8", "el9", "el10"], "system_user": "redis_exporter", "service_file": true, "extra_files": [], "directories": [{"path": "/var/lib/redis_exporter", "owner": "redis_exporter", "group": "redis_exporter", "mode": "0755"}]}, "docker": {"enabled": true, "entrypoint": ["/usr/bin/redis_exporter"], "validation": {"port": 9121}}}, "readme": "# Redis Exporter\n\n[![Upstream](https://img.shields.io/badge/Upstream-oliver006/redis_exporter-blue)](https://github.com/oliver006/redis_exporter)\n\nPrometheus exporter for Redis metrics.\n\n## Overview\nThis exporter supports Redis versions 2.x, 3.x, 4.x, 5.x, 6.x, and 7.x.\n\n## Configuration\nThe exporter is configured via command-line flags or environment variables.\n\n### Common Flags\n*   `-redis.addr`: Address of one or more Redis nodes (default `redis://localhost:6379`).\n*   `-redis.password`: Password for the Redis instance.\n*   `-web.listen-address`: Address to listen on (default `:9121`).\n\n## Usage\n\n### RPM\n```bash\nsudo dnf install redis_exporter\nsudo systemctl enable --now redis_exporter\n```\n\n### Docker\n```bash\ndocker run -d -p 9121:9121 ghcr.io/sckyzo/monitoring-hub/redis_exporter:latest -redis.addr redis://<REDIS_ADDR>:6379\n```", "availability": {"el8": {"x86_64": {"status": "failed", "path": null}, "aarch64": {"status": "failed", "path": null}}, "el9": {"x86_64": {"status": "failed", "path": null}, "aarch64": {"status": "failed", "path": null}}, "el10": {"x86_64": {"status": "failed", "path": null}, "aarch64": {"status": "failed", "path": null}}}}, {"name": "slurm_exporter", "description": "Prometheus exporter for Slurm workload manager metrics", "category": "HPC", "new": true, "version": "1.2.0", "upstream": {"type": "github", "repo": "sckyzo/slurm_exporter", "strategy": "latest_release", "archive_name": "{name}-{clean_version}-linux-{arch}.tar.gz"}, "build": {"method": "binary_repack", "binary_name": "slurm_exporter"}, "artifacts": {"rpm": {"enabled": true, "targets": ["el8", "el9", "el10"], "summary": "Prometheus exporter for Slurm metrics", "service_file": true, "system_user": "prometheus"}, "docker": {"enabled": true, "base_image": "registry.access.redhat.com/ubi9/ubi-minimal", "entrypoint": ["/usr/bin/slurm_exporter"], "validation": {"port": 9341}}}, "readme": "# Monitoring Hub: slurm_exporter\n\nEnterprise-grade packaging of the Slurm cluster metrics exporter.\n\n## \ud83d\ude80 Features\n- **Base Image:** Red Hat UBI 9 Minimal.\n- **Security:** Built from official upstream sources.\n- **Multi-Arch:** Support for x86_64 and aarch64.\n\n## \ud83d\udce6 Usage\n\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/slurm_exporter:latest\ndocker run -d -p 9323:9323 ghcr.io/sckyzo/monitoring-hub/slurm_exporter:latest\n```\n\n## \ud83c\udf10 Documentation\nSee official documentation: [sckyzo/slurm_exporter](https://github.com/sckyzo/slurm_exporter)\n", "availability": {"el8": {"x86_64": {"status": "failed", "path": null}, "aarch64": {"status": "failed", "path": null}}, "el9": {"x86_64": {"status": "failed", "path": null}, "aarch64": {"status": "failed", "path": null}}, "el10": {"x86_64": {"status": "failed", "path": null}, "aarch64": {"status": "failed", "path": null}}}}, {"name": "smartctl_exporter", "description": "Prometheus exporter for S.M.A.R.T. storage devices metrics", "category": "System", "version": "0.14.0", "upstream": {"type": "github", "repo": "prometheus-community/smartctl_exporter", "strategy": "latest_release"}, "build": {"method": "binary_repack", "binary_name": "smartctl_exporter"}, "artifacts": {"rpm": {"enabled": true, "targets": ["el8", "el9", "el10"], "summary": "Prometheus exporter for S.M.A.R.T. metrics", "service_file": true, "system_user": "root"}, "docker": {"enabled": true, "base_image": "registry.access.redhat.com/ubi9/ubi-minimal", "entrypoint": ["/usr/bin/smartctl_exporter"], "validation": {"port": 9633}}}, "readme": "# Monitoring Hub: smartctl_exporter\n\nEnterprise-grade packaging of the Prometheus smartctl_exporter.\n\n## \ud83d\ude80 Features\n- **Base Image:** Red Hat UBI 9 Minimal.\n- **Security:** Built from official upstream sources.\n- **Multi-Arch:** Support for x86_64 and aarch64.\n\n## \ud83d\udce6 Usage\n\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/smartctl_exporter:latest\ndocker run -d -p 9633:9633 --privileged ghcr.io/sckyzo/monitoring-hub/smartctl_exporter:latest\n```\n\n## \ud83c\udf10 Documentation\nSee official documentation: [prometheus-community/smartctl_exporter](https://github.com/prometheus-community/smartctl_exporter)\n", "availability": {"el8": {"x86_64": {"status": "failed", "path": null}, "aarch64": {"status": "failed", "path": null}}, "el9": {"x86_64": {"status": "failed", "path": null}, "aarch64": {"status": "failed", "path": null}}, "el10": {"x86_64": {"status": "failed", "path": null}, "aarch64": {"status": "failed", "path": null}}}}, {"name": "snmp_exporter", "description": "Prometheus exporter for SNMP-enabled devices", "category": "Network", "version": "0.29.0", "upstream": {"type": "github", "repo": "prometheus/snmp_exporter", "strategy": "latest_release"}, "build": {"method": "binary_repack", "binary_name": "snmp_exporter", "extra_sources": [{"url": "https://raw.githubusercontent.com/prometheus/snmp_exporter/refs/heads/main/snmp.yml", "filename": "snmp.yml"}]}, "artifacts": {"rpm": {"enabled": true, "targets": ["el8", "el9", "el10"], "summary": "Prometheus exporter for SNMP metrics", "service_file": true, "system_user": "prometheus", "extra_files": [{"source": "snmp.yml", "dest": "/etc/snmp_exporter/snmp.yml", "config": true}], "directories": [{"path": "/etc/snmp_exporter", "mode": "0755", "owner": "root", "group": "root"}]}, "docker": {"enabled": true, "base_image": "registry.access.redhat.com/ubi9/ubi-minimal", "entrypoint": ["/usr/bin/snmp_exporter"], "cmd": ["--config.file=/etc/snmp_exporter/snmp.yml"], "validation": {"port": 9116}}}, "readme": "# Monitoring Hub: snmp_exporter\n\nEnterprise-grade packaging of the official Prometheus SNMP Exporter.\n\n## \ud83d\ude80 Features\n- **Base Image:** Red Hat UBI 9 Minimal.\n- **Components:** Includes `snmp_exporter` and `snmp_generator`.\n- **Multi-Arch:** Support for x86_64 and aarch64.\n\n## \ud83d\udce6 Usage\n\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/snmp_exporter:latest\ndocker run -d -p 9116:9116 ghcr.io/sckyzo/monitoring-hub/snmp_exporter:latest\n```\n\n## \ud83c\udf10 Documentation\nSee official documentation: [prometheus/snmp_exporter](https://github.com/prometheus/snmp_exporter)\n", "availability": {"el8": {"x86_64": {"status": "failed", "path": null}, "aarch64": {"status": "failed", "path": null}}, "el9": {"x86_64": {"status": "failed", "path": null}, "aarch64": {"status": "failed", "path": null}}, "el10": {"x86_64": {"status": "failed", "path": null}, "aarch64": {"status": "failed", "path": null}}}}, {"name": "textfile_exporter", "description": "Prometheus exporter for local text files metrics", "category": "System", "version": "0.1.4", "upstream": {"type": "github", "repo": "SckyzO/textfile_exporter", "archive_name": "textfile_exporter-{clean_version}-linux-{arch}.tar.gz"}, "build": {"method": "binary_repack", "binary_name": "textfile_exporter"}, "artifacts": {"rpm": {"enabled": true, "summary": "Prometheus Textfile Exporter", "targets": ["el8", "el9", "el10"], "system_user": "textfile_exporter", "service_file": true, "extra_files": [], "directories": [{"path": "/var/lib/textfile_exporter", "owner": "textfile_exporter", "group": "textfile_exporter", "mode": "0755"}]}, "docker": {"enabled": true, "entrypoint": ["/usr/bin/textfile_exporter"], "cmd": ["--textfile.directory=/var/lib/textfile_exporter"], "validation": {"port": 9014}}}, "readme": "# Textfile Exporter\n\n[![Upstream](https://img.shields.io/badge/Upstream-SckyzO/textfile_exporter-blue)](https://github.com/SckyzO/textfile_exporter)\n\nPrometheus exporter for local text files metrics.\n\n## Overview\nThis exporter reads `.prom` files from a directory and exports them in Prometheus format. It's useful for monitoring cron jobs or batch scripts.\n\n## Configuration\nThe exporter is configured via command-line flags.\n\n### Common Flags\n*   `-directory`: Directory to read `.prom` files from (default `/var/lib/textfile_exporter`).\n*   `-addr`: Address to listen on (default `:9106`).\n\n## Usage\n\n### RPM\n```bash\nsudo dnf install textfile_exporter\nsudo systemctl enable --now textfile_exporter\n```\n\n### Docker\n```bash\ndocker run -d -p 9106:9106 -v /path/to/metrics:/var/lib/textfile_exporter ghcr.io/sckyzo/monitoring-hub/textfile_exporter:latest\n```", "availability": {"el8": {"x86_64": {"status": "failed", "path": null}, "aarch64": {"status": "failed", "path": null}}, "el9": {"x86_64": {"status": "failed", "path": null}, "aarch64": {"status": "failed", "path": null}}, "el10": {"x86_64": {"status": "failed", "path": null}, "aarch64": {"status": "failed", "path": null}}}}]</script>
+    <script id="categories-data" type="application/json">["Containers", "Database", "HPC", "Hardware", "Infrastructure", "Network", "Storage", "System", "Web"]</script>
+
+    <script>
+        window.copyToClipboard = function(text) {
+            navigator.clipboard.writeText(text);
+        };
+
+        function registryApp() {
+            return {
+                search: '',
+                showSearch: false,
+                selectedExporter: null,
+                view: 'grid',
+                category: 'all',
+                os: 'all',
+                exporters: [],
+                categories: [],
+                init() {
+                    const data = document.getElementById('exporters-data');
+                    if (data) this.exporters = JSON.parse(data.textContent);
+                    const cats = document.getElementById('categories-data');
+                    if (cats) this.categories = JSON.parse(cats.textContent);
+                    
+                    this.$watch('filteredExporters', () => this.$nextTick(() => lucide.createIcons()));
+                    this.$watch('selectedExporter', () => this.$nextTick(() => lucide.createIcons()));
+                    this.$watch('showSearch', (val) => {
+                        if (val) this.$nextTick(() => this.$refs.searchInput.focus());
+                    });
+                    lucide.createIcons();
+                },
+                getIcon(category) {
+                    const icons = {
+                        'Database': 'database',
+                        'Web': 'globe',
+                        'Network': 'network',
+                        'HPC': 'cpu',
+                        'System': 'server',
+                        'Infrastructure': 'layers',
+                        'Storage': 'hard-drive',
+                        'Hardware': 'microchip',
+                        'Containers': 'box'
+                    };
+                    return icons[category] || 'package';
+                },
+                get filteredExporters() {
+                    let items = this.exporters;
+                    if (this.category !== 'all') {
+                        items = items.filter(e => (e.category || 'System') === this.category);
+                    }
+                    if (this.os !== 'all') {
+                        items = items.filter(e => {
+                            const targets = e.artifacts?.rpm?.targets || [];
+                            return targets.includes(this.os);
+                        });
+                    }
+                    if (this.search) {
+                        const s = this.search.toLowerCase();
+                        items = items.filter(e => e.name.toLowerCase().includes(s) || (e.description && e.description.toLowerCase().includes(s)));
+                    }
+                    return items;
+                }
+            }
+        }
+    </script>
+</body>
+</html>

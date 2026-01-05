@@ -1,5 +1,6 @@
 name: podman_exporter
 description: "Prometheus exporter for Podman containers"
+category: Containers
 version: "v1.20.0"
 
 upstream:
