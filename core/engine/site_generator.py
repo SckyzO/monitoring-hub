@@ -58,6 +58,16 @@ def generate(output, repo_dir):
         f.write(rendered)
     click.echo(f"Portal generated at {output}")
 
+    # Generate V2 Portal if template exists (for testing)
+    v2_template_path = os.path.join(TEMPLATES_DIR, 'index_v2.html.j2')
+    if os.path.exists(v2_template_path):
+        v2_output = os.path.join(os.path.dirname(output), 'index_v2.html')
+        v2_template = env.get_template('index_v2.html.j2')
+        v2_rendered = v2_template.render(exporters=exporters_data)
+        with open(v2_output, 'w') as f:
+            f.write(v2_rendered)
+        click.echo(f"V2 Portal generated at {v2_output}")
+
     # Generate Machine Readable Catalog
     import json
     json_output = os.path.join(os.path.dirname(output), 'catalog.json')
