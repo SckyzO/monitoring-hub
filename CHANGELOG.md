@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.16.0] - 2026-01-05
+
+### 🚀 New Exporters
+*   **MySQL Exporter:** Added support for MySQL/MariaDB server metrics.
+
+### 🤖 Automation & CI/CD (The "Zero-Click" Update)
+*   **Full-Auto Watcher:** The Watcher now uses a Personal Access Token (PAT) to trigger CI on automated PRs.
+*   **Auto-Merge:** Enabled automatic merging of exporter updates once CI tests pass.
+*   **Concurrency Control:** Fixed race conditions on the `gh-pages` branch by enforcing sequential release jobs.
+*   **Smart Build Optimization:** Prevented "empty" release jobs from failing when no exporters need building.
+
+### 🛠️ Core Engine Fixes
+*   **Watcher Robustness:** Fixed a bug where the 'v' prefix was stripped from versions, breaking download URLs.
+*   **RPM Build Fix:** Improved source file copy logic to correctly handle assets (like `my.cnf`) during RPM creation.
+
 ## [0.15.0] - 2026-01-04
 
 ### 🚀 New Exporters

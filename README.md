@@ -27,7 +27,8 @@
 *   **Native Multi-Arch:** Every tool is built for `x86_64` and `aarch64` (ARM64).
 *   **Hardened Security:** All Docker images use **Red Hat UBI 9 Minimal**.
 *   **Linux Standard (FHS):** RPMs include system users, standard paths (`/etc`, `/var/lib`), and systemd integration.
-*   **Always Up-to-Date:** An automated Watcher opens PRs as soon as a new version is released upstream.
+*   **Zero-Click Updates:** An automated Watcher opens PRs, triggers CI validation, and merges automatically when tests pass.
+*   **Always Up-to-Date:** Never worry about upstream releases again.
 
 ---
 
