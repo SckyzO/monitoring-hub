@@ -29,6 +29,7 @@ jobs:
         run: python3 -m core.engine.watcher --update
 
       - name: Create Pull Request
+        id: cpr
         uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -36,8 +37,13 @@ jobs:
           title: "chore: update exporters versions"
           body: |
             This PR updates exporter versions detected by the Watcher.
-            
             - Automated update via `core/watcher.py`
-          branch: "auto/update-exporters"
+          branch: auto/update-exporters
           delete-branch: true
-          base: main
+          author: SckyzO <683678+SckyzO@users.noreply.github.com>
+
+      - name: Enable Pull Request Automerge
+        if: steps.cpr.outputs.pull-request-operation == 'created'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh pr merge "${{ steps.cpr.outputs.pull-request-number }}" --auto --squash
