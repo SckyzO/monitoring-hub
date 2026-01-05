@@ -476,22 +476,9 @@
                     </div>
                 </div>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 border-t border-zinc-100 dark:border-white/5 pt-20">
-                <!-- Col 1: Brand & Description -->
-                <div class="space-y-6">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white bg-primary-600 shadow-lg shadow-primary-500/20">
-                            <i data-lucide="box" class="w-6 h-6"></i>
-                        </div>
-                        <span class="text-2xl font-black tracking-tighter uppercase italic" :class="theme === 'light' ? 'text-zinc-900' : 'text-white'">Exporter Factory</span>
-                    </div>
-                    <p class="text-sm font-medium leading-relaxed opacity-60 max-w-xs">
-                        The definitive hub for Prometheus exporters. Automated builds, multi-arch support, and enterprise-grade distribution for modern observability stacks.
-                    </p>
-                </div>
-
-                <!-- Col 2: Distribution -->
-                <div class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-8 gap-12 border-t border-zinc-100 dark:border-white/5 pt-20">
+                <!-- Col 1: Distribution (Left Aligned - 2/8) -->
+                <div class="space-y-6 flex flex-col md:items-start md:text-left md:col-span-2">
                     <h4 class="text-[10px] font-black uppercase tracking-[0.4em] text-primary-500">Distribution</h4>
                     <ul class="space-y-4">
                         <li class="flex items-center gap-3">
@@ -517,13 +504,26 @@
                     </ul>
                 </div>
 
-                <!-- Col 3: Maintainer -->
-                <div class="space-y-6">
+                <!-- Col 2: Brand & Description (Centered - 4/8) -->
+                <div class="space-y-6 flex flex-col md:items-center md:text-center md:border-x border-zinc-100 dark:border-white/5 md:px-12 md:col-span-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white bg-primary-600 shadow-lg shadow-primary-500/20">
+                            <i data-lucide="box" class="w-6 h-6"></i>
+                        </div>
+                        <span class="text-2xl font-black tracking-tighter uppercase italic" :class="theme === 'light' ? 'text-zinc-900' : 'text-white'">Exporter Factory</span>
+                    </div>
+                    <p class="text-sm font-medium leading-relaxed opacity-60 max-w-md">
+                        The definitive hub for Prometheus exporters. Automated builds, multi-arch support, and enterprise-grade distribution for modern observability stacks.
+                    </p>
+                </div>
+
+                <!-- Col 3: Maintainer (Right Aligned - 2/8) -->
+                <div class="space-y-6 flex flex-col md:items-end md:text-right md:col-span-2">
                     <h4 class="text-[10px] font-black uppercase tracking-[0.4em] text-primary-500">Maintainer</h4>
                     <div class="inline-flex items-center gap-5 p-5 rounded-2xl border border-white/5 bg-white/[0.02] shadow-2xl transition-all"
                          :class="theme === 'light' ? 'bg-zinc-50 border-zinc-200' : ''">
                         <img src="https://avatars.githubusercontent.com/SckyzO" class="w-14 h-14 rounded-full border-2 border-primary-500/20 shadow-xl" alt="SckyzO">
-                        <div class="flex flex-col gap-1">
+                        <div class="flex flex-col gap-1 text-left">
                             <div>
                                 <p class="text-sm font-black uppercase tracking-tighter" :class="theme === 'light' ? 'text-zinc-900' : 'text-white'">Thomas Bourcey</p>
                                 <p class="text-[9px] font-black text-primary-500 uppercase tracking-widest">Lead Factory Engineer</p>
