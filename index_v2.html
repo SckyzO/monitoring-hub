@@ -49,7 +49,7 @@
     </style>
 </head>
 <body class="font-sans antialiased min-h-screen flex flex-col transition-colors duration-500 text-left"
-      :class="{ 'bg-zinc-100 text-zinc-900': theme === 'light', 'bg-dark-800 text-zinc-400': theme === 'deep', 'bg-dark-950 text-zinc-400': theme === 'oled' }"
+      :class="{ 'bg-zinc-100 text-zinc-900': theme === 'light', 'bg-dark-900 text-zinc-400': theme === 'deep', 'bg-black text-zinc-400': theme === 'oled' }"
       @keydown.window.prevent.ctrl.k="showCommandPalette = true"
       @keydown.window.prevent.cmd.k="showCommandPalette = true">
 
@@ -90,7 +90,6 @@
                 </div>
             </div>
             <div class="flex items-center gap-6">
-                <button @click="showCommandPalette = true" class="hidden md:flex items-center gap-3 px-4 py-2 border rounded-xl transition-all w-64 active:scale-95 text-left" :class="theme === 'light' ? 'bg-zinc-100 border-zinc-200 text-zinc-500 hover:bg-zinc-200' : 'bg-zinc-800 border-white/5 text-zinc-500 hover:text-zinc-300'"><i data-lucide="search" class="w-4 h-4"></i><span class="text-xs flex-1 text-left font-medium">Search registry...</span><span class="kbd">CTRL K</span></button>
                 <div class="flex items-center gap-3 border-l pl-6" :class="theme === 'light' ? 'border-zinc-200' : 'border-white/10'">
                     <div class="relative" x-data="{ open: false }">
                         <button @click="open = !open" @click.away="open = false" class="p-2.5 rounded-xl transition-all active:scale-90" :class="theme === 'light' ? 'hover:bg-zinc-100 text-zinc-600' : 'hover:bg-white/5 text-zinc-400'"><i data-lucide="palette" class="w-5 h-5"></i></button>
@@ -106,12 +105,35 @@
     </header>
 
     <main class="flex-1 max-w-7xl mx-auto px-6 py-12 w-full text-left">
-        <div class="mb-16 text-left border-l-4 border-primary-500 pl-8">
-            <h1 class="text-6xl font-black mb-4 tracking-tighter uppercase italic" :class="theme === 'light' ? 'text-zinc-900' : 'text-white'">Registry</h1>
-            <p class="text-xl max-w-2xl font-medium italic opacity-60" :class="theme === 'light' ? 'text-zinc-600' : 'text-zinc-400'">Enterprise collection of verified Prometheus exporters.</p>
+        <!-- Hero Section -->
+        <div class="mb-24 text-center max-w-4xl mx-auto py-10">
+            <h1 class="text-7xl font-black mb-6 tracking-tighter uppercase italic" :class="theme === 'light' ? 'text-zinc-900' : 'text-white'">Exporter Factory</h1>
+            <p class="text-xl font-medium italic opacity-60 mb-12" :class="theme === 'light' ? 'text-zinc-600' : 'text-zinc-400'">Automated Multi-Arch distribution for high-scale Prometheus stacks.</p>
+            
+            <!-- Massive Search Bar -->
+            <div class="relative max-w-2xl mx-auto group">
+                <div class="absolute -inset-1 bg-gradient-to-r from-primary-500 to-primary-600 rounded-3xl blur opacity-20 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
+                <div class="relative flex items-center rounded-3xl border transition-all duration-500 overflow-hidden shadow-2xl"
+                     :class="theme === 'light' ? 'bg-white border-zinc-200' : 'bg-dark-900 border-white/10'">
+                    <div class="pl-8 text-primary-500">
+                        <i data-lucide="search" class="w-6 h-6"></i>
+                    </div>
+                    <input type="text" x-model="search" @keydown.escape="search = ''" x-ref="mainSearch"
+                           placeholder="Find your exporter..." 
+                           class="w-full py-7 px-6 bg-transparent focus:outline-none text-xl font-bold tracking-tight"
+                           :class="theme === 'light' ? 'text-zinc-900 placeholder-zinc-400' : 'text-white placeholder-zinc-600'">
+                    <div class="pr-8 hidden lg:flex items-center gap-2 whitespace-nowrap">
+                        <span class="kbd uppercase">CTRL + K</span>
+                        <span class="text-zinc-800 dark:text-zinc-700">|</span>
+                        <span class="kbd uppercase">ESC TO CLEAR</span>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="sticky top-24 z-30 flex flex-wrap items-center justify-between gap-4 mb-12 p-3 rounded-2xl transition-all" :class="isScrolled ? (theme === 'light' ? 'bg-white/90 backdrop-blur shadow-lg border border-zinc-200' : 'bg-dark-800/90 backdrop-blur shadow-2xl border border-white/5') : ''">
+        <!-- Sticky Filter Toolbar -->
+        <div class="sticky top-24 z-30 flex flex-wrap items-center justify-between gap-4 mb-12 p-3 rounded-2xl transition-all duration-500 ease-in-out" 
+             :class="isScrolled ? (theme === 'light' ? 'bg-white/80 backdrop-blur-xl shadow-xl border border-zinc-200' : (theme === 'deep' ? 'bg-dark-800/80 backdrop-blur-xl shadow-2xl border border-white/10' : 'bg-dark-900/80 backdrop-blur-xl shadow-2xl border border-white/10')) : 'bg-transparent border-transparent'">
             <div class="flex gap-2 overflow-x-auto pb-2 sm:pb-0 scrollbar-hide text-left">
                 <button @click="changeCategory('all')" class="px-5 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all active:scale-95" :class="filterCategory === 'all' ? 'bg-primary-600 text-white border-transparent shadow-lg' : (theme === 'light' ? 'bg-white text-zinc-600 border-zinc-200' : 'bg-zinc-900 text-zinc-400 border-white/5')">All Tools</button>
                 <template x-for="cat in categories" :key="cat"><button @click="changeCategory(cat)" class="px-5 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest border transition-all active:scale-95" :class="filterCategory === cat ? 'bg-primary-600 text-white border-transparent shadow-lg' : (theme === 'light' ? 'bg-white text-zinc-600 border-zinc-200' : 'bg-zinc-900 text-zinc-400 border-white/5')" x-text="cat"></button></template>
@@ -237,7 +259,7 @@
     </div>
 
     <!-- Analytics Footer -->
-    <footer class="py-24 border-t transition-all" :class="{ 'bg-white border-zinc-200 shadow-xl': theme === 'light', 'bg-dark-900 border-white/5': theme === 'deep', 'bg-black border-white/5': theme === 'oled' }">
+    <footer class="py-24 border-t transition-all" :class="{ 'bg-white border-zinc-200 shadow-xl': theme === 'light', 'bg-dark-950 border-white/5': theme === 'deep', 'bg-dark-900 border-white/5': theme === 'oled' }">
         <div class="max-w-7xl mx-auto px-6 text-left">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-24 items-start text-left">
                 <div class="flex flex-col gap-6 text-left"><span class="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-500">01 / Inventory</span><div class="flex flex-col gap-2"><div class="flex items-center justify-between p-3 rounded-xl border transition-all" :class="theme === 'light' ? 'bg-zinc-50 border-zinc-200 shadow-sm' : 'bg-white/5 border-white/5'"><span class="text-[10px] font-black uppercase tracking-widest text-zinc-400">Hub Exporters</span><span class="px-2 py-0.5 rounded-md bg-primary-500/10 text-primary-500 font-mono text-[10px] font-bold" x-text="`${exporters.length} ACTIVE`"></span></div><div class="flex items-center justify-between p-3 rounded-xl border transition-all" :class="theme === 'light' ? 'bg-zinc-50 border-zinc-200 shadow-sm' : 'bg-white/5 border-white/5'"><span class="text-[10px] font-black uppercase tracking-widest text-zinc-400">OCI Containers</span><span class="px-2 py-0.5 rounded-md bg-primary-500/10 text-primary-500 font-mono text-[10px] font-bold" x-text="`${exporters.filter(e => e.artifacts?.docker?.enabled).length} IMAGES`"></span></div></div></div>
@@ -260,11 +282,12 @@
     <script>
         function registry() {
             return {
-                exporters: [], categories: [], search: '', filterCategory: 'all', view: 'grid', drawerOpen: false, selectedItem: null, theme: 'oled', currentColor: 'Blue', currentColorRGBA: '59, 130, 246', showCommandPalette: false, sortKey: 'version', isScrolled: false,
+                exporters: [], categories: [], search: '', filterCategory: 'all', view: 'grid', drawerOpen: false, selectedItem: null, 
+                theme: 'deep', currentColor: 'Blue', currentColorRGBA: '59, 130, 246', showCommandPalette: false, sortKey: 'version', isScrolled: false,
                 colors: [{ name: 'Blue', value: '59, 130, 246' }, { name: 'Emerald', value: '16, 185, 129' }, { name: 'Violet', value: '139, 92, 246' }, { name: 'Amber', value: '245, 158, 11' }, { name: 'Rose', value: '244, 63, 94' }, { name: 'Sky', value: '14, 165, 233' }],
                 init() {
                     try { this.exporters = JSON.parse(document.getElementById('exporters-data').textContent); this.categories = JSON.parse(document.getElementById('categories-data').textContent); } catch(e) {}
-                    this.theme = localStorage.getItem('appearance') || 'oled';
+                    this.theme = localStorage.getItem('appearance') || 'deep';
                     const savedColor = localStorage.getItem('color-theme');
                     if (savedColor) { const colorObj = this.colors.find(c => c.name === savedColor); if (colorObj) this.setThemeColor(colorObj); } else { this.setThemeColor(this.colors[0]); }
                     window.addEventListener('scroll', () => { this.isScrolled = window.scrollY > 100; });
@@ -277,7 +300,11 @@
                 get sortedItems() { let items = [...this.filteredItems]; if (this.sortKey === 'name') items.sort((a, b) => a.name.localeCompare(b.name)); if (this.sortKey === 'version') items.sort((a, b) => b.version.localeCompare(a.version, undefined, { numeric: true })); return items; },
                 get filteredItems() { return this.exporters.filter(item => { const s = this.search.toLowerCase(); return (item.name.toLowerCase().includes(s) || (item.description && item.description.toLowerCase().includes(s))) && (this.filterCategory === 'all' || item.category === this.filterCategory); }); },
                 getIcon(catName) { const icons = { 'Database': 'database', 'System': 'cpu', 'Infrastructure': 'layers', 'Network': 'network', 'Storage': 'hard-drive', 'Messaging': 'message-square', 'Web': 'globe' }; return icons[catName] || 'box'; },
-                getCardClass() { if (this.theme === 'light') return 'bg-white border-zinc-200 shadow-sm'; if (this.theme === 'deep') return 'bg-dark-700 border-white/5 shadow-xl'; return 'bg-dark-900 border-white/5'; },
+                getCardClass() { 
+                    if (this.theme === 'light') return 'bg-white border-zinc-200 shadow-sm'; 
+                    if (this.theme === 'deep') return 'bg-dark-800 border-white/5 shadow-xl'; 
+                    return 'bg-dark-900 border-white/5'; 
+                },
                 openDrawer(item) { this.selectedItem = item; this.drawerOpen = true; this.$nextTick(() => lucide.createIcons()); },
                 renderMarkdown(text) { return marked.parse(text || ''); },
                 copyToClipboard(text) { navigator.clipboard.writeText(text); }
