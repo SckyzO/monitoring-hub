@@ -1,20 +1,36 @@
-# Monitoring Hub: ping_exporter
+# Ping Exporter
 
-[![Upstream](https://img.shields.io/badge/Upstream-czerwonk/ping_exporter-blue)](https://github.com/czerwonk/ping_exporter)
+![Build Status](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/release.yml?label=Build)
+![Version](https://img.shields.io/github/v/release/czerwonk/ping_exporter?label=Upstream)
 
-Enterprise-grade packaging of the Prometheus ping_exporter.
+> Prometheus exporter for ICMP ping metrics.
 
-## 🚀 Features
-- **Base Image:** Red Hat UBI 9 Minimal.
-- **Security:** Built from official upstream sources.
-- **Multi-Arch:** Support for x86_64 and aarch64.
+This exporter sends ICMP pings to specified targets and exposes the results (latency, packet loss) as Prometheus metrics.
 
-## 📦 Usage
+## 🚀 Installation
 
+### RPM (Enterprise Linux)
 ```bash
-docker pull ghcr.io/sckyzo/monitoring-hub/ping_exporter:latest
-docker run -d -p 9427:9427 --privileged ghcr.io/sckyzo/monitoring-hub/ping_exporter:latest
+sudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el9/$(arch)/
+sudo dnf install ping_exporter
+sudo systemctl enable --now ping_exporter
 ```
 
-## 🌐 Documentation
-See official documentation: [jaxxstorm/ping_exporter](https://github.com/jaxxstorm/ping_exporter)
+### Docker
+```bash
+docker pull ghcr.io/sckyzo/monitoring-hub/ping_exporter:latest
+
+# Requires privileged access or CAP_NET_RAW for ICMP
+docker run -d \
+  -p 9427:9427 \
+  --privileged \
+  -v ./ping.yml:/etc/ping_exporter/ping.yml \
+  ghcr.io/sckyzo/monitoring-hub/ping_exporter:latest
+```
+
+## ⚙️ Configuration
+
+The exporter requires a target list in a YAML configuration file.
+Default location: `/etc/ping_exporter/ping.yml`.
+
+See upstream documentation: [czerwonk/ping_exporter](https://github.com/czerwonk/ping_exporter)
