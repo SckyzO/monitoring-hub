@@ -1,0 +1,36 @@
+name: artifactory_exporter
+description: "Prometheus exporter for JFrog Artifactory stats."
+category: DevOps
+version: "v1.15.1"
+new: true
+updated: false
+
+upstream:
+  type: github
+  repo: peimanja/artifactory_exporter
+  strategy: latest_release
+  archive_name: "{name}-{version}-linux-{arch}.tar.gz"
+
+build:
+  method: binary_repack
+  binary_name: artifactory_exporter
+  archs:
+    - amd64
+
+artifacts:
+  rpm:
+    enabled: true
+    summary: "Prometheus JFrog Artifactory Exporter"
+    targets:
+      - el8
+      - el9
+      - el10
+    system_user: artifactory_exporter
+    service_file: true
+
+  docker:
+    enabled: true
+    entrypoint: ["/usr/bin/artifactory_exporter"]
+    validation:
+      enabled: true
+      command: "--version"
