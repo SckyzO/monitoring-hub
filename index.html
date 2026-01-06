@@ -216,29 +216,74 @@
             </div>
         </div>
 
-        <div class="sticky top-24 z-30 flex items-center justify-between gap-8 mb-12 p-4 rounded-xl transition-all duration-500 ease-in-out" 
-             :class="isScrolled ? (theme === 'light' ? 'bg-white/80 backdrop-blur-xl shadow-xl border border-zinc-200' : (theme === 'deep' ? 'bg-dark-800/80 backdrop-blur-xl shadow-2xl border border-white/10' : 'bg-dark-900/80 backdrop-blur-xl shadow-2xl border border-white/10')) : 'bg-transparent border-transparent'">
+        <div class="sticky top-24 z-30 flex items-center justify-between gap-4 mb-12 px-6 py-3 rounded-2xl border transition-all duration-500 ease-in-out" 
+             :class="isScrolled ? (theme === 'light' ? 'bg-white/80 backdrop-blur-xl shadow-xl border-zinc-200' : (theme === 'deep' ? 'bg-dark-800/80 backdrop-blur-xl shadow-2xl border-white/10' : 'bg-dark-900/80 backdrop-blur-xl shadow-2xl border-white/10')) : 'bg-transparent border-transparent'">
             
-            <!-- Scrollable Categories -->
-            <div class="flex-1 flex gap-3 overflow-x-auto pb-1 scrollbar-hide text-left whitespace-nowrap mask-fade-right">
-                <button @click="changeCategory('all')" class="px-6 py-3 rounded-xl text-xs font-black uppercase tracking-widest border transition-all active:scale-95 flex-shrink-0" :class="filterCategory === 'all' ? 'bg-primary-600 text-white border-transparent shadow-lg' : (theme === 'light' ? 'bg-white text-zinc-600 border-zinc-200' : 'bg-zinc-900 text-zinc-400 border-white/5')">All Tools</button>
-                <template x-for="cat in categories" :key="cat">
-                    <button @click="changeCategory(cat)" class="px-6 py-3 rounded-xl text-xs font-black uppercase tracking-widest border transition-all active:scale-95 flex-shrink-0" :class="filterCategory === cat ? 'bg-primary-600 text-white border-transparent shadow-lg' : (theme === 'light' ? 'bg-white text-zinc-600 border-zinc-200' : 'bg-zinc-900 text-zinc-400 border-white/5')" x-text="cat"></button>
-                </template>
+            <!-- Left: Category Selector -->
+            <div class="relative" x-data="{ open: false }">
+                <button @click="open = !open" 
+                        @mouseenter="showTip($event, 'Filter by Category')" @mouseleave="hideTip()"
+                        class="flex items-center gap-3 px-6 py-3.5 rounded-xl border font-black uppercase text-sm tracking-[0.15em] transition-all active:scale-95"
+                        :class="theme === 'light' ? 'bg-white border-zinc-200 text-zinc-600 hover:border-primary-500' : 'bg-zinc-900 border-white/5 text-zinc-400 hover:border-primary-500'">
+                    <i data-lucide="filter" class="w-4 h-4" :class="filterCategory !== 'all' ? 'text-primary-500' : 'text-zinc-500'"></i>
+                    <span x-text="filterCategory === 'all' ? 'All Categories' : filterCategory"></span>
+                    <i data-lucide="chevron-down" class="w-4 h-4 transition-transform duration-300" :class="open ? 'rotate-180' : ''"></i>
+                </button>
+
+                <div x-show="open" 
+                     @click.away="open = false"
+                     x-transition:enter="transition ease-out duration-200"
+                     x-transition:enter-start="opacity-0 scale-95 -translate-y-2"
+                     x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                     class="absolute left-0 mt-3 w-72 rounded-2xl border shadow-2xl z-50 p-2 backdrop-blur-2xl overflow-hidden"
+                     :class="theme === 'light' ? 'bg-white/90 border-zinc-200' : 'bg-zinc-900/90 border-white/10'"
+                     x-cloak>
+                    <div class="grid grid-cols-1 gap-1">
+                        <button @click="changeCategory('all'); open = false" 
+                                class="flex items-center gap-3 px-4 py-4 rounded-xl text-sm font-black uppercase tracking-widest transition-all"
+                                :class="filterCategory === 'all' ? 'bg-primary-500 text-white shadow-lg' : (theme === 'light' ? 'text-zinc-600 hover:bg-zinc-100' : 'text-zinc-400 hover:bg-white/5')">
+                            <i data-lucide="layout-grid" class="w-5 h-5"></i>
+                            <span>All Tools</span>
+                        </button>
+                        <div class="h-px my-1 mx-2" :class="theme === 'light' ? 'bg-zinc-100' : 'bg-white/5'"></div>
+                        <template x-for="cat in categories" :key="cat">
+                            <button @click="changeCategory(cat); open = false" 
+                                    class="flex items-center gap-3 px-4 py-4 rounded-xl text-sm font-black uppercase tracking-widest transition-all"
+                                    :class="filterCategory === cat ? 'bg-primary-500 text-white shadow-lg' : (theme === 'light' ? 'text-zinc-600 hover:bg-zinc-100' : 'text-zinc-400 hover:bg-white/5')">
+                                <i :data-lucide="getIcon(cat)" class="w-5 h-5"></i>
+                                <span x-text="cat"></span>
+                            </button>
+                        </template>
+                    </div>
+                </div>
             </div>
 
-            <!-- Fixed Controls -->
-            <div class="flex items-center gap-4 flex-shrink-0">
+            <!-- Right: Unified Controls -->
+            <div class="flex items-center gap-3">
+                <!-- Sort Group -->
                 <div class="flex p-1.5 rounded-xl shadow-inner" :class="theme === 'light' ? 'bg-zinc-200/50 border border-zinc-300' : 'bg-black/50 border border-white/5'">
-                    <button @click="sortKey = 'name'" :class="sortKey === 'name' ? 'bg-white dark:bg-zinc-800 text-primary-500 shadow-sm' : 'text-zinc-500'" class="px-5 py-2 rounded-lg text-xs font-black uppercase tracking-widest transition-all">A-Z</button>
-                    <button @click="sortKey = 'version'" :class="sortKey === 'version' ? 'bg-white dark:bg-zinc-800 text-primary-500 shadow-sm' : 'text-zinc-500'" class="px-5 py-2 rounded-lg text-xs font-black uppercase tracking-widest transition-all">Latest</button>
+                    <button @click="sortKey = 'name'" 
+                            @mouseenter="showTip($event, 'Sort Alphabetically')" @mouseleave="hideTip()"
+                            :class="sortKey === 'name' ? 'bg-white dark:bg-zinc-800 text-primary-500 shadow-sm' : 'text-zinc-500 hover:text-zinc-400'" 
+                            class="px-6 py-2.5 rounded-lg text-xs font-black uppercase tracking-widest transition-all">A-Z</button>
+                    <button @click="sortKey = 'version'" 
+                            @mouseenter="showTip($event, 'Sort by Version')" @mouseleave="hideTip()"
+                            :class="sortKey === 'version' ? 'bg-white dark:bg-zinc-800 text-primary-500 shadow-sm' : 'text-zinc-500 hover:text-zinc-400'" 
+                            class="px-6 py-2.5 rounded-lg text-xs font-black uppercase tracking-widest transition-all">Latest</button>
                 </div>
 
+                <!-- View Group -->
                 <div class="flex p-1.5 rounded-xl shadow-inner" :class="theme === 'light' ? 'bg-zinc-200/50 border border-zinc-300' : 'bg-black/50 border border-white/5'">
-                    <button @click="view = 'grid'" :class="view === 'grid' ? 'bg-white dark:bg-zinc-800 text-primary-500 shadow-sm' : 'text-zinc-500'" class="px-5 py-2 rounded-lg transition-all flex items-center justify-center" aria-label="Grid View">
+                    <button @click="view = 'grid'" 
+                            @mouseenter="showTip($event, 'Grid Layout')" @mouseleave="hideTip()"
+                            :class="view === 'grid' ? 'bg-white dark:bg-zinc-800 text-primary-500 shadow-sm' : 'text-zinc-500 hover:text-zinc-400'" 
+                            class="px-4 py-2.5 rounded-lg transition-all flex items-center justify-center" aria-label="Grid View">
                         <i data-lucide="grid" class="w-4 h-4"></i>
                     </button>
-                    <button @click="view = 'list'" :class="view === 'list' ? 'bg-white dark:bg-zinc-800 text-primary-500 shadow-sm' : 'text-zinc-500'" class="px-5 py-2 rounded-lg transition-all flex items-center justify-center" aria-label="List View">
+                    <button @click="view = 'list'" 
+                            @mouseenter="showTip($event, 'List Layout')" @mouseleave="hideTip()"
+                            :class="view === 'list' ? 'bg-white dark:bg-zinc-800 text-primary-500 shadow-sm' : 'text-zinc-500 hover:text-zinc-400'" 
+                            class="px-4 py-2.5 rounded-lg transition-all flex items-center justify-center" aria-label="List View">
                         <i data-lucide="list" class="w-4 h-4"></i>
                     </button>
                 </div>
