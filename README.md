@@ -1,6 +1,6 @@
 <div align="center">
 
-# Monitoring Hub <img src="https://icongr.am/lucide/factory.svg?size=42&color=3b82f6" align="center">
+# Monitoring Hub <img src=".github/icons/factory-blue.svg" width="45" height="45" style="vertical-align: middle; margin-bottom: 8px;">
 
 **The definitive Software Factory for Prometheus Exporters.**
 
@@ -10,18 +10,18 @@
 
 <br>
 
-| <a href="https://sckyzo.github.io/monitoring-hub/"><img src="https://icongr.am/lucide/globe.svg?size=24&color=3b82f6"><br><b>Explore Portal</b></a> | <a href="https://github.com/SckyzO/monitoring-hub/packages"><img src="https://icongr.am/lucide/container.svg?size=24&color=f59e0b"><br><b>OCI Registry</b></a> | <a href="https://github.com/SckyzO/monitoring-hub/issues/new"><img src="https://icongr.am/lucide/bug.svg?size=24&color=f43f5e"><br><b>Report Bug</b></a> | <a href="CHANGELOG.md"><img src="https://icongr.am/lucide/history.svg?size=24&color=8b5cf6"><br><b>Changelog</b></a> |
+| <a href="https://sckyzo.github.io/monitoring-hub/"><img src=".github/icons/globe-blue.svg" width="24" height="24"><br><b>Explore Portal</b></a> | <a href="https://github.com/SckyzO/monitoring-hub/packages"><img src=".github/icons/container-amber.svg" width="24" height="24"><br><b>OCI Registry</b></a> | <a href="https://github.com/SckyzO/monitoring-hub/issues/new"><img src=".github/icons/bug-rose.svg" width="24" height="24"><br><b>Report Bug</b></a> | <a href="CHANGELOG.md"><img src=".github/icons/history-purple.svg" width="24" height="24"><br><b>Changelog</b></a> |
 | :---: | :---: | :---: | :---: |
 
 </div>
 
 ---
 
-## <img src="https://icongr.am/lucide/target.svg?size=24&color=10b981" vertical-align="middle"> Project Goal
+## <img src=".github/icons/target-emerald.svg" width="24" height="24" style="vertical-align: bottom;"> Project Goal
 
 **Monitoring Hub** is an automated Factory that transforms simple YAML manifests into production-ready monitoring tools. It focuses on **Enterprise Standards**, **Multi-Architecture support**, and **Full Automation**.
 
-## <img src="https://icongr.am/lucide/rocket.svg?size=24&color=f59e0b" vertical-align="middle"> Key Features
+## <img src=".github/icons/rocket-amber.svg" width="24" height="24" style="vertical-align: bottom;"> Key Features
 
 *   **Native Multi-Arch:** Every tool is built for `x86_64` and `aarch64` (ARM64).
 *   **Hardened Security:** All Docker images use **Red Hat UBI 9 Minimal**.
@@ -31,7 +31,7 @@
 
 ---
 
-## <img src="https://icongr.am/lucide/hammer.svg?size=24&color=ef4444" vertical-align="middle"> Developer Guide: Adding an Exporter
+## <img src=".github/icons/hammer-red.svg" width="24" height="24" style="vertical-align: bottom;"> Developer Guide: Adding an Exporter
 
 Adding a new tool takes less than 1 minute using our CLI tool.
 
@@ -64,6 +64,22 @@ If the default templates don't fit your needs, you can provide your own **Jinja2
 - **Custom RPM Spec:** Place a template named `<exporter_name>.spec.j2` in `exporters/<exporter_name>/templates/`.
 - **Custom Dockerfile:** Place a template named `Dockerfile.j2` in `exporters/<exporter_name>/templates/`.
 
+This allows for complex packaging logic (e.g., custom `%post` scripts in RPM or multi-stage builds in Docker) while keeping the benefit of automated versioning.
+
+#### Example: Custom Dockerfile
+To install extra packages in your container, create `exporters/my_exporter/templates/Dockerfile.j2`:
+
+```dockerfile
+FROM {{ artifacts.docker.base_image }}
+
+# Custom logic: Install specific tools
+RUN microdnf install -y curl && microdnf clean all
+
+# Standard logic (using variables from manifest)
+COPY {{ build.binary_name }} /usr/bin/{{ name }}
+ENTRYPOINT {{ artifacts.docker.entrypoint | tojson }}
+```
+
 ### 5. Local Build Guide (Optional)
 You can build RPMs and Docker images locally for testing or custom use.
 
@@ -81,23 +97,47 @@ You can build RPMs and Docker images locally for testing or custom use.
    ```
 
 2. **Run the Test Script:**
+   We provide a helper script to automate generation, RPM build, and Docker build in one go.
    ```bash
+   # Usage: ./core/scripts/local_test.sh <exporter> [arch] [distro] [--smoke]
    ./core/scripts/local_test.sh node_exporter
    ```
 
    *That's it!* Artifacts will be in `build/node_exporter/`.
 
+#### Manual Build (Advanced)
+If you need to debug a specific step:
+
+1. **Generate build files:**
+   ```bash
+   export PYTHONPATH=$(pwd)
+   python3 -m core.engine.builder --manifest exporters/node_exporter/manifest.yaml --arch amd64 --output-dir build/node_exporter
+   ```
+
+2. **Build the RPM:**
+   ```bash
+   ./core/scripts/build_rpm.sh build/node_exporter/node_exporter.spec build/node_exporter/rpms amd64 almalinux:9
+   ```
+
+3. **Build the Docker Image:**
+   ```bash
+   docker build -t monitoring-hub/node_exporter:local build/node_exporter
+   ```
+
 ---
 
-## <img src="https://icongr.am/lucide/layers.svg?size=24&color=8b5cf6" vertical-align="middle"> Architecture
+## <img src=".github/icons/layers-purple.svg" width="24" height="24" style="vertical-align: bottom;"> Architecture
 
 The "Magic" happens in the `core/` engine:
-1.  **Smart Filter:** Compares local manifests against the deployed `catalog.json` (State Management).
-2.  **Modular Engine (`core/engine/`):** **Builder**, **Schema**, **State Manager**.
-3.  **Templater:** Uses **Jinja2** to render `.spec` files and `Dockerfiles`.
+1.  **Smart Filter:** Compares local manifests against the deployed `catalog.json` (State Management) to only rebuild what changed.
+2.  **Modular Engine (`core/engine/`):**
+    *   **Builder:** Downloads binaries and orchestrates the build.
+    *   **Schema:** Validates YAML manifests (`marshmallow`).
+    *   **State Manager:** Handles the incremental build logic.
+3.  **Templater:** Uses **Jinja2** (with auto-escape enabled) to render `.spec` files and `Dockerfiles`.
 4.  **Publisher:** A parallelized Matrix CI builds all targets and updates the YUM repository.
 
-## <img src="https://icongr.am/lucide/package.svg?size=24&color=06b6d4" vertical-align="middle"> Distribution
+## <img src=".github/icons/package-cyan.svg" width="24" height="24" style="vertical-align: bottom;"> Distribution
 
 ### YUM Repository (RPM)
 ```bash
@@ -111,12 +151,12 @@ sudo dnf install <exporter_name>
 docker pull ghcr.io/sckyzo/monitoring-hub/<exporter_name>:latest
 ```
 
-## <img src="https://icongr.am/lucide/users.svg?size=24&color=ec4899" vertical-align="middle"> Contributing
+## <img src=".github/icons/users-pink.svg" width="24" height="24" style="vertical-align: bottom;"> Contributing
 
 We welcome new exporters! Feel free to open a Pull Request following the guide above.
 
 ---
 
-## <img src="https://icongr.am/lucide/scale.svg?size=24&color=64748b" vertical-align="middle"> License
+## <img src=".github/icons/scale-slate.svg" width="24" height="24" style="vertical-align: bottom;"> License
 
 Distributed under the MIT License. See `LICENSE` for more information.
