@@ -57,7 +57,7 @@
 
     <div x-show="showCommandPalette" class="fixed inset-0 z-[200] flex items-start justify-center pt-24 sm:pt-40 px-4" x-cloak>
         <div class="absolute inset-0 bg-black/60 backdrop-blur-md transition-opacity" @click="showCommandPalette = false" x-transition.opacity></div>
-        <div class="relative w-full max-w-2xl bg-zinc-900 border border-white/10 rounded-2xl shadow-2xl overflow-hidden backdrop-blur-2xl" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="scale-95 translate-y-4 opacity-0" x-transition:enter-end="scale-100 translate-y-0 opacity-100">
+        <div class="relative w-full max-w-2xl bg-zinc-900 border border-white/20 rounded-2xl shadow-2xl overflow-hidden backdrop-blur-2xl" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="scale-95 translate-y-4 opacity-0" x-transition:enter-end="scale-100 translate-y-0 opacity-100">
             <div class="p-6 border-b border-white/5 flex items-center gap-4">
                 <i data-lucide="search" class="w-6 h-6 text-primary-500"></i>
                 <input type="text" x-model="search" x-ref="commandInput" @keydown.escape="showCommandPalette = false" placeholder="Find exporters..." class="flex-1 bg-transparent border-none text-white focus:outline-none text-xl font-medium" aria-label="Search exporters">
@@ -80,8 +80,8 @@
         </div>
     </div>
 
-    <header class="site-header sticky top-0 z-40 w-full border-b backdrop-blur-xl transition-all"
-         :class="{ 'bg-white/80 border-zinc-200 shadow-sm': theme === 'light', 'bg-dark-800/80 border-white/5': theme === 'deep', 'bg-dark-950/80 border-white/5': theme === 'oled' }">
+    <header class="site-header sticky top-0 z-40 w-full border-b backdrop-blur-xl transition-all duration-500 ease-in-out"
+         :class="isScrolled ? '-translate-y-full opacity-0 pointer-events-none' : 'translate-y-0 opacity-100 bg-white/80 border-zinc-200 shadow-sm dark:bg-dark-800/80 dark:border-white/5'">
         <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
             <div class="flex items-center gap-4">
                 <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white shadow-lg bg-primary-500 transition-all duration-500" :style="`box-shadow: 0 4px 12px rgba(var(--primary-rgba), 0.3)`">
@@ -93,7 +93,7 @@
                 </div>
             </div>
             <div class="flex items-center gap-6">
-                <div class="flex items-center gap-3 border-l pl-6 relative" :class="theme === 'light' ? 'border-zinc-200' : 'border-white/10'">
+                <div class="flex items-center gap-3 border-l pl-6 relative" :class="theme === 'light' ? 'border-zinc-200' : 'border-white/20'">
                     
                     <div x-show="showWelcomeTip" 
                          x-transition:enter="transition opacity ease-out duration-500"
@@ -127,7 +127,7 @@
                         </button>
                         
                         <div x-show="open" x-transition.origin.top.right 
-                             class="absolute right-0 mt-3 w-64 rounded-3xl shadow-2xl border p-2 z-50 space-y-1 backdrop-blur-2xl bg-white dark:bg-zinc-900 border-zinc-200 dark:border-white/10" 
+                             class="absolute right-0 mt-3 w-64 rounded-3xl shadow-2xl border p-2 z-50 space-y-1 backdrop-blur-2xl bg-white dark:bg-zinc-900 border-zinc-200 dark:border-white/20" 
                              x-cloak>
                             <p class="px-4 py-3 text-[9px] font-black uppercase tracking-[0.2em] text-zinc-500">Artifact Repos</p>
                             
@@ -169,7 +169,7 @@
                                 aria-label="Theme Settings">
                             <i data-lucide="palette" class="w-5 h-5"></i>
                         </button>
-                        <div x-show="open" x-transition.origin.top.right class="absolute right-0 mt-3 w-72 rounded-3xl shadow-2xl border p-6 z-50 space-y-6 backdrop-blur-2xl bg-white dark:bg-zinc-900 border-zinc-200 dark:border-white/10" x-cloak>
+                        <div x-show="open" x-transition.origin.top.right class="absolute right-0 mt-3 w-72 rounded-3xl shadow-2xl border p-6 z-50 space-y-6 backdrop-blur-2xl bg-white dark:bg-zinc-900 border-zinc-200 dark:border-white/20" x-cloak>
                             <div class="space-y-4"><p class="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">Appearance</p><div class="grid grid-cols-3 gap-2"><button @click="theme = 'light'; localStorage.setItem('appearance', 'light')" :class="theme === 'light' ? 'border-primary-500 bg-primary-500/5' : 'border-transparent bg-zinc-100'" class="flex flex-col items-center gap-2 p-3 rounded-2xl border-2 transition-all text-zinc-500"><i data-lucide="sun" class="w-4 h-4"></i><span class="text-[9px] font-bold uppercase">Light</span></button><button @click="theme = 'deep'; localStorage.setItem('appearance', 'deep')" :class="theme === 'deep' ? 'border-primary-500 ring-2 ring-primary-500/20' : 'border-transparent bg-zinc-800'" class="flex flex-col items-center gap-2 p-3 rounded-2xl border-2 transition-all text-zinc-500"><i data-lucide="moon" class="w-4 h-4"></i><span class="text-[9px] font-bold uppercase text-zinc-400">Deep</span></button><button @click="theme = 'oled'; localStorage.setItem('appearance', 'oled')" :class="theme === 'oled' ? 'border-primary-500 ring-2 ring-primary-500/20' : 'border-transparent bg-black'" class="flex flex-col items-center gap-2 p-3 rounded-2xl border-2 transition-all text-zinc-500"><i data-lucide="zap" class="w-4 h-4"></i><span class="text-[9px] font-bold uppercase text-zinc-200">OLED</span></button></div></div>
                             <div class="space-y-4"><p class="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">Accent Color</p><div class="grid grid-cols-5 gap-3"><template x-for="c in colors" :key="c.name"><button @click="setThemeColor(c)" class="w-9 h-9 rounded-full border-2 transition-all hover:scale-110 active:scale-90" :style="`background-color: rgb(${c.value})`" :class="currentColor === c.name ? 'border-white ring-4 ring-primary-500/20' : 'border-transparent opacity-80'"></button></template></div></div>
                         </div>
@@ -200,7 +200,7 @@
             <div class="relative max-w-2xl mx-auto group">
                 <div class="absolute -inset-1 bg-gradient-to-r from-primary-500 to-primary-600 rounded-3xl blur opacity-20 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
                 <div class="relative flex items-center rounded-3xl border transition-all duration-500 overflow-hidden shadow-2xl"
-                     :class="theme === 'light' ? 'bg-white border-zinc-200' : 'bg-dark-900 border-white/10'">
+                     :class="theme === 'light' ? 'bg-white border-zinc-200' : 'bg-dark-900 border-white/20'">
                     <div class="pl-8 text-primary-500"><i data-lucide="search" class="w-6 h-6"></i></div>
                     <input type="text" x-model="search" @keydown.escape="search = ''" x-ref="mainSearch"
                            placeholder="Find your exporter..." 
@@ -216,44 +216,79 @@
             </div>
         </div>
 
-        <div class="sticky top-24 z-30 flex items-center justify-between gap-4 mb-12 px-6 py-3 rounded-2xl border transition-all duration-500 ease-in-out" 
-             :class="isScrolled ? (theme === 'light' ? 'bg-white/80 backdrop-blur-xl shadow-xl border-zinc-200' : (theme === 'deep' ? 'bg-dark-800/80 backdrop-blur-xl shadow-2xl border-white/10' : 'bg-dark-900/80 backdrop-blur-xl shadow-2xl border-white/10')) : 'bg-transparent border-transparent'">
-            
-            <!-- Left: Category Selector -->
-            <div class="relative" x-data="{ open: false }">
-                <button @click="open = !open" 
-                        @mouseenter="showTip($event, 'Filter by Category')" @mouseleave="hideTip()"
-                        class="flex items-center gap-3 px-6 py-3.5 rounded-xl border font-black uppercase text-sm tracking-[0.15em] transition-all active:scale-95"
-                        :class="theme === 'light' ? 'bg-white border-zinc-200 text-zinc-600 hover:border-primary-500' : 'bg-zinc-900 border-white/5 text-zinc-400 hover:border-primary-500'">
-                    <i data-lucide="filter" class="w-4 h-4" :class="filterCategory !== 'all' ? 'text-primary-500' : 'text-zinc-500'"></i>
-                    <span x-text="filterCategory === 'all' ? 'All Categories' : filterCategory"></span>
-                    <i data-lucide="chevron-down" class="w-4 h-4 transition-transform duration-300" :class="open ? 'rotate-180' : ''"></i>
-                </button>
+        <div class="sticky z-50 mb-12 transition-all duration-500 ease-in-out" :class="isScrolled ? 'top-8' : 'top-24'">
+            <div class="relative flex items-center justify-between gap-4 px-6 py-3 rounded-xl border transition-all duration-500 ease-in-out" 
+                 :class="isScrolled ? (theme === 'light' ? 'bg-white/80 backdrop-blur-2xl border-zinc-200 shadow-[0_0_40px_rgba(var(--primary-rgba),0.15)]' : (theme === 'deep' ? 'bg-dark-800/80 backdrop-blur-2xl border-white/20 shadow-[0_0_50px_-12px_rgba(var(--primary-rgba),0.5)]' : 'bg-black/80 backdrop-blur-2xl border-white/20 shadow-[0_0_50px_-12px_rgba(var(--primary-rgba),0.5)]')) : 'bg-transparent border-transparent'">
+                
+                <div class="flex items-center gap-3">
+                <!-- Left: Category Selector -->
+                <div class="relative" x-data="{ open: false }">
+                    <button @click="open = !open" 
+                            @mouseenter="showTip($event, 'Filter by Category')" @mouseleave="hideTip()"
+                            class="flex items-center gap-3 px-6 py-3.5 rounded-xl border font-black uppercase text-sm tracking-[0.15em] transition-all active:scale-95"
+                            :class="theme === 'light' ? 'bg-white border-zinc-200 text-zinc-600 hover:border-primary-500' : (isScrolled ? 'bg-zinc-900 border-white/20 text-zinc-400 hover:border-primary-500' : 'bg-zinc-900 border-white/5 text-zinc-400 hover:border-primary-500')">
+                        <i data-lucide="filter" class="w-4 h-4" :class="filterCategory !== 'all' ? 'text-primary-500' : 'text-zinc-500'"></i>
+                        <span x-text="filterCategory === 'all' ? 'All Categories' : filterCategory"></span>
+                        <i data-lucide="chevron-down" class="w-4 h-4 transition-transform duration-300" :class="open ? 'rotate-180' : ''"></i>
+                    </button>
 
-                <div x-show="open" 
-                     @click.away="open = false"
-                     x-transition:enter="transition ease-out duration-200"
-                     x-transition:enter-start="opacity-0 scale-95 -translate-y-2"
-                     x-transition:enter-end="opacity-100 scale-100 translate-y-0"
-                     class="absolute left-0 mt-3 w-72 rounded-2xl border shadow-2xl z-50 p-2 backdrop-blur-2xl overflow-hidden"
-                     :class="theme === 'light' ? 'bg-white/90 border-zinc-200' : 'bg-zinc-900/90 border-white/10'"
-                     x-cloak>
-                    <div class="grid grid-cols-1 gap-1">
-                        <button @click="changeCategory('all'); open = false" 
-                                class="flex items-center gap-3 px-4 py-4 rounded-xl text-sm font-black uppercase tracking-widest transition-all"
-                                :class="filterCategory === 'all' ? 'bg-primary-500 text-white shadow-lg' : (theme === 'light' ? 'text-zinc-600 hover:bg-zinc-100' : 'text-zinc-400 hover:bg-white/5')">
-                            <i data-lucide="layout-grid" class="w-5 h-5"></i>
-                            <span>All Tools</span>
-                        </button>
-                        <div class="h-px my-1 mx-2" :class="theme === 'light' ? 'bg-zinc-100' : 'bg-white/5'"></div>
-                        <template x-for="cat in categories" :key="cat">
-                            <button @click="changeCategory(cat); open = false" 
+                    <div x-show="open" 
+                         @click.away="open = false"
+                         x-transition:enter="transition ease-out duration-200"
+                         x-transition:enter-start="opacity-0 scale-95 -translate-y-2"
+                         x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                         class="absolute left-0 mt-3 w-72 rounded-2xl border shadow-2xl z-[60] p-2 backdrop-blur-2xl overflow-hidden"
+                         :class="theme === 'light' ? 'bg-white border-zinc-200' : (theme === 'deep' ? 'bg-zinc-900 border-white/20 shadow-primary-500/10' : 'bg-black border-white/20 shadow-primary-500/10')"
+                         x-cloak>
+                        <div class="grid grid-cols-1 gap-1">
+                            <button @click="changeCategory('all'); open = false" 
                                     class="flex items-center gap-3 px-4 py-4 rounded-xl text-sm font-black uppercase tracking-widest transition-all"
-                                    :class="filterCategory === cat ? 'bg-primary-500 text-white shadow-lg' : (theme === 'light' ? 'text-zinc-600 hover:bg-zinc-100' : 'text-zinc-400 hover:bg-white/5')">
-                                <i :data-lucide="getIcon(cat)" class="w-5 h-5"></i>
-                                <span x-text="cat"></span>
+                                    :class="filterCategory === 'all' ? 'bg-primary-500 text-white shadow-lg' : (theme === 'light' ? 'text-zinc-600 hover:bg-zinc-100' : 'text-zinc-400 hover:bg-white/5')">
+                                <i data-lucide="layout-grid" class="w-5 h-5"></i>
+                                <span>All Tools</span>
                             </button>
-                        </template>
+                            <div class="h-px my-1 mx-2" :class="theme === 'light' ? 'bg-zinc-100' : 'bg-white/5'"></div>
+                            <template x-for="cat in categories" :key="cat">
+                                <button @click="changeCategory(cat); open = false" 
+                                        class="flex items-center gap-3 px-4 py-4 rounded-xl text-sm font-black uppercase tracking-widest transition-all"
+                                        :class="filterCategory === cat ? 'bg-primary-500 text-white shadow-lg' : (theme === 'light' ? 'text-zinc-600 hover:bg-zinc-100' : 'text-zinc-400 hover:bg-white/5')">
+                                    <i :data-lucide="getIcon(cat)" class="w-5 h-5"></i>
+                                    <span x-text="cat"></span>
+                                </button>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Left: Pagination Selector -->
+                <div class="relative" x-data="{ open: false }">
+                    <button @click="open = !open" 
+                            @mouseenter="showTip($event, 'Items per page')" @mouseleave="hideTip()"
+                            class="flex items-center gap-3 px-6 py-3.5 rounded-xl border font-black uppercase text-sm tracking-[0.15em] transition-all active:scale-95"
+                            :class="theme === 'light' ? 'bg-white border-zinc-200 text-zinc-600 hover:border-primary-500' : (isScrolled ? 'bg-zinc-900 border-white/20 text-zinc-400 hover:border-primary-500' : 'bg-zinc-900 border-white/5 text-zinc-400 hover:border-primary-500')">
+                        <i data-lucide="layers" class="w-4 h-4" :class="perPage !== 'all' ? 'text-primary-500' : 'text-zinc-500'"></i>
+                        <span x-text="perPage === 'all' ? 'Show: All' : `Show: ${perPage}`"></span>
+                        <i data-lucide="chevron-down" class="w-4 h-4 transition-transform duration-300" :class="open ? 'rotate-180' : ''"></i>
+                    </button>
+
+                    <div x-show="open" 
+                         @click.away="open = false"
+                         x-transition:enter="transition ease-out duration-200"
+                         x-transition:enter-start="opacity-0 scale-95 -translate-y-2"
+                         x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                         class="absolute left-0 mt-3 w-48 rounded-2xl border shadow-2xl z-[60] p-2 backdrop-blur-2xl overflow-hidden"
+                         :class="theme === 'light' ? 'bg-white border-zinc-200' : (theme === 'deep' ? 'bg-zinc-900 border-white/20 shadow-primary-500/10' : 'bg-black border-white/20 shadow-primary-500/10')"
+                         x-cloak>
+                        <div class="grid grid-cols-1 gap-1">
+                            <template x-for="size in [3, 6, 9, 'all']">
+                                <button @click="perPage = size; currentPage = 1; open = false" 
+                                        class="flex items-center justify-between px-4 py-4 rounded-xl text-sm font-black uppercase tracking-widest transition-all"
+                                        :class="perPage === size ? 'bg-primary-500 text-white shadow-lg' : (theme === 'light' ? 'text-zinc-600 hover:bg-zinc-100' : 'text-zinc-400 hover:bg-white/5')">
+                                    <span x-text="size === 'all' ? 'Show All' : `Show ${size}`"></span>
+                                    <i x-show="perPage === size" data-lucide="check" class="w-4 h-4 text-white"></i>
+                                </button>
+                            </template>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -289,73 +324,115 @@
                 </div>
             </div>
         </div>
+        </div>
 
-        <div x-show="view === 'grid'" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
-            <template x-for="item in sortedItems" :key="item.name">
-                <div @click="openDrawer(item)" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
-                     class="rounded-3xl p-10 cursor-pointer border flex flex-col h-full card-glow transition-all active:scale-[0.98] text-left group"
-                     :class="getCardClass()">
-                    <div class="flex justify-between items-center mb-10 text-left">
-                        <div class="flex items-center gap-4 text-left">
-                            <div class="w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-500 bg-primary-500/10 text-primary-500 group-hover:rotate-3"><i :data-lucide="getIcon(item.category)" class="w-7 h-7"></i></div>
-                            <div class="flex flex-col text-left">
-                                <span class="text-xs font-black uppercase tracking-[0.2em] text-primary-500" x-text="item.category"></span>
-                                <span class="text-xs font-bold text-zinc-500 font-mono tracking-tighter" x-text="item.version"></span>
+        <div class="relative w-full min-h-[400px] pt-4">
+            <template x-for="page in [currentPage]" :key="page">
+                <div x-transition:enter="transition ease-out duration-500 delay-100"
+                     :x-transition:enter-start="pageDirection === 'next' ? 'opacity-0 translate-x-12' : 'opacity-0 -translate-x-12'"
+                     x-transition:enter-end="opacity-100 translate-x-0"
+                     x-transition:leave="transition ease-in duration-300 absolute inset-0"
+                     x-transition:leave-start="opacity-100 translate-x-0"
+                     :x-transition:leave-end="pageDirection === 'next' ? 'opacity-0 -translate-x-12' : 'opacity-0 translate-x-12'"
+                     class="w-full">
+                    
+                    <!-- Content Grid -->
+                    <div x-show="view === 'grid'" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
+                        <template x-for="item in paginatedItems" :key="item.name">
+                            <div @click="openDrawer(item)" 
+                                 class="relative rounded-[1.5rem] p-10 cursor-pointer border flex flex-col h-full card-glow transition-all active:scale-[0.98] text-left group hover:z-[35]"
+                                 :class="getCardClass()">
+                                 <!-- Card Header -->
+                                 <div class="flex justify-between items-center mb-10 text-left">
+                                    <div class="flex items-center gap-4 text-left">
+                                        <div class="w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-500 bg-primary-500/10 text-primary-500 group-hover:rotate-3"><i :data-lucide="getIcon(item.category)" class="w-7 h-7"></i></div>
+                                        <div class="flex flex-col text-left">
+                                            <span class="text-xs font-black uppercase tracking-[0.2em] text-primary-500" x-text="item.category"></span>
+                                            <span class="text-xs font-bold text-zinc-500 font-mono tracking-tighter" x-text="item.version"></span>
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-col items-end gap-2">
+                                        <template x-if="item.new"><span class="px-2.5 py-1 bg-primary-500 text-white text-[8px] font-black rounded-full uppercase pulse-primary shadow-lg shadow-primary-500/20">New</span></template>
+                                        <template x-if="item.updated && !item.new"><span class="px-2.5 py-1 bg-emerald-500 text-white text-[8px] font-black rounded-full uppercase">Updated</span></template>
+                                    </div>
+                                </div>
+                                <h3 class="text-2xl font-black mb-3 tracking-tight uppercase italic group-hover:translate-x-1 transition-transform" :class="theme === 'light' ? 'text-zinc-900' : 'text-white'" x-text="item.name"></h3>
+                                <p class="text-sm line-clamp-2 mb-12 font-medium leading-relaxed flex-1 text-left opacity-70" x-text="item.description"></p>
+                                <div class="mt-auto border-t pt-8 flex justify-between items-center text-left" :class="theme === 'light' ? 'border-zinc-100' : 'border-white/5'">
+                                    <div class="flex gap-2 text-left">
+                                        <template x-if="item.rpm_status !== 'na'">
+                                            <div class="px-2.5 py-1.5 rounded-lg border transition-all flex items-center gap-2" :class="item.rpm_status === 'success' ? 'border-emerald-500/20 bg-emerald-500/5 text-emerald-500/80' : 'border-rose-500/20 bg-rose-500/5 text-rose-500'"><i data-lucide="box" class="w-3 h-3"></i><span class="text-[9px] font-black uppercase tracking-widest" x-text="`RPM ${item.rpm_status}`"></span></div>
+                                        </template>
+                                        <template x-if="item.docker_status !== 'na'">
+                                            <div class="px-2.5 py-1.5 rounded-lg border transition-all flex items-center gap-2" :class="item.docker_status === 'success' ? 'border-emerald-500/20 bg-emerald-500/5 text-emerald-500/80' : 'border-rose-500/20 bg-rose-500/5 text-rose-500'"><i data-lucide="container" class="w-3 h-3"></i><span class="text-[9px] font-black uppercase tracking-widest" x-text="`OCI ${item.docker_status}`"></span></div>
+                                        </template>
+                                    </div>
+                                    <i data-lucide="arrow-right" class="w-5 h-5 text-zinc-400 group-hover:text-primary-500 group-hover:translate-x-1 transition-all"></i>
+                                </div>
                             </div>
-                        </div>
-                        <div class="flex flex-col items-end gap-2">
-                            <template x-if="item.new"><span class="px-2.5 py-1 bg-primary-500 text-white text-[8px] font-black rounded-full uppercase pulse-primary shadow-lg shadow-primary-500/20">New</span></template>
-                            <template x-if="item.updated && !item.new"><span class="px-2.5 py-1 bg-emerald-500 text-white text-[8px] font-black rounded-full uppercase">Updated</span></template>
-                        </div>
+                        </template>
                     </div>
-                    <h3 class="text-2xl font-black mb-3 tracking-tight uppercase italic group-hover:translate-x-1 transition-transform" :class="theme === 'light' ? 'text-zinc-900' : 'text-white'" x-text="item.name"></h3>
-                    <p class="text-sm line-clamp-2 mb-12 font-medium leading-relaxed flex-1 text-left opacity-70" x-text="item.description"></p>
-                    <div class="mt-auto border-t pt-8 flex justify-between items-center text-left" :class="theme === 'light' ? 'border-zinc-100' : 'border-white/5'">
-                        <div class="flex gap-2 text-left">
-                            <template x-if="item.rpm_status !== 'na'">
-                                <div class="px-2.5 py-1.5 rounded-lg border transition-all flex items-center gap-2" :class="item.rpm_status === 'success' ? 'border-emerald-500/20 bg-emerald-500/5 text-emerald-500/80' : 'border-rose-500/20 bg-rose-500/5 text-rose-500'"><i data-lucide="box" class="w-3 h-3"></i><span class="text-[9px] font-black uppercase tracking-widest" x-text="`RPM ${item.rpm_status}`"></span></div>
-                            </template>
-                            <template x-if="item.docker_status !== 'na'">
-                                <div class="px-2.5 py-1.5 rounded-lg border transition-all flex items-center gap-2" :class="item.docker_status === 'success' ? 'border-emerald-500/20 bg-emerald-500/5 text-emerald-500/80' : 'border-rose-500/20 bg-rose-500/5 text-rose-500'"><i data-lucide="container" class="w-3 h-3"></i><span class="text-[9px] font-black uppercase tracking-widest" x-text="`OCI ${item.docker_status}`"></span></div>
-                            </template>
-                        </div>
-                        <i data-lucide="arrow-right" class="w-5 h-5 text-zinc-400 group-hover:text-primary-500 group-hover:translate-x-1 transition-all"></i>
+
+                    <!-- Content List -->
+                    <div x-show="view === 'list'" class="flex flex-col gap-3 text-left" x-cloak>
+                        <template x-for="item in paginatedItems" :key="item.name">
+                            <div @click="openDrawer(item)" 
+                                 class="relative group flex items-center gap-8 px-8 py-5 rounded-2xl border transition-all cursor-pointer card-glow active:scale-[0.99] text-left hover:z-[35]"
+                                 :class="getCardClass()">
+                                <div class="w-12 h-12 rounded-xl flex items-center justify-center text-primary-500 bg-primary-500/10 transition-all group-hover:rotate-3"><i :data-lucide="getIcon(item.category)" class="w-6 h-6"></i></div>
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center gap-4">
+                                        <h3 class="text-lg font-black uppercase italic group-hover:text-primary-500 transition-colors" :class="theme === 'light' ? 'text-zinc-900' : 'text-white'" x-text="item.name"></h3>
+                                        <span class="text-[11px] font-mono font-bold text-zinc-500" x-text="item.version"></span>
+                                        <template x-if="item.new"><span class="px-2 py-0.5 bg-primary-500 text-white text-[7px] font-black rounded-full uppercase pulse-primary">New</span></template>
+                                    </div>
+                                    <p class="text-xs opacity-50 truncate" x-text="item.description"></p>
+                                </div>
+                                <div class="hidden sm:flex gap-2">
+                                    <template x-if="item.rpm_status !== 'na'">
+                                        <div class="px-2 py-1 rounded-lg border transition-all flex items-center gap-2" :class="item.rpm_status === 'success' ? 'border-emerald-500/20 bg-emerald-500/5 text-emerald-500/80' : 'border-rose-500/20 bg-rose-500/5 text-rose-500'"><i data-lucide="box" class="w-3 h-3"></i><span class="text-[8px] font-black uppercase tracking-widest" x-text="item.rpm_status"></span></div>
+                                    </template>
+                                    <template x-if="item.docker_status !== 'na'">
+                                        <div class="px-2 py-1 rounded-lg border transition-all flex items-center gap-2" :class="item.docker_status === 'success' ? 'border-emerald-500/20 bg-emerald-500/5 text-emerald-500/80' : 'border-rose-500/20 bg-rose-500/5 text-rose-500'"><i data-lucide="container" class="w-3 h-3"></i><span class="text-[8px] font-black uppercase tracking-widest" x-text="item.docker_status"></span></div>
+                                    </template>
+                                </div>
+                                <i data-lucide="chevron-right" class="w-5 h-5 text-zinc-400 group-hover:text-primary-500 group-hover:translate-x-1 transition-all"></i>
+                            </div>
+                        </template>
                     </div>
                 </div>
             </template>
         </div>
 
-        <div x-show="view === 'list'" class="flex flex-col gap-3 text-left" x-cloak>
-            <template x-for="item in sortedItems" :key="item.name">
-                <div @click="openDrawer(item)" 
-                     class="group flex items-center gap-8 px-8 py-5 rounded-2xl border transition-all cursor-pointer card-glow active:scale-[0.99] text-left"
-                     :class="getCardClass()">
-                    
-                    <div class="w-12 h-12 rounded-xl flex items-center justify-center text-primary-500 bg-primary-500/10 transition-all group-hover:rotate-3">
-                        <i :data-lucide="getIcon(item.category)" class="w-6 h-6"></i>
-                    </div>
+        <!-- Pagination Controls -->
+        <div x-show="perPage !== 'all' && totalPages > 1" 
+             class="mt-10 flex items-center justify-center gap-4 transition-all"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 translate-y-4"
+             x-transition:enter-end="opacity-100 translate-y-0"
+             x-cloak>
+            <button @click="goToPage(currentPage - 1)" 
+                    :disabled="currentPage === 1"
+                    class="w-12 h-12 rounded-xl border flex items-center justify-center transition-all active:scale-90 disabled:opacity-30 disabled:cursor-not-allowed"
+                    :class="theme === 'light' ? 'bg-white border-zinc-200 text-zinc-600' : 'bg-dark-800 border-white/5 text-zinc-400'">
+                <i data-lucide="chevron-left" class="w-5 h-5"></i>
+            </button>
 
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-center gap-4">
-                            <h3 class="text-lg font-black uppercase italic group-hover:text-primary-500 transition-colors" :class="theme === 'light' ? 'text-zinc-900' : 'text-white'" x-text="item.name"></h3>
-                            <span class="text-[11px] font-mono font-bold text-zinc-500" x-text="item.version"></span>
-                            <template x-if="item.new"><span class="px-2 py-0.5 bg-primary-500 text-white text-[7px] font-black rounded-full uppercase pulse-primary">New</span></template>
-                        </div>
-                        <p class="text-xs opacity-50 truncate" x-text="item.description"></p>
-                    </div>
+            <div class="flex items-center gap-2">
+                <template x-for="p in totalPages" :key="p">
+                    <button @click="goToPage(p)" 
+                            class="w-12 h-12 rounded-xl font-black text-xs transition-all active:scale-90"
+                            :class="currentPage === p ? 'bg-primary-500 text-white shadow-lg shadow-primary-500/20' : (theme === 'light' ? 'bg-white text-zinc-400 hover:text-zinc-900 border border-zinc-200' : 'bg-dark-800 text-zinc-500 hover:text-white border border-white/5')"
+                            x-text="p"></button>
+                </template>
+            </div>
 
-                    <div class="hidden sm:flex gap-2">
-                        <template x-if="item.rpm_status !== 'na'">
-                            <div class="px-2 py-1 rounded-lg border transition-all flex items-center gap-2" :class="item.rpm_status === 'success' ? 'border-emerald-500/20 bg-emerald-500/5 text-emerald-500/80' : 'border-rose-500/20 bg-rose-500/5 text-rose-500'"><i data-lucide="box" class="w-3 h-3"></i><span class="text-[8px] font-black uppercase tracking-widest" x-text="item.rpm_status"></span></div>
-                        </template>
-                        <template x-if="item.docker_status !== 'na'">
-                            <div class="px-2 py-1 rounded-lg border transition-all flex items-center gap-2" :class="item.docker_status === 'success' ? 'border-emerald-500/20 bg-emerald-500/5 text-emerald-500/80' : 'border-rose-500/20 bg-rose-500/5 text-rose-500'"><i data-lucide="container" class="w-3 h-3"></i><span class="text-[8px] font-black uppercase tracking-widest" x-text="item.docker_status"></span></div>
-                        </template>
-                    </div>
-
-                    <i data-lucide="chevron-right" class="w-5 h-5 text-zinc-400 group-hover:text-primary-500 group-hover:translate-x-1 transition-all"></i>
-                </div>
-            </template>
+            <button @click="goToPage(currentPage + 1)" 
+                    :disabled="currentPage === totalPages"
+                    class="w-12 h-12 rounded-xl border flex items-center justify-center transition-all active:scale-90 disabled:opacity-30 disabled:cursor-not-allowed"
+                    :class="theme === 'light' ? 'bg-white border-zinc-200 text-zinc-600' : 'bg-dark-800 border-white/5 text-zinc-400'">
+                <i data-lucide="chevron-right" class="w-5 h-5"></i>
+            </button>
         </div>
 
         </div>
@@ -375,12 +452,12 @@
                         <div class="flex flex-wrap items-center gap-3 mt-3">
                             <span class="text-xs font-mono font-bold text-zinc-500" x-text="`v${selectedItem?.version}`"></span>
                             <span class="verified-badge"><i data-lucide="shield-check" class="w-3 h-3"></i> Verified</span>
-                            <div class="flex items-center gap-1.5 text-zinc-500 text-[10px] font-bold uppercase tracking-widest border-l border-white/10 pl-3">
+                            <div class="flex items-center gap-1.5 text-zinc-500 text-[10px] font-bold uppercase tracking-widest border-l border-white/20 pl-3">
                                 <i data-lucide="clock" class="w-3 h-3"></i>
                                 <span x-text="new Date().toLocaleDateString()"></span>
                             </div>
                             <a :href="`https://github.com/${selectedItem?.upstream?.repo}`" target="_blank" 
-                               class="flex items-center gap-1.5 text-zinc-500 hover:text-primary-500 transition-colors text-[10px] font-bold uppercase tracking-widest border-l border-white/10 pl-3"
+                               class="flex items-center gap-1.5 text-zinc-500 hover:text-primary-500 transition-colors text-[10px] font-bold uppercase tracking-widest border-l border-white/20 pl-3"
                                title="Official Upstream Source">
                                 <i data-lucide="github" class="w-3 h-3"></i>
                                 <span>Source</span>
@@ -417,7 +494,7 @@
                     <div x-show="drawerTab === 'dnf'" x-transition class="space-y-10 text-left">
                         <div class="space-y-4 text-left">
                             <h4 class="text-[10px] font-black text-zinc-400 uppercase tracking-widest italic text-left">01 / Quick Repo Setup</h4>
-                            <div class="rounded-2xl border overflow-hidden transition-all" :class="theme === 'light' ? 'bg-zinc-100 border-zinc-200 shadow-sm' : 'bg-black border-white/10 shadow-2xl'">
+                            <div class="rounded-2xl border overflow-hidden transition-all" :class="theme === 'light' ? 'bg-zinc-100 border-zinc-200 shadow-sm' : 'bg-black border-white/20 shadow-2xl'">
                                 <div class="flex items-center justify-between p-3 border-b text-left" :class="theme === 'light' ? 'bg-zinc-50 border-zinc-200' : 'bg-white/[0.03] border-white/5'">
                                     <div class="flex gap-2">
                                         <template x-for="dist in ['el8', 'el9', 'el10']">
@@ -436,7 +513,7 @@
                         </div>
                         <div class="space-y-4 text-left">
                             <h4 class="text-[10px] font-black text-zinc-400 uppercase tracking-widest italic text-left">02 / Installation</h4>
-                            <div class="rounded-2xl border p-6 font-mono text-xs relative text-left" :class="theme === 'light' ? 'bg-zinc-100 border-zinc-200' : 'bg-black border-white/10'">
+                            <div class="rounded-2xl border p-6 font-mono text-xs relative text-left" :class="theme === 'light' ? 'bg-zinc-100 border-zinc-200' : 'bg-black border-white/20'">
                                 <div class="flex items-center justify-between gap-4 text-left">
                                     <code class="text-emerald-500 font-bold" x-text="`sudo dnf install -y ${selectedItem?.name}`"></code>
                                     <button @click="copyToClipboard(`sudo dnf install -y ${selectedItem?.name}`); copiedInstall = true; setTimeout(() => copiedInstall = false, 2000)" 
@@ -466,7 +543,7 @@
                     <div x-show="drawerTab === 'docker'" x-transition class="space-y-10 text-left">
                         <div class="space-y-4 text-left">
                             <h4 class="text-[10px] font-black text-zinc-400 uppercase tracking-widest italic text-left">01 / Registry Pull</h4>
-                            <div class="rounded-2xl border p-6 font-mono text-xs relative text-left" :class="theme === 'light' ? 'bg-zinc-100 border-zinc-200' : 'bg-black border-white/10'">
+                            <div class="rounded-2xl border p-6 font-mono text-xs relative text-left" :class="theme === 'light' ? 'bg-zinc-100 border-zinc-200' : 'bg-black border-white/20'">
                                 <div class="flex items-center justify-between gap-4 text-left">
                                     <code class="text-primary-500 font-bold break-all" x-text="`docker pull ghcr.io/sckyzo/monitoring-hub/${selectedItem?.name}:latest`"></code>
                                     <button @click="copyToClipboard(`docker pull ghcr.io/sckyzo/monitoring-hub/${selectedItem?.name}:latest`); copiedPull = true; setTimeout(() => copiedPull = false, 2000)" 
@@ -480,7 +557,7 @@
                         </div>
                         <div class="space-y-4 text-left">
                             <h4 class="text-[10px] font-black text-zinc-400 uppercase tracking-widest italic text-left">02 / Standard Run</h4>
-                            <div class="rounded-2xl border p-6 font-mono text-xs relative text-left" :class="theme === 'light' ? 'bg-zinc-100 border-zinc-200' : 'bg-black border-white/10'">
+                            <div class="rounded-2xl border p-6 font-mono text-xs relative text-left" :class="theme === 'light' ? 'bg-zinc-100 border-zinc-200' : 'bg-black border-white/20'">
                                 <div class="flex items-center justify-between gap-4 text-left">
                                     <code class="text-emerald-500 font-bold break-all" x-text="`docker run -d -p 9100:9100 ghcr.io/sckyzo/monitoring-hub/${selectedItem?.name}:latest`"></code>
                                     <button @click="copyToClipboard(`docker run -d -p 9100:9100 ghcr.io/sckyzo/monitoring-hub/${selectedItem?.name}:latest`); copiedRun = true; setTimeout(() => copiedRun = false, 2000)" 
@@ -598,7 +675,7 @@
             x-transition:leave="transition ease-in duration-300"
             x-transition:leave-start="opacity-100 translate-y-0"
             x-transition:leave-end="opacity-0 translate-y-10"
-            class="fixed bottom-10 right-10 w-14 h-14 rounded-full bg-primary-600 text-white shadow-2xl z-50 flex items-center justify-center hover:bg-primary-500 transition-all hover:scale-110 active:scale-90 shadow-primary-500/20 border border-white/10"
+            class="fixed bottom-10 right-10 w-14 h-14 rounded-full bg-primary-600 text-white shadow-2xl z-50 flex items-center justify-center hover:bg-primary-500 transition-all hover:scale-110 active:scale-90 shadow-primary-500/20 border border-white/20"
             aria-label="Back to Top"
             x-cloak>
         <i data-lucide="arrow-up" class="w-6 h-6"></i>
@@ -632,7 +709,7 @@
                  x-transition:enter="transition ease-out duration-300 delay-100"
                  x-transition:enter-start="opacity-0 scale-95 translate-y-10"
                  x-transition:enter-end="opacity-100 scale-100 translate-y-0"
-                 class="relative w-full max-w-6xl max-h-[90vh] overflow-y-auto scrollbar-hide rounded-[2rem] border border-white/10 shadow-2xl p-12 lg:p-20 flex flex-col gap-16"
+                 class="relative w-full max-w-6xl max-h-[90vh] overflow-y-auto scrollbar-hide rounded-[2rem] border border-white/20 shadow-2xl p-12 lg:p-20 flex flex-col gap-16"
                  :class="theme === 'light' ? 'bg-white border-zinc-200' : 'bg-dark-900 border-white/5'">
                 
                 <div class="flex justify-between items-start">
@@ -828,6 +905,7 @@
         function registry() {
             return {
                 exporters: [], categories: [], search: '', filterCategory: 'all', view: 'grid', drawerOpen: false, helpOpen: false, selectedItem: null, theme: 'deep', currentColor: 'Blue', currentColorRGBA: '59, 130, 246', showCommandPalette: false, sortKey: 'version', isScrolled: false,
+                perPage: 'all', currentPage: 1, pageDirection: 'next',
                 showBackToTop: false,
                 showWelcomeTip: false,
                 drawerTab: 'dnf',
@@ -857,10 +935,17 @@
 
                     this.$nextTick(() => { lucide.createIcons(); });
                     this.$watch('filteredItems', () => this.$nextTick(() => lucide.createIcons()));
+                    this.$watch('currentPage', () => this.$nextTick(() => lucide.createIcons()));
+                    this.$watch('perPage', () => this.$nextTick(() => lucide.createIcons()));
                     this.$watch('showCommandPalette', (v) => { if(v) this.$nextTick(() => this.$refs.commandInput.focus()); });
                 },
                 setThemeColor(color) { this.currentColor = color.name; this.currentColorRGBA = color.value; localStorage.setItem('color-theme', color.name); document.documentElement.style.setProperty('--primary-rgb', color.value.replace(/,/g, '')); document.documentElement.style.setProperty('--primary-rgba', color.value); },
-                changeCategory(cat) { this.filterCategory = 'none'; this.$nextTick(() => { this.filterCategory = cat; }); },
+                changeCategory(cat) { this.filterCategory = 'none'; this.currentPage = 1; this.$nextTick(() => { this.filterCategory = cat; }); },
+                goToPage(p) {
+                    if (p < 1 || p > this.totalPages) return;
+                    this.pageDirection = p > this.currentPage ? 'next' : 'prev';
+                    this.currentPage = p;
+                },
                 get sortedItems() { 
                     let items = [...this.filteredItems]; 
                     if (this.sortKey === 'name') {
@@ -870,6 +955,15 @@
                         items.sort((a, b) => b.version.localeCompare(a.version, undefined, { numeric: true, sensitivity: 'base' })); 
                     }
                     return items; 
+                },
+                get totalPages() {
+                    if (this.perPage === 'all') return 1;
+                    return Math.ceil(this.sortedItems.length / this.perPage);
+                },
+                get paginatedItems() {
+                    if (this.perPage === 'all') return this.sortedItems;
+                    const start = (this.currentPage - 1) * this.perPage;
+                    return this.sortedItems.slice(start, start + this.perPage);
                 },
                 get filteredItems() { return this.exporters.filter(item => { const s = this.search.toLowerCase(); return (item.name.toLowerCase().includes(s) || (item.description && item.description.toLowerCase().includes(s))) && (this.filterCategory === 'all' || item.category === this.filterCategory); }); },
                 get totalRPMs() { return this.exporters.filter(e => e.rpm_status === 'success').length; },
