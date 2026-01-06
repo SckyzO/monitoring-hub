@@ -10,7 +10,7 @@ REFERENCE_FILE = PROJECT_ROOT / "manifest.reference.yaml"
 @click.command()
 @click.option("--name", prompt="Exporter Name (e.g., node_exporter)", help="Technical name of the exporter.")
 @click.option("--repo", prompt="GitHub Repository (e.g., prometheus/node_exporter)", help="Upstream GitHub repository.")
-@click.option("--category", prompt="Category", type=click.Choice(['System', 'Database', 'Web', 'Network', 'Storage', 'Messaging', 'Infrastructure'], case_sensitive=False), default="System", help="Portal category.")
+@click.option("--category", prompt="Category", type=click.Choice(['System', 'Database', 'Web', 'Network', 'Storage', 'Messaging', 'Infrastructure', 'DevOps'], case_sensitive=False), default="System", help="Portal category.")
 @click.option("--description", prompt="Description", default="Prometheus exporter.", help="Short description.")
 def create(name, repo, category, description):
     """
