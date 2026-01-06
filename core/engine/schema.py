@@ -59,6 +59,9 @@ class ArtifactsSchema(Schema):
 class ManifestSchema(Schema):
     name = fields.Str(required=True)
     description = fields.Str(required=True)
+    category = fields.Str(required=False, dump_default="System")
+    new = fields.Bool(required=False, dump_default=False)
+    updated = fields.Bool(required=False, dump_default=False)
     version = fields.Str(required=True)
     upstream = fields.Nested(UpstreamSchema, required=True)
     build = fields.Nested(BuildSchema, required=True)
