@@ -965,8 +965,18 @@
                     return this.sortedItems.slice(start, start + this.perPage);
                 },
                 get filteredItems() { return this.exporters.filter(item => { const s = this.search.toLowerCase(); return (item.name.toLowerCase().includes(s) || (item.description && item.description.toLowerCase().includes(s))) && (this.filterCategory === 'all' || item.category === this.filterCategory); }); },
-                get totalRPMs() { return this.exporters.filter(e => e.rpm_status === 'success').length; },
-                get totalOCI() { return this.exporters.filter(e => e.docker_status === 'success').length; },
+                get totalRPMs() { 
+                    return this.exporters.reduce((acc, e) => {
+                        if (e.rpm_status === 'success' && e.artifacts && e.artifacts.rpm && e.artifacts.rpm.targets) {
+                            // Number of distros * 2 architectures (amd64, arm64)
+                            return acc + (e.artifacts.rpm.targets.length * 2);
+                        }
+                        return acc;
+                    }, 0);
+                },
+                get totalOCI() { 
+                    return this.exporters.filter(e => e.docker_status === 'success').length * 2; 
+                },
                 get totalTargets() {
                     let count = 0;
                     this.exporters.forEach(e => {
