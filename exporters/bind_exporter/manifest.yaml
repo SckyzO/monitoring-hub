@@ -1,7 +1,8 @@
 name: bind_exporter
 description: "Prometheus exporter for Bind (DNS) statistics"
-category: System
+category: Network
 version: "v0.8.0"
+updated: true
 
 upstream:
   type: github
