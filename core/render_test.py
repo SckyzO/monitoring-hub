@@ -7,7 +7,7 @@ MOCK_EXPORTERS = [
     {
         "name": "node_exporter",
         "version": "1.8.2",
-        "description": "Prometheus exporter for hardware and OS metrics exposed by *NIX kernels.",
+        "description": "Standard exporter with both RPM and Docker.",
         "category": "System",
         "new": False,
         "updated": True,
@@ -15,93 +15,38 @@ MOCK_EXPORTERS = [
         "docker_status": "success",
         "upstream": {"repo": "prometheus/node_exporter"},
         "artifacts": {
-            "rpm": {"targets": ["el8", "el9", "el10"]},
+            "rpm": {"enabled": True, "targets": ["el8", "el9", "el10"]},
             "docker": {"enabled": True, "validation": {"port": 9100}}
         },
         "build": {"archs": ["amd64", "arm64"]},
-        "readme": "# Node Exporter\nThis is a *mock* readme content for testing the drawer."
-    },
-    {
-        "name": "mysqld_exporter",
-        "version": "0.15.1",
-        "description": "Prometheus exporter for MySQL server metrics.",
-        "category": "Database",
-        "new": True,
-        "updated": False,
-        "rpm_status": "failed",
-        "docker_status": "success",
-        "upstream": {"repo": "prometheus/mysqld_exporter"},
-        "artifacts": {
-            "rpm": {"targets": ["el9"]},
-            "docker": {"enabled": True}
-        },
-        "build": {"archs": ["amd64"]}
-    },
-    {
-        "name": "blackbox_exporter",
-        "version": "0.25.0",
-        "description": "Allows blackbox probing of endpoints over HTTP, HTTPS, DNS, TCP and ICMP.",
-        "category": "Network",
-        "new": False,
-        "updated": False,
-        "rpm_status": "na",
-        "docker_status": "success",
-        "upstream": {"repo": "prometheus/blackbox_exporter"},
-        "artifacts": {
-            "rpm": {"enabled": False},
-            "docker": {"enabled": True}
-        },
-        "build": {"archs": ["amd64", "arm64"]}
-    },
-    {
-        "name": "redis_exporter",
-        "version": "1.58.0",
-        "description": "Prometheus exporter for Redis metrics. Supports 2.x, 3.x, 4.x, 5.x, and 6.x.",
-        "category": "Database",
-        "new": False,
-        "updated": True,
-        "rpm_status": "success",
-        "docker_status": "success",
-        "upstream": {"repo": "oliver006/redis_exporter"},
-        "artifacts": {
-            "rpm": {"targets": ["el8", "el9"]},
-            "docker": {"enabled": True}
-        },
-        "build": {"archs": ["amd64", "arm64"]}
-    },
-    {
-        "name": "process_exporter",
-        "version": "0.7.10",
-        "description": "Restrictive process exporter for prometheus.",
-        "category": "System",
-        "new": False,
-        "updated": False,
-        "rpm_status": "failed",
-        "docker_status": "failed",
-        "upstream": {"repo": "ncabatoff/process-exporter"},
-        "artifacts": {
-            "rpm": {"targets": ["el9"]},
-            "docker": {"enabled": True}
+        "readme": "# Node Exporter\nStandard case.",
+        "availability": {
+            "el8": {"x86_64": {"status": "success"}, "aarch64": {"status": "success"}},
+            "el9": {"x86_64": {"status": "success"}, "aarch64": {"status": "success"}},
+            "el10": {"x86_64": {"status": "success"}, "aarch64": {"status": "na"}}
         }
     },
     {
-        "name": "apache_exporter",
-        "version": "1.0.1",
-        "description": "Export Apache mod_status statistics via HTTP.",
+        "name": "pure_docker_exporter",
+        "version": "1.0.0",
+        "description": "Exporter with NO RPM support (Docker only). Tab should default to Docker.",
         "category": "Web",
         "new": True,
         "updated": False,
-        "rpm_status": "success",
-        "docker_status": "na",
-        "upstream": {"repo": "Lusitaniae/apache_exporter"},
+        "rpm_status": "na",
+        "docker_status": "success",
+        "upstream": {"repo": "test/docker_only"},
         "artifacts": {
-            "rpm": {"targets": ["el8", "el9"]},
-            "docker": {"enabled": False}
-        }
+            "rpm": {"enabled": False}, # RPM DISABLED
+            "docker": {"enabled": True}
+        },
+        "build": {"archs": ["amd64"]},
+        "readme": "# Docker Only\nThis exporter has no RPMs.",
+        "availability": {}
     }
 ]
 
-MOCK_CATEGORIES = ["System", "Database", "Web", "Messaging", "Storage"]
+MOCK_CATEGORIES = ["System", "Web"]
 
 def render():
     template_dir = os.path.join(os.path.dirname(__file__), 'templates')
@@ -110,13 +55,14 @@ def render():
     
     # Render with JSON strings as the real generator does
     output = template.render(
+        exporters=MOCK_EXPORTERS,
         exporters_json=json.dumps(MOCK_EXPORTERS),
         categories_json=json.dumps(MOCK_CATEGORIES)
     )
     
     with open('index.html', 'w') as f:
         f.write(output)
-    print("✅ index.html generated successfully.")
+    print("✅ index.html generated successfully with Docker-only scenario.")
 
 if __name__ == "__main__":
     render()
