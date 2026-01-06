@@ -106,7 +106,7 @@ MOCK_CATEGORIES = ["System", "Database", "Web", "Messaging", "Storage"]
 def render():
     template_dir = os.path.join(os.path.dirname(__file__), 'templates')
     env = Environment(loader=FileSystemLoader(template_dir))
-    template = env.get_template('index_v2.html.j2')
+    template = env.get_template('index.html.j2')
     
     # Render with JSON strings as the real generator does
     output = template.render(
@@ -114,9 +114,9 @@ def render():
         categories_json=json.dumps(MOCK_CATEGORIES)
     )
     
-    with open('index_v2.html', 'w') as f:
+    with open('index.html', 'w') as f:
         f.write(output)
-    print("✅ index_v2.html generated successfully.")
+    print("✅ index.html generated successfully.")
 
 if __name__ == "__main__":
     render()
