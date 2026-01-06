@@ -1,31 +1,37 @@
 # IPMI Exporter
 
-[![Upstream](https://img.shields.io/badge/Upstream-prometheus--community/ipmi_exporter-blue)](https://github.com/prometheus-community/ipmi_exporter)
+![Build Status](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/release.yml?label=Build)
+![Version](https://img.shields.io/github/v/release/prometheus-community/ipmi_exporter?label=Upstream)
 
-Prometheus exporter for IPMI devices (Intelligent Platform Management Interface).
+> Prometheus exporter for IPMI devices (Intelligent Platform Management Interface).
 
-## Overview
 This exporter collects hardware health metrics (temperatures, fans, voltages, power state) from servers via IPMI. It supports both local (in-band) and remote (out-of-band/LAN) monitoring.
 
-## Configuration
-For remote monitoring, a configuration file defining modules (user/password/driver) is recommended.
+## 🚀 Installation
 
-### Common Flags
-*   `--config.file`: Path to configuration file (default `/etc/ipmi_exporter/ipmi_remote.yml`).
-*   `--web.listen-address`: Address to listen on (default `:9290`).
-
-### Dependencies (RPM)
-The RPM package automatically installs `freeipmi` as a dependency, which provides the necessary underlying tools (`ipmimonitoring`, etc.).
-
-## Usage
-
-### RPM
+### RPM (Enterprise Linux)
 ```bash
+sudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el9/$(arch)/
 sudo dnf install ipmi_exporter
 sudo systemctl enable --now ipmi_exporter
 ```
 
+> **Note:** The RPM package automatically installs `freeipmi` as a dependency.
+
 ### Docker
 ```bash
-docker run -d -p 9290:9290 -v /path/to/ipmi_remote.yml:/etc/ipmi_exporter/ipmi_remote.yml ghcr.io/sckyzo/monitoring-hub/ipmi_exporter:latest
+docker pull ghcr.io/sckyzo/monitoring-hub/ipmi_exporter:latest
+
+docker run -d \
+  -p 9290:9290 \
+  -v ./ipmi_remote.yml:/etc/ipmi_exporter/ipmi_remote.yml \
+  --device /dev/ipmi0 \
+  ghcr.io/sckyzo/monitoring-hub/ipmi_exporter:latest
 ```
+
+## ⚙️ Configuration
+
+A default configuration file is provided for remote targets.
+Location: `/etc/ipmi_exporter/ipmi_remote.yml`.
+
+See upstream documentation: [prometheus-community/ipmi_exporter](https://github.com/prometheus-community/ipmi_exporter)
