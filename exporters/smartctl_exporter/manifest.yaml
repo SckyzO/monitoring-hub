@@ -1,7 +1,8 @@
 name: smartctl_exporter
 description: Prometheus exporter for S.M.A.R.T. storage devices metrics
-category: System
+category: Storage
 version: v0.14.0
+updated: true
 upstream:
   type: github
   repo: prometheus-community/smartctl_exporter
