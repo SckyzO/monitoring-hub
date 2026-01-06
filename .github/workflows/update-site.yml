@@ -1,0 +1,60 @@
+name: Update Site Only 🌐
+
+on:
+  workflow_dispatch: # Allows manual trigger
+  push:
+    branches: [ main ]
+    paths:
+      - 'core/templates/**' # Trigger if templates change
+      - 'core/engine/**'    # Trigger if generator logic changes
+      - 'README.md'         # Trigger if documentation changes
+      - 'static/**'         # Trigger if static assets change
+
+permissions:
+  contents: write
+
+jobs:
+  refresh-portal:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source Code (Main)
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install -r core/requirements.txt
+
+      - name: Checkout Published Artifacts (gh-pages)
+        run: |
+          git fetch origin gh-pages
+          git worktree add -B gh-pages gh-pages-dist origin/gh-pages
+
+      - name: Regenerate Portal
+        run: |
+          export PYTHONPATH=$GITHUB_WORKSPACE
+          # We tell the generator to look for RPMs in 'gh-pages-dist' (where artifacts are)
+          # And output the new HTML directly into that folder
+          python3 -m core.engine.site_generator --output gh-pages-dist/index.html --repo-dir gh-pages-dist
+
+      - name: Deploy Changes
+        run: |
+          cd gh-pages-dist
+          
+          # Configuration Git pour le Bot
+          git config user.name "Monitoring Hub Bot"
+          git config user.email "bot@monitoring-hub.local"
+          
+          # Add changes (index.html, catalog.json)
+          git add index.html catalog.json
+          
+          if git diff --staged --quiet; then
+            echo "No changes to the portal. Skipping push."
+          else
+            git commit -m "chore(site): refresh portal UI/data [skip ci]"
+            git push origin gh-pages
+          fi
