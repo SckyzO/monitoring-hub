@@ -22,6 +22,14 @@ def generate(output, repo_dir):
                 
                 data['version'] = data['version'].lstrip('v')
                 
+                # Read README.md content if exists
+                readme_path = os.path.join(os.path.dirname(manifest_path), 'README.md')
+                if os.path.exists(readme_path):
+                    with open(readme_path, 'r') as r:
+                        data['readme'] = r.read()
+                else:
+                    data['readme'] = "No documentation available."
+
                 data['availability'] = {}
                 rpm_targets = data.get('artifacts', {}).get('rpm', {}).get('targets', [])
                 
@@ -42,17 +50,42 @@ def generate(output, repo_dir):
                         else:
                             data['availability'][dist][arch] = {'status': 'na', 'path': None}
                 
+                # Aggregate Build Statuses
+                rpm_enabled = data.get('artifacts', {}).get('rpm', {}).get('enabled', True)
+                if rpm_enabled:
+                    # Success only if ALL targeted distributions have at least one arch successful
+                    targets = data.get('artifacts', {}).get('rpm', {}).get('targets', [])
+                    failed_targets = [t for t in targets if not any(data['availability'].get(t, {}).get(a, {}).get('status') == 'success' for a in ['x86_64', 'aarch64'])]
+                    data['rpm_status'] = 'failed' if failed_targets else 'success'
+                else:
+                    data['rpm_status'] = 'na'
+
+                data['docker_status'] = 'success' if data.get('artifacts', {}).get('docker', {}).get('enabled', False) else 'na'
+                
                 exporters_data.append(data)
         except Exception as e:
             print(f"Error: {e}")
 
     exporters_data.sort(key=lambda x: x['name'])
+    
+    # Collect unique categories dynamically
+    categories = sorted(list(set([e.get('category', 'System') for e in exporters_data])))
+
+    # Pre-serialize to JSON for the template
+    import json
+    exporters_json = json.dumps(exporters_data)
+    categories_json = json.dumps(categories)
+
     env = Environment(
         loader=FileSystemLoader(TEMPLATES_DIR),
         autoescape=select_autoescape(['html', 'xml'])
     )
     template = env.get_template('index.html.j2')
-    rendered = template.render(exporters=exporters_data)
+    rendered = template.render(
+        exporters=exporters_data,
+        exporters_json=exporters_json,
+        categories_json=categories_json
+    )
 
     with open(output, 'w') as f:
         f.write(rendered)
