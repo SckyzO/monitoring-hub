@@ -9,68 +9,94 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 EXPORTERS_DIR = PROJECT_ROOT / "exporters"
 REFERENCE_FILE = PROJECT_ROOT / "manifest.reference.yaml"
 
+import shutil
+import subprocess
+import json
+
 def get_github_info(repo_name):
     """
-    Fetches latest release info from GitHub API.
-    Returns a dict with version, archs, and suggested archive_name pattern.
+    Fetches latest release info from GitHub.
+    Uses 'gh' CLI if available, otherwise falls back to requests.
     """
-    url = f"https://api.github.com/repos/{repo_name}/releases/latest"
-    try:
-        click.echo(f"🔍 Fetching latest release info from {repo_name}...")
-        resp = requests.get(url, timeout=5)
-        resp.raise_for_status()
-        data = resp.json()
-        
-        tag_name = data.get("tag_name", "0.0.0")
-        assets = data.get("assets", [])
-        
-        # Analyze assets
-        has_amd64 = False
-        has_arm64 = False
-        sample_asset = None
-        
-        for asset in assets:
-            name = asset["name"].lower()
-            if "linux" in name:
-                if "amd64" in name or "x86_64" in name:
-                    has_amd64 = True
-                    sample_asset = asset["name"]
-                if "arm64" in name or "aarch64" in name:
-                    has_arm64 = True
-        
-        archs = ["amd64"]
-        if has_arm64:
-            archs.append("arm64")
-            
-        # Try to guess archive pattern from sample asset
-        archive_name = None
-        if sample_asset:
-            # Common patterns
-            # domain_exporter_1.24.1_linux_amd64.tar.gz -> {name}_{clean_version}_linux_{arch}.tar.gz
-            # node_exporter-1.0.0.linux-amd64.tar.gz -> default
-            
-            clean_version = tag_name.lstrip('v')
-            
-            # Heuristics
-            if f"_{clean_version}_" in sample_asset:
-                # Likely underscore separator
-                archive_name = "{name}_{clean_version}_linux_{arch}.tar.gz"
-            elif f"-{clean_version}." in sample_asset:
-                # Likely standard dot separator
-                pass # Default usually works
-            elif f"v{clean_version}" in sample_asset:
-                 # Version has 'v' inside filename
-                 archive_name = "{name}-v{clean_version}-linux-{arch}.tar.gz"
+    gh_path = shutil.which("gh")
+    data = None
 
-        return {
-            "version": tag_name,
-            "archs": archs,
-            "archive_name": archive_name
-        }
+    if gh_path:
+        try:
+            click.echo(f"🔍 Fetching latest release info from {repo_name} using 'gh'...")
+            cmd = [gh_path, "release", "view", "-R", repo_name, "--json", "tagName,assets"]
+            result = subprocess.run(cmd, capture_output=True, text=True, check=True)
+            data = json.loads(result.stdout)
+        except Exception as e:
+            click.secho(f"⚠️ 'gh' failed: {e}. Falling back to requests...", fg="yellow")
 
-    except Exception as e:
-        click.secho(f"⚠️ Failed to fetch GitHub info: {e}", fg="yellow")
-        return None
+    if not data:
+        url = f"https://api.github.com/repos/{repo_name}/releases/latest"
+        try:
+            click.echo(f"🔍 Fetching latest release info from {repo_name} via API...")
+            resp = requests.get(url, timeout=5)
+            resp.raise_for_status()
+            data = resp.json()
+            # Standardize 'gh' output to match API for 'tagName'
+            if "tag_name" in data:
+                data["tagName"] = data["tag_name"]
+        except Exception as e:
+            click.secho(f"⚠️ API fetch failed: {e}", fg="red")
+            return None
+
+    tag_name = data.get("tagName", "0.0.0")
+    assets = data.get("assets", [])
+    
+    # Analyze assets
+    has_amd64 = False
+    has_arm64 = False
+    sample_asset = None
+    
+    for asset in assets:
+        name = asset["name"].lower()
+        
+        # Exclude non-linux explicitly
+        if any(os_name in name for os_name in ["windows", "darwin", "macos", "freebsd", ".exe", ".dmg", ".zip"]):
+            continue
+
+        # If it says linux, good. If it says nothing but has arch, assume linux (common for go binaries)
+        is_explicit_linux = "linux" in name
+        
+        if "amd64" in name or "x86_64" in name:
+            has_amd64 = True
+            if is_explicit_linux or not sample_asset:
+                 sample_asset = asset["name"]
+        
+        if "arm64" in name or "aarch64" in name:
+            has_arm64 = True
+    
+    archs = ["amd64"]
+    if has_arm64:
+        archs.append("arm64")
+        
+    # Try to guess archive pattern from sample asset
+    archive_name = None
+    if sample_asset:
+        clean_version = tag_name.lstrip('v')
+        
+        # Heuristics for common patterns
+        if f"_{clean_version}_" in sample_asset:
+            archive_name = "{name}_{clean_version}_linux_{arch}.tar.gz"
+        elif f"v{clean_version}" in sample_asset and "-" in sample_asset:
+             archive_name = "{name}-v{clean_version}-linux-{arch}.tar.gz"
+        elif f"-{clean_version}." in sample_asset:
+             # Default pattern node_exporter-1.0.0.linux-amd64.tar.gz
+             pass
+        elif "ebpf_exporter" in sample_asset and "linux" not in sample_asset:
+             # Special case for ebpf_exporter style (no linux in name) if needed, 
+             # but usually we want to match the tarball if available.
+             pass
+
+    return {
+        "version": tag_name,
+        "archs": archs,
+        "archive_name": archive_name
+    }
 
 @click.command()
 @click.option("--name", prompt="Exporter Name (e.g., node_exporter)", help="Technical name of the exporter.")
