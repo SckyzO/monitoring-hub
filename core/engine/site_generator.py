@@ -81,25 +81,15 @@ def generate(output, repo_dir):
         autoescape=select_autoescape(['html', 'xml'])
     )
     template = env.get_template('index.html.j2')
-    rendered = template.render(exporters=exporters_data)
+    rendered = template.render(
+        exporters=exporters_data,
+        exporters_json=exporters_json,
+        categories_json=categories_json
+    )
 
     with open(output, 'w') as f:
         f.write(rendered)
     click.echo(f"Portal generated at {output}")
-
-    # Generate V2 Portal if template exists
-    v2_template_path = os.path.join(TEMPLATES_DIR, 'index_v2.html.j2')
-    if os.path.exists(v2_template_path):
-        v2_output = os.path.join(os.path.dirname(output), 'index_v2.html')
-        v2_template = env.get_template('index_v2.html.j2')
-        v2_rendered = v2_template.render(
-            exporters=exporters_data,
-            exporters_json=exporters_json,
-            categories_json=categories_json
-        )
-        with open(v2_output, 'w') as f:
-            f.write(v2_rendered)
-        click.echo(f"V2 Portal generated at {v2_output}")
 
     # Generate Machine Readable Catalog
     import json
