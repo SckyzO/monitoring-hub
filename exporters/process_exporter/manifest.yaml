@@ -2,6 +2,7 @@ name: process_exporter
 description: "Prometheus exporter for process metrics"
 category: System
 version: v0.8.7
+updated: true
 upstream:
   type: github
   repo: ncabatoff/process-exporter
