@@ -1,6 +1,6 @@
 <div align="center">
 
-# Monitoring Hub <img src="https://icongr.am/lucide/factory.svg?size=48&color=3b82f6" align="center" height="42">
+# Monitoring Hub <img src=".github/icons/factory.svg" width="45" height="45" style="vertical-align: middle; margin-bottom: 8px;">
 
 **The definitive Software Factory for Prometheus Exporters.**
 
@@ -10,23 +10,31 @@
 
 <br>
 
-[**<img src="https://icongr.am/lucide/globe.svg?size=16&color=3b82f6" style="vertical-align: text-bottom; margin-right: 4px;"> Explore the Portal**](https://sckyzo.github.io/monitoring-hub/)
+<a href="https://sckyzo.github.io/monitoring-hub/">
+  <img src=".github/icons/globe.svg" width="18" height="18" style="vertical-align: middle;"> <b>Explore the Portal</b>
+</a>
 &nbsp;&nbsp;&nbsp;&nbsp;
-[**<img src="https://icongr.am/lucide/container.svg?size=16&color=3b82f6" style="vertical-align: text-bottom; margin-right: 4px;"> OCI Registry**](https://github.com/SckyzO/monitoring-hub/packages)
+<a href="https://github.com/SckyzO/monitoring-hub/packages">
+  <img src=".github/icons/container.svg" width="18" height="18" style="vertical-align: middle;"> <b>OCI Registry</b>
+</a>
 &nbsp;&nbsp;&nbsp;&nbsp;
-[**<img src="https://icongr.am/lucide/bug.svg?size=16&color=3b82f6" style="vertical-align: text-bottom; margin-right: 4px;"> Report Bug**](https://github.com/SckyzO/monitoring-hub/issues/new)
+<a href="https://github.com/SckyzO/monitoring-hub/issues/new">
+  <img src=".github/icons/bug.svg" width="18" height="18" style="vertical-align: middle;"> <b>Report Bug</b>
+</a>
 &nbsp;&nbsp;&nbsp;&nbsp;
-[**<img src="https://icongr.am/lucide/history.svg?size=16&color=3b82f6" style="vertical-align: text-bottom; margin-right: 4px;"> Changelog**](CHANGELOG.md)
+<a href="CHANGELOG.md">
+  <img src=".github/icons/history.svg" width="18" height="18" style="vertical-align: middle;"> <b>Changelog</b>
+</a>
 
 </div>
 
 ---
 
-## <img src="https://icongr.am/lucide/target.svg?size=24&color=3b82f6" style="vertical-align: middle; margin-right: 8px;"> Project Goal
+## <img src=".github/icons/target.svg" width="24" height="24" style="vertical-align: bottom;"> Project Goal
 
 **Monitoring Hub** is an automated Factory that transforms simple YAML manifests into production-ready monitoring tools. It focuses on **Enterprise Standards**, **Multi-Architecture support**, and **Full Automation**.
 
-## <img src="https://icongr.am/lucide/rocket.svg?size=24&color=3b82f6" style="vertical-align: middle; margin-right: 8px;"> Key Features
+## <img src=".github/icons/rocket.svg" width="24" height="24" style="vertical-align: bottom;"> Key Features
 
 *   **Native Multi-Arch:** Every tool is built for `x86_64` and `aarch64` (ARM64).
 *   **Hardened Security:** All Docker images use **Red Hat UBI 9 Minimal**.
@@ -36,7 +44,7 @@
 
 ---
 
-## <img src="https://icongr.am/lucide/hammer.svg?size=24&color=3b82f6" style="vertical-align: middle; margin-right: 8px;"> Developer Guide: Adding an Exporter
+## <img src=".github/icons/hammer.svg" width="24" height="24" style="vertical-align: bottom;"> Developer Guide: Adding an Exporter
 
 Adding a new tool takes less than 1 minute using our CLI tool.
 
@@ -131,7 +139,7 @@ If you need to debug a specific step:
 
 ---
 
-## <img src="https://icongr.am/lucide/layers.svg?size=24&color=3b82f6" style="vertical-align: middle; margin-right: 8px;"> Architecture
+## <img src=".github/icons/layers.svg" width="24" height="24" style="vertical-align: bottom;"> Architecture
 
 The "Magic" happens in the `core/` engine:
 1.  **Smart Filter:** Compares local manifests against the deployed `catalog.json` (State Management) to only rebuild what changed.
@@ -142,7 +150,7 @@ The "Magic" happens in the `core/` engine:
 3.  **Templater:** Uses **Jinja2** (with auto-escape enabled) to render `.spec` files and `Dockerfiles`.
 4.  **Publisher:** A parallelized Matrix CI builds all targets and updates the YUM repository.
 
-## <img src="https://icongr.am/lucide/package.svg?size=24&color=3b82f6" style="vertical-align: middle; margin-right: 8px;"> Distribution
+## <img src=".github/icons/package.svg" width="24" height="24" style="vertical-align: bottom;"> Distribution
 
 ### YUM Repository (RPM)
 ```bash
@@ -156,12 +164,12 @@ sudo dnf install <exporter_name>
 docker pull ghcr.io/sckyzo/monitoring-hub/<exporter_name>:latest
 ```
 
-## <img src="https://icongr.am/lucide/users.svg?size=24&color=3b82f6" style="vertical-align: middle; margin-right: 8px;"> Contributing
+## <img src=".github/icons/users.svg" width="24" height="24" style="vertical-align: bottom;"> Contributing
 
 We welcome new exporters! Feel free to open a Pull Request following the guide above.
 
 ---
 
-## <img src="https://icongr.am/lucide/scale.svg?size=24&color=3b82f6" style="vertical-align: middle; margin-right: 8px;"> License
+## <img src=".github/icons/scale.svg" width="24" height="24" style="vertical-align: bottom;"> License
 
 Distributed under the MIT License. See `LICENSE` for more information.
