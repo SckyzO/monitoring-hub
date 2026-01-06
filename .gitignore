@@ -26,6 +26,7 @@ htmlcov/
 *~
 
 # --- Build Artifacts (Local) ---
+index.html
 build/
 dist/
 archives/
