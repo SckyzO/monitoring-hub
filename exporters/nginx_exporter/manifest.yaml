@@ -1,7 +1,8 @@
 name: nginx_exporter
 description: "Prometheus exporter for NGINX metrics"
-category: System
+category: Web
 version: "v1.5.1"
+updated: true
 
 upstream:
   type: github
