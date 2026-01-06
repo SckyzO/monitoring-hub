@@ -1,7 +1,8 @@
 name: ha_cluster_exporter
 description: "Prometheus exporter for High Availability clusters (Pacemaker, Corosync)"
-category: System
+category: Infrastructure
 version: "1.4.0"
+updated: true
 upstream:
   type: github
   repo: ClusterLabs/ha_cluster_exporter
