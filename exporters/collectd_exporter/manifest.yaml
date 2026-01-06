@@ -1,0 +1,36 @@
+name: collectd_exporter
+description: "Relay metrics from collectd to Prometheus."
+category: System
+version: "v0.7.0"
+new: true
+updated: false
+
+upstream:
+  type: github
+  repo: prometheus/collectd_exporter
+  strategy: latest_release
+
+build:
+  method: binary_repack
+  binary_name: collectd_exporter
+  archs:
+    - amd64
+    - arm64
+
+artifacts:
+  rpm:
+    enabled: true
+    summary: "Prometheus collectd Exporter"
+    targets:
+      - el8
+      - el9
+      - el10
+    system_user: collectd_exporter
+    service_file: true
+
+  docker:
+    enabled: true
+    entrypoint: ["/usr/bin/collectd_exporter"]
+    validation:
+      enabled: true
+      port: 9103
