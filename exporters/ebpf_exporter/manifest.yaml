@@ -1,0 +1,35 @@
+name: ebpf_exporter
+description: Prometheus exporter for custom eBPF metrics.
+category: System
+version: v2.5.1
+new: true
+upstream:
+  type: github
+  repo: cloudflare/ebpf_exporter
+  strategy: latest_release
+  archive_name: "ebpf_exporter_with_examples.{rpm_arch}.tar.gz"
+build:
+  method: binary_repack
+  binary_name: ebpf_exporter
+  archs:
+  - amd64
+  - arm64
+artifacts:
+  rpm:
+    enabled: true
+    summary: "Prometheus exporter for custom eBPF metrics"
+    targets:
+    - el8
+    - el9
+    - el10
+    dependencies:
+    - elfutils-libelf
+    - hwdata
+    service_file: true
+  docker:
+    enabled: true
+    entrypoint:
+    - /usr/bin/ebpf_exporter
+    validation:
+      enabled: true
+      command: --version

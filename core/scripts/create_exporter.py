@@ -103,7 +103,8 @@ def get_github_info(repo_name):
 @click.option("--repo", prompt="GitHub Repository (e.g., prometheus/node_exporter)", help="Upstream GitHub repository.")
 @click.option("--category", prompt="Category", type=click.Choice(['System', 'Database', 'Web', 'Network', 'Storage', 'Messaging', 'Infrastructure', 'DevOps'], case_sensitive=False), default="System", help="Portal category.")
 @click.option("--description", prompt="Description", default="Prometheus exporter.", help="Short description.")
-def create(name, repo, category, description):
+@click.option("--show-created-files", is_flag=True, help="Display the content of generated files.")
+def create(name, repo, category, description, show_created_files):
     """
     Create a new exporter based on the reference manifest.
     """
@@ -201,15 +202,20 @@ docker pull ghcr.io/sckyzo/monitoring-hub/{name}:latest
 See upstream documentation: [{repo}](https://github.com/{repo})
 """
     
-    with open(exporter_dir / "README.md", "w") as f:
+    readme_path = exporter_dir / "README.md"
+    with open(readme_path, "w") as f:
         f.write(readme_content)
 
     click.secho(f"\n✅ Successfully created {name}!", fg="green")
     click.echo(f"   Manifest: {manifest_path}")
     click.echo(f"   Assets:   {assets_dir}")
     
+    if show_created_files:
+        click.secho(f"\n--- {manifest_path.name} ---", fg="cyan")
+        click.echo(yaml.dump(manifest, sort_keys=False))
+        click.secho(f"\n--- {readme_path.name} ---", fg="cyan")
+        click.echo(readme_content)
+        click.echo("-------------------------")
+
     click.secho(f"\n⚠️  Please verify the detected version/archs manually:", fg="yellow")
     click.echo(f"   gh release view -R {repo} --json tagName,assets")
-
-if __name__ == '__main__':
-    create()
