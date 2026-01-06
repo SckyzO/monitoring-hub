@@ -57,7 +57,9 @@ def render():
     output = template.render(
         exporters=MOCK_EXPORTERS,
         exporters_json=json.dumps(MOCK_EXPORTERS),
-        categories_json=json.dumps(MOCK_CATEGORIES)
+        categories_json=json.dumps(MOCK_CATEGORIES),
+        core_version="v0.0.0-test",
+        portal_version="v0.0.0-test"
     )
     
     with open('index.html', 'w') as f:

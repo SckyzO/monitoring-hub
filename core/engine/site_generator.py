@@ -3,7 +3,7 @@ import glob
 import yaml
 import os
 from jinja2 import Environment, FileSystemLoader, select_autoescape
-from core.config.settings import SUPPORTED_DISTROS, EXPORTERS_DIR, TEMPLATES_DIR
+from core.config.settings import SUPPORTED_DISTROS, EXPORTERS_DIR, TEMPLATES_DIR, CORE_VERSION, PORTAL_VERSION
 
 @click.command()
 @click.option('--output', '-o', help='Output HTML file', default='index.html')
@@ -84,7 +84,9 @@ def generate(output, repo_dir):
     rendered = template.render(
         exporters=exporters_data,
         exporters_json=exporters_json,
-        categories_json=categories_json
+        categories_json=categories_json,
+        core_version=CORE_VERSION,
+        portal_version=PORTAL_VERSION
     )
 
     with open(output, 'w') as f:
