@@ -228,8 +228,8 @@
       "availability": {
         "el8": {
           "x86_64": {
-            "status": "failed",
-            "path": null
+            "status": "success",
+            "path": "el8/x86_64/artifactory_exporter-v1.15.1-1.el8.x86_64.rpm"
           },
           "aarch64": {
             "status": "failed",
@@ -238,8 +238,8 @@
         },
         "el9": {
           "x86_64": {
-            "status": "failed",
-            "path": null
+            "status": "success",
+            "path": "el9/x86_64/artifactory_exporter-v1.15.1-1.el9.x86_64.rpm"
           },
           "aarch64": {
             "status": "failed",
@@ -248,8 +248,8 @@
         },
         "el10": {
           "x86_64": {
-            "status": "failed",
-            "path": null
+            "status": "success",
+            "path": "el10/x86_64/artifactory_exporter-v1.15.1-1.el10.x86_64.rpm"
           },
           "aarch64": {
             "status": "failed",
@@ -257,7 +257,7 @@
           }
         }
       },
-      "rpm_status": "failed",
+      "rpm_status": "success",
       "docker_status": "success"
     },
     {
@@ -484,36 +484,36 @@
       "availability": {
         "el8": {
           "x86_64": {
-            "status": "failed",
-            "path": null
+            "status": "success",
+            "path": "el8/x86_64/collectd_exporter-v0.7.0-1.el8.x86_64.rpm"
           },
           "aarch64": {
-            "status": "failed",
-            "path": null
+            "status": "success",
+            "path": "el8/aarch64/collectd_exporter-v0.7.0-1.el8.aarch64.rpm"
           }
         },
         "el9": {
           "x86_64": {
-            "status": "failed",
-            "path": null
+            "status": "success",
+            "path": "el9/x86_64/collectd_exporter-v0.7.0-1.el9.x86_64.rpm"
           },
           "aarch64": {
-            "status": "failed",
-            "path": null
+            "status": "success",
+            "path": "el9/aarch64/collectd_exporter-v0.7.0-1.el9.aarch64.rpm"
           }
         },
         "el10": {
           "x86_64": {
-            "status": "failed",
-            "path": null
+            "status": "success",
+            "path": "el10/x86_64/collectd_exporter-v0.7.0-1.el10.x86_64.rpm"
           },
           "aarch64": {
-            "status": "failed",
-            "path": null
+            "status": "success",
+            "path": "el10/aarch64/collectd_exporter-v0.7.0-1.el10.aarch64.rpm"
           }
         }
       },
-      "rpm_status": "failed",
+      "rpm_status": "success",
       "docker_status": "success"
     },
     {
