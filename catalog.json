@@ -182,6 +182,85 @@
       "docker_status": "success"
     },
     {
+      "name": "artifactory_exporter",
+      "description": "Prometheus exporter for JFrog Artifactory stats.",
+      "category": "DevOps",
+      "version": "1.15.1",
+      "new": true,
+      "updated": false,
+      "upstream": {
+        "type": "github",
+        "repo": "peimanja/artifactory_exporter",
+        "strategy": "latest_release",
+        "archive_name": "{name}-{version}-linux-{arch}.tar.gz"
+      },
+      "build": {
+        "method": "binary_repack",
+        "binary_name": "artifactory_exporter",
+        "archs": [
+          "amd64"
+        ]
+      },
+      "artifacts": {
+        "rpm": {
+          "enabled": true,
+          "summary": "Prometheus JFrog Artifactory Exporter",
+          "targets": [
+            "el8",
+            "el9",
+            "el10"
+          ],
+          "system_user": "artifactory_exporter",
+          "service_file": true
+        },
+        "docker": {
+          "enabled": true,
+          "entrypoint": [
+            "/usr/bin/artifactory_exporter"
+          ],
+          "validation": {
+            "enabled": true,
+            "command": "--version"
+          }
+        }
+      },
+      "readme": "# Artifactory Exporter\n\n![Build Status](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/release.yml?label=Build)\n![Version](https://img.shields.io/github/v/release/peimanja/artifactory_exporter?label=Upstream)\n\n> Prometheus exporter for JFrog Artifactory stats.\n\nCollects metrics about an Artifactory system, including repository sizes, artifact counts, license information, and system health.\n\n## \ud83d\ude80 Installation\n\n### RPM (Enterprise Linux)\n```bash\nsudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el9/$(arch)/\nsudo dnf install artifactory_exporter\nsudo systemctl enable --now artifactory_exporter\n```\n\n### Docker\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/artifactory_exporter:latest\n\ndocker run -d \\\n  -p 9531:9531 \\\n  -e ARTI_SCRAPE_URI=http://artifactory.example.com/artifactory \\\n  -e ARTI_USERNAME=admin \\\n  -e ARTI_PASSWORD=password \\\n  ghcr.io/sckyzo/monitoring-hub/artifactory_exporter:latest\n```\n\n## \u2699\ufe0f Configuration\n\nThe exporter runs by default on port **9531**. It is configured primarily via environment variables.\n\n### Environment Variables\n\n| Variable | Description | Default | \n| :--- | :--- | :--- |\n| `ARTI_SCRAPE_URI` | Full URL to Artifactory | `http://localhost:8081/artifactory` |\n| `ARTI_USERNAME` | Username for authentication (Basic Auth) | - |\n| `ARTI_PASSWORD` | Password for authentication (Basic Auth) | - |\n| `ARTI_ACCESS_TOKEN` | Bearer token (Alternative to User/Pass) | - |\n| `ARTI_SSL_VERIFY` | Verify SSL certificate | `true` |\n| `ARTI_TIMEOUT` | Scrape timeout | `5s` |\n| `WEB_LISTEN_ADDR` | Address to listen on | `:9531` |\n\n### Optional Metrics\n\nYou can enable expensive metrics by passing flags in the `docker run` command or `ARTS_ARGS` (if implemented in sysconfig):\n\n* `--optional-metric=artifacts`: Count artifacts created/downloaded (resource intensive).\n* `--optional-metric=replication_status`: Replication status per repo.\n* `--optional-metric=federation_status`: Federation status (Enterprise+).\n\nSee upstream documentation for full details: [peimanja/artifactory_exporter](https://github.com/peimanja/artifactory_exporter)",
+      "availability": {
+        "el8": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el9": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el10": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        }
+      },
+      "rpm_status": "failed",
+      "docker_status": "success"
+    },
+    {
       "name": "bind_exporter",
       "description": "Prometheus exporter for Bind (DNS) statistics",
       "category": "Network",
@@ -356,6 +435,85 @@
         }
       },
       "rpm_status": "success",
+      "docker_status": "success"
+    },
+    {
+      "name": "collectd_exporter",
+      "description": "Relay metrics from collectd to Prometheus.",
+      "category": "System",
+      "version": "0.7.0",
+      "new": true,
+      "updated": false,
+      "upstream": {
+        "type": "github",
+        "repo": "prometheus/collectd_exporter",
+        "strategy": "latest_release"
+      },
+      "build": {
+        "method": "binary_repack",
+        "binary_name": "collectd_exporter",
+        "archs": [
+          "amd64",
+          "arm64"
+        ]
+      },
+      "artifacts": {
+        "rpm": {
+          "enabled": true,
+          "summary": "Prometheus collectd Exporter",
+          "targets": [
+            "el8",
+            "el9",
+            "el10"
+          ],
+          "system_user": "collectd_exporter",
+          "service_file": true
+        },
+        "docker": {
+          "enabled": true,
+          "entrypoint": [
+            "/usr/bin/collectd_exporter"
+          ],
+          "validation": {
+            "enabled": true,
+            "port": 9103
+          }
+        }
+      },
+      "readme": "# Collectd Exporter\n\n![Build Status](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/release.yml?label=Build)\n![Version](https://img.shields.io/github/v/release/prometheus/collectd_exporter?label=Upstream)\n\n> Relay metrics from collectd to Prometheus.\n\nCollectd Exporter accepts metrics from collectd's binary network protocol or JSON format via HTTP POST, and transforms them for consumption by Prometheus.\n\n## \ud83d\ude80 Installation\n\n### RPM (Enterprise Linux)\n```bash\nsudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el9/$(arch)/\nsudo dnf install collectd_exporter\nsudo systemctl enable --now collectd_exporter\n```\n\n### Docker\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/collectd_exporter:latest\n\ndocker run -d \\\n  -p 9103:9103 \\\n  -p 25826:25826/udp \\\n  ghcr.io/sckyzo/monitoring-hub/collectd_exporter:latest \\\n  --collectd.listen-address=\":25826\"\n```\n\n## \u2699\ufe0f Configuration\n\nThe exporter runs on port **9103** by default.\n\n### Binary Network Protocol\nTo send metrics from collectd using the network plugin:\n```\nLoadPlugin network\n<Plugin network>\n  Server \"exporter-host\" \"25826\"\n</Plugin>\n```\n\n### HTTP POST (JSON)\nTo send metrics via the `write_http` plugin:\n```\nLoadPlugin write_http\n<Plugin write_http>\n  <Node \"collectd_exporter\">\n    URL \"http://exporter-host:9103/collectd-post\"\n    Format \"JSON\"\n    StoreRates false\n  </Node>\n</Plugin>\n```\n\n### Main Flags\n\n| Flag | Description | Default |\n| :--- | :--- | :--- |\n| `--collectd.listen-address` | Network address to listen on for binary packets | `:25826` |\n| `--web.collectd-push-path` | Path to serve HTTP POST requests | `/collectd-post` |\n| `--web.listen-address` | Address to listen on for web interface | `:9103` |\n\nSee upstream documentation: [prometheus/collectd_exporter](https://github.com/prometheus/collectd_exporter)",
+      "availability": {
+        "el8": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el9": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el10": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        }
+      },
+      "rpm_status": "failed",
       "docker_status": "success"
     },
     {
