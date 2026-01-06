@@ -1,18 +1,36 @@
-# Monitoring Hub: node_exporter
+# Node Exporter
 
-Enterprise-grade packaging of the official Prometheus node_exporter.
+![Build Status](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/release.yml?label=Build)
+![Version](https://img.shields.io/github/v/release/prometheus/node_exporter?label=Upstream)
 
-## 🚀 Features
-- **Base Image:** Red Hat UBI 9 Minimal.
-- **Security:** Scanned and built from official upstream sources.
-- **Multi-Arch:** Native support for x86_64 and aarch64.
+> Prometheus exporter for hardware and OS metrics exposed by *NIX kernels.
 
-## 📦 Usage
+Node Exporter is the standard for monitoring Linux systems. It collects metrics on CPU, memory, disk, network, and more.
 
+## 🚀 Installation
+
+### RPM (Enterprise Linux)
 ```bash
-docker pull ghcr.io/sckyzo/monitoring-hub/node_exporter:latest
-docker run -d -p 9100:9100 ghcr.io/sckyzo/monitoring-hub/node_exporter:latest
+sudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el9/$(arch)/
+sudo dnf install node_exporter
+sudo systemctl enable --now node_exporter
 ```
 
-## 🌐 Documentation
-See official documentation: [prometheus/node_exporter](https://github.com/prometheus/node_exporter)
+### Docker
+```bash
+docker pull ghcr.io/sckyzo/monitoring-hub/node_exporter:latest
+
+docker run -d \
+  -p 9100:9100 \
+  --net="host" \
+  --pid="host" \
+  -v "/:/host:ro,rslave" \
+  ghcr.io/sckyzo/monitoring-hub/node_exporter:latest \
+  --path.rootfs=/host
+```
+
+## ⚙️ Configuration
+
+The exporter typically runs without a configuration file, using command-line flags for customization.
+
+See upstream documentation: [prometheus/node_exporter](https://github.com/prometheus/node_exporter)
