@@ -18,7 +18,7 @@ def render(start_webserver):
         exporters_json=json.dumps(MOCK_EXPORTERS),
         categories_json=json.dumps(MOCK_CATEGORIES),
         core_version="v0.16.0",
-        portal_version="v2.7.0"
+        portal_version="v2.8.0"
     )
     
     with open("index.html", "w") as f:
