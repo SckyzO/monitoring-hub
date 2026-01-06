@@ -517,6 +517,84 @@
       "docker_status": "success"
     },
     {
+      "name": "dellhw_exporter",
+      "description": "Prometheus exporter for Dell Hardware components using OMSA.",
+      "category": "Infrastructure",
+      "version": "1.13.13",
+      "new": true,
+      "updated": false,
+      "upstream": {
+        "type": "github",
+        "repo": "galexrt/dellhw_exporter",
+        "strategy": "latest_release"
+      },
+      "build": {
+        "method": "binary_repack",
+        "binary_name": "dellhw_exporter",
+        "archs": [
+          "amd64"
+        ]
+      },
+      "artifacts": {
+        "rpm": {
+          "enabled": true,
+          "summary": "Prometheus Dell Hardware Exporter",
+          "targets": [
+            "el8",
+            "el9",
+            "el10"
+          ],
+          "system_user": "dellhw_exporter",
+          "service_file": true
+        },
+        "docker": {
+          "enabled": true,
+          "entrypoint": [
+            "/usr/bin/dellhw_exporter"
+          ],
+          "validation": {
+            "enabled": true,
+            "port": 9137
+          }
+        }
+      },
+      "readme": "# Dell Hardware Exporter\n\n![Build Status](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/release.yml?label=Build)\n![Version](https://img.shields.io/github/v/release/galexrt/dellhw_exporter?label=Upstream)\n\n> Prometheus exporter for Dell Hardware components using OMSA.\n\nThis exporter wraps the `omreport` command from Dell OpenManage Server Administrator (OMSA). It collects metrics on fans, power supplies, temperatures, storage, and more.\n\n## \ud83d\ude80 Installation\n\n### Prerequisites\n**DELL OMSA services must be installed and running on the host!**\n\n### RPM (Enterprise Linux)\n```bash\nsudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el9/$(arch)/ \nsudo dnf install dellhw_exporter\nsudo systemctl enable --now dellhw_exporter\n```\n\n### Docker\n> **NOTE:** The `--privileged` flag is required as OMSA needs to access the host's devices.\n\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/dellhw_exporter:latest\n\ndocker run -d \\\n  --name dellhw_exporter \\\n  --privileged \\\n  -p 9137:9137 \\\n  -v /etc/hostname:/etc/hostname:ro \\\n  ghcr.io/sckyzo/monitoring-hub/dellhw_exporter:latest\n```\n\n## \u2699\ufe0f Configuration\n\nThe exporter runs on port **9137** by default.\n\n### Main Flags\n\n| Flag | Description | Default |\n| :--- | :--- | :--- |\n| `--web.listen-address` | Address to listen on | `:9137` |\n| `--web.telemetry-path` | Path to expose metrics | `/metrics` |\n| `--omreport.path` | Path to omreport binary | `/opt/dell/srvadmin/bin/omreport` |\n\nSee upstream documentation: [galexrt/dellhw_exporter](https://github.com/galexrt/dellhw_exporter)",
+      "availability": {
+        "el8": {
+          "x86_64": {
+            "status": "success",
+            "path": "el8/x86_64/dellhw_exporter-v1.13.13-1.el8.x86_64.rpm"
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el9": {
+          "x86_64": {
+            "status": "success",
+            "path": "el9/x86_64/dellhw_exporter-v1.13.13-1.el9.x86_64.rpm"
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el10": {
+          "x86_64": {
+            "status": "success",
+            "path": "el10/x86_64/dellhw_exporter-v1.13.13-1.el10.x86_64.rpm"
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        }
+      },
+      "rpm_status": "success",
+      "docker_status": "success"
+    },
+    {
       "name": "eseries_exporter",
       "description": "Prometheus exporter for NetApp/Lenovo E-Series storage systems",
       "category": "Storage",
