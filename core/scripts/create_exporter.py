@@ -207,6 +207,9 @@ See upstream documentation: [{repo}](https://github.com/{repo})
     click.secho(f"\n✅ Successfully created {name}!", fg="green")
     click.echo(f"   Manifest: {manifest_path}")
     click.echo(f"   Assets:   {assets_dir}")
+    
+    click.secho(f"\n⚠️  Please verify the detected version/archs manually:", fg="yellow")
+    click.echo(f"   gh release view -R {repo} --json tagName,assets")
 
 if __name__ == '__main__':
     create()
