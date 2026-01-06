@@ -1,28 +1,32 @@
-# Monitoring Hub 🕸️
+<div align="center">
+
+# Monitoring Hub <img src="https://icongr.am/lucide/factory.svg?size=48&color=3b82f6" align="center" height="42">
 
 **The definitive Software Factory for Prometheus Exporters.**
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Build and Publish](https://github.com/SckyzO/monitoring-hub/actions/workflows/release.yml/badge.svg)](https://github.com/SckyzO/monitoring-hub/actions/workflows/release.yml)
-[![Watcher - Scan Updates](https://github.com/SckyzO/monitoring-hub/actions/workflows/scan-updates.yml/badge.svg)](https://github.com/SckyzO/monitoring-hub/actions/workflows/scan-updates.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge&logo=opensourceinitiative)](https://opensource.org/licenses/MIT)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/release.yml?branch=main&label=Factory%20Build&style=for-the-badge&logo=githubactions)](https://github.com/SckyzO/monitoring-hub/actions/workflows/release.yml)
+[![Watcher](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/scan-updates.yml?branch=main&label=Watcher&style=for-the-badge&logo=github&color=blue)](https://github.com/SckyzO/monitoring-hub/actions/workflows/scan-updates.yml)
+
+<br>
+
+[**<img src="https://icongr.am/lucide/globe.svg?size=16&color=3b82f6" style="vertical-align: text-bottom; margin-right: 4px;"> Explore the Portal**](https://sckyzo.github.io/monitoring-hub/)
+&nbsp;&nbsp;&nbsp;&nbsp;
+[**<img src="https://icongr.am/lucide/container.svg?size=16&color=3b82f6" style="vertical-align: text-bottom; margin-right: 4px;"> OCI Registry**](https://github.com/SckyzO/monitoring-hub/packages)
+&nbsp;&nbsp;&nbsp;&nbsp;
+[**<img src="https://icongr.am/lucide/bug.svg?size=16&color=3b82f6" style="vertical-align: text-bottom; margin-right: 4px;"> Report Bug**](https://github.com/SckyzO/monitoring-hub/issues/new)
+&nbsp;&nbsp;&nbsp;&nbsp;
+[**<img src="https://icongr.am/lucide/history.svg?size=16&color=3b82f6" style="vertical-align: text-bottom; margin-right: 4px;"> Changelog**](CHANGELOG.md)
+
+</div>
 
 ---
 
-### 🔗 Quick Links
-
-| Resource | Description | URL |
-| :--- | :--- | :--- |
-| **🌐 Web Portal** | Browser, Installation Guide, Dark Mode | [**sckyzo.github.io/monitoring-hub**](https://sckyzo.github.io/monitoring-hub/) |
-| **🐳 Docker Hub** | Container Registry (GHCR) | [**Packages List**](https://github.com/SckyzO/monitoring-hub/packages) |
-| **📜 Changelog** | Version history and updates | [**CHANGELOG.md**](CHANGELOG.md) |
-
----
-
-## 🎯 Project Goal
+## <img src="https://icongr.am/lucide/target.svg?size=24&color=3b82f6" style="vertical-align: middle; margin-right: 8px;"> Project Goal
 
 **Monitoring Hub** is an automated Factory that transforms simple YAML manifests into production-ready monitoring tools. It focuses on **Enterprise Standards**, **Multi-Architecture support**, and **Full Automation**.
 
-## 🚀 Key Features
+## <img src="https://icongr.am/lucide/rocket.svg?size=24&color=3b82f6" style="vertical-align: middle; margin-right: 8px;"> Key Features
 
 *   **Native Multi-Arch:** Every tool is built for `x86_64` and `aarch64` (ARM64).
 *   **Hardened Security:** All Docker images use **Red Hat UBI 9 Minimal**.
@@ -32,7 +36,7 @@
 
 ---
 
-## 🛠️ Developer Guide: Adding an Exporter
+## <img src="https://icongr.am/lucide/hammer.svg?size=24&color=3b82f6" style="vertical-align: middle; margin-right: 8px;"> Developer Guide: Adding an Exporter
 
 Adding a new tool takes less than 1 minute using our CLI tool.
 
@@ -127,7 +131,7 @@ If you need to debug a specific step:
 
 ---
 
-## 🏗️ Architecture
+## <img src="https://icongr.am/lucide/layers.svg?size=24&color=3b82f6" style="vertical-align: middle; margin-right: 8px;"> Architecture
 
 The "Magic" happens in the `core/` engine:
 1.  **Smart Filter:** Compares local manifests against the deployed `catalog.json` (State Management) to only rebuild what changed.
@@ -138,7 +142,7 @@ The "Magic" happens in the `core/` engine:
 3.  **Templater:** Uses **Jinja2** (with auto-escape enabled) to render `.spec` files and `Dockerfiles`.
 4.  **Publisher:** A parallelized Matrix CI builds all targets and updates the YUM repository.
 
-## 📦 Distribution
+## <img src="https://icongr.am/lucide/package.svg?size=24&color=3b82f6" style="vertical-align: middle; margin-right: 8px;"> Distribution
 
 ### YUM Repository (RPM)
 ```bash
@@ -152,12 +156,12 @@ sudo dnf install <exporter_name>
 docker pull ghcr.io/sckyzo/monitoring-hub/<exporter_name>:latest
 ```
 
-## 🤝 Contributing
+## <img src="https://icongr.am/lucide/users.svg?size=24&color=3b82f6" style="vertical-align: middle; margin-right: 8px;"> Contributing
 
 We welcome new exporters! Feel free to open a Pull Request following the guide above.
 
 ---
 
-## 📜 License
+## <img src="https://icongr.am/lucide/scale.svg?size=24&color=3b82f6" style="vertical-align: middle; margin-right: 8px;"> License
 
 Distributed under the MIT License. See `LICENSE` for more information.
