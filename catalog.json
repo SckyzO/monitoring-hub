@@ -5,6 +5,7 @@
       "description": "Handle alerts and notifications for the Prometheus ecosystem",
       "category": "Infrastructure",
       "version": "0.30.0",
+      "updated": true,
       "upstream": {
         "type": "github",
         "repo": "prometheus/alertmanager",
@@ -63,7 +64,7 @@
           }
         }
       },
-      "readme": "# Monitoring Hub: alertmanager\n\nEnterprise-grade packaging of the official Prometheus Alertmanager.\n\n## \ud83d\ude80 Features\n- **Base Image:** Red Hat UBI 9 Minimal.\n- **Components:** Includes `alertmanager` and `amtool`.\n- **Pre-configured:** Default configuration path at `/etc/alertmanager/alertmanager.yml`.\n\n## \ud83d\udce6 Usage\n\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/alertmanager:latest\ndocker run -d -p 9093:9093 ghcr.io/sckyzo/monitoring-hub/alertmanager:latest\n```\n\n## \ud83c\udf10 Documentation\nSee official documentation: [prometheus/alertmanager](https://github.com/prometheus/alertmanager)\n",
+      "readme": "# Alertmanager\n\n![Build Status](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/release.yml?label=Build)\n![Version](https://img.shields.io/github/v/release/prometheus/alertmanager?label=Upstream)\n\n> Handle alerts and notifications for the Prometheus ecosystem.\n\nThe Alertmanager handles alerts sent by client applications such as the Prometheus server. It takes care of deduplicating, grouping, and routing them to the correct receiver integration such as email, PagerDuty, or OpsGenie.\n\n## \ud83d\ude80 Installation\n\n### RPM (Enterprise Linux)\n```bash\nsudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el9/$(arch)/\nsudo dnf install alertmanager\n```\n\n### Docker\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/alertmanager:latest\n\n# Run with custom configuration\ndocker run -d \\\n  -p 9093:9093 \\\n  -v ./alertmanager.yml:/etc/alertmanager/alertmanager.yml \\\n  ghcr.io/sckyzo/monitoring-hub/alertmanager:latest\n```\n\n## \u2699\ufe0f Configuration\n\nThe default configuration file is located at `/etc/alertmanager/alertmanager.yml`.\n\nSee upstream documentation: [prometheus/alertmanager](https://github.com/prometheus/alertmanager)\n",
       "availability": {
         "el8": {
           "x86_64": {
@@ -102,8 +103,9 @@
     {
       "name": "apache_exporter",
       "description": "Prometheus exporter for Apache HTTP Server",
-      "category": "System",
+      "category": "Web",
       "version": "1.0.10",
+      "updated": true,
       "upstream": {
         "type": "github",
         "repo": "Lusitaniae/apache_exporter"
@@ -143,7 +145,7 @@
           }
         }
       },
-      "readme": "# Apache Exporter\n\n[![Upstream](https://img.shields.io/badge/Upstream-Lusitaniae/apache_exporter-blue)](https://github.com/Lusitaniae/apache_exporter)\n\nPrometheus exporter for Apache HTTP Server metrics.\n\n## Overview\nThis exporter scrapes Apache `mod_status` statistics and exports them in Prometheus format.\n\n## Configuration\nThe exporter requires `mod_status` to be enabled in Apache with `ExtendedStatus On`.\n\n### Common Flags\n*   `--scrape_uri`: URL to Apache status page (default `http://localhost/server-status?auto`).\n*   `--telemetry.address`: Address to listen on (default `:9117`).\n\n## Usage\n\n### RPM\n```bash\nsudo dnf install apache_exporter\nsudo systemctl enable --now apache_exporter\n```\n\n### Docker\n```bash\ndocker run -d -p 9117:9117 ghcr.io/sckyzo/monitoring-hub/apache_exporter:latest --scrape_uri=\"http://YOUR_APACHE_SERVER/server-status?auto\"\n```",
+      "readme": "# Apache Exporter\n\n![Build Status](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/release.yml?label=Build)\n![Version](https://img.shields.io/github/v/release/Lusitaniae/apache_exporter?label=Upstream)\n\n> Prometheus exporter for Apache HTTP Server metrics.\n\nThis exporter scrapes Apache `mod_status` statistics and exports them in Prometheus format.\n\n## \ud83d\ude80 Installation\n\n### RPM (Enterprise Linux)\n```bash\nsudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el9/$(arch)/\nsudo dnf install apache_exporter\nsudo systemctl enable --now apache_exporter\n```\n\n### Docker\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/apache_exporter:latest\n\ndocker run -d \\\n  -p 9117:9117 \\\n  ghcr.io/sckyzo/monitoring-hub/apache_exporter:latest \\\n  --scrape_uri=\"http://YOUR_APACHE_SERVER/server-status?auto\"\n```\n\n## \u2699\ufe0f Configuration\n\nThe exporter requires `mod_status` to be enabled in Apache with `ExtendedStatus On`.\n\n### Common Flags\n*   `--scrape_uri`: URL to Apache status page (default `http://localhost/server-status?auto`).\n*   `--telemetry.address`: Address to listen on (default `:9117`).\n\nSee upstream documentation: [Lusitaniae/apache_exporter](https://github.com/Lusitaniae/apache_exporter)\n",
       "availability": {
         "el8": {
           "x86_64": {
@@ -182,8 +184,9 @@
     {
       "name": "bind_exporter",
       "description": "Prometheus exporter for Bind (DNS) statistics",
-      "category": "System",
+      "category": "Network",
       "version": "0.8.0",
+      "updated": true,
       "upstream": {
         "type": "github",
         "repo": "prometheus-community/bind_exporter"
@@ -223,7 +226,7 @@
           }
         }
       },
-      "readme": "# Bind Exporter\n\n[![Upstream](https://img.shields.io/badge/Upstream-prometheus--community/bind_exporter-blue)](https://github.com/prometheus-community/bind_exporter)\n\nPrometheus exporter for Bind (DNS) statistics.\n\n## Overview\nThis exporter probes a Bind server via its HTTP statistics channel and exports metrics in Prometheus format.\n\n## Configuration\nThe exporter is configured via command-line flags. By default, it listens on port `9119`.\n\n### Common Flags\n*   `-bind.stats-url`: URL of the Bind statistics channel (default `http://localhost:8053/`).\n*   `-bind.pid-file`: Path to the Bind PID file.\n*   `-web.listen-address`: Address to listen on for web interface and telemetry (default `:9119`).\n\n## Usage\n\n### RPM\n```bash\nsudo dnf install bind_exporter\nsudo systemctl enable --now bind_exporter\n```\n\n### Docker\n```bash\ndocker run -d -p 9119:9119 ghcr.io/sckyzo/monitoring-hub/bind_exporter:latest\n```",
+      "readme": "# Bind Exporter\n\n![Build Status](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/release.yml?label=Build)\n![Version](https://img.shields.io/github/v/release/prometheus-community/bind_exporter?label=Upstream)\n\n> Prometheus exporter for Bind (DNS) statistics.\n\nThis exporter probes a BIND server via its HTTP statistics channel and exports metrics in Prometheus format.\n\n## \ud83d\ude80 Installation\n\n### RPM (Enterprise Linux)\n```bash\nsudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el9/$(arch)/\nsudo dnf install bind_exporter\nsudo systemctl enable --now bind_exporter\n```\n\n### Docker\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/bind_exporter:latest\n\ndocker run -d \\\n  -p 9119:9119 \\\n  ghcr.io/sckyzo/monitoring-hub/bind_exporter:latest \\\n  -bind.stats-url=\"http://YOUR_BIND_SERVER:8053/\"\n```\n\n## \u2699\ufe0f Configuration\n\nThe exporter requires the BIND server to have the statistics channel enabled.\n\n### Common Flags\n*   `-bind.stats-url`: URL of the BIND statistics channel (default `http://localhost:8053/`).\n*   `-web.listen-address`: Address to listen on for web interface and telemetry (default `:9119`).\n\nSee upstream documentation: [prometheus-community/bind_exporter](https://github.com/prometheus-community/bind_exporter)\n",
       "availability": {
         "el8": {
           "x86_64": {
@@ -262,8 +265,9 @@
     {
       "name": "blackbox_exporter",
       "description": "Prometheus blackbox exporter for network probing (HTTP, DNS, TCP, ICMP)",
-      "category": "System",
+      "category": "Network",
       "version": "0.28.0",
+      "updated": true,
       "upstream": {
         "type": "github",
         "repo": "prometheus/blackbox_exporter"
@@ -318,7 +322,7 @@
           }
         }
       },
-      "readme": "# Blackbox Exporter\n\n[![Upstream](https://img.shields.io/badge/Upstream-prometheus/blackbox_exporter-blue)](https://github.com/prometheus/blackbox_exporter)\n\nThe Blackbox Exporter allows probing of endpoints over HTTP, HTTPS, DNS, TCP, ICMP, and gRPC.\n\n## Overview\nUnlike most exporters that run on the target machine, the Blackbox Exporter runs centrally and probes targets remotely. It is essential for \"Canary\" testing and availability monitoring.\n\n## Configuration\nThe exporter requires a configuration file (`blackbox.yml`) defining modules (e.g., `http_2xx`, `icmp`). A default configuration file is provided in `/etc/blackbox_exporter/blackbox.yml`.\n\n### Common Flags\n*   `--config.file`: Path to configuration file (default `/etc/blackbox_exporter/blackbox.yml`).\n*   `--web.listen-address`: Address to listen on (default `:9115`).\n\n## Usage\n\n### RPM\n```bash\nsudo dnf install blackbox_exporter\nsudo systemctl enable --now blackbox_exporter\n```\n\n### Docker\n```bash\ndocker run -d -p 9115:9115 -v /path/to/blackbox.yml:/etc/blackbox_exporter/blackbox.yml ghcr.io/sckyzo/monitoring-hub/blackbox_exporter:latest\n```\n\n## Example Scrape Config (Prometheus)\n```yaml\nscrape_configs:\n  - job_name: 'blackbox'\n    metrics_path: /probe\n    params:\n      module: [http_2xx]  # Look for a HTTP 200 response.\n    static_configs:\n      - targets:\n        - http://prometheus.io    # Target to probe with http_2xx\n    relabel_configs:\n      - source_labels: [__address__]\n        target_label: __param_target\n      - source_labels: [__param_target]\n        target_label: instance\n      - target_label: __address__\n        replacement: 127.0.0.1:9115  # The blackbox exporter's real hostname:port.\n```",
+      "readme": "# Blackbox Exporter\n\n![Build Status](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/release.yml?label=Build)\n![Version](https://img.shields.io/github/v/release/prometheus/blackbox_exporter?label=Upstream)\n\n> Prometheus blackbox exporter for network probing (HTTP, DNS, TCP, ICMP).\n\nThe Blackbox Exporter allows probing of endpoints over HTTP, HTTPS, DNS, TCP, ICMP, and gRPC. Unlike most exporters that run on the target machine, it runs centrally and probes targets remotely.\n\n## \ud83d\ude80 Installation\n\n### RPM (Enterprise Linux)\n```bash\nsudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el9/$(arch)/\nsudo dnf install blackbox_exporter\nsudo systemctl enable --now blackbox_exporter\n```\n\n### Docker\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/blackbox_exporter:latest\n\ndocker run -d \\\n  -p 9115:9115 \\\n  -v ./blackbox.yml:/etc/blackbox_exporter/blackbox.yml \\\n  ghcr.io/sckyzo/monitoring-hub/blackbox_exporter:latest\n```\n\n## \u2699\ufe0f Configuration\n\nThe configuration file defines modules (e.g., `http_2xx`, `icmp`).\nDefault location: `/etc/blackbox_exporter/blackbox.yml`.\n\n### Prometheus Scrape Config\n```yaml\nscrape_configs:\n  - job_name: 'blackbox'\n    metrics_path: /probe\n    params:\n      module: [http_2xx]  # Look for a HTTP 200 response.\n    static_configs:\n      - targets:\n        - http://prometheus.io\n    relabel_configs:\n      - source_labels: [__address__]\n        target_label: __param_target\n      - source_labels: [__param_target]\n        target_label: instance\n      - target_label: __address__\n        replacement: 127.0.0.1:9115  # Blackbox exporter address\n```\n\nSee upstream documentation: [prometheus/blackbox_exporter](https://github.com/prometheus/blackbox_exporter)\n",
       "availability": {
         "el8": {
           "x86_64": {
@@ -357,8 +361,9 @@
     {
       "name": "eseries_exporter",
       "description": "Prometheus exporter for NetApp/Lenovo E-Series storage systems",
-      "category": "System",
+      "category": "Storage",
       "version": "2.0.0",
+      "updated": true,
       "upstream": {
         "type": "github",
         "repo": "sckyzo/eseries_exporter",
@@ -410,7 +415,7 @@
           }
         }
       },
-      "readme": "# Monitoring Hub: eseries_exporter\n\nEnterprise-grade packaging of the NetApp/Lenovo E-Series storage exporter.\n\n## \ud83d\ude80 Features\n- **Base Image:** Red Hat UBI 9 Minimal.\n- **Security:** Built from official upstream sources.\n- **Multi-Arch:** Support for x86_64 and aarch64.\n\n## \ud83d\udce6 Usage\n\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/eseries_exporter:latest\ndocker run -d -p 9128:9128 \\\n  -v /path/to/config.yml:/etc/eseries_exporter/eseries_exporter.yml \\\n  ghcr.io/sckyzo/monitoring-hub/eseries_exporter:latest\n```\n\n## \ud83c\udf10 Documentation\nSee official documentation: [sckyzo/eseries_exporter](https://github.com/sckyzo/eseries_exporter)\n\n```",
+      "readme": "# E-Series Exporter\n\n![Build Status](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/release.yml?label=Build)\n![Version](https://img.shields.io/github/v/release/sckyzo/eseries_exporter?label=Upstream)\n\n> Prometheus exporter for NetApp/Lenovo E-Series storage systems.\n\nThis exporter collects metrics from E-Series storage arrays via their REST API (Web Services Proxy).\n\n## \ud83d\ude80 Installation\n\n### RPM (Enterprise Linux)\n```bash\nsudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el9/$(arch)/\nsudo dnf install eseries_exporter\nsudo systemctl enable --now eseries_exporter\n```\n\n### Docker\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/eseries_exporter:latest\n\ndocker run -d \\\n  -p 9313:9313 \\\n  -v ./eseries_exporter.yml:/etc/eseries_exporter/eseries_exporter.yml \\\n  ghcr.io/sckyzo/monitoring-hub/eseries_exporter:latest\n```\n\n## \u2699\ufe0f Configuration\n\nThe exporter requires a configuration file with credentials and target arrays.\nDefault location: `/etc/eseries_exporter/eseries_exporter.yml`.\n\nSee upstream documentation: [sckyzo/eseries_exporter](https://github.com/sckyzo/eseries_exporter)\n\n",
       "availability": {
         "el8": {
           "x86_64": {
@@ -449,8 +454,9 @@
     {
       "name": "gpfs_exporter",
       "description": "Prometheus exporter for IBM GPFS (Spectrum Scale) metrics",
-      "category": "System",
+      "category": "Storage",
       "version": "3.2.0",
+      "updated": true,
       "upstream": {
         "type": "github",
         "repo": "treydock/gpfs_exporter",
@@ -486,7 +492,7 @@
           }
         }
       },
-      "readme": "# Monitoring Hub: gpfs_exporter\n\nEnterprise-grade packaging of the GPFS (IBM Spectrum Scale) exporter.\n\n## \ud83d\ude80 Features\n- **Base Image:** Red Hat UBI 9 Minimal.\n- **Security:** Built from official upstream sources.\n- **Multi-Arch:** Support for x86_64 and aarch64.\n\n## \ud83d\udce6 Usage\n\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/gpfs_exporter:latest\ndocker run -d -p 9303:9303 ghcr.io/sckyzo/monitoring-hub/gpfs_exporter:latest\n```\n\n## \ud83c\udf10 Documentation\nSee official documentation: [treydock/gpfs_exporter](https://github.com/treydock/gpfs_exporter)\n",
+      "readme": "# GPFS Exporter\n\n![Build Status](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/release.yml?label=Build)\n![Version](https://img.shields.io/github/v/release/treydock/gpfs_exporter?label=Upstream)\n\n> Prometheus exporter for IBM GPFS (Spectrum Scale) metrics.\n\nThis exporter collects metrics from IBM Spectrum Scale (formerly GPFS) clusters via `mmapplypolicy` or direct command execution.\n\n> **Note:** This exporter is currently available for **x86_64 (AMD64)** architecture only.\n\n## \ud83d\ude80 Installation\n\n### RPM (Enterprise Linux)\n```bash\nsudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el9/$(arch)/\nsudo dnf install gpfs_exporter\nsudo systemctl enable --now gpfs_exporter\n```\n\n### Docker\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/gpfs_exporter:latest\n\n# Requires access to GPFS binaries and socket\ndocker run -d \\\n  -p 9303:9303 \\\n  --privileged \\\n  -v /usr/lpp/mmfs/bin:/usr/lpp/mmfs/bin \\\n  -v /var/mmfs:/var/mmfs \\\n  ghcr.io/sckyzo/monitoring-hub/gpfs_exporter:latest\n```\n\n## \u2699\ufe0f Configuration\n\nNo configuration file is required by default, but it relies on access to GPFS CLI tools.\n\nSee upstream documentation: [treydock/gpfs_exporter](https://github.com/treydock/gpfs_exporter)",
       "availability": {
         "el8": {
           "x86_64": {
@@ -525,8 +531,9 @@
     {
       "name": "ha_cluster_exporter",
       "description": "Prometheus exporter for High Availability clusters (Pacemaker, Corosync)",
-      "category": "System",
+      "category": "Infrastructure",
       "version": "1.4.0",
+      "updated": true,
       "upstream": {
         "type": "github",
         "repo": "ClusterLabs/ha_cluster_exporter",
@@ -560,7 +567,7 @@
           }
         }
       },
-      "readme": "# Monitoring Hub: ha_cluster_exporter\n\nEnterprise-grade packaging of the ClusterLabs HA Cluster Exporter (Pacemaker/Corosync).\n\n## \ud83d\ude80 Features\n- **Base Image:** Red Hat UBI 9 Minimal.\n- **Support:** Pacemaker, Corosync, and SBD metrics.\n- **Multi-Arch:** Support for x86_64 and aarch64.\n\n## \ud83d\udce6 Usage\n\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/ha_cluster_exporter:latest\ndocker run -d -p 9664:9664 ghcr.io/sckyzo/monitoring-hub/ha_cluster_exporter:latest\n```\n\n## \ud83c\udf10 Documentation\nSee official documentation: [ClusterLabs/ha_cluster_exporter](https://github.com/ClusterLabs/ha_cluster_exporter)",
+      "readme": "# HA Cluster Exporter\n\n![Build Status](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/release.yml?label=Build)\n![Version](https://img.shields.io/github/v/release/ClusterLabs/ha_cluster_exporter?label=Upstream)\n\n> Prometheus exporter for High Availability clusters (Pacemaker, Corosync).\n\nThis exporter collects metrics from Pacemaker, Corosync, SBD, and DRBD to monitor the health of High Availability clusters.\n\n## \ud83d\ude80 Installation\n\n### RPM (Enterprise Linux)\n```bash\nsudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el9/$(arch)/\nsudo dnf install ha_cluster_exporter\nsudo systemctl enable --now ha_cluster_exporter\n```\n\n### Docker\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/ha_cluster_exporter:latest\n\n# Requires privileged access to cluster tools/sockets\ndocker run -d \\\n  -p 9664:9664 \\\n  --privileged \\\n  -v /var/run/crm:/var/run/crm \\\n  -v /var/run/corosync:/var/run/corosync \\\n  ghcr.io/sckyzo/monitoring-hub/ha_cluster_exporter:latest\n```\n\n## \u2699\ufe0f Configuration\n\nThe exporter typically requires no configuration but needs access to the cluster management sockets (`crm`, `corosync`).\n\nSee upstream documentation: [ClusterLabs/ha_cluster_exporter](https://github.com/ClusterLabs/ha_cluster_exporter)\n",
       "availability": {
         "el8": {
           "x86_64": {
@@ -599,8 +606,9 @@
     {
       "name": "ipmi_exporter",
       "description": "Prometheus exporter for IPMI devices",
-      "category": "System",
+      "category": "Infrastructure",
       "version": "1.10.1",
+      "updated": true,
       "upstream": {
         "type": "github",
         "repo": "prometheus-community/ipmi_exporter"
@@ -658,7 +666,7 @@
           }
         }
       },
-      "readme": "# IPMI Exporter\n\n[![Upstream](https://img.shields.io/badge/Upstream-prometheus--community/ipmi_exporter-blue)](https://github.com/prometheus-community/ipmi_exporter)\n\nPrometheus exporter for IPMI devices (Intelligent Platform Management Interface).\n\n## Overview\nThis exporter collects hardware health metrics (temperatures, fans, voltages, power state) from servers via IPMI. It supports both local (in-band) and remote (out-of-band/LAN) monitoring.\n\n## Configuration\nFor remote monitoring, a configuration file defining modules (user/password/driver) is recommended.\n\n### Common Flags\n*   `--config.file`: Path to configuration file (default `/etc/ipmi_exporter/ipmi_remote.yml`).\n*   `--web.listen-address`: Address to listen on (default `:9290`).\n\n### Dependencies (RPM)\nThe RPM package automatically installs `freeipmi` as a dependency, which provides the necessary underlying tools (`ipmimonitoring`, etc.).\n\n## Usage\n\n### RPM\n```bash\nsudo dnf install ipmi_exporter\nsudo systemctl enable --now ipmi_exporter\n```\n\n### Docker\n```bash\ndocker run -d -p 9290:9290 -v /path/to/ipmi_remote.yml:/etc/ipmi_exporter/ipmi_remote.yml ghcr.io/sckyzo/monitoring-hub/ipmi_exporter:latest\n```",
+      "readme": "# IPMI Exporter\n\n![Build Status](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/release.yml?label=Build)\n![Version](https://img.shields.io/github/v/release/prometheus-community/ipmi_exporter?label=Upstream)\n\n> Prometheus exporter for IPMI devices (Intelligent Platform Management Interface).\n\nThis exporter collects hardware health metrics (temperatures, fans, voltages, power state) from servers via IPMI. It supports both local (in-band) and remote (out-of-band/LAN) monitoring.\n\n## \ud83d\ude80 Installation\n\n### RPM (Enterprise Linux)\n```bash\nsudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el9/$(arch)/\nsudo dnf install ipmi_exporter\nsudo systemctl enable --now ipmi_exporter\n```\n\n> **Note:** The RPM package automatically installs `freeipmi` as a dependency.\n\n### Docker\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/ipmi_exporter:latest\n\ndocker run -d \\\n  -p 9290:9290 \\\n  -v ./ipmi_remote.yml:/etc/ipmi_exporter/ipmi_remote.yml \\\n  --device /dev/ipmi0 \\\n  ghcr.io/sckyzo/monitoring-hub/ipmi_exporter:latest\n```\n\n## \u2699\ufe0f Configuration\n\nA default configuration file is provided for remote targets.\nLocation: `/etc/ipmi_exporter/ipmi_remote.yml`.\n\nSee upstream documentation: [prometheus-community/ipmi_exporter](https://github.com/prometheus-community/ipmi_exporter)\n",
       "availability": {
         "el8": {
           "x86_64": {
@@ -697,8 +705,9 @@
     {
       "name": "mysqld_exporter",
       "description": "Prometheus exporter for MySQL server metrics",
-      "category": "System",
+      "category": "Database",
       "version": "0.18.0",
+      "updated": true,
       "upstream": {
         "type": "github",
         "repo": "prometheus/mysqld_exporter"
@@ -748,7 +757,7 @@
           }
         }
       },
-      "readme": "# MySQL Exporter\n\n[![Upstream](https://img.shields.io/badge/Upstream-prometheus/mysqld_exporter-blue)](https://github.com/prometheus/mysqld_exporter)\n\nPrometheus exporter for MySQL server metrics.\n\n## Overview\nThis exporter collects metrics from a MySQL or MariaDB server. It uses the official Prometheus Go client and supports a wide range of MySQL versions.\n\n## Configuration\nThe exporter requires database credentials. The recommended way is to use a `.my.cnf` file.\n\n### Default Configuration\nA default configuration file is provided at `/var/lib/mysqld_exporter/.my.cnf`:\n\n```ini\n[client]\nuser=exporter\npassword=exporter_password\nhost=localhost\n```\n\n**Security Note:** This file should be readable ONLY by the `mysqld_exporter` user (`chmod 600`).\n\n### Common Flags\n*   `--config.my-cnf`: Path to `.my.cnf` file (default `~/.my.cnf`).\n*   `--web.listen-address`: Address to listen on (default `:9104`).\n\n## Usage\n\n### RPM\n```bash\n# 1. Edit credentials\nsudo vi /var/lib/mysqld_exporter/.my.cnf\n\n# 2. Start service\nsudo systemctl enable --now mysqld_exporter\n```\n\n### Docker\n```bash\ndocker run -d -p 9104:9104 \\\n  -v /path/to/.my.cnf:/var/lib/mysqld_exporter/.my.cnf \\\n  ghcr.io/sckyzo/monitoring-hub/mysqld_exporter:latest\n```\n\n## Database Permissions\nThe database user needs `PROCESS`, `REPLICATION CLIENT`, and `SELECT` privileges.\n\n```sql\nCREATE USER 'exporter'@'localhost' IDENTIFIED BY 'exporter_password';\nGRANT PROCESS, REPLICATION CLIENT, SELECT ON *.* TO 'exporter'@'localhost';\n```\n\n",
+      "readme": "# MySQL Exporter\n\n![Build Status](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/release.yml?label=Build)\n![Version](https://img.shields.io/github/v/release/prometheus/mysqld_exporter?label=Upstream)\n\n> Prometheus exporter for MySQL server metrics.\n\nThis exporter collects metrics from a MySQL or MariaDB server. It uses the official Prometheus Go client and supports a wide range of MySQL versions.\n\n## \ud83d\ude80 Installation\n\n### RPM (Enterprise Linux)\n```bash\nsudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el9/$(arch)/\nsudo dnf install mysqld_exporter\n\n# 1. Edit credentials\nsudo vi /var/lib/mysqld_exporter/.my.cnf\n\n# 2. Start service\nsudo systemctl enable --now mysqld_exporter\n```\n\n### Docker\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/mysqld_exporter:latest\n\ndocker run -d \\\n  -p 9104:9104 \\\n  -v ./.my.cnf:/var/lib/mysqld_exporter/.my.cnf \\\n  ghcr.io/sckyzo/monitoring-hub/mysqld_exporter:latest\n```\n\n## \u2699\ufe0f Configuration\n\nThe exporter requires database credentials. The recommended way is to use a `.my.cnf` file.\n\n```ini\n[client]\nuser=exporter\npassword=exporter_password\nhost=localhost\n```\n\n**Security Note:** This file should be readable ONLY by the `mysqld_exporter` user (`chmod 600`).\n\n### Database Permissions\nThe database user needs `PROCESS`, `REPLICATION CLIENT`, and `SELECT` privileges.\n\n```sql\nCREATE USER 'exporter'@'localhost' IDENTIFIED BY 'exporter_password';\nGRANT PROCESS, REPLICATION CLIENT, SELECT ON *.* TO 'exporter'@'localhost';\n```\n\nSee upstream documentation: [prometheus/mysqld_exporter](https://github.com/prometheus/mysqld_exporter)",
       "availability": {
         "el8": {
           "x86_64": {
@@ -787,8 +796,9 @@
     {
       "name": "nginx_exporter",
       "description": "Prometheus exporter for NGINX metrics",
-      "category": "System",
+      "category": "Web",
       "version": "1.5.1",
+      "updated": true,
       "upstream": {
         "type": "github",
         "repo": "nginx/nginx-prometheus-exporter",
@@ -829,7 +839,7 @@
           }
         }
       },
-      "readme": "# Nginx Exporter\n\n[![Upstream](https://img.shields.io/badge/Upstream-nginx/nginx--prometheus--exporter-blue)](https://github.com/nginx/nginx-prometheus-exporter)\n\nPrometheus exporter for NGINX metrics.\n\n## Overview\nThis exporter scrapes metrics from an NGINX `stub_status` page and exports them in Prometheus format.\n\n## Configuration\nRequires `stub_status` module enabled in Nginx.\n\n### Common Flags\n*   `-nginx.scrape-uri`: Address to scrape NGINX metrics from (default `http://127.0.0.1:8080/stub_status`).\n*   `-web.listen-address`: Address to listen on (default `:9113`).\n\n## Usage\n\n### RPM\n```bash\nsudo dnf install nginx_exporter\nsudo systemctl enable --now nginx_exporter\n```\n\n### Docker\n```bash\ndocker run -d -p 9113:9113 ghcr.io/sckyzo/monitoring-hub/nginx_exporter:latest -nginx.scrape-uri http://<NGINX_ADDR>:<PORT>/stub_status\n```",
+      "readme": "# Nginx Exporter\n\n![Build Status](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/release.yml?label=Build)\n![Version](https://img.shields.io/github/v/release/nginx/nginx-prometheus-exporter?label=Upstream)\n\n> Prometheus exporter for NGINX metrics.\n\nThis exporter scrapes metrics from an NGINX `stub_status` page and exports them in Prometheus format.\n\n## \ud83d\ude80 Installation\n\n### RPM (Enterprise Linux)\n```bash\nsudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el9/$(arch)/\nsudo dnf install nginx_exporter\nsudo systemctl enable --now nginx_exporter\n```\n\n### Docker\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/nginx_exporter:latest\n\ndocker run -d \\\n  -p 9113:9113 \\\n  ghcr.io/sckyzo/monitoring-hub/nginx_exporter:latest \\\n  -nginx.scrape-uri http://YOUR_NGINX_SERVER:8080/stub_status\n```\n\n## \u2699\ufe0f Configuration\n\nRequires `stub_status` module enabled in Nginx.\n\n### Common Flags\n*   `-nginx.scrape-uri`: Address to scrape NGINX metrics from (default `http://127.0.0.1:8080/stub_status`).\n*   `-web.listen-address`: Address to listen on (default `:9113`).\n\nSee upstream documentation: [nginx/nginx-prometheus-exporter](https://github.com/nginx/nginx-prometheus-exporter)\n",
       "availability": {
         "el8": {
           "x86_64": {
@@ -902,7 +912,7 @@
           }
         }
       },
-      "readme": "# Monitoring Hub: node_exporter\n\nEnterprise-grade packaging of the official Prometheus node_exporter.\n\n## \ud83d\ude80 Features\n- **Base Image:** Red Hat UBI 9 Minimal.\n- **Security:** Scanned and built from official upstream sources.\n- **Multi-Arch:** Native support for x86_64 and aarch64.\n\n## \ud83d\udce6 Usage\n\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/node_exporter:latest\ndocker run -d -p 9100:9100 ghcr.io/sckyzo/monitoring-hub/node_exporter:latest\n```\n\n## \ud83c\udf10 Documentation\nSee official documentation: [prometheus/node_exporter](https://github.com/prometheus/node_exporter)\n",
+      "readme": "# Node Exporter\n\n![Build Status](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/release.yml?label=Build)\n![Version](https://img.shields.io/github/v/release/prometheus/node_exporter?label=Upstream)\n\n> Prometheus exporter for hardware and OS metrics exposed by *NIX kernels.\n\nNode Exporter is the standard for monitoring Linux systems. It collects metrics on CPU, memory, disk, network, and more.\n\n## \ud83d\ude80 Installation\n\n### RPM (Enterprise Linux)\n```bash\nsudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el9/$(arch)/\nsudo dnf install node_exporter\nsudo systemctl enable --now node_exporter\n```\n\n### Docker\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/node_exporter:latest\n\ndocker run -d \\\n  -p 9100:9100 \\\n  --net=\"host\" \\\n  --pid=\"host\" \\\n  -v \"/:/host:ro,rslave\" \\\n  ghcr.io/sckyzo/monitoring-hub/node_exporter:latest \\\n  --path.rootfs=/host\n```\n\n## \u2699\ufe0f Configuration\n\nThe exporter typically runs without a configuration file, using command-line flags for customization.\n\nSee upstream documentation: [prometheus/node_exporter](https://github.com/prometheus/node_exporter)\n",
       "availability": {
         "el8": {
           "x86_64": {
@@ -941,8 +951,9 @@
     {
       "name": "ping_exporter",
       "description": "Prometheus exporter for ICMP ping metrics",
-      "category": "System",
+      "category": "Network",
       "version": "1.1.4",
+      "updated": true,
       "upstream": {
         "type": "github",
         "repo": "czerwonk/ping_exporter",
@@ -994,7 +1005,7 @@
           }
         }
       },
-      "readme": "# Monitoring Hub: ping_exporter\n\n[![Upstream](https://img.shields.io/badge/Upstream-czerwonk/ping_exporter-blue)](https://github.com/czerwonk/ping_exporter)\n\nEnterprise-grade packaging of the Prometheus ping_exporter.\n\n## \ud83d\ude80 Features\n- **Base Image:** Red Hat UBI 9 Minimal.\n- **Security:** Built from official upstream sources.\n- **Multi-Arch:** Support for x86_64 and aarch64.\n\n## \ud83d\udce6 Usage\n\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/ping_exporter:latest\ndocker run -d -p 9427:9427 --privileged ghcr.io/sckyzo/monitoring-hub/ping_exporter:latest\n```\n\n## \ud83c\udf10 Documentation\nSee official documentation: [jaxxstorm/ping_exporter](https://github.com/jaxxstorm/ping_exporter)",
+      "readme": "# Ping Exporter\n\n![Build Status](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/release.yml?label=Build)\n![Version](https://img.shields.io/github/v/release/czerwonk/ping_exporter?label=Upstream)\n\n> Prometheus exporter for ICMP ping metrics.\n\nThis exporter sends ICMP pings to specified targets and exposes the results (latency, packet loss) as Prometheus metrics.\n\n## \ud83d\ude80 Installation\n\n### RPM (Enterprise Linux)\n```bash\nsudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el9/$(arch)/\nsudo dnf install ping_exporter\nsudo systemctl enable --now ping_exporter\n```\n\n### Docker\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/ping_exporter:latest\n\n# Requires privileged access or CAP_NET_RAW for ICMP\ndocker run -d \\\n  -p 9427:9427 \\\n  --privileged \\\n  -v ./ping.yml:/etc/ping_exporter/ping.yml \\\n  ghcr.io/sckyzo/monitoring-hub/ping_exporter:latest\n```\n\n## \u2699\ufe0f Configuration\n\nThe exporter requires a target list in a YAML configuration file.\nDefault location: `/etc/ping_exporter/ping.yml`.\n\nSee upstream documentation: [czerwonk/ping_exporter](https://github.com/czerwonk/ping_exporter)\n",
       "availability": {
         "el8": {
           "x86_64": {
@@ -1035,6 +1046,7 @@
       "description": "Prometheus exporter for Podman containers",
       "category": "System",
       "version": "1.20.0",
+      "updated": true,
       "upstream": {
         "type": "github",
         "repo": "SckyzO/prometheus-podman-exporter",
@@ -1077,7 +1089,7 @@
           }
         }
       },
-      "readme": "# Podman Exporter\n\n[![Upstream](https://img.shields.io/badge/Upstream-SckyzO/prometheus--podman--exporter-blue)](https://github.com/SckyzO/prometheus-podman-exporter)\n\nPrometheus exporter for Podman containers.\n\n## Overview\nThis exporter exposes metrics about Podman containers, images, and volumes. It connects to the Podman socket to gather information.\n\n## Configuration\nThe exporter connects to the Podman socket (default `unix:///run/podman/podman.sock`).\n\n### Common Flags\n*   `--collector.enable-all`: Enable all available collectors.\n*   `--web.listen-address`: Address to listen on (default `:9882`).\n\n## Usage\n\n### RPM\n```bash\nsudo dnf install podman_exporter\nsudo systemctl enable --now podman_exporter\n```\n\n### Docker\nTo monitor the host's Podman instance from a container, you must mount the Podman socket.\n\n```bash\ndocker run -d -p 9882:9882 \\\n  -v /run/podman/podman.sock:/run/podman/podman.sock \\\n  -e CONTAINER_HOST=unix:///run/podman/podman.sock \\\n  ghcr.io/sckyzo/monitoring-hub/podman_exporter:latest\n```\n",
+      "readme": "# Podman Exporter\n\n![Build Status](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/release.yml?label=Build)\n![Version](https://img.shields.io/github/v/release/SckyzO/prometheus-podman-exporter?label=Upstream)\n\n> Prometheus exporter for Podman containers.\n\nThis exporter exposes metrics about Podman containers, images, and volumes by connecting to the Podman service socket.\n\n## \ud83d\ude80 Installation\n\n### RPM (Enterprise Linux)\n```bash\nsudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el9/$(arch)/\nsudo dnf install podman_exporter\nsudo systemctl enable --now podman_exporter\n```\n\n### Docker\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/podman_exporter:latest\n\n# Requires access to the Podman socket\ndocker run -d \\\n  -p 9882:9882 \\\n  -v /run/podman/podman.sock:/run/podman/podman.sock \\\n  -e CONTAINER_HOST=unix:///run/podman/podman.sock \\\n  ghcr.io/sckyzo/monitoring-hub/podman_exporter:latest\n```\n\n## \u2699\ufe0f Configuration\n\nThe exporter connects to the Podman socket (default `unix:///run/podman/podman.sock`).\n\nSee upstream documentation: [SckyzO/prometheus-podman-exporter](https://github.com/SckyzO/prometheus-podman-exporter)",
       "availability": {
         "el8": {
           "x86_64": {
@@ -1118,6 +1130,7 @@
       "description": "Prometheus exporter for process metrics",
       "category": "System",
       "version": "0.8.7",
+      "updated": true,
       "upstream": {
         "type": "github",
         "repo": "ncabatoff/process-exporter",
@@ -1149,7 +1162,7 @@
           }
         }
       },
-      "readme": "# Process Exporter\n\nEnterprise-grade packaging of the Prometheus process-exporter.\n\n## \ud83d\ude80 Features\n- **Base Image:** Red Hat UBI 9 Minimal.\n- **Security:** Built from official upstream sources.\n- **Multi-Arch:** Support for x86_64 and aarch64.\n\n## \ud83d\udce6 Usage\n\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/process-exporter:latest\ndocker run -d -p 9256:9256 --privileged ghcr.io/sckyzo/monitoring-hub/process-exporter:latest\n```\n\n## \ud83c\udf10 Documentation\nSee official documentation: [ncabatoff/process-exporter](https://github.com/ncabatoff/process-exporter)\n",
+      "readme": "# Process Exporter\n\n![Build Status](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/release.yml?label=Build)\n![Version](https://img.shields.io/github/v/release/ncabatoff/process-exporter?label=Upstream)\n\n> Prometheus exporter for process metrics.\n\nProcess Exporter allows you to monitor selected processes by reading `/proc` on Linux. It can group processes by name, user, or other attributes.\n\n## \ud83d\ude80 Installation\n\n### RPM (Enterprise Linux)\n```bash\nsudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el9/$(arch)/\nsudo dnf install process_exporter\nsudo systemctl enable --now process_exporter\n```\n\n### Docker\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/process_exporter:latest\n\n# Requires access to the host's /proc filesystem\ndocker run -d \\\n  -p 9256:9256 \\\n  --privileged \\\n  -v /proc:/host/proc:ro \\\n  ghcr.io/sckyzo/monitoring-hub/process_exporter:latest \\\n  -procfs /host/proc\n```\n\n## \u2699\ufe0f Configuration\n\nThe exporter is typically configured using a YAML file to define process matching groups.\n\nSee upstream documentation: [ncabatoff/process-exporter](https://github.com/ncabatoff/process-exporter)",
       "availability": {
         "el8": {
           "x86_64": {
@@ -1190,6 +1203,7 @@
       "description": "The Prometheus monitoring system and time series database.",
       "category": "Infrastructure",
       "version": "3.8.1",
+      "updated": true,
       "upstream": {
         "type": "github",
         "repo": "prometheus/prometheus",
@@ -1248,7 +1262,7 @@
           }
         }
       },
-      "readme": "# Monitoring Hub: prometheus\n\nEnterprise-grade packaging of the official Prometheus server.\n\n## \ud83d\ude80 Features\n- **Base Image:** Red Hat UBI 9 Minimal.\n- **Components:** Includes `prometheus` and `promtool`.\n- **Pre-configured:** Default configuration path at `/etc/prometheus/prometheus.yml`.\n\n## \ud83d\udce6 Usage\n\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/prometheus:latest\ndocker run -d -p 9090:9090 ghcr.io/sckyzo/monitoring-hub/prometheus:latest\n```\n\n## \ud83c\udf10 Documentation\nSee official documentation: [prometheus/prometheus](https://github.com/prometheus/prometheus)\n",
+      "readme": "# Prometheus\n\n![Build Status](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/release.yml?label=Build)\n![Version](https://img.shields.io/github/v/release/prometheus/prometheus?label=Upstream)\n\n> The Prometheus monitoring system and time series database.\n\nPrometheus is an open-source systems monitoring and alerting toolkit. It collects and stores its metrics as time series data, i.e. metrics information is stored with the timestamp at which it was recorded, alongside optional key-value pairs called labels.\n\n## \ud83d\ude80 Installation\n\n### RPM (Enterprise Linux)\n```bash\nsudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el9/$(arch)/\nsudo dnf install prometheus\nsudo systemctl enable --now prometheus\n```\n\n### Docker\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/prometheus:latest\n\ndocker run -d \\\n  -p 9090:9090 \\\n  -v ./prometheus.yml:/etc/prometheus/prometheus.yml \\\n  -v prometheus_data:/var/lib/prometheus \\\n  ghcr.io/sckyzo/monitoring-hub/prometheus:latest\n```\n\n## \u2699\ufe0f Configuration\n\nThe default configuration file is located at `/etc/prometheus/prometheus.yml`.\nThe database is stored in `/var/lib/prometheus`.\n\nSee upstream documentation: [prometheus/prometheus](https://github.com/prometheus/prometheus)",
       "availability": {
         "el8": {
           "x86_64": {
@@ -1287,8 +1301,9 @@
     {
       "name": "redis_exporter",
       "description": "Prometheus exporter for Redis metrics",
-      "category": "System",
+      "category": "Database",
       "version": "1.80.1",
+      "updated": true,
       "upstream": {
         "type": "github",
         "repo": "oliver006/redis_exporter",
@@ -1329,7 +1344,7 @@
           }
         }
       },
-      "readme": "# Redis Exporter\n\n[![Upstream](https://img.shields.io/badge/Upstream-oliver006/redis_exporter-blue)](https://github.com/oliver006/redis_exporter)\n\nPrometheus exporter for Redis metrics.\n\n## Overview\nThis exporter supports Redis versions 2.x, 3.x, 4.x, 5.x, 6.x, and 7.x.\n\n## Configuration\nThe exporter is configured via command-line flags or environment variables.\n\n### Common Flags\n*   `-redis.addr`: Address of one or more Redis nodes (default `redis://localhost:6379`).\n*   `-redis.password`: Password for the Redis instance.\n*   `-web.listen-address`: Address to listen on (default `:9121`).\n\n## Usage\n\n### RPM\n```bash\nsudo dnf install redis_exporter\nsudo systemctl enable --now redis_exporter\n```\n\n### Docker\n```bash\ndocker run -d -p 9121:9121 ghcr.io/sckyzo/monitoring-hub/redis_exporter:latest -redis.addr redis://<REDIS_ADDR>:6379\n```",
+      "readme": "# Redis Exporter\n\n![Build Status](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/release.yml?label=Build)\n![Version](https://img.shields.io/github/v/release/oliver006/redis_exporter?label=Upstream)\n\n> Prometheus exporter for Redis metrics.\n\nThis exporter supports Redis versions 2.x, 3.x, 4.x, 5.x, 6.x, and 7.x.\n\n## \ud83d\ude80 Installation\n\n### RPM (Enterprise Linux)\n```bash\nsudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el9/$(arch)/\nsudo dnf install redis_exporter\nsudo systemctl enable --now redis_exporter\n```\n\n### Docker\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/redis_exporter:latest\n\ndocker run -d \\\n  -p 9121:9121 \\\n  ghcr.io/sckyzo/monitoring-hub/redis_exporter:latest \\\n  -redis.addr redis://YOUR_REDIS_SERVER:6379\n```\n\n## \u2699\ufe0f Configuration\n\nThe exporter is configured via command-line flags.\n\n### Common Flags\n*   `-redis.addr`: Address of the Redis node (default `redis://localhost:6379`).\n*   `-redis.password`: Password for the Redis instance.\n*   `-web.listen-address`: Address to listen on (default `:9121`).\n\nSee upstream documentation: [oliver006/redis_exporter](https://github.com/oliver006/redis_exporter)\n",
       "availability": {
         "el8": {
           "x86_64": {
@@ -1368,9 +1383,10 @@
     {
       "name": "slurm_exporter",
       "description": "Prometheus exporter for Slurm workload manager metrics",
-      "category": "System",
+      "category": "Infrastructure",
       "new": true,
       "version": "1.2.0",
+      "updated": true,
       "upstream": {
         "type": "github",
         "repo": "sckyzo/slurm_exporter",
@@ -1404,7 +1420,7 @@
           }
         }
       },
-      "readme": "# Monitoring Hub: slurm_exporter\n\nEnterprise-grade packaging of the Slurm cluster metrics exporter.\n\n## \ud83d\ude80 Features\n- **Base Image:** Red Hat UBI 9 Minimal.\n- **Security:** Built from official upstream sources.\n- **Multi-Arch:** Support for x86_64 and aarch64.\n\n## \ud83d\udce6 Usage\n\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/slurm_exporter:latest\ndocker run -d -p 9323:9323 ghcr.io/sckyzo/monitoring-hub/slurm_exporter:latest\n```\n\n## \ud83c\udf10 Documentation\nSee official documentation: [sckyzo/slurm_exporter](https://github.com/sckyzo/slurm_exporter)\n",
+      "readme": "# Slurm Exporter\n\n![Build Status](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/release.yml?label=Build)\n![Version](https://img.shields.io/github/v/release/sckyzo/slurm_exporter?label=Upstream)\n\n> Prometheus exporter for Slurm workload manager metrics.\n\nThis exporter collects metrics from Slurm clusters (nodes, partitions, jobs) and exposes them for Prometheus.\n\n## \ud83d\ude80 Installation\n\n### RPM (Enterprise Linux)\n```bash\nsudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el9/$(arch)/\nsudo dnf install slurm_exporter\nsudo systemctl enable --now slurm_exporter\n```\n\n### Docker\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/slurm_exporter:latest\n\n# Requires access to Slurm CLI tools and configuration\ndocker run -d \\\n  -p 9341:9341 \\\n  -v /etc/slurm:/etc/slurm:ro \\\n  ghcr.io/sckyzo/monitoring-hub/slurm_exporter:latest\n```\n\n## \u2699\ufe0f Configuration\n\nThe exporter requires access to Slurm binaries (`sinfo`, `squeue`) and the `slurm.conf` file.\n\nSee upstream documentation: [sckyzo/slurm_exporter](https://github.com/sckyzo/slurm_exporter)",
       "availability": {
         "el8": {
           "x86_64": {
@@ -1443,8 +1459,9 @@
     {
       "name": "smartctl_exporter",
       "description": "Prometheus exporter for S.M.A.R.T. storage devices metrics",
-      "category": "System",
+      "category": "Storage",
       "version": "0.14.0",
+      "updated": true,
       "upstream": {
         "type": "github",
         "repo": "prometheus-community/smartctl_exporter",
@@ -1477,7 +1494,7 @@
           }
         }
       },
-      "readme": "# Monitoring Hub: smartctl_exporter\n\nEnterprise-grade packaging of the Prometheus smartctl_exporter.\n\n## \ud83d\ude80 Features\n- **Base Image:** Red Hat UBI 9 Minimal.\n- **Security:** Built from official upstream sources.\n- **Multi-Arch:** Support for x86_64 and aarch64.\n\n## \ud83d\udce6 Usage\n\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/smartctl_exporter:latest\ndocker run -d -p 9633:9633 --privileged ghcr.io/sckyzo/monitoring-hub/smartctl_exporter:latest\n```\n\n## \ud83c\udf10 Documentation\nSee official documentation: [prometheus-community/smartctl_exporter](https://github.com/prometheus-community/smartctl_exporter)\n",
+      "readme": "# Smartctl Exporter\n\n![Build Status](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/release.yml?label=Build)\n![Version](https://img.shields.io/github/v/release/prometheus-community/smartctl_exporter?label=Upstream)\n\n> Prometheus exporter for S.M.A.R.T. storage devices metrics.\n\nThis exporter exposes S.M.A.R.T. (Self-Monitoring, Analysis and Reporting Technology) metrics from storage devices by executing the `smartctl` command.\n\n## \ud83d\ude80 Installation\n\n### RPM (Enterprise Linux)\n```bash\nsudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el9/$(arch)/\nsudo dnf install smartctl_exporter\nsudo systemctl enable --now smartctl_exporter\n```\n\n### Docker\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/smartctl_exporter:latest\n\n# Requires privileged access to read hardware devices\ndocker run -d \\\n  -p 9633:9633 \\\n  --privileged \\\n  ghcr.io/sckyzo/monitoring-hub/smartctl_exporter:latest\n```\n\n## \u2699\ufe0f Configuration\n\nThe exporter requires access to the host's block devices. In some cases, you may need to specify device paths via flags.\n\nSee upstream documentation: [prometheus-community/smartctl_exporter](https://github.com/prometheus-community/smartctl_exporter)",
       "availability": {
         "el8": {
           "x86_64": {
@@ -1516,8 +1533,9 @@
     {
       "name": "snmp_exporter",
       "description": "Prometheus exporter for SNMP-enabled devices",
-      "category": "System",
+      "category": "Network",
       "version": "0.29.0",
+      "updated": true,
       "upstream": {
         "type": "github",
         "repo": "prometheus/snmp_exporter",
@@ -1574,7 +1592,7 @@
           }
         }
       },
-      "readme": "# Monitoring Hub: snmp_exporter\n\nEnterprise-grade packaging of the official Prometheus SNMP Exporter.\n\n## \ud83d\ude80 Features\n- **Base Image:** Red Hat UBI 9 Minimal.\n- **Components:** Includes `snmp_exporter` and `snmp_generator`.\n- **Multi-Arch:** Support for x86_64 and aarch64.\n\n## \ud83d\udce6 Usage\n\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/snmp_exporter:latest\ndocker run -d -p 9116:9116 ghcr.io/sckyzo/monitoring-hub/snmp_exporter:latest\n```\n\n## \ud83c\udf10 Documentation\nSee official documentation: [prometheus/snmp_exporter](https://github.com/prometheus/snmp_exporter)\n",
+      "readme": "# SNMP Exporter\n\n![Build Status](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/release.yml?label=Build)\n![Version](https://img.shields.io/github/v/release/prometheus/snmp_exporter?label=Upstream)\n\n> Prometheus exporter for SNMP-enabled devices.\n\nThis exporter exposes metrics from SNMP-enabled devices (switches, routers, UPS, etc.) by mapping SNMP MIBs to Prometheus metrics.\n\n## \ud83d\ude80 Installation\n\n### RPM (Enterprise Linux)\n```bash\nsudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el9/$(arch)/\nsudo dnf install snmp_exporter\nsudo systemctl enable --now snmp_exporter\n```\n\n### Docker\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/snmp_exporter:latest\n\ndocker run -d \\\n  -p 9116:9116 \\\n  -v ./snmp.yml:/etc/snmp_exporter/snmp.yml \\\n  ghcr.io/sckyzo/monitoring-hub/snmp_exporter:latest\n```\n\n## \u2699\ufe0f Configuration\n\nThe exporter requires a `snmp.yml` configuration file generated from MIBs.\nA default `snmp.yml` is provided at `/etc/snmp_exporter/snmp.yml`.\n\nSee upstream documentation: [prometheus/snmp_exporter](https://github.com/prometheus/snmp_exporter)",
       "availability": {
         "el8": {
           "x86_64": {
@@ -1615,6 +1633,7 @@
       "description": "Prometheus exporter for local text files metrics",
       "category": "System",
       "version": "0.1.4",
+      "updated": true,
       "upstream": {
         "type": "github",
         "repo": "SckyzO/textfile_exporter",
@@ -1658,7 +1677,7 @@
           }
         }
       },
-      "readme": "# Textfile Exporter\n\n[![Upstream](https://img.shields.io/badge/Upstream-SckyzO/textfile_exporter-blue)](https://github.com/SckyzO/textfile_exporter)\n\nPrometheus exporter for local text files metrics.\n\n## Overview\nThis exporter reads `.prom` files from a directory and exports them in Prometheus format. It's useful for monitoring cron jobs or batch scripts.\n\n## Configuration\nThe exporter is configured via command-line flags.\n\n### Common Flags\n*   `-directory`: Directory to read `.prom` files from (default `/var/lib/textfile_exporter`).\n*   `-addr`: Address to listen on (default `:9106`).\n\n## Usage\n\n### RPM\n```bash\nsudo dnf install textfile_exporter\nsudo systemctl enable --now textfile_exporter\n```\n\n### Docker\n```bash\ndocker run -d -p 9106:9106 -v /path/to/metrics:/var/lib/textfile_exporter ghcr.io/sckyzo/monitoring-hub/textfile_exporter:latest\n```",
+      "readme": "# Textfile Exporter\n\n![Build Status](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/release.yml?label=Build)\n![Version](https://img.shields.io/github/v/release/SckyzO/textfile_exporter?label=Upstream)\n\n> Prometheus exporter for local text files metrics.\n\nThis exporter reads `.prom` files from a directory and exposes them as Prometheus metrics. It is specifically designed for monitoring short-lived jobs, batch scripts, or custom system metrics.\n\n## \ud83d\ude80 Installation\n\n### RPM (Enterprise Linux)\n```bash\nsudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el9/$(arch)/\nsudo dnf install textfile_exporter\nsudo systemctl enable --now textfile_exporter\n```\n\n### Docker\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/textfile_exporter:latest\n\ndocker run -d \\\n  -p 9014:9014 \\\n  -v ./metrics:/var/lib/textfile_exporter:ro \\\n  ghcr.io/sckyzo/monitoring-hub/textfile_exporter:latest\n```\n\n## \u2699\ufe0f Configuration\n\nThe exporter watches the directory defined by the `--textfile.directory` flag.\nDefault location: `/var/lib/textfile_exporter`.\n\nSee upstream documentation: [SckyzO/textfile_exporter](https://github.com/SckyzO/textfile_exporter)\n",
       "availability": {
         "el8": {
           "x86_64": {
