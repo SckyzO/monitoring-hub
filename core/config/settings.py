@@ -20,3 +20,7 @@ REPO_ROOT_URL = "https://sckyzo.github.io/monitoring-hub"
 TEMPLATES_DIR = "core/templates"
 EXPORTERS_DIR = "exporters"
 BUILD_DIR = "build"
+
+# Versioning
+CORE_VERSION = "v0.16.0"
+PORTAL_VERSION = "v2.7.0"
