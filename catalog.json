@@ -595,6 +595,86 @@
       "docker_status": "success"
     },
     {
+      "name": "domain_exporter",
+      "description": "Exports the expiration time of your domains as Prometheus metrics.",
+      "category": "Web",
+      "version": "1.24.1",
+      "new": true,
+      "updated": false,
+      "upstream": {
+        "type": "github",
+        "repo": "caarlos0/domain_exporter",
+        "strategy": "latest_release",
+        "archive_name": "{name}_{clean_version}_linux_{arch}.tar.gz"
+      },
+      "build": {
+        "method": "binary_repack",
+        "binary_name": "domain_exporter",
+        "archs": [
+          "amd64",
+          "arm64"
+        ]
+      },
+      "artifacts": {
+        "rpm": {
+          "enabled": true,
+          "summary": "Prometheus domain Exporter",
+          "targets": [
+            "el8",
+            "el9",
+            "el10"
+          ],
+          "system_user": "domain_exporter",
+          "service_file": true
+        },
+        "docker": {
+          "enabled": true,
+          "entrypoint": [
+            "/usr/bin/domain_exporter"
+          ],
+          "validation": {
+            "enabled": true,
+            "port": 9222
+          }
+        }
+      },
+      "readme": "# Domain Exporter\n\n![Build Status](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/release.yml?label=Build)\n![Version](https://img.shields.io/github/v/release/caarlos0/domain_exporter?label=Upstream)\n\n> Exports the expiration time of your domains as Prometheus metrics.\n\nDomain Exporter checks WHOIS information to provide expiration dates for your domains. It works similarly to the Blackbox Exporter using a probe pattern.\n\n## \ud83d\ude80 Installation\n\n### RPM (Enterprise Linux)\n```bash\nsudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el9/$(arch)/ \nsudo dnf install domain_exporter\nsudo systemctl enable --now domain_exporter\n```\n\n### Docker\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/domain_exporter:latest\n\ndocker run -d \\\n  -p 9222:9222 \\\n  ghcr.io/sckyzo/monitoring-hub/domain_exporter:latest\n```\n\n## \u2699\ufe0f Configuration\n\nThe exporter runs on port **9222** by default.\n\n### Prometheus Probe Configuration\nTo probe domains, use the following configuration in your `prometheus.yml`:\n\n```yaml\n- job_name: domain\n  metrics_path: /probe\n  relabel_configs:\n    - source_labels: [__address__]\n      target_label: __param_target\n    - target_label: __address__\n      replacement: domain-exporter-host:9222\n  static_configs:\n    - targets:\n      - example.com\n      - my-awesome-project.io\n```\n\n### Static Configuration\nYou can also provide a list of domains via a configuration file:\n```bash\ndomain_exporter --config=domains.yaml\n```\n\n| Flag | Description | Default |\n| :--- | :--- | :--- |\n| `--bind` | Address to listen on | `:9222` |\n| `--config` | Path to configuration file | - |\n\nSee upstream documentation: [caarlos0/domain_exporter](https://github.com/caarlos0/domain_exporter)",
+      "availability": {
+        "el8": {
+          "x86_64": {
+            "status": "success",
+            "path": "el8/x86_64/domain_exporter-v1.24.1-1.el8.x86_64.rpm"
+          },
+          "aarch64": {
+            "status": "success",
+            "path": "el8/aarch64/domain_exporter-v1.24.1-1.el8.aarch64.rpm"
+          }
+        },
+        "el9": {
+          "x86_64": {
+            "status": "success",
+            "path": "el9/x86_64/domain_exporter-v1.24.1-1.el9.x86_64.rpm"
+          },
+          "aarch64": {
+            "status": "success",
+            "path": "el9/aarch64/domain_exporter-v1.24.1-1.el9.aarch64.rpm"
+          }
+        },
+        "el10": {
+          "x86_64": {
+            "status": "success",
+            "path": "el10/x86_64/domain_exporter-v1.24.1-1.el10.x86_64.rpm"
+          },
+          "aarch64": {
+            "status": "success",
+            "path": "el10/aarch64/domain_exporter-v1.24.1-1.el10.aarch64.rpm"
+          }
+        }
+      },
+      "rpm_status": "success",
+      "docker_status": "success"
+    },
+    {
       "name": "eseries_exporter",
       "description": "Prometheus exporter for NetApp/Lenovo E-Series storage systems",
       "category": "Storage",
