@@ -1,7 +1,8 @@
 name: gpfs_exporter
 description: Prometheus exporter for IBM GPFS (Spectrum Scale) metrics
-category: System
+category: Storage
 version: v3.2.0
+updated: true
 upstream:
   type: github
   repo: treydock/gpfs_exporter
