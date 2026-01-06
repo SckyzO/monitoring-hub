@@ -1,28 +1,34 @@
 # Textfile Exporter
 
-[![Upstream](https://img.shields.io/badge/Upstream-SckyzO/textfile_exporter-blue)](https://github.com/SckyzO/textfile_exporter)
+![Build Status](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/release.yml?label=Build)
+![Version](https://img.shields.io/github/v/release/SckyzO/textfile_exporter?label=Upstream)
 
-Prometheus exporter for local text files metrics.
+> Prometheus exporter for local text files metrics.
 
-## Overview
-This exporter reads `.prom` files from a directory and exports them in Prometheus format. It's useful for monitoring cron jobs or batch scripts.
+This exporter reads `.prom` files from a directory and exposes them as Prometheus metrics. It is specifically designed for monitoring short-lived jobs, batch scripts, or custom system metrics.
 
-## Configuration
-The exporter is configured via command-line flags.
+## 🚀 Installation
 
-### Common Flags
-*   `-directory`: Directory to read `.prom` files from (default `/var/lib/textfile_exporter`).
-*   `-addr`: Address to listen on (default `:9106`).
-
-## Usage
-
-### RPM
+### RPM (Enterprise Linux)
 ```bash
+sudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el9/$(arch)/
 sudo dnf install textfile_exporter
 sudo systemctl enable --now textfile_exporter
 ```
 
 ### Docker
 ```bash
-docker run -d -p 9106:9106 -v /path/to/metrics:/var/lib/textfile_exporter ghcr.io/sckyzo/monitoring-hub/textfile_exporter:latest
+docker pull ghcr.io/sckyzo/monitoring-hub/textfile_exporter:latest
+
+docker run -d \
+  -p 9014:9014 \
+  -v ./metrics:/var/lib/textfile_exporter:ro \
+  ghcr.io/sckyzo/monitoring-hub/textfile_exporter:latest
 ```
+
+## ⚙️ Configuration
+
+The exporter watches the directory defined by the `--textfile.directory` flag.
+Default location: `/var/lib/textfile_exporter`.
+
+See upstream documentation: [SckyzO/textfile_exporter](https://github.com/SckyzO/textfile_exporter)
