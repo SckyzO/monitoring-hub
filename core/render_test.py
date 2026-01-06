@@ -1,5 +1,8 @@
 import json
 import os
+import click
+import http.server
+import socketserver
 from jinja2 import Environment, FileSystemLoader
 
 # Mock Data simulating the final JSON injected by gen_site.py
@@ -46,9 +49,14 @@ MOCK_EXPORTERS = [
     }
 ]
 
-MOCK_CATEGORIES = ["System", "Web"]
+MOCK_CATEGORIES = ["System", "Web", "Database", "Network", "Storage", "Messaging", "Infrastructure"]
 
-def render():
+@click.command()
+@click.option('--start-webserver', is_flag=True, help='Start a local webserver to preview the site.')
+def render(start_webserver):
+    """
+    Generate a mock portal for UI testing.
+    """
     template_dir = os.path.join(os.path.dirname(__file__), 'templates')
     env = Environment(loader=FileSystemLoader(template_dir))
     template = env.get_template('index.html.j2')
@@ -64,7 +72,22 @@ def render():
     
     with open('index.html', 'w') as f:
         f.write(output)
-    print("✅ index.html generated successfully with Docker-only scenario.")
+    print("✅ index.html generated successfully.")
+
+    if start_webserver:
+        PORT = 8000
+        Handler = http.server.SimpleHTTPRequestHandler
+        # socketserver.TCPServer.allow_reuse_address = True
+        try:
+            with socketserver.TCPServer(("", PORT), Handler) as httpd:
+                print(f"🚀 Preview server started at http://localhost:{PORT}")
+                print("💡 Hint: Open your browser and navigate to the URL above.")
+                print("Press Ctrl+C to stop the server.")
+                httpd.serve_forever()
+        except KeyboardInterrupt:
+            print("\n🛑 Server stopped.")
+        except Exception as e:
+            print(f"❌ Could not start server: {e}")
 
 if __name__ == "__main__":
     render()
