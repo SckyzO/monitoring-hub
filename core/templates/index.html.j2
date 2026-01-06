@@ -365,63 +365,63 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-                <div class="p-10 rounded-3xl border border-white/5 bg-zinc-900/20 space-y-6 relative overflow-hidden group" :class="theme === 'light' ? 'bg-white border-zinc-200 shadow-sm' : ''">
-                    <div class="flex justify-between items-start">
-                        <div class="w-16 h-16 rounded-2xl bg-primary-500/10 flex items-center justify-center text-primary-500 transition-transform group-hover:scale-110"><i data-lucide="terminal" class="w-8 h-8"></i></div>
-                        <span class="text-[9px] font-mono font-bold text-zinc-600 uppercase tracking-widest bg-zinc-800/50 px-2 py-1 rounded">MODULE_01</span>
+                <div class="p-10 rounded-[1.5rem] border border-white/5 bg-zinc-900/20 space-y-8 relative overflow-hidden group transition-all hover:border-primary-500/30" :class="theme === 'light' ? 'bg-white border-zinc-200 shadow-sm' : ''">
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center gap-4">
+                            <span class="w-10 h-10 rounded-full bg-primary-500 text-white flex items-center justify-center text-xs font-black italic shadow-lg shadow-primary-500/20">01</span>
+                            <h3 class="text-2xl font-black uppercase tracking-tighter italic" :class="theme === 'light' ? 'text-zinc-900' : 'text-white'">Artifact Discovery</h3>
+                        </div>
+                        <div class="w-12 h-12 rounded-2xl bg-primary-500/10 flex items-center justify-center text-primary-500 transition-transform group-hover:scale-110"><i data-lucide="terminal" class="w-6 h-6"></i></div>
                     </div>
-                    <div>
-                        <h3 class="text-2xl font-black uppercase tracking-tighter mb-3" :class="theme === 'light' ? 'text-zinc-900' : 'text-white'">Artifact Discovery</h3>
-                        <p class="text-sm leading-relaxed opacity-60 font-medium text-left">Real-time fuzzy search indexing. Use the <span class="text-primary-500">Massive Hub Search</span> or <span class="kbd">CTRL + K</span> for direct database navigation.</p>
-                    </div>
-                    <div class="pt-6 border-t border-white/5 flex gap-3 font-mono text-left">
-                        <span class="text-[9px] px-2 py-1 rounded bg-zinc-800 text-zinc-500 border border-white/5">INDEX: FUZZY_SQLITE</span>
-                        <span class="text-[9px] px-2 py-1 rounded bg-zinc-800 text-zinc-500 border border-white/5">TYPE: REALTIME</span>
-                    </div>
-                </div>
-
-                <div class="p-10 rounded-3xl border border-white/5 bg-zinc-900/20 space-y-6 relative overflow-hidden group" :class="theme === 'light' ? 'bg-white border-zinc-200 shadow-sm' : ''">
-                    <div class="flex justify-between items-start">
-                        <div class="w-16 h-16 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500 transition-transform group-hover:scale-110"><i data-lucide="database" class="w-8 h-8"></i></div>
-                        <span class="text-[9px] font-mono font-bold text-zinc-600 uppercase tracking-widest bg-zinc-800/50 px-2 py-1 rounded">MODULE_02</span>
-                    </div>
-                    <div>
-                        <h3 class="text-2xl font-black uppercase tracking-tighter mb-3" :class="theme === 'light' ? 'text-zinc-900' : 'text-white'">Metadata Engine</h3>
-                        <p class="text-sm leading-relaxed opacity-60 font-medium text-left">Native <code>manifest.yaml</code> parsing. The <span class="text-amber-500">Power Drawer</span> provides documentation and direct links from official upstreams.</p>
-                    </div>
-                    <div class="pt-6 border-t border-white/5 flex gap-3 font-mono text-left">
-                        <span class="text-[9px] px-2 py-1 rounded bg-zinc-800 text-zinc-500 border border-white/5">SCHEMA: V1.2_SPEC</span>
-                        <span class="text-[9px] px-2 py-1 rounded bg-zinc-800 text-zinc-500 border border-white/5">FORMAT: YAML_OCI</span>
+                    <p class="text-sm leading-relaxed opacity-60 font-medium text-left">Real-time fuzzy search indexing. Use the <span class="text-primary-500">Massive Hub Search</span> or <span class="kbd">CTRL + K</span> for direct database navigation.</p>
+                    <div class="pt-6 border-t border-white/5 flex gap-3 font-mono text-left" :class="theme === 'light' ? 'border-zinc-100' : ''">
+                        <span class="text-[9px] px-2.5 py-1 rounded-lg bg-zinc-800 text-zinc-400 border border-white/5">INDEX: FUZZY_SQLITE</span>
+                        <span class="text-[9px] px-2.5 py-1 rounded-lg bg-zinc-800 text-zinc-400 border border-white/5">TYPE: REALTIME</span>
                     </div>
                 </div>
 
-                <div class="p-10 rounded-3xl border border-white/5 bg-zinc-900/20 space-y-6 relative overflow-hidden group" :class="theme === 'light' ? 'bg-white border-zinc-200 shadow-sm' : ''">
-                    <div class="flex justify-between items-start">
-                        <div class="w-16 h-16 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-500 transition-transform group-hover:scale-110"><i data-lucide="package" class="w-8 h-8"></i></div>
-                        <span class="text-[9px] font-mono font-bold text-zinc-600 uppercase tracking-widest bg-zinc-800/50 px-2 py-1 rounded">MODULE_03</span>
+                <div class="p-10 rounded-[1.5rem] border border-white/5 bg-zinc-900/20 space-y-8 relative overflow-hidden group transition-all hover:border-primary-500/30" :class="theme === 'light' ? 'bg-white border-zinc-200 shadow-sm' : ''">
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center gap-4">
+                            <span class="w-10 h-10 rounded-full bg-primary-500 text-white flex items-center justify-center text-xs font-black italic shadow-lg shadow-primary-500/20">02</span>
+                            <h3 class="text-2xl font-black uppercase tracking-tighter italic" :class="theme === 'light' ? 'text-zinc-900' : 'text-white'">Metadata Engine</h3>
+                        </div>
+                        <div class="w-12 h-12 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500 transition-transform group-hover:scale-110"><i data-lucide="database" class="w-6 h-6"></i></div>
                     </div>
-                    <div>
-                        <h3 class="text-2xl font-black uppercase tracking-tighter mb-3" :class="theme === 'light' ? 'text-zinc-900' : 'text-white'">Provisioning</h3>
-                        <p class="text-sm leading-relaxed opacity-60 font-medium text-left">Dual distribution pipeline: <span class="text-emerald-500">DNF/RPM</span> for Enterprise Linux and <span class="text-emerald-500">OCI Images</span> based on UBI 9 Minimal.</p>
-                    </div>
-                    <div class="pt-6 border-t border-white/5 flex gap-3 font-mono text-left">
-                        <span class="text-[9px] px-2 py-1 rounded bg-zinc-800 text-zinc-500 border border-white/5">OS: UBI_9_MIN</span>
-                        <span class="text-[9px] px-2 py-1 rounded bg-zinc-800 text-zinc-500 border border-white/5">PLATFORM: CROSS</span>
+                    <p class="text-sm leading-relaxed opacity-60 font-medium text-left">Native <code>manifest.yaml</code> parsing. The <span class="text-amber-500">Power Drawer</span> provides documentation and direct links from official upstreams.</p>
+                    <div class="pt-6 border-t border-white/5 flex gap-3 font-mono text-left" :class="theme === 'light' ? 'border-zinc-100' : ''">
+                        <span class="text-[9px] px-2.5 py-1 rounded-lg bg-zinc-800 text-zinc-400 border border-white/5">SCHEMA: V1.2_SPEC</span>
+                        <span class="text-[9px] px-2.5 py-1 rounded-lg bg-zinc-800 text-zinc-400 border border-white/5">FORMAT: YAML_OCI</span>
                     </div>
                 </div>
 
-                <div class="p-10 rounded-3xl border border-white/5 bg-zinc-900/20 space-y-6 relative overflow-hidden group" :class="theme === 'light' ? 'bg-white border-zinc-200 shadow-sm' : ''">
-                    <div class="flex justify-between items-start">
-                        <div class="w-16 h-16 rounded-2xl bg-rose-500/10 flex items-center justify-center text-rose-500 transition-transform group-hover:scale-110"><i data-lucide="shield-check" class="w-8 h-8"></i></div>
-                        <span class="text-[9px] font-mono font-bold text-zinc-600 uppercase tracking-widest bg-zinc-800/50 px-2 py-1 rounded">MODULE_04</span>
+                <div class="p-10 rounded-[1.5rem] border border-white/5 bg-zinc-900/20 space-y-8 relative overflow-hidden group transition-all hover:border-primary-500/30" :class="theme === 'light' ? 'bg-white border-zinc-200 shadow-sm' : ''">
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center gap-4">
+                            <span class="w-10 h-10 rounded-full bg-primary-500 text-white flex items-center justify-center text-xs font-black italic shadow-lg shadow-primary-500/20">03</span>
+                            <h3 class="text-2xl font-black uppercase tracking-tighter italic" :class="theme === 'light' ? 'text-zinc-900' : 'text-white'">Provisioning</h3>
+                        </div>
+                        <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-500 transition-transform group-hover:scale-110"><i data-lucide="package" class="w-6 h-6"></i></div>
                     </div>
-                    <div>
-                        <h3 class="text-2xl font-black uppercase tracking-tighter mb-3" :class="theme === 'light' ? 'text-zinc-900' : 'text-white'">Assurance</h3>
-                        <p class="text-sm leading-relaxed opacity-60 font-medium text-left">Verified CI/CD builds. Our factory ensures <span class="text-rose-500">Multi-Arch Integrity</span> (x86_64, aarch64) and regular security scanning.</p>
+                    <p class="text-sm leading-relaxed opacity-60 font-medium text-left">Dual distribution pipeline: <span class="text-emerald-500">DNF/RPM</span> for Enterprise Linux and <span class="text-emerald-500">OCI Images</span> based on UBI 9 Minimal.</p>
+                    <div class="pt-6 border-t border-white/5 flex gap-3 font-mono text-left" :class="theme === 'light' ? 'border-zinc-100' : ''">
+                        <span class="text-[9px] px-2.5 py-1 rounded-lg bg-zinc-800 text-zinc-400 border border-white/5">OS: UBI_9_MIN</span>
+                        <span class="text-[9px] px-2.5 py-1 rounded-lg bg-zinc-800 text-zinc-400 border border-white/5">PLATFORM: CROSS</span>
                     </div>
-                    <div class="pt-6 border-t border-white/5 flex gap-3 font-mono text-left">
-                        <span class="text-[9px] px-2 py-1 rounded bg-zinc-800 text-zinc-500 border border-white/5">BUILD: CI_PASSED</span>
-                        <span class="text-[9px] px-2 py-1 rounded bg-zinc-800 text-zinc-500 border border-white/5">ARCH: NATIVE_SUPPORT</span>
+                </div>
+
+                <div class="p-10 rounded-[1.5rem] border border-white/5 bg-zinc-900/20 space-y-8 relative overflow-hidden group transition-all hover:border-primary-500/30" :class="theme === 'light' ? 'bg-white border-zinc-200 shadow-sm' : ''">
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center gap-4">
+                            <span class="w-10 h-10 rounded-full bg-primary-500 text-white flex items-center justify-center text-xs font-black italic shadow-lg shadow-primary-500/20">04</span>
+                            <h3 class="text-2xl font-black uppercase tracking-tighter italic" :class="theme === 'light' ? 'text-zinc-900' : 'text-white'">Assurance</h3>
+                        </div>
+                        <div class="w-12 h-12 rounded-2xl bg-rose-500/10 flex items-center justify-center text-rose-500 transition-transform group-hover:scale-110"><i data-lucide="shield-check" class="w-6 h-6"></i></div>
+                    </div>
+                    <p class="text-sm leading-relaxed opacity-60 font-medium text-left">Verified CI/CD builds. Our factory ensures <span class="text-rose-500">Multi-Arch Integrity</span> (x86_64, aarch64) and regular security scanning.</p>
+                    <div class="pt-6 border-t border-white/5 flex gap-3 font-mono text-left" :class="theme === 'light' ? 'border-zinc-100' : ''">
+                        <span class="text-[9px] px-2.5 py-1 rounded-lg bg-zinc-800 text-zinc-400 border border-white/5">BUILD: CI_PASSED</span>
+                        <span class="text-[9px] px-2.5 py-1 rounded-lg bg-zinc-800 text-zinc-400 border border-white/5">ARCH: NATIVE_SUPPORT</span>
                     </div>
                 </div>
             </div>
@@ -569,79 +569,88 @@
         </div>
     </div>
 
-    <footer class="py-24 border-t transition-all" :class="{ 'bg-white border-zinc-200 shadow-xl': theme === 'light', 'bg-dark-950 border-white/5': theme === 'deep', 'bg-dark-900 border-white/5': theme === 'oled' }">
-        <div class="max-w-7xl mx-auto px-6 text-left">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-24 items-start text-left">
-                <div class="flex flex-col gap-6 text-left"><span class="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-500 text-left">01 / Inventory</span><div class="flex flex-col gap-2 text-left"><div class="flex items-center justify-between p-3 rounded-lg border transition-all text-left" :class="theme === 'light' ? 'bg-zinc-50 border-zinc-200 shadow-sm' : 'bg-white/5 border-white/5'"><span class="text-[10px] font-black uppercase tracking-widest text-zinc-400 text-left">Hub Exporters</span><span class="px-2 py-0.5 rounded-md bg-primary-500/10 text-primary-500 font-mono text-[10px] font-bold" x-text="`${exporters.length} ACTIVE`"></span></div><div class="flex items-center justify-between p-3 rounded-lg border transition-all text-left" :class="theme === 'light' ? 'bg-zinc-50 border-zinc-200 shadow-sm' : 'bg-white/5 border-white/5'"><span class="text-[10px] font-black uppercase tracking-widest text-zinc-400 text-left">OCI Containers</span><span class="px-2 py-0.5 rounded-md bg-primary-500/10 text-primary-500 font-mono text-[10px] font-bold" x-text="`${exporters.filter(e => e.artifacts?.docker?.enabled).length} IMAGES`"></span></div></div></div>
-                <div class="flex flex-col gap-6 text-left"><span class="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-500 text-left">02 / OS Coverage</span><div class="flex flex-col gap-2 text-left"><template x-for="dist in ['el8', 'el9', 'el10']"><div class="flex items-center justify-between p-3 rounded-lg border transition-all text-left" :class="theme === 'light' ? 'bg-zinc-50 border-zinc-200 shadow-sm' : 'bg-white/5 border-white/5'"><span class="text-[10px] font-black uppercase tracking-widest text-zinc-400 text-left" x-text="dist"></span><span class="px-2 py-0.5 rounded-md bg-primary-500/10 text-primary-500 font-mono text-[10px] font-bold text-left" x-text="`${exporters.filter(e => e.artifacts?.rpm?.targets?.includes(dist)).length} RPM`"></span></div></template></div></div>
-                <div class="flex flex-col gap-6 text-left"><span class="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-500 text-left">03 / Supported Arch</span><div class="flex flex-col gap-2 text-left"><div class="flex items-center justify-between p-3 rounded-lg border transition-all text-left" :class="theme === 'light' ? 'bg-zinc-50 border-zinc-200 shadow-sm' : 'bg-white/5 border-white/5'"><span class="text-[10px] font-black uppercase tracking-widest text-zinc-400 text-left">x86_64</span><i data-lucide="check" class="w-3 h-3 text-emerald-500"></i></div><div class="flex items-center justify-between p-3 rounded-xl border transition-all text-left" :class="theme === 'light' ? 'bg-zinc-50 border-zinc-200 shadow-sm' : 'bg-white/5 border-white/5'"><span class="text-[10px] font-black uppercase tracking-widest text-zinc-400 text-left">aarch64</span><i data-lucide="check" class="w-3 h-3 text-emerald-500"></i></div></div></div>
-                <div class="flex flex-col gap-6 text-left"><span class="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-500 text-left">04 / Vitality</span><div class="flex flex-col gap-2 text-left"><div class="flex items-center justify-between p-3 rounded-lg border transition-all text-left" :class="theme === 'light' ? 'bg-zinc-50 border-zinc-200 shadow-sm' : 'bg-white/5 border-white/5'"><span class="text-[10px] font-black uppercase tracking-widest text-zinc-400 text-left">Last Update</span><b class="text-primary-500 font-mono text-[10px] ml-4 truncate max-w-[120px] text-left" x-text="exporters[0]?.name || 'N/A'"></b></div><div class="flex items-center justify-between p-3 rounded-lg border transition-all text-left" :class="theme === 'light' ? 'bg-zinc-50 border-zinc-200 shadow-sm' : 'bg-white/5 border-white/5'"><span class="text-[10px] font-black uppercase tracking-widest text-zinc-400 text-left">Last Sync</span><b class="text-emerald-500 font-mono text-[10px] text-left" x-text="new Date().toLocaleDateString()"></b></div><div class="flex items-center justify-between p-3 rounded-lg border transition-all text-left" :class="theme === 'light' ? 'bg-zinc-50 border-zinc-200 shadow-sm' : 'bg-white/5 border-white/5'"><span class="text-[10px] font-black uppercase tracking-widest text-emerald-500 text-left">Certified Stable</span><span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span></div></div></div>
+    <footer class="py-32 transition-all overflow-hidden" :class="{ 'bg-zinc-50': theme === 'light', 'bg-dark-950': theme === 'deep', 'bg-black': theme === 'oled' }">
+        <div class="container mx-auto px-6 max-w-7xl">
+            <!-- Global Stats Bar -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-20">
+                <!-- Stat 01: Primary -->
+                <div class="p-10 rounded-[1.5rem] border border-white/5 bg-zinc-900/20 flex flex-col items-center justify-center text-center group transition-all hover:border-primary-500/30" 
+                     :class="theme === 'light' ? 'bg-white border-zinc-200 shadow-sm' : ''">
+                    <span class="text-5xl font-black tracking-tighter text-primary-500 mb-3" x-text="exporters.length"></span>
+                    <span class="text-[11px] font-black uppercase tracking-[0.3em] opacity-50">Factory Tools</span>
+                </div>
+                <!-- Stat 02: Primary + 30deg -->
+                <div class="p-10 rounded-[1.5rem] border border-white/5 bg-zinc-900/20 flex flex-col items-center justify-center text-center group transition-all hover:border-primary-500/30" 
+                     :style="`filter: hue-rotate(25deg)`"
+                     :class="theme === 'light' ? 'bg-white border-zinc-200 shadow-sm' : ''">
+                    <span class="text-5xl font-black tracking-tighter text-primary-500 mb-3" x-text="totalRPMs"></span>
+                    <span class="text-[11px] font-black uppercase tracking-[0.3em] opacity-50">Binary RPMs Ready</span>
+                </div>
+                <!-- Stat 03: Primary + 60deg -->
+                <div class="p-10 rounded-[1.5rem] border border-white/5 bg-zinc-900/20 flex flex-col items-center justify-center text-center group transition-all hover:border-primary-500/30" 
+                     :style="`filter: hue-rotate(50deg)`"
+                     :class="theme === 'light' ? 'bg-white border-zinc-200 shadow-sm' : ''">
+                    <span class="text-5xl font-black tracking-tighter text-primary-500 mb-3" x-text="totalOCI"></span>
+                    <span class="text-[11px] font-black uppercase tracking-[0.3em] opacity-50">OCI Images Pushed</span>
+                </div>
+                <!-- Stat 04: Primary + 90deg -->
+                <div class="p-10 rounded-[1.5rem] border border-white/5 bg-zinc-900/20 flex flex-col items-center justify-center text-center group transition-all hover:border-primary-500/30" 
+                     :style="`filter: hue-rotate(75deg)`"
+                     :class="theme === 'light' ? 'bg-white border-zinc-200 shadow-sm' : ''">
+                    <span class="text-5xl font-black tracking-tighter text-primary-500 mb-3" x-text="totalTargets"></span>
+                    <span class="text-[11px] font-black uppercase tracking-[0.3em] opacity-50">Build Matrix Integrity</span>
+                </div>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-8 gap-12 border-t border-zinc-100 dark:border-white/5 pt-20 text-left text-left">
-                <div class="space-y-6 flex flex-col md:items-start md:text-left md:col-span-2">
-                    <h4 class="text-[10px] font-black uppercase tracking-[0.4em] text-primary-500">Distribution</h4>
+
+            <!-- Main Footer Content -->
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-stretch">
+                <!-- Navigation Card -->
+                <div class="md:col-span-3 p-10 rounded-[1.5rem] border border-white/5 bg-zinc-900/20 space-y-8" :class="theme === 'light' ? 'bg-white border-zinc-200 shadow-sm' : ''">
+                    <h4 class="text-[10px] font-black uppercase tracking-[0.4em] text-primary-500">Explore</h4>
                     <ul class="space-y-4">
-                        <li class="flex items-center gap-3">
-                            <i data-lucide="database" class="w-4 h-4 text-zinc-600"></i>
-                            <div class="flex gap-2 text-[10px] font-black uppercase tracking-widest">
-                                <a href="https://sckyzo.github.io/monitoring-hub/el8/" target="_blank" @mouseenter="showTip($event, 'Browse EL8 Repository')" @mouseleave="hideTip()" class="hover:text-primary-500 transition-colors">EL8</a>
-                                <span class="text-zinc-800">/</span>
-                                <a href="https://sckyzo.github.io/monitoring-hub/el9/" target="_blank" @mouseenter="showTip($event, 'Browse EL9 Repository')" @mouseleave="hideTip()" class="hover:text-primary-500 transition-colors">EL9</a>
-                                <span class="text-zinc-800">/</span>
-                                <a href="https://sckyzo.github.io/monitoring-hub/el10/" target="_blank" @mouseenter="showTip($event, 'Browse EL10 Repository')" @mouseleave="hideTip()" class="hover:text-primary-500 transition-colors">EL10</a>
-                            </div>
-                        </li>
-                        <li>
-                            <a href="https://github.com/SckyzO?tab=packages&repo_name=monitoring-hub" target="_blank" @mouseenter="showTip($event, 'View Docker Images')" @mouseleave="hideTip()" class="group flex items-center gap-3 text-xs font-bold uppercase tracking-widest transition-all hover:text-primary-500">
-                                <i data-lucide="container" class="w-4 h-4 opacity-50 group-hover:opacity-100"></i> OCI Registry
-                            </a>
-                        </li>
-                        <li>
-                            <a href="https://github.com/SckyzO/monitoring-hub" target="_blank" @mouseenter="showTip($event, 'View Source Code')" @mouseleave="hideTip()" class="group flex items-center gap-3 text-xs font-bold uppercase tracking-widest transition-all hover:text-primary-500">
-                                <i data-lucide="github" class="w-4 h-4 opacity-50 group-hover:opacity-100"></i> Source Code
-                            </a>
-                        </li>
+                        <li><a href="#top" class="text-sm font-bold opacity-50 hover:opacity-100 hover:text-primary-500 transition-all flex items-center gap-3" :class="theme === 'light' ? 'text-zinc-900' : 'text-white'"><i data-lucide="arrow-up-right" class="w-4 h-4"></i> Factory Top</a></li>
+                        <li><a href="#manual" class="text-sm font-bold opacity-50 hover:opacity-100 hover:text-primary-500 transition-all flex items-center gap-3" :class="theme === 'light' ? 'text-zinc-900' : 'text-white'"><i data-lucide="book-open" class="w-4 h-4"></i> Specifications</a></li>
+                        <li><a href="https://github.com/SckyzO/monitoring-hub" target="_blank" class="text-sm font-bold opacity-50 hover:opacity-100 hover:text-primary-500 transition-all flex items-center gap-3" :class="theme === 'light' ? 'text-zinc-900' : 'text-white'"><i data-lucide="github" class="w-4 h-4"></i> Source Code</a></li>
                     </ul>
                 </div>
 
-                <div class="space-y-6 flex flex-col md:items-center md:text-center md:border-x border-zinc-100 dark:border-white/5 md:px-12 md:col-span-4">
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white bg-primary-600 shadow-lg shadow-primary-500/20">
-                            <i data-lucide="box" class="w-6 h-6"></i>
+                <!-- Brand Card -->
+                <div class="md:col-span-6 p-10 rounded-[1.5rem] border border-white/5 bg-zinc-900/20 flex flex-col items-center justify-center text-center space-y-8" :class="theme === 'light' ? 'bg-white border-zinc-200 shadow-sm' : ''">
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 rounded-2xl flex items-center justify-center text-white bg-primary-600 shadow-lg shadow-primary-500/20">
+                            <i data-lucide="box" class="w-8 h-8"></i>
                         </div>
-                        <span class="text-2xl font-black tracking-tighter uppercase italic" :class="theme === 'light' ? 'text-zinc-900' : 'text-white'">Exporter Factory</span>
+                        <span class="text-4xl font-black tracking-tighter uppercase italic text-white dark:text-white" :class="theme === 'light' ? 'text-zinc-900' : ''">Exporter Factory</span>
                     </div>
                     <p class="text-sm font-medium leading-relaxed opacity-60 max-w-md">
                         The definitive hub for Prometheus exporters. Automated builds, multi-arch support, and enterprise-grade distribution for modern observability stacks.
                     </p>
                 </div>
 
-                <div class="space-y-6 flex flex-col md:items-end md:text-right md:col-span-2">
-                    <h4 class="text-[10px] font-black uppercase tracking-[0.4em] text-primary-500">Maintainer</h4>
-                    <div class="inline-flex items-center gap-5 p-5 rounded-2xl border border-white/5 bg-white/[0.02] shadow-2xl transition-all"
-                         :class="theme === 'light' ? 'bg-zinc-50 border-zinc-200' : ''">
-                        <img src="https://avatars.githubusercontent.com/SckyzO" class="w-14 h-14 rounded-full border-2 border-primary-500/20 shadow-xl" alt="SckyzO">
-                        <div class="flex flex-col gap-1 text-left">
-                            <div>
+                <!-- Maintainer Card -->
+                <div class="md:col-span-3 p-10 rounded-[1.5rem] border border-white/5 bg-zinc-900/20 flex flex-col justify-between" :class="theme === 'light' ? 'bg-white border-zinc-200 shadow-sm' : ''">
+                    <h4 class="text-[10px] font-black uppercase tracking-[0.4em] text-primary-500 mb-6">Maintainer</h4>
+                    <div class="space-y-6">
+                        <div class="flex items-center gap-4">
+                            <img src="https://avatars.githubusercontent.com/SckyzO" class="w-14 h-14 rounded-full border-2 border-primary-500/20 shadow-xl" alt="SckyzO">
+                            <div class="text-left">
                                 <p class="text-sm font-black uppercase tracking-tighter" :class="theme === 'light' ? 'text-zinc-900' : 'text-white'">Thomas Bourcey</p>
-                                <p class="text-[9px] font-black text-primary-500 uppercase tracking-widest">Lead Factory Engineer</p>
+                                <p class="text-[9px] font-black text-primary-500 uppercase tracking-widest mt-1">Lead Factory Engineer</p>
                             </div>
-                            <div class="flex gap-3 mt-1">
-                                <a href="https://github.com/SckyzO" target="_blank" @mouseenter="showTip($event, 'GitHub Profile')" @mouseleave="hideTip()" class="w-8 h-8 rounded-xl flex items-center justify-center bg-white/5 hover:bg-primary-500/20 hover:text-primary-500 transition-all text-zinc-500" title="GitHub Profile">
-                                    <i data-lucide="github" class="w-4 h-4"></i>
-                                </a>
-                                <a href="https://www.linkedin.com/in/thomasbourcey/" target="_blank" @mouseenter="showTip($event, 'LinkedIn Profile')" @mouseleave="hideTip()" class="w-8 h-8 rounded-xl flex items-center justify-center bg-white/5 hover:bg-[#0a66c2]/20 hover:text-[#0a66c2] transition-all text-zinc-500" title="LinkedIn Profile">
-                                    <i data-lucide="linkedin" class="w-4 h-4"></i>
-                                </a>
-                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <a href="https://github.com/SckyzO" target="_blank" @mouseenter="showTip($event, 'GitHub Profile')" @mouseleave="hideTip()" class="w-10 h-10 rounded-xl flex items-center justify-center bg-white/5 hover:bg-primary-500/20 hover:text-primary-500 transition-all text-zinc-500 border border-white/5 shadow-lg"><i data-lucide="github" class="w-5 h-5"></i></a>
+                            <a href="https://www.linkedin.com/in/thomasbourcey/" target="_blank" @mouseenter="showTip($event, 'LinkedIn Profile')" @mouseleave="hideTip()" class="w-10 h-10 rounded-xl flex items-center justify-center bg-white/5 hover:bg-[#0a66c2]/20 hover:text-[#0a66c2] transition-all text-zinc-500 border border-white/5 shadow-lg"><i data-lucide="linkedin" class="w-5 h-5"></i></a>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="pt-12 mt-12 border-t border-zinc-100 dark:border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-left text-left">
-                <p class="text-[10px] font-bold text-zinc-600 uppercase tracking-[0.2em] font-mono text-left">Monitoring Hub Core {{ core_version }} | Portal Exporter Factory : {{ portal_version }}</p>
-                <p class="text-[10px] font-bold text-zinc-600 uppercase tracking-[0.2em] font-mono flex items-center gap-2 text-left text-left">
-                    Developed with <i data-lucide="heart" class="w-3 h-3 text-rose-500 fill-current text-left"></i> & <i data-lucide="bot" class="w-3.5 h-3.5 text-primary-500 text-left"></i> in 2026
+
+            <!-- Bottom Bar -->
+            <div class="pt-12 mt-20 border-t border-zinc-100 dark:border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
+                <p class="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.2em] font-mono">Monitoring Hub Core {{ core_version }} | Portal v{{ portal_version }}</p>
+                <p class="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.2em] font-mono flex items-center gap-2">
+                    Developed with <i data-lucide="heart" class="w-3 h-3 text-rose-500 fill-current"></i> & <i data-lucide="bot" class="w-3.5 h-3.5 text-primary-500"></i> in 2026
                 </p>
             </div>
         </div>
@@ -728,6 +737,19 @@
                     return items; 
                 },
                 get filteredItems() { return this.exporters.filter(item => { const s = this.search.toLowerCase(); return (item.name.toLowerCase().includes(s) || (item.description && item.description.toLowerCase().includes(s))) && (this.filterCategory === 'all' || item.category === this.filterCategory); }); },
+                get totalRPMs() { return this.exporters.filter(e => e.rpm_status === 'success').length; },
+                get totalOCI() { return this.exporters.filter(e => e.docker_status === 'success').length; },
+                get totalTargets() {
+                    let count = 0;
+                    this.exporters.forEach(e => {
+                        Object.values(e.availability || {}).forEach(dist => {
+                            Object.values(dist).forEach(arch => {
+                                if(arch.status === 'success') count++;
+                            });
+                        });
+                    });
+                    return count;
+                },
                 getIcon(catName) { const icons = { 'Database': 'database', 'System': 'cpu', 'Infrastructure': 'layers', 'Network': 'network', 'Storage': 'hard-drive', 'Messaging': 'message-square', 'Web': 'globe' }; return icons[catName] || 'box'; },
                 getCardClass() { if (this.theme === 'light') return 'bg-white border-zinc-200 shadow-sm'; if (this.theme === 'deep') return 'bg-dark-800 border-white/5 shadow-xl'; return 'bg-dark-900 border-white/5'; },
                 openDrawer(item) { 
