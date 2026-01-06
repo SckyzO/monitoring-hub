@@ -1534,7 +1534,7 @@
       "name": "snmp_exporter",
       "description": "Prometheus exporter for SNMP-enabled devices",
       "category": "Network",
-      "version": "0.29.0",
+      "version": "0.30.0",
       "updated": true,
       "upstream": {
         "type": "github",
@@ -1607,21 +1607,21 @@
         "el9": {
           "x86_64": {
             "status": "success",
-            "path": "el9/x86_64/snmp_exporter-v0.29.0-1.el9.x86_64.rpm"
+            "path": "el9/x86_64/snmp_exporter-v0.30.0-1.el9.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el9/aarch64/snmp_exporter-v0.29.0-1.el9.aarch64.rpm"
+            "path": "el9/aarch64/snmp_exporter-v0.30.0-1.el9.aarch64.rpm"
           }
         },
         "el10": {
           "x86_64": {
             "status": "success",
-            "path": "el10/x86_64/snmp_exporter-v0.29.0-1.el10.x86_64.rpm"
+            "path": "el10/x86_64/snmp_exporter-v0.30.0-1.el10.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el10/aarch64/snmp_exporter-v0.29.0-1.el10.aarch64.rpm"
+            "path": "el10/aarch64/snmp_exporter-v0.30.0-1.el10.aarch64.rpm"
           }
         }
       },
