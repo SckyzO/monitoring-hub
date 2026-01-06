@@ -1,6 +1,8 @@
 name: node_exporter
 description: Hardware and OS metrics exporter for Prometheus
+category: System
 version: v1.10.2
+updated: true
 upstream:
   type: github
   repo: prometheus/node_exporter

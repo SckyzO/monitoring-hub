@@ -1,28 +1,27 @@
-# Monitoring Hub 🕸️
+<div align="center">
+
+# Monitoring Hub <img src=".github/icons/factory-blue.svg" width="45" height="45" style="vertical-align: middle; margin-bottom: 8px;">
 
 **The definitive Software Factory for Prometheus Exporters.**
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Build and Publish](https://github.com/SckyzO/monitoring-hub/actions/workflows/release.yml/badge.svg)](https://github.com/SckyzO/monitoring-hub/actions/workflows/release.yml)
-[![Watcher - Scan Updates](https://github.com/SckyzO/monitoring-hub/actions/workflows/scan-updates.yml/badge.svg)](https://github.com/SckyzO/monitoring-hub/actions/workflows/scan-updates.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge&logo=opensourceinitiative)](https://opensource.org/licenses/MIT)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/release.yml?branch=main&label=Factory%20Build&style=for-the-badge&logo=githubactions)](https://github.com/SckyzO/monitoring-hub/actions/workflows/release.yml)
+[![Watcher](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/scan-updates.yml?branch=main&label=Watcher&style=for-the-badge&logo=github&color=blue)](https://github.com/SckyzO/monitoring-hub/actions/workflows/scan-updates.yml)
+
+<br>
+
+| <a href="https://sckyzo.github.io/monitoring-hub/"><img src=".github/icons/globe-blue.svg" width="24" height="24"><br><b>Explore Portal</b></a> | <a href="https://github.com/SckyzO/monitoring-hub/packages"><img src=".github/icons/container-amber.svg" width="24" height="24"><br><b>OCI Registry</b></a> | <a href="https://github.com/SckyzO/monitoring-hub/issues/new"><img src=".github/icons/bug-rose.svg" width="24" height="24"><br><b>Report Bug</b></a> | <a href="CHANGELOG.md"><img src=".github/icons/history-purple.svg" width="24" height="24"><br><b>Changelog</b></a> |
+| :---: | :---: | :---: | :---: |
+
+</div>
 
 ---
 
-### 🔗 Quick Links
-
-| Resource | Description | URL |
-| :--- | :--- | :--- |
-| **🌐 Web Portal** | Browser, Installation Guide, Dark Mode | [**sckyzo.github.io/monitoring-hub**](https://sckyzo.github.io/monitoring-hub/) |
-| **🐳 Docker Hub** | Container Registry (GHCR) | [**Packages List**](https://github.com/SckyzO/monitoring-hub/packages) |
-| **📜 Changelog** | Version history and updates | [**CHANGELOG.md**](CHANGELOG.md) |
-
----
-
-## 🎯 Project Goal
+## <img src=".github/icons/target-emerald.svg" width="24" height="24" style="vertical-align: bottom;"> Project Goal
 
 **Monitoring Hub** is an automated Factory that transforms simple YAML manifests into production-ready monitoring tools. It focuses on **Enterprise Standards**, **Multi-Architecture support**, and **Full Automation**.
 
-## 🚀 Key Features
+## <img src=".github/icons/rocket-amber.svg" width="24" height="24" style="vertical-align: bottom;"> Key Features
 
 *   **Native Multi-Arch:** Every tool is built for `x86_64` and `aarch64` (ARM64).
 *   **Hardened Security:** All Docker images use **Red Hat UBI 9 Minimal**.
@@ -32,75 +31,29 @@
 
 ---
 
-## 🛠️ Developer Guide: Adding an Exporter
+## <img src=".github/icons/hammer-red.svg" width="24" height="24" style="vertical-align: bottom;"> Developer Guide: Adding an Exporter
 
-Adding a new tool takes less than 5 minutes.
+Adding a new tool takes less than 1 minute using our CLI tool.
 
-### 1. Create the Directory
+### 1. Run the Creator Script
+We provide a helper script to scaffold a new exporter following the [Reference Manifest](manifest.reference.yaml).
+
 ```bash
-mkdir -p exporters/my_exporter/assets
+# Interactive mode
+./core/scripts/create_exporter.py
+
+# Or via arguments
+./core/scripts/create_exporter.py --name my_exporter --repo owner/repo --category System
 ```
 
-### 2. Create the `manifest.yaml`
-Define your tool's identity and requirements using the full schema below:
+This will automatically:
+- Create the directory structure (`exporters/my_exporter/`).
+- Generate a clean `manifest.yaml`.
+- Generate a standard `README.md`.
 
-```yaml
-name: my_exporter
-description: "Brief description of the tool"
-version: "1.0.0" # Watcher will update this automatically
-
-upstream:
-  type: github
-  repo: owner/repo
-  # Optional: Custom archive pattern if upstream uses non-standard naming
-  # Available vars: {name}, {version}, {clean_version}, {arch}, {rpm_arch}
-  # archive_name: "{name}_{version}_{arch}.tar.gz" 
-
-build:
-  method: binary_repack
-  binary_name: my_exporter
-  extra_binaries: [tool_helper] # Optional: other binaries to include from the archive
-  # Optional: Download external files not present in the release tarball
-  extra_sources:
-    - url: https://raw.githubusercontent.com/.../config.yml
-      filename: config.yml
-  # Optional: Restrict architectures if upstream doesn't support all
-  # archs: [amd64] 
-
-artifacts:
-  rpm:
-    enabled: true
-    targets: [el8, el9, el10]
-    system_user: my_user # Automates user/group creation
-    # Install files (local assets or downloaded extra_sources)
-    extra_files:
-      - source: assets/config.yml
-        dest: /etc/my_exporter/config.yml
-        config: true # Protects from overwrite on update (%config(noreplace))
-    # Create directories with permissions
-    directories:
-      - path: /var/lib/my_exporter
-        owner: my_user
-        group: my_user
-        mode: "0755"
-
-  docker:
-    enabled: true
-    # Default is UBI 9 Minimal, can be overridden but not recommended
-    # base_image: registry.access.redhat.com/ubi9/ubi-minimal
-    entrypoint: ["/usr/bin/my_exporter"]
-    cmd: ["--config=/etc/my_exporter/config.yml"]
-    # Automated image validation (smoke test)
-    # All enabled tests must pass for the validation to be successful.
-    # You can use port, command, or both.
-    validation:
-      enabled: true        # Set to false to skip all tests
-      port: 9100           # Checks if http://localhost:9100/metrics is reachable
-      command: "--version" # Custom command to validate.
-                           # This value is passed as an argument to the Docker ENTRYPOINT.
-                           # Example: if ENTRYPOINT is ["/usr/bin/exporter"]
-                           # then the test runs: /usr/bin/exporter --version
-```
+### 2. Customize `manifest.yaml`
+Edit the generated file to match specific needs (binary names, config files).
+See [manifest.reference.yaml](manifest.reference.yaml) for the full schema and all available options.
 
 ### 3. Add Optional Assets
 Place any configuration files or scripts in the `assets/` folder and reference them in the manifest.
@@ -173,7 +126,7 @@ If you need to debug a specific step:
 
 ---
 
-## 🏗️ Architecture
+## <img src=".github/icons/layers-purple.svg" width="24" height="24" style="vertical-align: bottom;"> Architecture
 
 The "Magic" happens in the `core/` engine:
 1.  **Smart Filter:** Compares local manifests against the deployed `catalog.json` (State Management) to only rebuild what changed.
@@ -184,7 +137,7 @@ The "Magic" happens in the `core/` engine:
 3.  **Templater:** Uses **Jinja2** (with auto-escape enabled) to render `.spec` files and `Dockerfiles`.
 4.  **Publisher:** A parallelized Matrix CI builds all targets and updates the YUM repository.
 
-## 📦 Distribution
+## <img src=".github/icons/package-cyan.svg" width="24" height="24" style="vertical-align: bottom;"> Distribution
 
 ### YUM Repository (RPM)
 ```bash
@@ -198,12 +151,12 @@ sudo dnf install <exporter_name>
 docker pull ghcr.io/sckyzo/monitoring-hub/<exporter_name>:latest
 ```
 
-## 🤝 Contributing
+## <img src=".github/icons/users-pink.svg" width="24" height="24" style="vertical-align: bottom;"> Contributing
 
 We welcome new exporters! Feel free to open a Pull Request following the guide above.
 
 ---
 
-## 📜 License
+## <img src=".github/icons/scale-slate.svg" width="24" height="24" style="vertical-align: bottom;"> License
 
 Distributed under the MIT License. See `LICENSE` for more information.

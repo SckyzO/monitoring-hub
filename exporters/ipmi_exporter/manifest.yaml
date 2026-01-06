@@ -1,5 +1,6 @@
 name: ipmi_exporter
 description: Prometheus exporter for IPMI devices
+category: System
 version: "v1.10.1"
 upstream:
   type: github

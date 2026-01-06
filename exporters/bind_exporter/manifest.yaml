@@ -1,5 +1,6 @@
 name: bind_exporter
 description: "Prometheus exporter for Bind (DNS) statistics"
+category: System
 version: "v0.8.0"
 
 upstream:

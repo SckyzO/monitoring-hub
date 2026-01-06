@@ -1,5 +1,6 @@
 name: textfile_exporter
 description: "Prometheus exporter for local text files metrics"
+category: System
 version: "v0.1.4"
 
 upstream:

@@ -1,5 +1,6 @@
 name: apache_exporter
 description: "Prometheus exporter for Apache HTTP Server"
+category: System
 version: "v1.0.10"
 
 upstream:
