@@ -1,18 +1,27 @@
-# Monitoring Hub: alertmanager
+# Alertmanager
 
-Enterprise-grade packaging of the official Prometheus Alertmanager.
+![Build Status](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/release.yml?label=Build)
+![Version](https://img.shields.io/github/v/release/prometheus/alertmanager?label=Upstream)
 
-## 🚀 Features
-- **Base Image:** Red Hat UBI 9 Minimal.
-- **Components:** Includes `alertmanager` and `amtool`.
-- **Pre-configured:** Default configuration path at `/etc/alertmanager/alertmanager.yml`.
+> Handle alerts and notifications for the Prometheus ecosystem.
 
-## 📦 Usage
+The Alertmanager handles alerts sent by client applications such as the Prometheus server. It takes care of deduplicating, grouping, and routing them to the correct receiver integration such as email, PagerDuty, or OpsGenie. It also takes care of silencing and inhibition of alerts.
 
+## 🚀 Installation
+
+### RPM (Enterprise Linux)
 ```bash
-docker pull ghcr.io/sckyzo/monitoring-hub/alertmanager:latest
-docker run -d -p 9093:9093 ghcr.io/sckyzo/monitoring-hub/alertmanager:latest
+sudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el9/$(arch)/
+sudo dnf install alertmanager
 ```
 
-## 🌐 Documentation
-See official documentation: [prometheus/alertmanager](https://github.com/prometheus/alertmanager)
+### Docker
+```bash
+docker pull ghcr.io/sckyzo/monitoring-hub/alertmanager:latest
+```
+
+## ⚙️ Configuration
+
+The default configuration file is located at `/etc/alertmanager/alertmanager.yml`.
+
+See upstream documentation: [prometheus/alertmanager](https://github.com/prometheus/alertmanager)
