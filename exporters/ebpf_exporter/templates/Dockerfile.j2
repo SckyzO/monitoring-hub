@@ -1,0 +1,21 @@
+FROM {{ artifacts.docker.base_image }}
+
+# Improve resilience and install dependencies required by ebpf_exporter
+RUN microdnf update -y && \
+    microdnf install -y elfutils-libelf hwdata && \
+    microdnf clean all
+
+# Create necessary directories
+RUN mkdir -p /etc/{{ name }} /var/lib/{{ name }} && \
+    chmod 777 /var/lib/{{ name }}
+
+# Copy main binary
+COPY {{ build.binary_name }} /usr/bin/{{ name }}
+
+WORKDIR /var/lib/{{ name }}
+
+ENTRYPOINT {{ artifacts.docker.entrypoint | tojson }}
+{% if artifacts.docker.cmd %}
+CMD {{ artifacts.docker.cmd | tojson }}
+{% endif %}
+
