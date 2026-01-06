@@ -1,7 +1,8 @@
 name: mysqld_exporter
 description: "Prometheus exporter for MySQL server metrics"
-category: System
+category: Database
 version: "v0.18.0"
+updated: true
 
 upstream:
   type: github
