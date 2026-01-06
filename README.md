@@ -34,73 +34,27 @@
 
 ## 🛠️ Developer Guide: Adding an Exporter
 
-Adding a new tool takes less than 5 minutes.
+Adding a new tool takes less than 1 minute using our CLI tool.
 
-### 1. Create the Directory
+### 1. Run the Creator Script
+We provide a helper script to scaffold a new exporter following the [Reference Manifest](manifest.reference.yaml).
+
 ```bash
-mkdir -p exporters/my_exporter/assets
+# Interactive mode
+./core/scripts/create_exporter.py
+
+# Or via arguments
+./core/scripts/create_exporter.py --name my_exporter --repo owner/repo --category System
 ```
 
-### 2. Create the `manifest.yaml`
-Define your tool's identity and requirements using the full schema below:
+This will automatically:
+- Create the directory structure (`exporters/my_exporter/`).
+- Generate a clean `manifest.yaml`.
+- Generate a standard `README.md`.
 
-```yaml
-name: my_exporter
-description: "Brief description of the tool"
-version: "1.0.0" # Watcher will update this automatically
-
-upstream:
-  type: github
-  repo: owner/repo
-  # Optional: Custom archive pattern if upstream uses non-standard naming
-  # Available vars: {name}, {version}, {clean_version}, {arch}, {rpm_arch}
-  # archive_name: "{name}_{version}_{arch}.tar.gz" 
-
-build:
-  method: binary_repack
-  binary_name: my_exporter
-  extra_binaries: [tool_helper] # Optional: other binaries to include from the archive
-  # Optional: Download external files not present in the release tarball
-  extra_sources:
-    - url: https://raw.githubusercontent.com/.../config.yml
-      filename: config.yml
-  # Optional: Restrict architectures if upstream doesn't support all
-  # archs: [amd64] 
-
-artifacts:
-  rpm:
-    enabled: true
-    targets: [el8, el9, el10]
-    system_user: my_user # Automates user/group creation
-    # Install files (local assets or downloaded extra_sources)
-    extra_files:
-      - source: assets/config.yml
-        dest: /etc/my_exporter/config.yml
-        config: true # Protects from overwrite on update (%config(noreplace))
-    # Create directories with permissions
-    directories:
-      - path: /var/lib/my_exporter
-        owner: my_user
-        group: my_user
-        mode: "0755"
-
-  docker:
-    enabled: true
-    # Default is UBI 9 Minimal, can be overridden but not recommended
-    # base_image: registry.access.redhat.com/ubi9/ubi-minimal
-    entrypoint: ["/usr/bin/my_exporter"]
-    cmd: ["--config=/etc/my_exporter/config.yml"]
-    # Automated image validation (smoke test)
-    # All enabled tests must pass for the validation to be successful.
-    # You can use port, command, or both.
-    validation:
-      enabled: true        # Set to false to skip all tests
-      port: 9100           # Checks if http://localhost:9100/metrics is reachable
-      command: "--version" # Custom command to validate.
-                           # This value is passed as an argument to the Docker ENTRYPOINT.
-                           # Example: if ENTRYPOINT is ["/usr/bin/exporter"]
-                           # then the test runs: /usr/bin/exporter --version
-```
+### 2. Customize `manifest.yaml`
+Edit the generated file to match specific needs (binary names, config files).
+See [manifest.reference.yaml](manifest.reference.yaml) for the full schema and all available options.
 
 ### 3. Add Optional Assets
 Place any configuration files or scripts in the `assets/` folder and reference them in the manifest.
