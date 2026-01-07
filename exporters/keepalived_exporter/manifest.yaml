@@ -1,0 +1,39 @@
+name: keepalived_exporter
+description: Prometheus exporter for Keepalived metrics.
+version: v1.7.0
+category: Network
+new: true
+updated: false
+upstream:
+  type: github
+  repo: mehdy/keepalived-exporter
+  strategy: latest_release
+  archive_name: 'keepalived-exporter_{clean_version}_linux_{arch}.tar.gz'
+build:
+  method: binary_repack
+  binary_name: keepalived-exporter
+  archs:
+  - amd64
+  - arm64
+  extra_binaries: []
+  extra_sources: []
+artifacts:
+  rpm:
+    enabled: true
+    targets:
+    - el8
+    - el9
+    - el10
+    summary: Prometheus exporter for Keepalived metrics.
+    service_file: true
+    dependencies: []
+    extra_files: []
+    directories: []
+  docker:
+    enabled: true
+    entrypoint:
+    - /usr/bin/keepalived-exporter
+    validation:
+      enabled: true
+      command: "--version"
+
