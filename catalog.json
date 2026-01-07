@@ -104,7 +104,7 @@
       "name": "apache_exporter",
       "description": "Prometheus exporter for Apache HTTP Server",
       "category": "Web",
-      "version": "1.0.10",
+      "version": "1.0.12",
       "updated": true,
       "upstream": {
         "type": "github",
@@ -150,11 +150,11 @@
         "el8": {
           "x86_64": {
             "status": "success",
-            "path": "el8/x86_64/apache_exporter-v1.0.10-1.el8.x86_64.rpm"
+            "path": "el8/x86_64/apache_exporter-v1.0.12-1.el8.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el8/aarch64/apache_exporter-v1.0.10-1.el8.aarch64.rpm"
+            "path": "el8/aarch64/apache_exporter-v1.0.12-1.el8.aarch64.rpm"
           }
         },
         "el9": {
@@ -164,13 +164,13 @@
           },
           "aarch64": {
             "status": "success",
-            "path": "el9/aarch64/apache_exporter-v1.0.10-1.el9.aarch64.rpm"
+            "path": "el9/aarch64/apache_exporter-v1.0.12-1.el9.aarch64.rpm"
           }
         },
         "el10": {
           "x86_64": {
             "status": "success",
-            "path": "el10/x86_64/apache_exporter-v1.0.10-1.el10.x86_64.rpm"
+            "path": "el10/x86_64/apache_exporter-v1.0.12-1.el10.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
@@ -185,7 +185,7 @@
       "name": "artifactory_exporter",
       "description": "Prometheus exporter for JFrog Artifactory stats.",
       "category": "DevOps",
-      "version": "1.15.1",
+      "version": "1.16.1",
       "new": true,
       "updated": false,
       "upstream": {
@@ -239,7 +239,7 @@
         "el9": {
           "x86_64": {
             "status": "success",
-            "path": "el9/x86_64/artifactory_exporter-v1.15.1-1.el9.x86_64.rpm"
+            "path": "el9/x86_64/artifactory_exporter-v1.16.1-1.el9.x86_64.rpm"
           },
           "aarch64": {
             "status": "failed",
@@ -249,7 +249,7 @@
         "el10": {
           "x86_64": {
             "status": "success",
-            "path": "el10/x86_64/artifactory_exporter-v1.15.1-1.el10.x86_64.rpm"
+            "path": "el10/x86_64/artifactory_exporter-v1.16.1-1.el10.x86_64.rpm"
           },
           "aarch64": {
             "status": "failed",
