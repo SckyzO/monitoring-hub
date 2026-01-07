@@ -132,6 +132,8 @@ build_rpm() {
     echo "------------------------------------------------"
     log_info "📦 Building RPM for ${BOLD}$dist_name${RESET}${BLUE}..."
     
+    mkdir -p "build/$EXPORTER/rpms/$dist_name"
+    
     if [ "$VERBOSE" = true ]; then
         ./core/scripts/build_rpm.sh "build/$EXPORTER/$EXPORTER.spec" "build/$EXPORTER/rpms/$dist_name" "$ARCH" "$dist_image"
     else
