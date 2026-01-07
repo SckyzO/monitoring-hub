@@ -1,66 +1,178 @@
 #!/bin/bash
 set -e
 
-# Usage: ./core/local_test.sh <exporter_name> [arch] [distro_image] [--smoke]
-# Example: ./core/local_test.sh node_exporter amd64 almalinux:9 --smoke
-
-EXPORTER=$1
-ARCH=${2:-amd64}
-# Check if argument 2 starts with -, if so, shift args
-if [[ "$ARCH" == -* ]]; then
-    ARCH="amd64"
-fi
-
-DISTRO=${3:-almalinux:9}
-if [[ "$DISTRO" == -* ]]; then
-    DISTRO="almalinux:9"
-fi
-
-# Simple argument parsing for flags
-RUN_SMOKE=false
-for arg in "$@"; do
-    if [ "$arg" == "--smoke" ] || [ "$arg" == "-s" ]; then
-        RUN_SMOKE=true
-    fi
-done
-
-if [ -z "$EXPORTER" ]; then
-    echo "Usage: $0 <exporter_name> [arch] [distro_image] [--smoke]"
-    echo "Example: $0 node_exporter --smoke"
-    exit 1
-fi
-
+# --- Configuration ---
+HOST_PORT=${HOST_PORT:-9999}
 PROJECT_ROOT=$(git rev-parse --show-toplevel)
-cd "$PROJECT_ROOT"
 
-# 1. Activate venv if exists
-if [ -f .venv/bin/activate ]; then
-    echo ">> Activating virtual environment..."
-    source .venv/bin/activate
-fi
+# --- Colors ---
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+BLUE='\033[0;34m'
+YELLOW='\033[1;33m'
+CYAN='\033[0;36m'
+BOLD='\033[1m'
+RESET='\033[0m'
 
-# 2. Generate Build Files
-echo "------------------------------------------------"
-echo ">> [1/3] Generating build files for $EXPORTER ($ARCH)..."
-export PYTHONPATH="$PROJECT_ROOT"
-python3 -m core.engine.builder --manifest "exporters/$EXPORTER/manifest.yaml" --arch "$ARCH" --output-dir "build/$EXPORTER"
+# --- State ---
+EXPORTER=""
+ARCH="amd64"
+DO_RPM_EL8=false
+DO_RPM_EL9=false
+DO_RPM_EL10=false
+DO_DOCKER=false
+DO_VALIDATE=false
+VERBOSE=false
+DEFAULT_MODE=true
 
-# 3. Build RPM
-echo "------------------------------------------------"
-echo ">> [2/3] Building RPM using $DISTRO..."
-./core/scripts/build_rpm.sh "build/$EXPORTER/$EXPORTER.spec" "build/$EXPORTER/rpms" "$ARCH" "$DISTRO"
+declare -A RESULTS
 
-# 4. Build Docker Image
-echo "------------------------------------------------"
-echo ">> [3/3] Building Docker image..."
-docker build -t "monitoring-hub/$EXPORTER:local" "build/$EXPORTER"
+# --- Functions ---
 
-# 5. Smoke Test (Validation)
-if [ "$RUN_SMOKE" = true ]; then
+usage() {
+    echo "Usage: $0 <exporter_name> [OPTIONS]"
+    echo ""
+    echo "Options:"
+    echo "  --el8        Build RPM for Enterprise Linux 8"
+    echo "  --el9        Build RPM for Enterprise Linux 9"
+    echo "  --el10       Build RPM for Enterprise Linux 10"
+    echo "  --docker     Build Docker image"
+    echo "  --validate   Run port/command validation tests"
+    echo "  --arch       Target architecture (default: amd64)"
+    echo "  --port       Host port for validation (default: 9999)"
+    echo "  --verbose    Show verbose output for builds"
+    echo ""
+    echo "Default behavior (if no build flags): Builds EL9 RPM + Docker"
+}
+
+log_info() { echo -e "${BLUE}$1${RESET}"; }
+log_success() { echo -e "${GREEN}$1${RESET}"; }
+log_warn() { echo -e "${YELLOW}$1${RESET}"; }
+log_error() { echo -e "${RED}$1${RESET}"; }
+
+run_cmd() {
+    local cmd="$@"
+    if [ "$VERBOSE" = true ]; then
+        eval "$cmd"
+    else
+        eval "$cmd" > /dev/null 2>&1
+    fi
+}
+
+parse_args() {
+    while [[ $# -gt 0 ]]; do
+        case $1 in
+            --el8)      DO_RPM_EL8=true; DEFAULT_MODE=false; shift ;;
+            --el9)      DO_RPM_EL9=true; DEFAULT_MODE=false; shift ;;
+            --el10)     DO_RPM_EL10=true; DEFAULT_MODE=false; shift ;;
+            --docker)   DO_DOCKER=true; DEFAULT_MODE=false; shift ;;
+            --validate|--check) DO_VALIDATE=true; shift ;;
+            --arch)     ARCH="$2"; shift; shift ;;
+            --port)     HOST_PORT="$2"; shift; shift ;;
+            --verbose)  VERBOSE=true; shift ;;
+            -h|--help)  usage; exit 0 ;;
+            *)
+                if [ -z "$EXPORTER" ]; then
+                    EXPORTER=$1
+                else
+                    log_error "Unknown argument: $1"
+                    exit 1
+                fi
+                shift
+                ;;
+        esac
+    done
+
+    if [ -z "$EXPORTER" ]; then
+        log_error "Error: Exporter name required."
+        usage
+        exit 1
+    fi
+
+    if [ "$DEFAULT_MODE" = true ]; then
+        DO_RPM_EL9=true
+        DO_DOCKER=true
+    fi
+}
+
+setup_env() {
+    cd "$PROJECT_ROOT"
+    if [ -f .venv/bin/activate ]; then
+        if [ "$VERBOSE" = true ]; then
+            log_info ">> Activating virtual environment..."
+        fi
+        source .venv/bin/activate
+    fi
+}
+
+generate_build_files() {
     echo "------------------------------------------------"
-    echo ">> [4/3] Running Smoke Tests..."
+    log_info "🔨 [1/X] Generating build files for ${BOLD}$EXPORTER${RESET}${BLUE} ($ARCH)..."
+    export PYTHONPATH="$PROJECT_ROOT"
+    
+    if [ "$VERBOSE" = true ]; then
+        python3 -m core.engine.builder --manifest "exporters/$EXPORTER/manifest.yaml" --arch "$ARCH" --output-dir "build/$EXPORTER"
+    else
+        python3 -m core.engine.builder --manifest "exporters/$EXPORTER/manifest.yaml" --arch "$ARCH" --output-dir "build/$EXPORTER" > /dev/null 2>&1
+    fi
 
-    # Extract validation config using python
+    if [ $? -eq 0 ]; then
+        RESULTS[SETUP]="✅ OK"
+    else
+        RESULTS[SETUP]="❌ FAIL"
+        log_error "Failed to generate build files. Run with --verbose for details."
+        exit 1
+    fi
+}
+
+build_rpm() {
+    local dist_name=$1
+    local dist_image=$2
+    
+    echo "------------------------------------------------"
+    log_info "📦 Building RPM for ${BOLD}$dist_name${RESET}${BLUE}..."
+    
+    if [ "$VERBOSE" = true ]; then
+        ./core/scripts/build_rpm.sh "build/$EXPORTER/$EXPORTER.spec" "build/$EXPORTER/rpms/$dist_name" "$ARCH" "$dist_image"
+    else
+        ./core/scripts/build_rpm.sh "build/$EXPORTER/$EXPORTER.spec" "build/$EXPORTER/rpms/$dist_name" "$ARCH" "$dist_image" > /dev/null 2>&1
+    fi
+
+    if [ $? -eq 0 ]; then
+        RESULTS["RPM $dist_name"]="✅ OK"
+    else
+        RESULTS["RPM $dist_name"]="❌ FAIL"
+        log_error "RPM build failed for $dist_name. Run with --verbose for details."
+        exit 1
+    fi
+}
+
+build_docker() {
+    echo "------------------------------------------------"
+    log_info "🐳 Building Docker image..."
+    
+    local build_cmd="docker build -t monitoring-hub/$EXPORTER:local build/$EXPORTER"
+    
+    if [ "$VERBOSE" = true ]; then
+        $build_cmd
+    else
+        $build_cmd > /dev/null 2>&1
+    fi
+
+    if [ $? -eq 0 ]; then
+        RESULTS["Docker Build"]="✅ OK"
+    else
+        RESULTS["Docker Build"]="❌ FAIL"
+        log_error "Docker build failed. Run with --verbose for details."
+        exit 1
+    fi
+}
+
+run_validation() {
+    echo "------------------------------------------------"
+    log_info "🔍 Running Validation Tests..."
+
+    # Extract validation config from manifest using Python
     VAL_CONFIG=$(export PYTHONPATH="$PROJECT_ROOT"; python3 -c "
 import yaml
 try:
@@ -78,55 +190,99 @@ except Exception as e:
     IFS='|' read -r V_ENABLED V_PORT V_CMD <<< "$VAL_CONFIG"
 
     if [ "$V_ENABLED" != "True" ]; then
-        echo "Creating smoke test skipped (disabled in manifest)."
-    else
-        IMAGE_ID="monitoring-hub/$EXPORTER:local"
-        
-        # Command Validation
-        if [ "$V_CMD" != "None" ]; then
-            echo "🚀 Validating with command: $V_CMD"
-            if docker run --rm "$IMAGE_ID" $V_CMD; then
-                echo "✅ Command validation PASSED!"
-            else
-                echo "❌ Command validation FAILED!"
-                exit 1
-            fi
-        fi
+        echo "Validation disabled in manifest."
+        RESULTS["Validation"]="⏭️ SKIPPED"
+        return
+    fi
 
-        # Port Validation
-        if [ "$V_PORT" != "None" ]; then
-            echo "🚀 Validating on port $V_PORT (mapped to localhost:9999)..."
-            CONTAINER_ID=$(docker run -d -p 9999:$V_PORT "$IMAGE_ID")
-            
-            # Give it a moment to start
-            sleep 2
-            
-            SUCCESS=false
-            for i in {1..5}; do
-                echo "Attempt $i: Checking http://localhost:9999/metrics..."
-                if curl -s --fail "http://localhost:9999/metrics" | grep -qiE "prometheus|exporter|metrics|# HELP|# TYPE" >/dev/null; then
-                    echo "✅ Port validation PASSED!"
-                    SUCCESS=true
-                    break
-                fi
-                sleep 2
-            done
-            
-            docker rm -f $CONTAINER_ID >/dev/null
-            
-            if [ "$SUCCESS" = false ]; then
-                echo "❌ Port validation FAILED!"
-                exit 1
-            fi
+    IMAGE_ID="monitoring-hub/$EXPORTER:local"
+    VALIDATION_PASSED=true
+    
+    # 1. Command Validation
+    if [ "$V_CMD" != "None" ]; then
+        echo "   🚀 Checking command: $V_CMD"
+        if docker run --rm "$IMAGE_ID" $V_CMD > /dev/null 2>&1; then
+            log_success "   ✅ Command check passed"
+        else
+            log_error "   ❌ Command check failed"
+            VALIDATION_PASSED=false
         fi
+    fi
+
+    # 2. Port Validation
+    if [ "$V_PORT" != "None" ]; then
+        echo "   🚀 Checking port metrics: $V_PORT (mapped to localhost:$HOST_PORT)..."
         
-        if [ "$V_CMD" == "None" ] && [ "$V_PORT" == "None" ]; then
-             echo "⚠️ No specific validation configured (port or command), but build succeeded."
+        # Ensure cleanup of previous container on same port
+        docker rm -f "test-${EXPORTER}" >/dev/null 2>&1 || true
+
+        CONTAINER_ID=$(docker run -d --name "test-${EXPORTER}" -p $HOST_PORT:$V_PORT "$IMAGE_ID")
+        
+        # Give container time to initialize
+        sleep 3
+        
+        PORT_SUCCESS=false
+        for i in {1..5}; do
+            if curl -s --fail "http://localhost:$HOST_PORT/metrics" | grep -qiE "prometheus|exporter|metrics|# HELP|# TYPE" >/dev/null;
+ then
+                PORT_SUCCESS=true
+                break
+            fi
+            sleep 2
+        done
+        
+        docker rm -f $CONTAINER_ID >/dev/null
+        
+        if [ "$PORT_SUCCESS" = true ]; then
+            log_success "   ✅ Metrics check passed"
+        else
+            log_error "   ❌ Metrics check failed (timeout or invalid response)"
+            VALIDATION_PASSED=false
         fi
+    fi
+    
+    if [ "$VALIDATION_PASSED" = true ]; then
+        RESULTS["Validation"]="✅ PASS"
+    else
+        RESULTS["Validation"]="❌ FAIL"
+        exit 1
+    fi
+}
+
+print_summary() {
+    echo ""
+    echo "=========================================="
+    echo -e "${BOLD}📊 Test Summary for ${CYAN}$EXPORTER${RESET}"
+    echo "=========================================="
+    for key in "${!RESULTS[@]}"; do
+        printf "% -20s %b\n" "$key" "${RESULTS[$key]}"
+    done
+    echo "=========================================="
+    echo ""
+
+    if [ "$DO_DOCKER" = true ]; then
+        echo -e "🐳 Image: ${YELLOW}monitoring-hub/$EXPORTER:local${RESET}"
+    fi
+    echo ""
+}
+
+# --- Main Execution ---
+
+parse_args "$@"
+setup_env
+RESULTS[SETUP]="PENDING"
+
+generate_build_files
+
+if [ "$DO_RPM_EL8" = true ]; then build_rpm "el8" "almalinux:8"; fi
+if [ "$DO_RPM_EL9" = true ]; then build_rpm "el9" "almalinux:9"; fi
+if [ "$DO_RPM_EL10" = true ]; then build_rpm "el10" "almalinux:10"; fi
+
+if [ "$DO_DOCKER" = true ]; then
+    build_docker
+    if [ "$DO_VALIDATE" = true ]; then
+        run_validation
     fi
 fi
 
-echo "------------------------------------------------"
-echo "✅ SUCCESS: All local tests passed for $EXPORTER."
-echo "   RPM: build/$EXPORTER/rpms"
-echo "   Docker: monitoring-hub/$EXPORTER:local"
+print_summary
