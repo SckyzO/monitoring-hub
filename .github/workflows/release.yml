@@ -123,6 +123,7 @@ jobs:
           v_enabled=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(m.get('artifacts', {}).get('docker', {}).get('validation', {}).get('enabled', True))")
           v_port=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(m.get('artifacts', {}).get('docker', {}).get('validation', {}).get('port', 'None'))")
           v_cmd=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(m.get('artifacts', {}).get('docker', {}).get('validation', {}).get('command', 'None'))")
+          v_args=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(m.get('artifacts', {}).get('docker', {}).get('validation', {}).get('args', 'None'))")
           
           if [ "$v_enabled" != "True" ]; then
             echo "Smoke test disabled for $exporter."
@@ -159,7 +160,14 @@ jobs:
           # 2. Port-based validation
           if [ "$v_port" != "None" ]; then
               echo "🚀 Validating $image_id on port $v_port..."
-              container_id=$(docker run -d -p 9999:$v_port $image_id)
+              
+              run_args=""
+              if [ "$v_args" != "None" ]; then
+                 run_args="$v_args"
+                 echo "   With arguments: $run_args"
+              fi
+
+              container_id=$(docker run -d -p 9999:$v_port $image_id $run_args)
               
               # Retry loop (max 10 seconds)
               success=false
