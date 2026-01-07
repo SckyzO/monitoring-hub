@@ -1,0 +1,38 @@
+name: memcached_exporter
+description: Prometheus exporter for Memcached metrics.
+version: v0.15.4
+category: Database
+new: true
+updated: false
+upstream:
+  type: github
+  repo: prometheus/memcached_exporter
+  archive_name: null
+build:
+  method: binary_repack
+  binary_name: memcached_exporter
+  archs:
+  - amd64
+  - arm64
+  extra_binaries: []
+  extra_sources: []
+artifacts:
+  rpm:
+    enabled: true
+    targets:
+    - el8
+    - el9
+    - el10
+    summary: Prometheus exporter for Memcached metrics.
+    service_file: true
+    dependencies: []
+    extra_files: []
+    directories: []
+  docker:
+    enabled: true
+    entrypoint:
+    - /usr/bin/memcached_exporter
+    validation:
+      enabled: true
+      port: 9150
+    cmd: []
