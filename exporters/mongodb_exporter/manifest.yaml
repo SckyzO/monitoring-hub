@@ -1,0 +1,38 @@
+name: mongodb_exporter
+description: MongoDB exporter for Prometheus.
+version: v0.47.2
+category: Database
+new: true
+updated: false
+upstream:
+  type: github
+  repo: percona/mongodb_exporter
+  archive_name: null
+build:
+  method: binary_repack
+  binary_name: mongodb_exporter
+  archs:
+  - amd64
+  - arm64
+  extra_binaries: []
+  extra_sources: []
+artifacts:
+  rpm:
+    enabled: true
+    targets:
+    - el8
+    - el9
+    - el10
+    summary: MongoDB exporter for Prometheus.
+    service_file: true
+    dependencies: []
+    extra_files: []
+    directories: []
+  docker:
+    enabled: true
+    entrypoint:
+    - /usr/bin/mongodb_exporter
+    validation:
+      enabled: true
+      command: "--version"
+    cmd: []
