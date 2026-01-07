@@ -2,16 +2,14 @@
 import click
 import yaml
 import requests
-import re
+import shutil
+import subprocess
+import json
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 EXPORTERS_DIR = PROJECT_ROOT / "exporters"
 REFERENCE_FILE = PROJECT_ROOT / "manifest.reference.yaml"
-
-import shutil
-import subprocess
-import json
 
 def get_github_info(repo_name):
     """
@@ -88,8 +86,7 @@ def get_github_info(repo_name):
              # Default pattern node_exporter-1.0.0.linux-amd64.tar.gz
              pass
         elif "ebpf_exporter" in sample_asset and "linux" not in sample_asset:
-             # Special case for ebpf_exporter style (no linux in name) if needed, 
-             # but usually we want to match the tarball if available.
+             # Special case for ebpf_exporter style (no linux in name) if needed
              pass
 
     return {
@@ -134,43 +131,67 @@ def create(name, repo, category, description, show_created_files):
         if archive_name:
             click.secho(f"   -> Suggested pattern: {archive_name}", fg="blue")
 
-    # Load reference to ensure structure compliance (if possible), or use a clean dict structure
-    # Here we define the clean structure based on the reference
-    manifest = {
+    # Load reference manifest to use as a base structure
+    try:
+        with open(REFERENCE_FILE, 'r') as f:
+            manifest = yaml.safe_load(f)
+    except Exception as e:
+        click.secho(f"⚠️ Failed to load reference manifest: {e}", fg="red")
+        return
+
+    # 1. Update Identity & Metadata
+    manifest.update({
         "name": name,
         "description": description,
         "category": category,
         "version": version,
         "new": True,
-        "upstream": {
-            "type": "github",
-            "repo": repo,
-            "strategy": "latest_release"
-        },
-        "build": {
-            "method": "binary_repack",
-            "binary_name": name,
-            "archs": archs
-        },
-        "artifacts": {
-            "rpm": {
-                "enabled": True,
-                "targets": ["el8", "el9", "el10"],
-                "service_file": True
-            },
-            "docker": {
-                "enabled": True,
-                "entrypoint": [f"/usr/bin/{name}"],
-                "validation": {
-                    "enabled": True,
-                    "command": "--version"
-                }
-            }
+        "updated": False
+    })
+
+    # 2. Update Upstream
+    manifest["upstream"].update({
+        "repo": repo,
+        "archive_name": archive_name
+    })
+
+    # 3. Update Build
+    manifest["build"].update({
+        "binary_name": name,
+        "archs": archs,
+        # Reset optional lists to empty
+        "extra_binaries": [], 
+        "extra_sources": []
+    })
+
+    # 4. Update Artifacts - RPM
+    manifest["artifacts"]["rpm"].update({
+        "enabled": True,
+        "summary": description,
+        "targets": ["el8", "el9", "el10"],
+        # Reset optional complex fields
+        "dependencies": [],
+        "extra_files": [],
+        "directories": [],
+        "system_user": None
+    })
+
+    # 5. Update Artifacts - Docker
+    manifest["artifacts"]["docker"].update({
+        "enabled": True,
+        "entrypoint": [f"/usr/bin/{name}"],
+        # Reset cmd
+        "cmd": [],
+        # Reset validation
+        "validation": {
+            "enabled": True,
+            "command": "--version"
         }
-    }
+    })
     
-    if archive_name:
-        manifest["upstream"]["archive_name"] = archive_name
+    # Remove keys that are explicitly None
+    if manifest["artifacts"]["rpm"]["system_user"] is None:
+        del manifest["artifacts"]["rpm"]["system_user"]
 
     manifest_path = exporter_dir / "manifest.yaml"
     with open(manifest_path, "w") as f:
@@ -219,3 +240,6 @@ See upstream documentation: [{repo}](https://github.com/{repo})
 
     click.secho(f"\n⚠️  Please verify the detected version/archs manually:", fg="yellow")
     click.echo(f"   gh release view -R {repo} --json tagName,assets")
+
+if __name__ == '__main__':
+    create()
