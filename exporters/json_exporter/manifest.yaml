@@ -1,0 +1,43 @@
+name: json_exporter
+description: A prometheus exporter which scrapes remote JSON by JSONPath.
+version: v0.7.0
+category: Messaging
+new: true
+updated: false
+upstream:
+  type: github
+  repo: prometheus-community/json_exporter
+  archive_name: null
+build:
+  method: binary_repack
+  binary_name: json_exporter
+  archs:
+  - amd64
+  - arm64
+  extra_binaries: []
+  extra_sources: []
+artifacts:
+  rpm:
+    enabled: true
+    targets:
+    - el8
+    - el9
+    - el10
+    summary: A prometheus exporter which scrapes remote JSON by JSONPath.
+    service_file: true
+    dependencies: []
+    extra_files:
+    - source: assets/config.yml
+      dest: /etc/json_exporter/config.yml
+      mode: '0644'
+    directories:
+    - path: /etc/json_exporter
+      mode: '0755'
+  docker:
+    enabled: true
+    entrypoint:
+    - /usr/bin/json_exporter
+    validation:
+      enabled: true
+      port: 7979
+    cmd: []
