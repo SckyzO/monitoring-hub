@@ -66,7 +66,7 @@ parse_args() {
             --el9)      DO_RPM_EL9=true; DEFAULT_MODE=false; shift ;;
             --el10)     DO_RPM_EL10=true; DEFAULT_MODE=false; shift ;;
             --docker)   DO_DOCKER=true; DEFAULT_MODE=false; shift ;;
-            --validate|--check) DO_VALIDATE=true; shift ;;
+            --validate|--check|--smoke) DO_VALIDATE=true; shift ;;
             --arch)     ARCH="$2"; shift; shift ;;
             --port)     HOST_PORT="$2"; shift; shift ;;
             --verbose)  VERBOSE=true; shift ;;

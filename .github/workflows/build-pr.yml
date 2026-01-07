@@ -57,4 +57,4 @@ jobs:
         run: |
           chmod +x core/scripts/*.sh
           # On utilise node_exporter comme "Canary" pour valider la chaîne
-          ./core/scripts/local_test.sh node_exporter --smoke
+          ./core/scripts/local_test.sh node_exporter --validate
