@@ -1,0 +1,39 @@
+name: nats_exporter
+description: NATS metrics exporter for Prometheus.
+version: v0.18.0
+category: Messaging
+new: true
+updated: false
+upstream:
+  type: github
+  repo: nats-io/prometheus-nats-exporter
+  strategy: latest_release
+  archive_name: 'prometheus-nats-exporter-v{clean_version}-linux-{rpm_arch}.tar.gz'
+build:
+  method: binary_repack
+  binary_name: prometheus-nats-exporter
+  archs:
+  - amd64
+  - arm64
+  extra_binaries: []
+  extra_sources: []
+artifacts:
+  rpm:
+    enabled: true
+    targets:
+    - el8
+    - el9
+    - el10
+    summary: NATS metrics exporter for Prometheus.
+    service_file: true
+    dependencies: []
+    extra_files: []
+    directories: []
+  docker:
+    enabled: true
+    entrypoint:
+    - /usr/bin/nats_exporter
+    validation:
+      enabled: true
+      port: 7777
+      args: '-varz http://localhost:8222'

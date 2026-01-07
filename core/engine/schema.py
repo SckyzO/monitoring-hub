@@ -27,6 +27,7 @@ class ValidationSchema(Schema):
     enabled = fields.Bool(load_default=True)
     port = fields.Int(allow_none=True)
     command = fields.Str(allow_none=True)
+    args = fields.Str(allow_none=True)
 
 class DockerSchema(Schema):
     enabled = fields.Bool(load_default=False)

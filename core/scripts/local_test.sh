@@ -184,12 +184,13 @@ try:
         enabled = val.get('enabled', True)
         port = val.get('port', 'None')
         cmd = val.get('command', 'None')
-        print(f'{enabled}|{port}|{cmd}')
+        args = val.get('args', 'None')
+        print(f'{enabled}|{port}|{cmd}|{args}')
 except Exception as e:
-    print('True|None|None')
+    print('True|None|None|None')
 ")
 
-    IFS='|' read -r V_ENABLED V_PORT V_CMD <<< "$VAL_CONFIG"
+    IFS='|' read -r V_ENABLED V_PORT V_CMD V_ARGS <<< "$VAL_CONFIG"
 
     if [ "$V_ENABLED" != "True" ]; then
         echo "Validation disabled in manifest."
@@ -200,7 +201,7 @@ except Exception as e:
     IMAGE_ID="monitoring-hub/$EXPORTER:local"
     VALIDATION_PASSED=true
     
-    # 1. Command Validation
+    # 1. Command Validation (One-shot command)
     if [ "$V_CMD" != "None" ]; then
         echo "   🚀 Checking command: $V_CMD"
         if docker run --rm "$IMAGE_ID" $V_CMD > /dev/null 2>&1; then
@@ -211,36 +212,53 @@ except Exception as e:
         fi
     fi
 
-    # 2. Port Validation
+    # 2. Port Validation (Server mode)
     if [ "$V_PORT" != "None" ]; then
         echo "   🚀 Checking port metrics: $V_PORT (mapped to localhost:$HOST_PORT)..."
         
         # Ensure cleanup of previous container on same port
         docker rm -f "test-${EXPORTER}" >/dev/null 2>&1 || true
 
-        CONTAINER_ID=$(docker run -d --name "test-${EXPORTER}" -p $HOST_PORT:$V_PORT "$IMAGE_ID")
+        # Prepare run command with optional args
+        RUN_ARGS=""
+        if [ "$V_ARGS" != "None" ]; then
+            RUN_ARGS="$V_ARGS"
+            echo "      With arguments: $RUN_ARGS"
+        fi
+
+        # Start container detached
+        CONTAINER_ID=$(docker run -d --name "test-${EXPORTER}" -p $HOST_PORT:$V_PORT "$IMAGE_ID" $RUN_ARGS)
         
         # Give container time to initialize
         sleep 3
         
-        PORT_SUCCESS=false
-        for i in {1..5}; do
-            if curl -s --fail "http://localhost:$HOST_PORT/metrics" | grep -qiE "prometheus|exporter|metrics|# HELP|# TYPE" >/dev/null;
+        # Check if container is still running
+        if ! docker ps -q -f id=$CONTAINER_ID >/dev/null; then
+             log_error "   ❌ Container died immediately. Logs:"
+             docker logs $CONTAINER_ID
+             VALIDATION_PASSED=false
+        else
+            PORT_SUCCESS=false
+            for i in {1..5}; do
+                if curl -s --fail "http://localhost:$HOST_PORT/metrics" | grep -qiE "prometheus|exporter|metrics|# HELP|# TYPE" >/dev/null;
  then
-                PORT_SUCCESS=true
-                break
+                    PORT_SUCCESS=true
+                    break
+                fi
+                sleep 2
+            done
+            
+            if [ "$PORT_SUCCESS" = true ]; then
+                log_success "   ✅ Metrics check passed"
+            else
+                log_error "   ❌ Metrics check failed (timeout or invalid response)"
+                echo "      Last container logs:"
+                docker logs $CONTAINER_ID | tail -n 5
+                VALIDATION_PASSED=false
             fi
-            sleep 2
-        done
+        fi
         
         docker rm -f $CONTAINER_ID >/dev/null
-        
-        if [ "$PORT_SUCCESS" = true ]; then
-            log_success "   ✅ Metrics check passed"
-        else
-            log_error "   ❌ Metrics check failed (timeout or invalid response)"
-            VALIDATION_PASSED=false
-        fi
     fi
     
     if [ "$VALIDATION_PASSED" = true ]; then
