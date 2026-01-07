@@ -1,0 +1,11 @@
+FROM {{ artifacts.docker.base_image }}
+
+# Create necessary directories
+RUN mkdir -p /etc/{{ name }} /var/lib/{{ name }}
+
+# Copy main binary
+COPY {{ build.binary_name }} /usr/bin/{{ build.binary_name }}
+
+WORKDIR /var/lib/{{ name }}
+
+ENTRYPOINT {{ artifacts.docker.entrypoint | tojson }}
