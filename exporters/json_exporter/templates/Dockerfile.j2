@@ -1,0 +1,14 @@
+FROM {{ artifacts.docker.base_image }}
+
+# Create necessary directories
+RUN mkdir -p /etc/{{ name }} /var/lib/{{ name }}
+
+# Copy main binary
+COPY {{ build.binary_name }} /usr/bin/{{ name }}
+
+# Copy default configuration
+COPY config.yml /etc/{{ name }}/config.yml
+
+WORKDIR /var/lib/{{ name }}
+
+ENTRYPOINT ["/usr/bin/{{ name }}", "--config.file", "/etc/{{ name }}/config.yml"]
