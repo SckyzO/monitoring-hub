@@ -1,0 +1,12 @@
+FROM {{ artifacts.docker.base_image }}
+
+# Create necessary directories
+RUN mkdir -p /etc/{{ name }} /var/lib/{{ name }}
+
+# Copy main binary
+COPY {{ build.binary_name }} /usr/bin/{{ name }}
+
+WORKDIR /var/lib/{{ name }}
+
+# FRR image already has its entrypoint, we override it to run the exporter
+ENTRYPOINT {{ artifacts.docker.entrypoint | tojson }}

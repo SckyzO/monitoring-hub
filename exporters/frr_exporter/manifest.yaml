@@ -1,0 +1,39 @@
+name: frr_exporter
+description: Prometheus exporter for FRR metrics.
+version: v1.9.0
+category: Network
+new: true
+updated: false
+upstream:
+  type: github
+  repo: tynany/frr_exporter
+  archive_name: null
+build:
+  method: binary_repack
+  binary_name: frr_exporter
+  archs:
+  - amd64
+  - arm64
+  extra_binaries: []
+  extra_sources: []
+artifacts:
+  rpm:
+    enabled: true
+    summary: Prometheus exporter for FRR metrics.
+    targets:
+    - el8
+    - el9
+    - el10
+    service_file: true
+    system_user: frr_exporter
+    dependencies:
+    - frr
+  docker:
+    enabled: true
+    base_image: quay.io/frrouting/frr:10.1.3
+    entrypoint:
+    - /usr/bin/frr_exporter
+    validation:
+      enabled: true
+      port: 9342
+    cmd: []
