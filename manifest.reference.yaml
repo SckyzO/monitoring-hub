@@ -114,7 +114,7 @@ artifacts:
     entrypoint: ["/usr/bin/reference_exporter"]
     # cmd: ["--config.file=/etc/reference/config.yml"]
 
-    # [REQUIRED] Automated Validation (Smoke Tests)
+    # [REQUIRED] Automated Validation (Local Tests)
     # These tests run immediately after build to ensure the image is functional.
     validation:
       enabled: true               # Master switch for validation.
@@ -127,3 +127,8 @@ artifacts:
       # Runs a specific command inside the container and expects exit code 0.
       # Useful for checking version output.
       # command: "--version"
+
+      # [OPTIONAL] Container Arguments
+      # Arguments passed to the container when running Port Check.
+      # Useful if the exporter requires specific flags to start its web server.
+      # args: "-varz http://localhost:8222"

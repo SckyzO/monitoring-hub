@@ -1,0 +1,11 @@
+FROM {{ artifacts.docker.base_image }}
+
+# Create necessary directories
+RUN mkdir -p /etc/{{ name }} /var/lib/{{ name }}
+
+# Copy main binary and rename it to match exporter name
+COPY {{ build.binary_name }} /usr/bin/{{ name }}
+
+WORKDIR /var/lib/{{ name }}
+
+ENTRYPOINT ["/usr/bin/{{ name }}"]
