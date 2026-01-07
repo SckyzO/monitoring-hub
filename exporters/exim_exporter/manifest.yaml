@@ -1,0 +1,39 @@
+name: exim_exporter
+description: Prometheus exporter for Exim mail server metrics.
+version: v1.6.2
+category: Messaging
+new: true
+updated: false
+upstream:
+  type: github
+  repo: gvengel/exim_exporter
+  archive_name: '{name}_{clean_version}_linux_{arch}.tar.gz'
+build:
+  method: binary_repack
+  binary_name: exim_exporter
+  archs:
+  - amd64
+  - arm64
+  extra_binaries: []
+  extra_sources: []
+artifacts:
+  rpm:
+    enabled: true
+    targets:
+    - el8
+    - el9
+    - el10
+    summary: Prometheus exporter for Exim mail server metrics.
+    service_file: true
+    system_user: exim_exporter
+    dependencies: []
+    extra_files: []
+    directories: []
+  docker:
+    enabled: true
+    entrypoint:
+    - /usr/bin/exim_exporter
+    validation:
+      enabled: true
+      port: 9636
+    cmd: []
