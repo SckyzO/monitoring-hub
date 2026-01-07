@@ -182,11 +182,11 @@ def create(name, repo, category, description, show_created_files):
         "entrypoint": [f"/usr/bin/{name}"],
         # Reset cmd
         "cmd": [],
-    # Validation
-    manifest["artifacts"]["docker"]["validation"] = {
-        "enabled": True,
-        "port": 9100 # Default to port check
-    }
+        # Validation (Port-based by default as requested)
+        "validation": {
+            "enabled": True,
+            "port": 9100
+        }
     })
     
     # Remove keys that are explicitly None
