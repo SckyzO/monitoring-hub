@@ -1,0 +1,31 @@
+name: elasticsearch_exporter
+description: Prometheus exporter for various metrics about Elasticsearch.
+category: Database
+version: v1.10.0
+new: true
+upstream:
+  type: github
+  repo: prometheus-community/elasticsearch_exporter
+  strategy: latest_release
+build:
+  method: binary_repack
+  binary_name: elasticsearch_exporter
+  archs:
+  - amd64
+  - arm64
+artifacts:
+  rpm:
+    enabled: true
+    summary: "Prometheus exporter for various metrics about Elasticsearch"
+    targets:
+    - el8
+    - el9
+    - el10
+    service_file: true
+  docker:
+    enabled: true
+    entrypoint:
+    - /usr/bin/elasticsearch_exporter
+    validation:
+      enabled: true
+      command: --version
