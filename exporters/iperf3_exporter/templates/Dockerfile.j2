@@ -1,0 +1,29 @@
+# --- stage 1: resolver (AlmaLinux has full AppStream)
+FROM almalinux:9 AS resolver
+
+# Download iperf3 and all its dependencies (x86_64 only to avoid i686)
+RUN dnf -y install dnf-plugins-core && \
+    mkdir -p /rpms && \
+    dnf download --resolve --arch x86_64 --destdir=/rpms iperf3
+
+# --- stage 2: runtime (UBI minimal)
+FROM {{ artifacts.docker.base_image }}
+
+# Install basic dependencies available in UBI
+RUN microdnf install -y ca-certificates lksctp-tools && \
+    microdnf clean all
+
+# Install RPMs downloaded from Alma
+COPY --from=resolver /rpms /rpms
+RUN rpm -Uvh --force --nodeps /rpms/*.rpm && \
+    rm -rf /rpms
+
+# Create necessary directories
+RUN mkdir -p /etc/{{ name }} /var/lib/{{ name }}
+
+# Copy main binary
+COPY {{ build.binary_name }} /usr/bin/{{ name }}
+
+WORKDIR /var/lib/{{ name }}
+
+ENTRYPOINT {{ artifacts.docker.entrypoint | tojson }}
