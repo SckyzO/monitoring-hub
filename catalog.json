@@ -27,7 +27,9 @@
             "el10"
           ],
           "summary": "Prometheus Alertmanager",
-          "service_file": true,
+          "systemd": {
+            "enabled": true
+          },
           "system_user": "alertmanager",
           "extra_files": [
             {
@@ -124,7 +126,9 @@
             "el10"
           ],
           "system_user": "apache_exporter",
-          "service_file": true,
+          "systemd": {
+            "enabled": true
+          },
           "extra_files": [],
           "directories": [
             {
@@ -211,7 +215,9 @@
             "el10"
           ],
           "system_user": "artifactory_exporter",
-          "service_file": true
+          "systemd": {
+            "enabled": true
+          }
         },
         "docker": {
           "enabled": true,
@@ -284,7 +290,9 @@
             "el10"
           ],
           "system_user": "bind_exporter",
-          "service_file": true,
+          "systemd": {
+            "enabled": true
+          },
           "extra_files": [],
           "directories": [
             {
@@ -365,7 +373,9 @@
             "el10"
           ],
           "system_user": "blackbox_exporter",
-          "service_file": true,
+          "systemd": {
+            "enabled": true
+          },
           "extra_files": [
             {
               "source": "assets/blackbox.yml",
@@ -467,7 +477,9 @@
             "el10"
           ],
           "system_user": "collectd_exporter",
-          "service_file": true
+          "systemd": {
+            "enabled": true
+          }
         },
         "docker": {
           "enabled": true,
@@ -545,7 +557,9 @@
             "el10"
           ],
           "system_user": "dellhw_exporter",
-          "service_file": true
+          "systemd": {
+            "enabled": true
+          }
         },
         "docker": {
           "enabled": true,
@@ -625,7 +639,9 @@
             "el10"
           ],
           "system_user": "domain_exporter",
-          "service_file": true
+          "systemd": {
+            "enabled": true
+          }
         },
         "docker": {
           "enabled": true,
@@ -707,7 +723,9 @@
             "elfutils-libelf",
             "hwdata"
           ],
-          "service_file": true
+          "systemd": {
+            "enabled": true
+          }
         },
         "docker": {
           "enabled": true,
@@ -784,7 +802,9 @@
             "el9",
             "el10"
           ],
-          "service_file": true
+          "systemd": {
+            "enabled": true
+          }
         },
         "docker": {
           "enabled": true,
@@ -858,7 +878,9 @@
             "el10"
           ],
           "summary": "Prometheus exporter for E-Series",
-          "service_file": true,
+          "systemd": {
+            "enabled": true
+          },
           "system_user": "prometheus",
           "extra_files": [
             {
@@ -957,7 +979,9 @@
             "el10"
           ],
           "summary": "Prometheus exporter for Exim mail server metrics.",
-          "service_file": true,
+          "systemd": {
+            "enabled": true
+          },
           "system_user": "exim_exporter",
           "dependencies": [],
           "extra_files": [],
@@ -1042,7 +1066,9 @@
             "el9",
             "el10"
           ],
-          "service_file": true,
+          "systemd": {
+            "enabled": true
+          },
           "system_user": "frr_exporter",
           "dependencies": [
             "frr"
@@ -1124,7 +1150,9 @@
             "el10"
           ],
           "summary": "Prometheus exporter for IBM GPFS",
-          "service_file": true,
+          "systemd": {
+            "enabled": true
+          },
           "system_user": "prometheus"
         },
         "docker": {
@@ -1199,7 +1227,9 @@
             "el10"
           ],
           "summary": "Prometheus HA Cluster Exporter",
-          "service_file": true,
+          "systemd": {
+            "enabled": true
+          },
           "system_user": "prometheus"
         },
         "docker": {
@@ -1281,7 +1311,9 @@
             "el10"
           ],
           "summary": "Prometheus exporter for iPerf3 metrics.",
-          "service_file": true,
+          "systemd": {
+            "enabled": true
+          },
           "dependencies": [
             "iperf3"
           ]
@@ -1361,7 +1393,9 @@
             "freeipmi"
           ],
           "system_user": "ipmi_exporter",
-          "service_file": true,
+          "systemd": {
+            "enabled": true
+          },
           "extra_files": [
             {
               "source": "assets/ipmi_remote.yml",
@@ -1464,7 +1498,9 @@
             "el10"
           ],
           "summary": "A prometheus exporter which scrapes remote JSON by JSONPath.",
-          "service_file": true,
+          "systemd": {
+            "enabled": true
+          },
           "dependencies": [],
           "extra_files": [
             {
@@ -1560,7 +1596,9 @@
             "el10"
           ],
           "summary": "Prometheus exporter for Keepalived metrics.",
-          "service_file": true,
+          "systemd": {
+            "enabled": true
+          },
           "dependencies": [],
           "extra_files": [],
           "directories": []
@@ -1643,7 +1681,9 @@
             "el10"
           ],
           "summary": "Prometheus exporter for Memcached metrics.",
-          "service_file": true,
+          "systemd": {
+            "enabled": true
+          },
           "dependencies": [],
           "extra_files": [],
           "directories": []
@@ -1727,7 +1767,9 @@
             "el10"
           ],
           "summary": "MongoDB exporter for Prometheus.",
-          "service_file": true,
+          "systemd": {
+            "enabled": true
+          },
           "dependencies": [],
           "extra_files": [],
           "directories": []
@@ -1804,7 +1846,9 @@
             "el10"
           ],
           "system_user": "mysqld_exporter",
-          "service_file": true,
+          "systemd": {
+            "enabled": true
+          },
           "extra_files": [
             {
               "source": "assets/my.cnf",
@@ -1903,7 +1947,9 @@
             "el10"
           ],
           "summary": "NATS metrics exporter for Prometheus.",
-          "service_file": true,
+          "systemd": {
+            "enabled": true
+          },
           "dependencies": [],
           "extra_files": [],
           "directories": []
@@ -1981,7 +2027,9 @@
             "el10"
           ],
           "system_user": "nginx_exporter",
-          "service_file": true,
+          "systemd": {
+            "enabled": true
+          },
           "extra_files": [],
           "directories": [
             {
@@ -2062,7 +2110,9 @@
             "el10"
           ],
           "summary": "Prometheus exporter for hardware and OS metrics",
-          "service_file": true
+          "systemd": {
+            "enabled": true
+          }
         },
         "docker": {
           "enabled": true,
@@ -2136,7 +2186,9 @@
             "el10"
           ],
           "summary": "Prometheus exporter for ICMP ping metrics",
-          "service_file": true,
+          "systemd": {
+            "enabled": true
+          },
           "system_user": "prometheus",
           "extra_files": [
             {
@@ -2312,7 +2364,9 @@
             "el10"
           ],
           "summary": "Prometheus exporter for process metrics",
-          "service_file": true,
+          "systemd": {
+            "enabled": true
+          },
           "system_user": "prometheus"
         },
         "docker": {
@@ -2388,7 +2442,9 @@
             "el10"
           ],
           "summary": "The Prometheus monitoring system and time series database.",
-          "service_file": true,
+          "systemd": {
+            "enabled": true
+          },
           "system_user": "prometheus",
           "extra_files": [
             {
@@ -2486,7 +2542,9 @@
             "el10"
           ],
           "system_user": "redis_exporter",
-          "service_file": true,
+          "systemd": {
+            "enabled": true
+          },
           "extra_files": [],
           "directories": [
             {
@@ -2569,7 +2627,9 @@
             "el10"
           ],
           "summary": "Prometheus exporter for Slurm metrics",
-          "service_file": true,
+          "systemd": {
+            "enabled": true
+          },
           "system_user": "prometheus"
         },
         "docker": {
@@ -2643,7 +2703,9 @@
             "el10"
           ],
           "summary": "Prometheus exporter for S.M.A.R.T. metrics",
-          "service_file": true,
+          "systemd": {
+            "enabled": true
+          },
           "system_user": "root"
         },
         "docker": {
@@ -2723,7 +2785,9 @@
             "el10"
           ],
           "summary": "Prometheus exporter for SNMP metrics",
-          "service_file": true,
+          "systemd": {
+            "enabled": true
+          },
           "system_user": "prometheus",
           "extra_files": [
             {
@@ -2816,7 +2880,9 @@
             "el10"
           ],
           "system_user": "textfile_exporter",
-          "service_file": true,
+          "systemd": {
+            "enabled": true
+          },
           "extra_files": [],
           "directories": [
             {
