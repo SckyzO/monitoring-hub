@@ -20,7 +20,8 @@ artifacts:
     dependencies:
     - freeipmi
     system_user: ipmi_exporter
-    service_file: true
+    systemd:
+      enabled: true
     extra_files:
     - source: assets/ipmi_remote.yml
       dest: /etc/ipmi_exporter/ipmi_remote.yml

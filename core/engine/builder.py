@@ -181,6 +181,10 @@ def build(manifest, output_dir, arch):
         download_and_extract(data, output_dir, arch)
         download_extra_sources(data, output_dir)
 
+        # Normalize version for artifacts (RPM, Docker)
+        # We lstrip 'v' to respect packaging standards
+        data['version'] = data['version'].lstrip('v')
+
         # 2. Build RPM Spec
         artifacts = data.get('artifacts', {})
         if artifacts.get('rpm', {}).get('enabled'):

@@ -25,7 +25,8 @@ artifacts:
     dependencies:
     - elfutils-libelf
     - hwdata
-    service_file: true
+    systemd:
+      enabled: true
   docker:
     enabled: true
     entrypoint:

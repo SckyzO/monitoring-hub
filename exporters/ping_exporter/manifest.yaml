@@ -16,7 +16,8 @@ artifacts:
     enabled: true
     targets: [el8, el9, el10]
     summary: Prometheus exporter for ICMP ping metrics
-    service_file: true
+    systemd:
+      enabled: true
     system_user: prometheus
     extra_files:
       - source: assets/ping.yml

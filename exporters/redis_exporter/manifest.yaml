@@ -19,7 +19,8 @@ artifacts:
     summary: "Prometheus Redis Exporter"
     targets: [el8, el9, el10]
     system_user: redis_exporter
-    service_file: true
+    systemd:
+      enabled: true
     extra_files: []
     directories:
       - path: /var/lib/redis_exporter

@@ -70,16 +70,22 @@ artifacts:
     
     summary: "..."                # [OPTIONAL] Short summary for RPM metadata. Defaults to description.
     
+    install_path: null            # [OPTIONAL] Custom installation directory (e.g., /usr/sbin). 
+                                  # Default: /usr/bin (%{_bindir}).
+
     # [OPTIONAL] System User
     # If set, the build process will automatically:
     # 1. Create this user/group on install.
     # 2. Assign ownership of defined directories to this user.
     system_user: my_service_user
 
-    # [OPTIONAL] Systemd Service
-    # If true, a default systemd service file is generated.
-    # To customize it, provide `exporters/<name>/assets/<name>.service`.
-    service_file: true
+    # [OPTIONAL] Modern Systemd Management
+    systemd:
+      enabled: true               # Set to true to generate and install a systemd service.
+      arguments: []               # [OPTIONAL] List of CLI arguments for ExecStart.
+      after: [network.target]     # [OPTIONAL] Units to start after.
+      restart: on-failure         # [OPTIONAL] Restart policy.
+      type: simple                # [OPTIONAL] Service type.
 
     # [OPTIONAL] Runtime Dependencies
     # List of RPM packages required by the exporter.

@@ -13,12 +13,20 @@ class DirectorySchema(Schema):
     owner = fields.Str(load_default="root")
     group = fields.Str(load_default="root")
 
+class SystemdSchema(Schema):
+    enabled = fields.Bool(load_default=False)
+    arguments = fields.List(fields.Str(), load_default=[])
+    after = fields.List(fields.Str(), load_default=["network.target"])
+    restart = fields.Str(load_default="on-failure")
+    type = fields.Str(load_default="simple")
+
 class RPMSchema(Schema):
     enabled = fields.Bool(load_default=False)
     targets = fields.List(fields.Str(), load_default=SUPPORTED_DISTROS)
     summary = fields.Str()
+    install_path = fields.Str(allow_none=True)
     dependencies = fields.List(fields.Str(), load_default=[])
-    service_file = fields.Bool(load_default=False)
+    systemd = fields.Nested(SystemdSchema, load_default={"enabled": False})
     system_user = fields.Str(allow_none=True)
     extra_files = fields.List(fields.Nested(FileInstallSchema), load_default=[])
     directories = fields.List(fields.Nested(DirectorySchema), load_default=[])

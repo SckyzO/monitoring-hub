@@ -18,7 +18,8 @@ artifacts:
     summary: "Prometheus MySQL Exporter"
     targets: [el8, el9, el10]
     system_user: mysqld_exporter
-    service_file: true
+    systemd:
+      enabled: true
     extra_files:
       - source: assets/my.cnf
         dest: /var/lib/mysqld_exporter/.my.cnf

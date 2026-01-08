@@ -24,7 +24,8 @@ artifacts:
     - el9
     - el10
     summary: Prometheus exporter for Exim mail server metrics.
-    service_file: true
+    systemd:
+      enabled: true
     system_user: exim_exporter
     dependencies: []
     extra_files: []
