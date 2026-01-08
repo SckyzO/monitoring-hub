@@ -757,6 +757,83 @@
       "docker_status": "success"
     },
     {
+      "name": "elasticsearch_exporter",
+      "description": "Prometheus exporter for various metrics about Elasticsearch.",
+      "category": "Database",
+      "version": "1.10.0",
+      "new": true,
+      "upstream": {
+        "type": "github",
+        "repo": "prometheus-community/elasticsearch_exporter",
+        "strategy": "latest_release"
+      },
+      "build": {
+        "method": "binary_repack",
+        "binary_name": "elasticsearch_exporter",
+        "archs": [
+          "amd64",
+          "arm64"
+        ]
+      },
+      "artifacts": {
+        "rpm": {
+          "enabled": true,
+          "summary": "Prometheus exporter for various metrics about Elasticsearch",
+          "targets": [
+            "el8",
+            "el9",
+            "el10"
+          ],
+          "service_file": true
+        },
+        "docker": {
+          "enabled": true,
+          "entrypoint": [
+            "/usr/bin/elasticsearch_exporter"
+          ],
+          "validation": {
+            "enabled": true,
+            "command": "--version"
+          }
+        }
+      },
+      "readme": "# Elasticsearch Exporter\n\n![Build Status](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/release.yml?label=Build)\n![Version](https://img.shields.io/github/v/release/prometheus-community/elasticsearch_exporter?label=Upstream)\n\n> Prometheus exporter for various metrics about Elasticsearch.\n\n## \ud83d\ude80 Installation\n\n### RPM (Enterprise Linux)\n```bash\nsudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el9/$(arch)/ \nsudo dnf install elasticsearch_exporter\n```\n\n### Docker\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/elasticsearch_exporter:latest\n```\n\n## \u2699\ufe0f Configuration\n\nBy default, the exporter connects to `http://localhost:9200`.\n\n### Basic Usage\nTo configure the Elasticsearch URI, use the `--es.uri` flag:\n\n```bash\n# /etc/default/elasticsearch_exporter or systemd service override\nOPTIONS=\"--es.uri=http://elasticsearch.example.com:9200\"\n```\n\n### Authentication\nIf your cluster requires authentication, include it in the URI:\n```bash\nOPTIONS=\"--es.uri=https://user:password@elasticsearch.example.com:9200\"\n```\n\n### Metrics\nSome metrics are disabled by default to reduce load. Enable them as needed:\n```bash\nOPTIONS=\"--es.uri=http://localhost:9200 --es.all --es.indices\"\n```\n\nSee upstream documentation: [prometheus-community/elasticsearch_exporter](https://github.com/prometheus-community/elasticsearch_exporter)\n",
+      "availability": {
+        "el8": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el9": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el10": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        }
+      },
+      "rpm_status": "failed",
+      "docker_status": "success"
+    },
+    {
       "name": "eseries_exporter",
       "description": "Prometheus exporter for NetApp/Lenovo E-Series storage systems",
       "category": "Storage",
@@ -847,6 +924,177 @@
         }
       },
       "rpm_status": "success",
+      "docker_status": "success"
+    },
+    {
+      "name": "exim_exporter",
+      "description": "Prometheus exporter for Exim mail server metrics.",
+      "version": "1.6.2",
+      "category": "Messaging",
+      "new": true,
+      "updated": false,
+      "upstream": {
+        "type": "github",
+        "repo": "gvengel/exim_exporter",
+        "archive_name": "{name}_{clean_version}_linux_{arch}.tar.gz"
+      },
+      "build": {
+        "method": "binary_repack",
+        "binary_name": "exim_exporter",
+        "archs": [
+          "amd64",
+          "arm64"
+        ],
+        "extra_binaries": [],
+        "extra_sources": []
+      },
+      "artifacts": {
+        "rpm": {
+          "enabled": true,
+          "targets": [
+            "el8",
+            "el9",
+            "el10"
+          ],
+          "summary": "Prometheus exporter for Exim mail server metrics.",
+          "service_file": true,
+          "system_user": "exim_exporter",
+          "dependencies": [],
+          "extra_files": [],
+          "directories": []
+        },
+        "docker": {
+          "enabled": true,
+          "entrypoint": [
+            "/usr/bin/exim_exporter"
+          ],
+          "validation": {
+            "enabled": true,
+            "port": 9636
+          },
+          "cmd": []
+        }
+      },
+      "readme": "# Exim Exporter\n\n![Build Status](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/release.yml?label=Build)\n![Version](https://img.shields.io/github/v/release/gvengel/exim_exporter?label=Upstream)\n\n> Prometheus exporter for Exim mail server metrics.\n\n## \ud83d\ude80 Installation\n\n### RPM (Enterprise Linux)\n```bash\nsudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el9/$(arch)/ \nsudo dnf install exim_exporter\nsudo systemctl enable --now exim_exporter\n```\n\n### Docker\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/exim_exporter:latest\n```\n\n## \u2699\ufe0f Configuration\n\nThe exporter needs permissions to run `exim` commands or read spool directories.\n\n### Basic Usage\nThe RPM installs a systemd service running as `exim_exporter`. You may need to add this user to the `exim` group or configure sudoers if direct queue access is required.\n\n```bash\n# /etc/default/exim_exporter\nOPTIONS=\"--exim.input-path=/var/spool/exim/input\"\n```\n\n### Metrics\nBy default, it exposes metrics on port `9636`.\n\nSee upstream documentation: [gvengel/exim_exporter](https://github.com/gvengel/exim_exporter)\n",
+      "availability": {
+        "el8": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el9": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el10": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        }
+      },
+      "rpm_status": "failed",
+      "docker_status": "success"
+    },
+    {
+      "name": "frr_exporter",
+      "description": "Prometheus exporter for FRR metrics.",
+      "version": "1.9.0",
+      "category": "Network",
+      "new": true,
+      "updated": false,
+      "upstream": {
+        "type": "github",
+        "repo": "tynany/frr_exporter",
+        "archive_name": null
+      },
+      "build": {
+        "method": "binary_repack",
+        "binary_name": "frr_exporter",
+        "archs": [
+          "amd64",
+          "arm64"
+        ],
+        "extra_binaries": [],
+        "extra_sources": []
+      },
+      "artifacts": {
+        "rpm": {
+          "enabled": true,
+          "summary": "Prometheus exporter for FRR metrics.",
+          "targets": [
+            "el8",
+            "el9",
+            "el10"
+          ],
+          "service_file": true,
+          "system_user": "frr_exporter",
+          "dependencies": [
+            "frr"
+          ]
+        },
+        "docker": {
+          "enabled": true,
+          "base_image": "quay.io/frrouting/frr:10.1.3",
+          "entrypoint": [
+            "/usr/bin/frr_exporter"
+          ],
+          "validation": {
+            "enabled": true,
+            "port": 9342
+          },
+          "cmd": []
+        }
+      },
+      "readme": "# Frr Exporter\n\n![Build Status](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/release.yml?label=Build)\n![Version](https://img.shields.io/github/v/release/tynany/frr_exporter?label=Upstream)\n\n> Prometheus exporter for FRR metrics.\n\n## \ud83d\ude80 Installation\n\n### RPM (Enterprise Linux)\n```bash\nsudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el9/$(arch)/ \nsudo dnf install frr_exporter\nsudo systemctl enable --now frr_exporter\n```\n\n### Docker\nThis exporter uses a custom Docker image based on `quay.io/frrouting/frr:10.1.3` to ensure compatibility with FRR tools.\n\nTo allow the exporter to access FRR sockets, you must mount the socket directory:\n\n```bash\ndocker run -d \\\n  -p 9342:9342 \\\n  -v /var/run/frr:/var/run/frr:ro \\\n  ghcr.io/sckyzo/monitoring-hub/frr_exporter:latest\n```\n\n## \u2699\ufe0f Configuration\n\nThe exporter connects to FRR daemon sockets (default `/var/run/frr`).\n\n### Permissions\nThe user running the exporter (`frr_exporter`) must have access to the FRR socket directory.\nEnsure the user is part of the `frr` or `frrvty` group:\n\n```bash\nsudo usermod -a -G frr,frrvty frr_exporter\n```\n\n### Collectors\nMany BGP-specific collectors are disabled by default to improve performance. You can enable them via flags:\n\n```bash\n# /etc/default/frr_exporter\nOPTIONS=\"--collector.bgp.peer-types --collector.bgp.peer-descriptions\"\n```\n\nSee upstream documentation: [tynany/frr_exporter](https://github.com/tynany/frr_exporter)\n",
+      "availability": {
+        "el8": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el9": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el10": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        }
+      },
+      "rpm_status": "failed",
       "docker_status": "success"
     },
     {
@@ -1002,6 +1250,91 @@
       "docker_status": "success"
     },
     {
+      "name": "iperf3_exporter",
+      "description": "Prometheus exporter for iPerf3 metrics.",
+      "version": "1.3.1",
+      "category": "Network",
+      "new": true,
+      "updated": false,
+      "upstream": {
+        "type": "github",
+        "repo": "edgard/iperf3_exporter",
+        "strategy": "latest_release",
+        "archive_name": "{name}-{version}-linux-{arch}.tar.gz"
+      },
+      "build": {
+        "method": "binary_repack",
+        "binary_name": "iperf3_exporter",
+        "archs": [
+          "amd64",
+          "arm64"
+        ],
+        "extra_binaries": [],
+        "extra_sources": []
+      },
+      "artifacts": {
+        "rpm": {
+          "enabled": true,
+          "targets": [
+            "el8",
+            "el9",
+            "el10"
+          ],
+          "summary": "Prometheus exporter for iPerf3 metrics.",
+          "service_file": true,
+          "dependencies": [
+            "iperf3"
+          ]
+        },
+        "docker": {
+          "enabled": true,
+          "entrypoint": [
+            "/usr/bin/iperf3_exporter"
+          ],
+          "validation": {
+            "enabled": true,
+            "port": 9579
+          },
+          "cmd": []
+        }
+      },
+      "readme": "# Iperf3 Exporter\n\n![Build Status](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/release.yml?label=Build)\n![Version](https://img.shields.io/github/v/release/edgard/iperf3_exporter?label=Upstream)\n\n> Prometheus exporter for iPerf3 metrics.\n\n## \ud83d\ude80 Installation\n\n### RPM (Enterprise Linux)\n```bash\nsudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el9/$(arch)/ \nsudo dnf install iperf3_exporter iperf3\nsudo systemctl enable --now iperf3_exporter\n```\n\n### Docker\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/iperf3_exporter:latest\n```\n\n## \u2699\ufe0f Configuration\n\nThe exporter requires `iperf3` to be installed on the system (included as an RPM dependency).\n\n### Metrics\nBy default, it exposes metrics on port `9579`.\n\nSee upstream documentation: [edgard/iperf3_exporter](https://github.com/edgard/iperf3_exporter)\n",
+      "availability": {
+        "el8": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el9": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el10": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        }
+      },
+      "rpm_status": "failed",
+      "docker_status": "success"
+    },
+    {
       "name": "ipmi_exporter",
       "description": "Prometheus exporter for IPMI devices",
       "category": "Infrastructure",
@@ -1101,6 +1434,353 @@
       "docker_status": "success"
     },
     {
+      "name": "json_exporter",
+      "description": "A prometheus exporter which scrapes remote JSON by JSONPath.",
+      "version": "0.7.0",
+      "category": "Messaging",
+      "new": true,
+      "updated": false,
+      "upstream": {
+        "type": "github",
+        "repo": "prometheus-community/json_exporter",
+        "archive_name": null
+      },
+      "build": {
+        "method": "binary_repack",
+        "binary_name": "json_exporter",
+        "archs": [
+          "amd64",
+          "arm64"
+        ],
+        "extra_binaries": [],
+        "extra_sources": []
+      },
+      "artifacts": {
+        "rpm": {
+          "enabled": true,
+          "targets": [
+            "el8",
+            "el9",
+            "el10"
+          ],
+          "summary": "A prometheus exporter which scrapes remote JSON by JSONPath.",
+          "service_file": true,
+          "dependencies": [],
+          "extra_files": [
+            {
+              "source": "assets/config.yml",
+              "dest": "/etc/json_exporter/config.yml",
+              "mode": "0644"
+            }
+          ],
+          "directories": [
+            {
+              "path": "/etc/json_exporter",
+              "mode": "0755"
+            }
+          ]
+        },
+        "docker": {
+          "enabled": true,
+          "entrypoint": [
+            "/usr/bin/json_exporter"
+          ],
+          "validation": {
+            "enabled": true,
+            "port": 7979
+          },
+          "cmd": []
+        }
+      },
+      "readme": "# Json Exporter\n\n![Build Status](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/release.yml?label=Build)\n![Version](https://img.shields.io/github/v/release/prometheus-community/json_exporter?label=Upstream)\n\n> A prometheus exporter which scrapes remote JSON by JSONPath.\n\n## \ud83d\ude80 Installation\n\n### RPM (Enterprise Linux)\n```bash\nsudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el9/$(arch)/ \nsudo dnf install json_exporter\nsudo systemctl enable --now json_exporter\n```\n\n### Docker\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/json_exporter:latest\n```\n\n## \u2699\ufe0f Configuration\n\nThe exporter requires a configuration file to define how to parse the JSON data.\n\n### Metrics\nBy default, it exposes metrics on port `7979`.\n\n### Usage example\n```bash\njson_exporter --config.file config.yml\n```\n\nSee upstream documentation: [prometheus-community/json_exporter](https://github.com/prometheus-community/json_exporter)\n",
+      "availability": {
+        "el8": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el9": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el10": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        }
+      },
+      "rpm_status": "failed",
+      "docker_status": "success"
+    },
+    {
+      "name": "keepalived_exporter",
+      "description": "Prometheus exporter for Keepalived metrics.",
+      "version": "1.7.0",
+      "category": "Network",
+      "new": true,
+      "updated": false,
+      "upstream": {
+        "type": "github",
+        "repo": "mehdy/keepalived-exporter",
+        "strategy": "latest_release",
+        "archive_name": "keepalived-exporter_{clean_version}_linux_{arch}.tar.gz"
+      },
+      "build": {
+        "method": "binary_repack",
+        "binary_name": "keepalived-exporter",
+        "archs": [
+          "amd64",
+          "arm64"
+        ],
+        "extra_binaries": [],
+        "extra_sources": []
+      },
+      "artifacts": {
+        "rpm": {
+          "enabled": true,
+          "targets": [
+            "el8",
+            "el9",
+            "el10"
+          ],
+          "summary": "Prometheus exporter for Keepalived metrics.",
+          "service_file": true,
+          "dependencies": [],
+          "extra_files": [],
+          "directories": []
+        },
+        "docker": {
+          "enabled": true,
+          "entrypoint": [
+            "/usr/bin/keepalived-exporter"
+          ],
+          "validation": {
+            "enabled": true,
+            "command": "--version"
+          }
+        }
+      },
+      "readme": "# Keepalived Exporter\n\n![Build Status](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/release.yml?label=Build)\n![Version](https://img.shields.io/github/v/release/mehdy/keepalived-exporter?label=Upstream)\n\n> Prometheus exporter for Keepalived metrics.\n\n## \ud83d\ude80 Installation\n\n### RPM (Enterprise Linux)\n```bash\nsudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el9/$(arch)/ \nsudo dnf install keepalived_exporter\nsudo systemctl enable --now keepalived_exporter\n```\n\n### Docker\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/keepalived_exporter:latest\n```\n\n## \u2699\ufe0f Configuration\n\nThe exporter can scrape metrics from Keepalived running on the host or in a container.\n\n### Metrics\nBy default, it exposes metrics on port `9165`.\n\nSee upstream documentation: [mehdy/keepalived-exporter](https://github.com/mehdy/keepalived-exporter)\n",
+      "availability": {
+        "el8": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el9": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el10": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        }
+      },
+      "rpm_status": "failed",
+      "docker_status": "success"
+    },
+    {
+      "name": "memcached_exporter",
+      "description": "Prometheus exporter for Memcached metrics.",
+      "version": "0.15.4",
+      "category": "Database",
+      "new": true,
+      "updated": false,
+      "upstream": {
+        "type": "github",
+        "repo": "prometheus/memcached_exporter",
+        "archive_name": null
+      },
+      "build": {
+        "method": "binary_repack",
+        "binary_name": "memcached_exporter",
+        "archs": [
+          "amd64",
+          "arm64"
+        ],
+        "extra_binaries": [],
+        "extra_sources": []
+      },
+      "artifacts": {
+        "rpm": {
+          "enabled": true,
+          "targets": [
+            "el8",
+            "el9",
+            "el10"
+          ],
+          "summary": "Prometheus exporter for Memcached metrics.",
+          "service_file": true,
+          "dependencies": [],
+          "extra_files": [],
+          "directories": []
+        },
+        "docker": {
+          "enabled": true,
+          "entrypoint": [
+            "/usr/bin/memcached_exporter"
+          ],
+          "validation": {
+            "enabled": true,
+            "port": 9150
+          },
+          "cmd": []
+        }
+      },
+      "readme": "# Memcached Exporter\n\n![Build Status](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/release.yml?label=Build)\n![Version](https://img.shields.io/github/v/release/prometheus/memcached_exporter?label=Upstream)\n\n> Prometheus exporter for Memcached metrics.\n\n## \ud83d\ude80 Installation\n\n### RPM (Enterprise Linux)\n```bash\nsudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el9/$(arch)/ \nsudo dnf install memcached_exporter\nsudo systemctl enable --now memcached_exporter\n```\n\n### Docker\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/memcached_exporter:latest\n```\n\n## \u2699\ufe0f Configuration\n\nThe exporter collects metrics from a Memcached server.\n\n### Metrics\nBy default, it exposes metrics on port `9150`.\n\n### Usage example\n```bash\nmemcached_exporter --memcached.address=\"localhost:11211\"\n```\n\nSee upstream documentation: [prometheus/memcached_exporter](https://github.com/prometheus/memcached_exporter)\n",
+      "availability": {
+        "el8": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el9": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el10": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        }
+      },
+      "rpm_status": "failed",
+      "docker_status": "success"
+    },
+    {
+      "name": "mongodb_exporter",
+      "description": "MongoDB exporter for Prometheus.",
+      "version": "0.47.2",
+      "category": "Database",
+      "new": true,
+      "updated": false,
+      "upstream": {
+        "type": "github",
+        "repo": "percona/mongodb_exporter",
+        "archive_name": null
+      },
+      "build": {
+        "method": "binary_repack",
+        "binary_name": "mongodb_exporter",
+        "archs": [
+          "amd64",
+          "arm64"
+        ],
+        "extra_binaries": [],
+        "extra_sources": []
+      },
+      "artifacts": {
+        "rpm": {
+          "enabled": true,
+          "targets": [
+            "el8",
+            "el9",
+            "el10"
+          ],
+          "summary": "MongoDB exporter for Prometheus.",
+          "service_file": true,
+          "dependencies": [],
+          "extra_files": [],
+          "directories": []
+        },
+        "docker": {
+          "enabled": true,
+          "entrypoint": [
+            "/usr/bin/mongodb_exporter"
+          ],
+          "validation": {
+            "enabled": true,
+            "command": "--version"
+          },
+          "cmd": []
+        }
+      },
+      "readme": "# Mongodb Exporter\n\n![Build Status](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/release.yml?label=Build)\n![Version](https://img.shields.io/github/v/release/percona/mongodb_exporter?label=Upstream)\n\n> MongoDB exporter for Prometheus.\n\n## \ud83d\ude80 Installation\n\n### RPM (Enterprise Linux)\n```bash\nsudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el9/$(arch)/ \nsudo dnf install mongodb_exporter\nsudo systemctl enable --now mongodb_exporter\n```\n\n### Docker\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/mongodb_exporter:latest\n```\n\n## \u2699\ufe0f Configuration\n\nThe exporter requires access to a MongoDB instance.\n\n### Metrics\nBy default, it exposes metrics on port `9216`.\n\n### Usage example\n```bash\nmongodb_exporter --mongodb.uri=\"mongodb://user:pass@localhost:27017\"\n```\n\nSee upstream documentation: [percona/mongodb_exporter](https://github.com/percona/mongodb_exporter)\n",
+      "availability": {
+        "el8": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el9": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el10": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        }
+      },
+      "rpm_status": "failed",
+      "docker_status": "success"
+    },
+    {
       "name": "mysqld_exporter",
       "description": "Prometheus exporter for MySQL server metrics",
       "category": "Database",
@@ -1189,6 +1869,91 @@
         }
       },
       "rpm_status": "success",
+      "docker_status": "success"
+    },
+    {
+      "name": "nats_exporter",
+      "description": "NATS metrics exporter for Prometheus.",
+      "version": "0.18.0",
+      "category": "Messaging",
+      "new": true,
+      "updated": false,
+      "upstream": {
+        "type": "github",
+        "repo": "nats-io/prometheus-nats-exporter",
+        "strategy": "latest_release",
+        "archive_name": "prometheus-nats-exporter-v{clean_version}-linux-{rpm_arch}.tar.gz"
+      },
+      "build": {
+        "method": "binary_repack",
+        "binary_name": "prometheus-nats-exporter",
+        "archs": [
+          "amd64",
+          "arm64"
+        ],
+        "extra_binaries": [],
+        "extra_sources": []
+      },
+      "artifacts": {
+        "rpm": {
+          "enabled": true,
+          "targets": [
+            "el8",
+            "el9",
+            "el10"
+          ],
+          "summary": "NATS metrics exporter for Prometheus.",
+          "service_file": true,
+          "dependencies": [],
+          "extra_files": [],
+          "directories": []
+        },
+        "docker": {
+          "enabled": true,
+          "entrypoint": [
+            "/usr/bin/nats_exporter"
+          ],
+          "validation": {
+            "enabled": true,
+            "port": 7777,
+            "args": "-varz http://localhost:8222"
+          }
+        }
+      },
+      "readme": "# Nats Exporter\n\n![Build Status](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/release.yml?label=Build)\n![Version](https://img.shields.io/github/v/release/nats-io/prometheus-nats-exporter?label=Upstream)\n\n> NATS metrics exporter for Prometheus.\n\n## \ud83d\ude80 Installation\n\n### RPM (Enterprise Linux)\n```bash\nsudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el9/$(arch)/ \nsudo dnf install nats_exporter\nsudo systemctl enable --now nats_exporter\n```\n\n### Docker\n```bash\ndocker pull ghcr.io/sckyzo/monitoring-hub/nats_exporter:latest\n```\n\n## \u2699\ufe0f Configuration\n\nThe exporter aggregates metrics from NATS server monitoring endpoints.\n\n### Metrics\nBy default, it exposes metrics on port `7777`.\n\n### Usage example\n```bash\nprometheus-nats-exporter -varz \"http://localhost:8222\"\n```\n\nSee upstream documentation: [nats-io/prometheus-nats-exporter](https://github.com/nats-io/prometheus-nats-exporter)\n",
+      "availability": {
+        "el8": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el9": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        },
+        "el10": {
+          "x86_64": {
+            "status": "failed",
+            "path": null
+          },
+          "aarch64": {
+            "status": "failed",
+            "path": null
+          }
+        }
+      },
+      "rpm_status": "failed",
       "docker_status": "success"
     },
     {
