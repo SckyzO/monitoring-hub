@@ -1,7 +1,7 @@
 name: prometheus
 description: The Prometheus monitoring system and time series database.
 category: Infrastructure
-version: v3.8.1
+version: v3.9.1
 updated: true
 upstream:
   type: github
@@ -11,7 +11,7 @@ build:
   method: binary_repack
   binary_name: prometheus
   extra_binaries:
-    - promtool
+  - promtool
 artifacts:
   rpm:
     enabled: true
@@ -38,7 +38,9 @@ artifacts:
       group: prometheus
   docker:
     enabled: true
-    entrypoint: ["/usr/bin/prometheus"]
-    cmd: ["--config.file=/etc/prometheus/prometheus.yml"]
+    entrypoint:
+    - /usr/bin/prometheus
+    cmd:
+    - --config.file=/etc/prometheus/prometheus.yml
     validation:
       port: 9090
