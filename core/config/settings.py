@@ -22,5 +22,7 @@ EXPORTERS_DIR = "exporters"
 BUILD_DIR = "build"
 
 # Versioning
-CORE_VERSION = "v0.16.0"
+
+CORE_VERSION = "v0.17.0"
+
 PORTAL_VERSION = "v2.8.0"

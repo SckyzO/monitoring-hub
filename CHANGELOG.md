@@ -5,6 +5,31 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.17.0] - 2026-01-07
+
+### 🚀 Major Modernization
+*   **Production-Grade RPMs:** Complete overhaul of the RPM packaging engine.
+    *   **Structured Systemd:** Replaced the boolean `service_file` with a comprehensive `systemd` object configuration (ExecStart args, restart policy, unit dependencies).
+    *   **Lifecycle Macros:** Added proper `%systemd_post`, `%systemd_preun`, and `%systemd_postun_with_restart` scriptlets.
+    *   **Flexible Install Paths:** Support for custom installation directories via `install_path`.
+*   **Version Normalization:** The build engine now automatically standardizes versions (stripping 'v' prefix) to comply with RPM guidelines (e.g., `v1.0.0` -> `1.0.0`).
+
+### ➕ New Exporters
+*   **Elasticsearch Exporter:** Monitoring for Elasticsearch clusters.
+*   **Exim Exporter:** Metrics for Exim mail servers.
+*   **FRR Exporter:** FRRouting protocol metrics (custom build).
+*   **Iperf3 Exporter:** Network bandwidth measurement metrics.
+*   **JSON Exporter:** Scrape arbitrary JSON endpoints.
+*   **Keepalived Exporter:** High Availability VRRP metrics.
+*   **Memcached Exporter:** Key-value store metrics.
+*   **MongoDB Exporter:** NoSQL database metrics.
+*   **NATS Exporter:** Messaging system metrics.
+
+### 🛠️ Tooling & DX
+*   **Validation 2.0:** Enhanced smoke tests to support runtime arguments (`args`), enabling validation of exporters that require flags to start (like NATS or Keepalived).
+*   **Local Test Engine:** Major refactor of `local_test.sh` with verbose mode, modular steps, and better summary output.
+*   **CI/CD Alignment:** Updated GitHub Workflows to utilize the new validation arguments.
+
 ## [0.16.0] - 2026-01-05
 
 ### 🚀 New Exporters
