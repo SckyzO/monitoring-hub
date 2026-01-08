@@ -20,7 +20,8 @@ artifacts:
     - el9
     - el10
     summary: The Prometheus monitoring system and time series database.
-    service_file: true
+    systemd:
+      enabled: true
     system_user: prometheus
     extra_files:
     - source: assets/prometheus.yml

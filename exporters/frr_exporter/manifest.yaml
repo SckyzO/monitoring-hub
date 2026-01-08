@@ -24,7 +24,8 @@ artifacts:
     - el8
     - el9
     - el10
-    service_file: true
+    systemd:
+      enabled: true
     system_user: frr_exporter
     dependencies:
     - frr

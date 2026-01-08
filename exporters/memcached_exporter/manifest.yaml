@@ -24,7 +24,8 @@ artifacts:
     - el9
     - el10
     summary: Prometheus exporter for Memcached metrics.
-    service_file: true
+    systemd:
+      enabled: true
     dependencies: []
     extra_files: []
     directories: []

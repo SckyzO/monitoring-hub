@@ -1,10 +1,10 @@
-# Template RPM par défaut
+# Template RPM par défaut (Production Grade)
 %define debug_package %{nil}
 
 Name:           {{ name }}
 Version:        {{ version }}
 Release:        1%{?dist}
-Summary:        {{ artifacts.rpm.summary }}
+Summary:        {{ artifacts.rpm.summary | default(description) }}
 
 License:        Apache-2.0
 URL:            https://github.com/{{ upstream.repo }}
@@ -16,12 +16,20 @@ Source{{ loop.index }}: {{ file.build_source }}
 
 BuildArch:      {{ rpm_arch }}
 
+{% if artifacts.rpm.systemd.enabled %}
+BuildRequires:  systemd-rpm-macros
+{% endif %}
+
 {% for dep in artifacts.rpm.dependencies %}
 Requires:       {{ dep }}
 {% endfor %}
 
 {% if artifacts.rpm.system_user %}
 Requires(pre):  shadow-utils
+{% endif %}
+
+{% if artifacts.rpm.systemd.enabled %}
+%{?systemd_requires}
 {% endif %}
 
 %description
@@ -34,25 +42,27 @@ Requires(pre):  shadow-utils
 %build
 # Nothing to build, binary repack
 
+{% set binary_dir = artifacts.rpm.install_path | default('%{_bindir}', true) %}
+
 %install
 rm -rf $RPM_BUILD_ROOT
-install -D -m 0755 %{SOURCE0} $RPM_BUILD_ROOT%{_bindir}/{{ name }}
+install -D -m 0755 %{SOURCE0} $RPM_BUILD_ROOT{{ binary_dir }}/{{ name }}
 
-{% if artifacts.rpm.service_file %}
+{% if artifacts.rpm.systemd.enabled %}
 # Install systemd service
 mkdir -p $RPM_BUILD_ROOT%{_unitdir}
 cat <<EOF > $RPM_BUILD_ROOT%{_unitdir}/{{ name }}.service
 [Unit]
 Description={{ description }}
-After=network.target
+After={{ artifacts.rpm.systemd.after | join(' ') }}
 
 [Service]
-Type=simple
+Type={{ artifacts.rpm.systemd.type }}
 {% if artifacts.rpm.system_user %}
 User={{ artifacts.rpm.system_user }}
 {% endif %}
-ExecStart=%{_bindir}/{{ name }}
-Restart=on-failure
+ExecStart={{ binary_dir }}/{{ name }} {{ artifacts.rpm.systemd.arguments | join(' ') }}
+Restart={{ artifacts.rpm.systemd.restart }}
 
 [Install]
 WantedBy=multi-user.target
@@ -66,8 +76,6 @@ mkdir -p $RPM_BUILD_ROOT{{ dir.path }}
 
 # Install extra files
 {% for file in artifacts.rpm.extra_files %}
-# Assuming files go to specific locations, we use install -D
-# But we need to handle the destination path carefully
 install -D -m {{ file.mode }} %{SOURCE{{ loop.index }}} $RPM_BUILD_ROOT{{ file.dest }}
 {% endfor %}
 
@@ -80,9 +88,20 @@ getent passwd {{ artifacts.rpm.system_user }} >/dev/null || \
 exit 0
 {% endif %}
 
+{% if artifacts.rpm.systemd.enabled %}
+%post
+%systemd_post {{ name }}.service
+
+%preun
+%systemd_preun {{ name }}.service
+
+%postun
+%systemd_postun_with_restart {{ name }}.service
+{% endif %}
+
 %files
-%{_bindir}/{{ name }}
-{% if artifacts.rpm.service_file %}
+{{ binary_dir }}/{{ name }}
+{% if artifacts.rpm.systemd.enabled %}
 %{_unitdir}/{{ name }}.service
 {% endif %}
 
@@ -99,5 +118,5 @@ exit 0
 {% endfor %}
 
 %changelog
-* Wed Dec 31 2025 Monitoring Hub <bot@monitoring-hub.local> - {{ version }}-1
-- Automated build
+* Wed Jan 07 2026 Monitoring Hub <bot@monitoring-hub.local> - {{ version }}-1
+- Standardized build with modern systemd integration

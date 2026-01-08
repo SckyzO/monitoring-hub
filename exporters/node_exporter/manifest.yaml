@@ -18,7 +18,8 @@ artifacts:
     - el9
     - el10
     summary: Prometheus exporter for hardware and OS metrics
-    service_file: true
+    systemd:
+      enabled: true
   docker:
     enabled: true
     # Default is UBI 9 Minimal, can be overridden but not recommended

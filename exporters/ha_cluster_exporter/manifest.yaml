@@ -16,7 +16,8 @@ artifacts:
     enabled: true
     targets: [el8, el9, el10]
     summary: Prometheus HA Cluster Exporter
-    service_file: true
+    systemd:
+      enabled: true
     system_user: prometheus
   docker:
     enabled: true

@@ -19,7 +19,8 @@ artifacts:
     summary: "Prometheus Nginx Exporter"
     targets: [el8, el9, el10]
     system_user: nginx_exporter
-    service_file: true
+    systemd:
+      enabled: true
     extra_files: []
     directories:
       - path: /var/lib/nginx_exporter

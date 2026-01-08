@@ -24,7 +24,8 @@ artifacts:
     - el9
     - el10
     summary: A prometheus exporter which scrapes remote JSON by JSONPath.
-    service_file: true
+    systemd:
+      enabled: true
     dependencies: []
     extra_files:
     - source: assets/config.yml

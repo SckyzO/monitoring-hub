@@ -21,7 +21,8 @@ artifacts:
     - el8
     - el9
     - el10
-    service_file: true
+    systemd:
+      enabled: true
   docker:
     enabled: true
     entrypoint:

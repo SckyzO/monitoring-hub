@@ -25,7 +25,8 @@ artifacts:
     - el9
     - el10
     summary: NATS metrics exporter for Prometheus.
-    service_file: true
+    systemd:
+      enabled: true
     dependencies: []
     extra_files: []
     directories: []

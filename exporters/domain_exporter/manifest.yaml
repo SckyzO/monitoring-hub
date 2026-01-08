@@ -27,7 +27,8 @@ artifacts:
       - el9
       - el10
     system_user: domain_exporter
-    service_file: true
+    systemd:
+      enabled: true
 
   docker:
     enabled: true
