@@ -4,7 +4,7 @@
       "name": "alertmanager",
       "description": "Handle alerts and notifications for the Prometheus ecosystem",
       "category": "Infrastructure",
-      "version": "0.30.0",
+      "version": "0.30.1",
       "updated": true,
       "upstream": {
         "type": "github",
@@ -85,7 +85,7 @@
           },
           "aarch64": {
             "status": "success",
-            "path": "el9/aarch64/alertmanager-0.30.0-1.el9.aarch64.rpm"
+            "path": "el9/aarch64/alertmanager-0.30.1-1.el9.aarch64.rpm"
           }
         },
         "el10": {
@@ -95,7 +95,7 @@
           },
           "aarch64": {
             "status": "success",
-            "path": "el10/aarch64/alertmanager-v0.30.0-1.el10.aarch64.rpm"
+            "path": "el10/aarch64/alertmanager-0.30.1-1.el10.aarch64.rpm"
           }
         }
       },
