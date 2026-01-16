@@ -250,7 +250,7 @@ jobs:
           fi
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: rpm-${{ matrix.exporter }}-${{ matrix.arch }}-${{ matrix.dist }}
           path: build/**/rpms/**/*.rpm
