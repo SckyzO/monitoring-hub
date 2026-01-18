@@ -1,6 +1,6 @@
 name: memcached_exporter
 description: Prometheus exporter for Memcached metrics.
-version: v0.15.4
+version: v0.15.5
 category: Database
 new: true
 updated: false
