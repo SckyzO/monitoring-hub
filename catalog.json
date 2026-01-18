@@ -1653,7 +1653,7 @@
     {
       "name": "memcached_exporter",
       "description": "Prometheus exporter for Memcached metrics.",
-      "version": "0.15.4",
+      "version": "0.15.5",
       "category": "Database",
       "new": true,
       "updated": false,
@@ -1715,7 +1715,7 @@
         "el9": {
           "x86_64": {
             "status": "success",
-            "path": "el9/x86_64/memcached_exporter-v0.15.4-1.el9.x86_64.rpm"
+            "path": "el9/x86_64/memcached_exporter-0.15.5-1.el9.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
@@ -1725,11 +1725,11 @@
         "el10": {
           "x86_64": {
             "status": "success",
-            "path": "el10/x86_64/memcached_exporter-v0.15.4-1.el10.x86_64.rpm"
+            "path": "el10/x86_64/memcached_exporter-0.15.5-1.el10.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el10/aarch64/memcached_exporter-v0.15.4-1.el10.aarch64.rpm"
+            "path": "el10/aarch64/memcached_exporter-0.15.5-1.el10.aarch64.rpm"
           }
         }
       },
