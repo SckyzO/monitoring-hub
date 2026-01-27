@@ -1,36 +1,35 @@
 name: redis_exporter
-description: "Prometheus exporter for Redis metrics"
+description: Prometheus exporter for Redis metrics
 category: Database
-version: "v1.80.1"
+version: v1.80.2
 updated: true
-
 upstream:
   type: github
   repo: oliver006/redis_exporter
-  archive_name: "redis_exporter-v{clean_version}.linux-{arch}.tar.gz"
-
+  archive_name: redis_exporter-v{clean_version}.linux-{arch}.tar.gz
 build:
   method: binary_repack
   binary_name: redis_exporter
-
 artifacts:
   rpm:
     enabled: true
-    summary: "Prometheus Redis Exporter"
-    targets: [el8, el9, el10]
+    summary: Prometheus Redis Exporter
+    targets:
+    - el8
+    - el9
+    - el10
     system_user: redis_exporter
     systemd:
       enabled: true
     extra_files: []
     directories:
-      - path: /var/lib/redis_exporter
-        owner: redis_exporter
-        group: redis_exporter
-        mode: "0755"
-
+    - path: /var/lib/redis_exporter
+      owner: redis_exporter
+      group: redis_exporter
+      mode: '0755'
   docker:
     enabled: true
-    entrypoint: ["/usr/bin/redis_exporter"]
-    # By default it tries to connect to localhost:6379
+    entrypoint:
+    - /usr/bin/redis_exporter
     validation:
       port: 9121
