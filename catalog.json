@@ -2521,7 +2521,7 @@
       "name": "redis_exporter",
       "description": "Prometheus exporter for Redis metrics",
       "category": "Database",
-      "version": "1.80.1",
+      "version": "1.80.2",
       "updated": true,
       "upstream": {
         "type": "github",
@@ -2570,17 +2570,17 @@
         "el8": {
           "x86_64": {
             "status": "success",
-            "path": "el8/x86_64/redis_exporter-v1.80.1-1.el8.x86_64.rpm"
+            "path": "el8/x86_64/redis_exporter-1.80.2-1.el8.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el8/aarch64/redis_exporter-v1.80.1-1.el8.aarch64.rpm"
+            "path": "el8/aarch64/redis_exporter-1.80.2-1.el8.aarch64.rpm"
           }
         },
         "el9": {
           "x86_64": {
             "status": "success",
-            "path": "el9/x86_64/redis_exporter-v1.80.1-1.el9.x86_64.rpm"
+            "path": "el9/x86_64/redis_exporter-1.80.2-1.el9.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
@@ -2590,11 +2590,11 @@
         "el10": {
           "x86_64": {
             "status": "success",
-            "path": "el10/x86_64/redis_exporter-v1.80.1-1.el10.x86_64.rpm"
+            "path": "el10/x86_64/redis_exporter-1.80.2-1.el10.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el10/aarch64/redis_exporter-v1.80.1-1.el10.aarch64.rpm"
+            "path": "el10/aarch64/redis_exporter-1.80.2-1.el10.aarch64.rpm"
           }
         }
       },
