@@ -1,6 +1,6 @@
 name: frr_exporter
 description: Prometheus exporter for FRR metrics.
-version: v1.9.0
+version: v1.10.0
 category: Network
 new: true
 updated: false
