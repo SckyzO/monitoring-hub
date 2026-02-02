@@ -1038,7 +1038,7 @@
     {
       "name": "frr_exporter",
       "description": "Prometheus exporter for FRR metrics.",
-      "version": "1.9.0",
+      "version": "1.10.0",
       "category": "Network",
       "new": true,
       "updated": false,
@@ -1092,11 +1092,11 @@
         "el8": {
           "x86_64": {
             "status": "success",
-            "path": "el8/x86_64/frr_exporter-v1.9.0-1.el8.x86_64.rpm"
+            "path": "el8/x86_64/frr_exporter-1.10.0-1.el8.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el8/aarch64/frr_exporter-v1.9.0-1.el8.aarch64.rpm"
+            "path": "el8/aarch64/frr_exporter-1.10.0-1.el8.aarch64.rpm"
           }
         },
         "el9": {
@@ -1106,17 +1106,17 @@
           },
           "aarch64": {
             "status": "success",
-            "path": "el9/aarch64/frr_exporter-v1.9.0-1.el9.aarch64.rpm"
+            "path": "el9/aarch64/frr_exporter-1.10.0-1.el9.aarch64.rpm"
           }
         },
         "el10": {
           "x86_64": {
             "status": "success",
-            "path": "el10/x86_64/frr_exporter-v1.9.0-1.el10.x86_64.rpm"
+            "path": "el10/x86_64/frr_exporter-1.10.0-1.el10.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el10/aarch64/frr_exporter-v1.9.0-1.el10.aarch64.rpm"
+            "path": "el10/aarch64/frr_exporter-1.10.0-1.el10.aarch64.rpm"
           }
         }
       },
