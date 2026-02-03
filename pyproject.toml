@@ -69,6 +69,8 @@ warn_redundant_casts = true
 warn_unused_ignores = true
 warn_no_return = true
 strict_equality = true
+explicit_package_bases = true
+namespace_packages = true
 
 # Ignore missing imports for third-party libraries
 ignore_missing_imports = true

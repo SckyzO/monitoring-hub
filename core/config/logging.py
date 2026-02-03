@@ -64,6 +64,7 @@ def setup_logging(
     console_handler.setLevel(level)
 
     # Use colored formatter if requested
+    formatter: logging.Formatter
     if use_colors:
         formatter = ColoredFormatter(format_string, datefmt="%Y-%m-%d %H:%M:%S")
     else:

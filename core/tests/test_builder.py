@@ -146,7 +146,7 @@ class TestDownloadExtraSources:
         mock_response.content = b"config file content"
         mock_get.return_value = mock_response
 
-        manifest_data = {
+        manifest_data: dict[str, dict[str, list[dict[str, str]]]] = {
             "build": {
                 "extra_sources": [
                     {"url": "https://example.com/config.yml", "filename": "config.yml"}
