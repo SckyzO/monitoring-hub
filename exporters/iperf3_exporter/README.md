@@ -9,7 +9,7 @@
 
 ### RPM (Enterprise Linux)
 ```bash
-sudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el9/$(arch)/ 
+sudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el9/$(arch)/
 sudo dnf install iperf3_exporter iperf3
 sudo systemctl enable --now iperf3_exporter
 ```

@@ -1,0 +1,10 @@
+# Invalid manifest - missing required fields
+name: broken_exporter
+# Missing description
+# Missing version
+upstream:
+  type: unknown_type  # Invalid type
+  repo: owner/repo
+build:
+  method: invalid_method  # Invalid method
+  # Missing binary_name

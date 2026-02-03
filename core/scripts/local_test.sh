@@ -109,7 +109,7 @@ generate_build_files() {
     echo "------------------------------------------------"
     log_info "🔨 [1/X] Generating build files for ${BOLD}$EXPORTER${RESET}${BLUE} ($ARCH)..."
     export PYTHONPATH="$PROJECT_ROOT"
-    
+
     if [ "$VERBOSE" = true ]; then
         python3 -m core.engine.builder --manifest "exporters/$EXPORTER/manifest.yaml" --arch "$ARCH" --output-dir "build/$EXPORTER"
     else
@@ -128,12 +128,12 @@ generate_build_files() {
 build_rpm() {
     local dist_name=$1
     local dist_image=$2
-    
+
     echo "------------------------------------------------"
     log_info "📦 Building RPM for ${BOLD}$dist_name${RESET}${BLUE}..."
-    
+
     mkdir -p "build/$EXPORTER/rpms/$dist_name"
-    
+
     if [ "$VERBOSE" = true ]; then
         ./core/scripts/build_rpm.sh "build/$EXPORTER/$EXPORTER.spec" "build/$EXPORTER/rpms/$dist_name" "$ARCH" "$dist_image"
     else
@@ -152,9 +152,9 @@ build_rpm() {
 build_docker() {
     echo "------------------------------------------------"
     log_info "🐳 Building Docker image..."
-    
+
     local build_cmd="docker build -t monitoring-hub/$EXPORTER:local build/$EXPORTER"
-    
+
     if [ "$VERBOSE" = true ]; then
         $build_cmd
     else
@@ -200,7 +200,7 @@ except Exception as e:
 
     IMAGE_ID="monitoring-hub/$EXPORTER:local"
     VALIDATION_PASSED=true
-    
+
     # 1. Command Validation (One-shot command)
     if [ "$V_CMD" != "None" ]; then
         echo "   🚀 Checking command: $V_CMD"
@@ -215,7 +215,7 @@ except Exception as e:
     # 2. Port Validation (Server mode)
     if [ "$V_PORT" != "None" ]; then
         echo "   🚀 Checking port metrics: $V_PORT (mapped to localhost:$HOST_PORT)..."
-        
+
         # Ensure cleanup of previous container on same port
         docker rm -f "test-${EXPORTER}" >/dev/null 2>&1 || true
 
@@ -228,10 +228,10 @@ except Exception as e:
 
         # Start container detached
         CONTAINER_ID=$(docker run -d --name "test-${EXPORTER}" -p $HOST_PORT:$V_PORT "$IMAGE_ID" $RUN_ARGS)
-        
+
         # Give container time to initialize
         sleep 3
-        
+
         # Check if container is still running
         if ! docker ps -q -f id=$CONTAINER_ID >/dev/null; then
              log_error "   ❌ Container died immediately. Logs:"
@@ -247,7 +247,7 @@ except Exception as e:
                 fi
                 sleep 2
             done
-            
+
             if [ "$PORT_SUCCESS" = true ]; then
                 log_success "   ✅ Metrics check passed"
             else
@@ -257,10 +257,10 @@ except Exception as e:
                 VALIDATION_PASSED=false
             fi
         fi
-        
+
         docker rm -f $CONTAINER_ID >/dev/null
     fi
-    
+
     if [ "$VALIDATION_PASSED" = true ]; then
         RESULTS["Validation"]="✅ PASS"
     else

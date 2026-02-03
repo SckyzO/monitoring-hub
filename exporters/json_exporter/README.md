@@ -9,7 +9,7 @@
 
 ### RPM (Enterprise Linux)
 ```bash
-sudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el9/$(arch)/ 
+sudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el9/$(arch)/
 sudo dnf install json_exporter
 sudo systemctl enable --now json_exporter
 ```

@@ -1,0 +1,28 @@
+name: node_exporter
+description: Hardware and OS metrics exporter for Prometheus
+category: System
+version: v1.8.0
+upstream:
+  type: github
+  repo: prometheus/node_exporter
+  strategy: latest_release
+build:
+  method: binary_repack
+  binary_name: node_exporter
+artifacts:
+  rpm:
+    enabled: true
+    targets:
+    - el8
+    - el9
+    - el10
+    summary: Prometheus exporter for hardware and OS metrics
+    systemd:
+      enabled: true
+  docker:
+    enabled: true
+    entrypoint: ["/usr/bin/node_exporter"]
+    cmd: []
+    validation:
+      enabled: true
+      port: 9100
