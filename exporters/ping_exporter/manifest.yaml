@@ -1,37 +1,42 @@
 name: ping_exporter
-description: "Prometheus exporter for ICMP ping metrics"
+description: Prometheus exporter for ICMP ping metrics
 category: Network
-version: "1.1.4"
+version: v1.1.5
 updated: true
 upstream:
   type: github
   repo: czerwonk/ping_exporter
   strategy: latest_release
-  archive_name: "{name}_{version}_linux_{arch}.tar.gz"
+  archive_name: '{name}_{version}_linux_{arch}.tar.gz'
 build:
   method: binary_repack
   binary_name: ping_exporter
 artifacts:
   rpm:
     enabled: true
-    targets: [el8, el9, el10]
+    targets:
+    - el8
+    - el9
+    - el10
     summary: Prometheus exporter for ICMP ping metrics
     systemd:
       enabled: true
     system_user: prometheus
     extra_files:
-      - source: assets/ping.yml
-        dest: /etc/ping_exporter/ping.yml
-        config: true
+    - source: assets/ping.yml
+      dest: /etc/ping_exporter/ping.yml
+      config: true
     directories:
-      - path: /etc/ping_exporter
-        mode: '0755'
-        owner: root
-        group: root
+    - path: /etc/ping_exporter
+      mode: '0755'
+      owner: root
+      group: root
   docker:
     enabled: true
     base_image: registry.access.redhat.com/ubi9/ubi-minimal
-    entrypoint: [/usr/bin/ping_exporter]
-    cmd: ["--config.path=/etc/ping_exporter/ping.yml"]
+    entrypoint:
+    - /usr/bin/ping_exporter
+    cmd:
+    - --config.path=/etc/ping_exporter/ping.yml
     validation:
       port: 9427

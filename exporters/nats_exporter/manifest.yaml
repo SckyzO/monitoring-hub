@@ -1,6 +1,6 @@
 name: nats_exporter
 description: NATS metrics exporter for Prometheus.
-version: v0.18.0
+version: v0.19.0
 category: Messaging
 new: true
 updated: false
@@ -8,7 +8,7 @@ upstream:
   type: github
   repo: nats-io/prometheus-nats-exporter
   strategy: latest_release
-  archive_name: 'prometheus-nats-exporter-v{clean_version}-linux-{rpm_arch}.tar.gz'
+  archive_name: prometheus-nats-exporter-v{clean_version}-linux-{rpm_arch}.tar.gz
 build:
   method: binary_repack
   binary_name: prometheus-nats-exporter
@@ -37,4 +37,4 @@ artifacts:
     validation:
       enabled: true
       port: 7777
-      args: '-varz http://localhost:8222'
+      args: -varz http://localhost:8222
