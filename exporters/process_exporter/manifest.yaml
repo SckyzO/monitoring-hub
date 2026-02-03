@@ -28,4 +28,3 @@ artifacts:
     entrypoint: ["/usr/bin/process_exporter"]
     validation:
       port: 9256
-

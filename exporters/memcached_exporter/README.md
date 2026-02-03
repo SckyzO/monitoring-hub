@@ -9,7 +9,7 @@
 
 ### RPM (Enterprise Linux)
 ```bash
-sudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el9/$(arch)/ 
+sudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el9/$(arch)/
 sudo dnf install memcached_exporter
 sudo systemctl enable --now memcached_exporter
 ```

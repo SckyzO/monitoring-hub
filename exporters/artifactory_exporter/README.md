@@ -34,7 +34,7 @@ The exporter runs by default on port **9531**. It is configured primarily via en
 
 ### Environment Variables
 
-| Variable | Description | Default | 
+| Variable | Description | Default |
 | :--- | :--- | :--- |
 | `ARTI_SCRAPE_URI` | Full URL to Artifactory | `http://localhost:8081/artifactory` |
 | `ARTI_USERNAME` | Username for authentication (Basic Auth) | - |
