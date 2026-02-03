@@ -174,6 +174,106 @@ def download_extra_sources(data, output_dir):
             click.echo(f"Warning: Failed to download extra source {url}: {e}")
 
 
+def copy_local_binary(data, output_dir, manifest_dir):
+    """
+    Copy local binary or archive to output directory.
+    Mirrors the "Smart Copy Logic" pattern used for extra_files.
+
+    Args:
+        data: Manifest data
+        output_dir: Build output directory
+        manifest_dir: Directory containing the manifest (for relative paths)
+    """
+    binary_name = data["build"]["binary_name"]
+    local_binary = data["upstream"].get("local_binary")
+    local_archive = data["upstream"].get("local_archive")
+    binaries_to_find = [binary_name] + data["build"].get("extra_binaries", [])
+    found_binaries = []
+
+    if local_binary:
+        # Case 1: Direct binary file
+        source_path = os.path.join(manifest_dir, local_binary)
+
+        if not os.path.exists(source_path):
+            click.echo(f"Error: Local binary not found: {source_path}", err=True)
+            raise click.Abort()
+
+        if not os.path.isfile(source_path):
+            click.echo(f"Error: Path is not a file: {source_path}", err=True)
+            raise click.Abort()
+
+        click.echo(f"Copying local binary: {source_path}")
+        dest_path = os.path.join(output_dir, binary_name)
+        shutil.copy(source_path, dest_path)
+        os.chmod(dest_path, 0o755)  # nosec B103 - Executable binary requires execute permissions
+        found_binaries.append(binary_name)
+        click.echo(f"Binary ready: {dest_path}")
+
+    elif local_archive:
+        # Case 2: Archive (.tar.gz or .gz)
+        source_path = os.path.join(manifest_dir, local_archive)
+
+        if not os.path.exists(source_path):
+            click.echo(f"Error: Local archive not found: {source_path}", err=True)
+            raise click.Abort()
+
+        click.echo(f"Extracting local archive: {source_path}")
+
+        if source_path.endswith(".gz") and not source_path.endswith(".tar.gz"):
+            # Simple .gz file (single binary)
+            click.echo("Decompressing single binary...")
+            final_path = os.path.join(output_dir, binary_name)
+            with gzip.open(source_path, "rb") as f_in, open(final_path, "wb") as f_out:
+                shutil.copyfileobj(f_in, f_out)
+            os.chmod(final_path, 0o755)  # nosec B103 - Executable binary requires execute permissions
+            found_binaries.append(binary_name)
+            click.echo(f"Binary ready: {final_path}")
+
+        elif source_path.endswith(".tar.gz"):
+            # .tar.gz archive - reuse existing logic from download_and_extract
+            click.echo(f"Extracting binaries {binaries_to_find}...")
+            extracted_dirs = set()
+            with tarfile.open(source_path, "r:gz") as tar:
+                members = tar.getmembers()
+                for b_name in binaries_to_find:
+                    member_to_extract = None
+                    for member in members:
+                        if member.name.endswith(f"/{b_name}") or member.name == b_name:
+                            member_to_extract = member
+                            break
+
+                    if member_to_extract:
+                        tar.extract(member_to_extract, path=output_dir)
+                        extracted_path = os.path.join(output_dir, member_to_extract.name)
+                        final_path = os.path.join(output_dir, b_name)
+
+                        if extracted_path != final_path:
+                            shutil.move(extracted_path, final_path)
+
+                        parts = member_to_extract.name.split("/")
+                        if len(parts) > 1:
+                            extracted_dirs.add(parts[0])
+
+                        os.chmod(final_path, 0o755)  # nosec B103 - Executable binary requires execute permissions
+                        found_binaries.append(b_name)
+                        click.echo(f"Binary ready: {final_path}")
+                    else:
+                        click.echo(f"Warning: Binary '{b_name}' not found in archive.")
+
+            # Cleanup extracted directories
+            for d in extracted_dirs:
+                dir_to_remove = os.path.join(output_dir, d)
+                if os.path.isdir(dir_to_remove):
+                    shutil.rmtree(dir_to_remove, ignore_errors=True)
+        else:
+            click.echo(f"Error: Unsupported archive format: {source_path}", err=True)
+            raise click.Abort()
+
+    if not found_binaries:
+        click.echo("Error: No binaries found.", err=True)
+        raise click.Abort()
+
+
 @click.command()
 @click.option("--manifest", "-m", help="Path to manifest", required=True)
 @click.option("--output-dir", "-o", help="Output directory", default="./build")
@@ -196,7 +296,17 @@ def build(manifest, output_dir, arch):
         os.makedirs(output_dir, exist_ok=True)
 
         # 1. Prepare binaries and assets
-        download_and_extract(data, output_dir, arch)
+        upstream_type = data["upstream"]["type"]
+        manifest_dir = os.path.dirname(os.path.abspath(manifest))
+
+        if upstream_type == "github":
+            download_and_extract(data, output_dir, arch)
+        elif upstream_type == "local":
+            copy_local_binary(data, output_dir, manifest_dir)
+        else:
+            click.echo(f"Error: Unknown upstream type: {upstream_type}", err=True)
+            raise click.Abort()
+
         download_extra_sources(data, output_dir)
 
         # Normalize version for artifacts (RPM, Docker)

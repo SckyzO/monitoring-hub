@@ -23,8 +23,8 @@ updated: false                    # [OPTIONAL] Default: false. Shows an "Updated
 
 # --- Upstream Source ----------------------------------------------------------
 upstream:
-  type: github                    # [REQUIRED] Currently only 'github' is supported.
-  repo: owner/repo                # [REQUIRED] The upstream GitHub repository (e.g., prometheus/node_exporter).
+  type: github                    # [REQUIRED] Supported values: 'github' or 'local'
+  repo: owner/repo                # [REQUIRED for github] The upstream GitHub repository (e.g., prometheus/node_exporter).
 
   # [OPTIONAL] Release Strategy
   # strategy: latest_release      # Default. Uses the latest GitHub Release.
@@ -39,6 +39,23 @@ upstream:
   # - {rpm_arch}: The RPM architecture (x86_64, aarch64)
   # Example: "{name}-{version}.linux-{arch}.tar.gz"
   archive_name: null
+
+# --- Alternative: Local Custom Binaries ---------------------------------------
+# Use 'type: local' for custom or proprietary binaries not published on GitHub.
+# upstream:
+#   type: local
+#
+#   # Option 1: Direct binary file (most common)
+#   local_binary: assets/my_exporter  # Path relative to this manifest
+#
+#   # Option 2: Compressed archive (.tar.gz or .gz)
+#   # local_archive: assets/my_exporter.tar.gz
+#
+# IMPORTANT:
+#   - Paths are relative to manifest location
+#   - Store binaries in the exporter's assets/ directory
+#   - Version must be updated manually (watcher skips local sources)
+#   - No automatic updates for local sources
 
 # --- Build Configuration ------------------------------------------------------
 build:

@@ -1,4 +1,4 @@
-from marshmallow import Schema, fields, validate
+from marshmallow import Schema, ValidationError, fields, validate, validates_schema
 
 from core.config.settings import DEFAULT_BASE_IMAGE, SUPPORTED_DISTROS
 
@@ -53,12 +53,30 @@ class DockerSchema(Schema):
 
 
 class UpstreamSchema(Schema):
-    type = fields.Str(required=True, validate=validate.OneOf(["github"]))
-    repo = fields.Str(required=True)
+    type = fields.Str(required=True, validate=validate.OneOf(["github", "local"]))
+    repo = fields.Str(allow_none=True)
     strategy = fields.Str(load_default="latest_release")
     archive_name = fields.Str(
         allow_none=True
     )  # Pattern like "{name}_{version}_linux_{arch}.tar.gz"
+
+    # Local source support
+    local_binary = fields.Str(allow_none=True)  # Path to raw binary
+    local_archive = fields.Str(allow_none=True)  # Path to .tar.gz or .gz
+
+    @validates_schema
+    def validate_upstream(self, data, **_kwargs):
+        """Validate type-specific requirements."""
+        if data.get("type") == "github":
+            if not data.get("repo"):
+                raise ValidationError("'repo' is required for upstream type 'github'")
+        elif data.get("type") == "local":
+            if not data.get("local_binary") and not data.get("local_archive"):
+                raise ValidationError(
+                    "'local_binary' or 'local_archive' required for upstream type 'local'"
+                )
+            if data.get("local_binary") and data.get("local_archive"):
+                raise ValidationError("Only one of 'local_binary' or 'local_archive' allowed")
 
 
 class ExtraSourceSchema(Schema):
