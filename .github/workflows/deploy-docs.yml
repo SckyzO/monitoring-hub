@@ -1,0 +1,77 @@
+name: Deploy Documentation 📚
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'docs/**'
+      - 'mkdocs.yml'
+      - 'requirements-docs.txt'
+      - '.github/workflows/deploy-docs.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  deploy-docs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install MkDocs dependencies
+        run: |
+          pip install -r requirements-docs.txt
+
+      - name: Build MkDocs documentation
+        run: |
+          mkdocs build --strict
+
+      - name: Checkout gh-pages branch
+        run: |
+          git fetch origin gh-pages
+          git worktree add -B gh-pages gh-pages-dist origin/gh-pages
+
+      - name: Deploy documentation to /docs
+        run: |
+          # Remove old docs if they exist
+          rm -rf gh-pages-dist/docs
+
+          # Copy new docs
+          cp -r site gh-pages-dist/docs
+
+          # Navigate to gh-pages worktree
+          cd gh-pages-dist
+
+          # Configure git
+          git config user.name "Monitoring Hub Bot"
+          git config user.email "bot@monitoring-hub.local"
+
+          # Add changes
+          git add docs/
+
+          # Commit if there are changes
+          if git diff --staged --quiet; then
+            echo "No changes to documentation. Skipping push."
+          else
+            git commit -m "docs: update MkDocs documentation [skip ci]"
+            git push origin gh-pages
+          fi
+
+      - name: Generate deployment summary
+        run: |
+          echo "## Documentation Deployed 📚" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "✅ MkDocs documentation built successfully" >> $GITHUB_STEP_SUMMARY
+          echo "📍 Available at: https://sckyzo.github.io/monitoring-hub/docs/" >> $GITHUB_STEP_SUMMARY
+          echo "🌐 Main portal: https://sckyzo.github.io/monitoring-hub/" >> $GITHUB_STEP_SUMMARY
