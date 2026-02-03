@@ -124,6 +124,36 @@ If you need to debug a specific step:
    docker build -t monitoring-hub/node_exporter:local build/node_exporter
    ```
 
+### 6. Local Custom Binaries
+
+For proprietary or custom exporters not available on GitHub:
+
+```bash
+# Create exporter directory structure
+mkdir -p exporters/my_exporter/assets
+
+# Place your binary in the assets directory
+cp /path/to/my_exporter exporters/my_exporter/assets/
+chmod +x exporters/my_exporter/assets/my_exporter
+
+# Create manifest with upstream.type: local
+./core/scripts/create_exporter.py --name my_exporter --category Infrastructure
+```
+
+Edit the generated `manifest.yaml` to set:
+```yaml
+upstream:
+  type: local
+  local_binary: assets/my_exporter
+```
+
+Build and test:
+```bash
+./core/scripts/local_test.sh my_exporter --el9 --docker
+```
+
+**Note:** Local sources are not tracked by the automatic version watcher. Update the `version` field manually when your binary changes.
+
 ---
 
 ## <img src=".github/icons/layers-purple.svg" width="24" height="24" style="vertical-align: bottom;"> Architecture
