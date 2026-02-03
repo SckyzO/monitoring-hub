@@ -1,6 +1,7 @@
 site_name: Monitoring Hub
-site_url: https://sckyzo.github.io/monitoring-hub/
+site_url: https://sckyzo.github.io/monitoring-hub/docs/
 site_description: Automated Software Factory for Prometheus Exporters
+use_directory_urls: true
 site_author: SckyzO
 repo_url: https://github.com/SckyzO/monitoring-hub
 repo_name: SckyzO/monitoring-hub
@@ -135,7 +136,7 @@ nav:
     - Coding Standards: contributing/standards.md
     - Testing: contributing/testing.md
     - Pull Requests: contributing/pull-requests.md
-  - Portal: https://sckyzo.github.io/monitoring-hub/
+  - "← Back to Portal": https://sckyzo.github.io/monitoring-hub/
 
 extra:
   social:
