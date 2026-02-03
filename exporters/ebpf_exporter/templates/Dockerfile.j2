@@ -18,4 +18,3 @@ ENTRYPOINT {{ artifacts.docker.entrypoint | tojson }}
 {% if artifacts.docker.cmd %}
 CMD {{ artifacts.docker.cmd | tojson }}
 {% endif %}
-

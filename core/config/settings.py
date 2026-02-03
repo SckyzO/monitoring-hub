@@ -4,10 +4,7 @@
 SUPPORTED_DISTROS = ["el8", "el9", "el10"]
 
 # Architecture Mapping (Docker/Go -> RPM)
-ARCH_MAP = {
-    'amd64': 'x86_64',
-    'arm64': 'aarch64'
-}
+ARCH_MAP = {"amd64": "x86_64", "arm64": "aarch64"}
 
 # Docker Defaults
 DEFAULT_BASE_IMAGE = "registry.access.redhat.com/ubi9/ubi-minimal"

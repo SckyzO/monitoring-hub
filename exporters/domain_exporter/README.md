@@ -11,7 +11,7 @@ Domain Exporter checks WHOIS information to provide expiration dates for your do
 
 ### RPM (Enterprise Linux)
 ```bash
-sudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el9/$(arch)/ 
+sudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el9/$(arch)/
 sudo dnf install domain_exporter
 sudo systemctl enable --now domain_exporter
 ```
