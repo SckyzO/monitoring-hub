@@ -1,13 +1,13 @@
 name: ping_exporter
 description: Prometheus exporter for ICMP ping metrics
 category: Network
-version: 1.1.5
+version: v1.1.5
 updated: true
 upstream:
   type: github
   repo: czerwonk/ping_exporter
   strategy: latest_release
-  archive_name: '{name}_{version}_linux_{arch}.tar.gz'
+  archive_name: '{name}_{clean_version}_linux_{arch}.tar.gz'
 build:
   method: binary_repack
   binary_name: ping_exporter
