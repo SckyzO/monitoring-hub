@@ -29,7 +29,7 @@ jobs:
 
       - name: Install bandit
         run: |
-          pip install --no-cache-dir bandit[toml]==1.9.0
+          pip install --no-cache-dir bandit[toml]==1.9.3
 
       - name: Run Bandit security scanner
         run: |
