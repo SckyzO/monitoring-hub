@@ -30,7 +30,7 @@ def render(start_webserver):
 
     if start_webserver:
         print("🚀 Starting webserver on port 8080...")
-        os.system("python3 -m http.server 8080")
+        os.system("python3 -m http.server 8080")  # nosec B605 B607 - Dev tool for local preview
 
 if __name__ == "__main__":
     render()
