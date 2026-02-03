@@ -47,14 +47,14 @@ jobs:
       - name: Deploy Changes
         run: |
           cd gh-pages-dist
-          
+
           # Configuration Git pour le Bot
           git config user.name "Monitoring Hub Bot"
           git config user.email "bot@monitoring-hub.local"
-          
+
           # Add changes (index.html, catalog.json)
           git add index.html catalog.json
-          
+
           if git diff --staged --quiet; then
             echo "No changes to the portal. Skipping push."
           else

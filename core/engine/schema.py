@@ -1,5 +1,7 @@
 from marshmallow import Schema, fields, validate
-from core.config.settings import SUPPORTED_DISTROS, DEFAULT_BASE_IMAGE
+
+from core.config.settings import DEFAULT_BASE_IMAGE, SUPPORTED_DISTROS
+
 
 class FileInstallSchema(Schema):
     source = fields.Str(required=True)
@@ -7,11 +9,13 @@ class FileInstallSchema(Schema):
     mode = fields.Str(load_default="0644")
     config = fields.Bool(load_default=False)
 
+
 class DirectorySchema(Schema):
     path = fields.Str(required=True)
     mode = fields.Str(load_default="0755")
     owner = fields.Str(load_default="root")
     group = fields.Str(load_default="root")
+
 
 class SystemdSchema(Schema):
     enabled = fields.Bool(load_default=False)
@@ -19,6 +23,7 @@ class SystemdSchema(Schema):
     after = fields.List(fields.Str(), load_default=["network.target"])
     restart = fields.Str(load_default="on-failure")
     type = fields.Str(load_default="simple")
+
 
 class RPMSchema(Schema):
     enabled = fields.Bool(load_default=False)
@@ -31,11 +36,13 @@ class RPMSchema(Schema):
     extra_files = fields.List(fields.Nested(FileInstallSchema), load_default=[])
     directories = fields.List(fields.Nested(DirectorySchema), load_default=[])
 
+
 class ValidationSchema(Schema):
     enabled = fields.Bool(load_default=True)
     port = fields.Int(allow_none=True)
     command = fields.Str(allow_none=True)
     args = fields.Str(allow_none=True)
+
 
 class DockerSchema(Schema):
     enabled = fields.Bool(load_default=False)
@@ -44,15 +51,20 @@ class DockerSchema(Schema):
     cmd = fields.List(fields.Str(), load_default=[])
     validation = fields.Nested(ValidationSchema, load_default={})
 
+
 class UpstreamSchema(Schema):
     type = fields.Str(required=True, validate=validate.OneOf(["github"]))
     repo = fields.Str(required=True)
     strategy = fields.Str(load_default="latest_release")
-    archive_name = fields.Str(allow_none=True) # Pattern like "{name}_{version}_linux_{arch}.tar.gz"
+    archive_name = fields.Str(
+        allow_none=True
+    )  # Pattern like "{name}_{version}_linux_{arch}.tar.gz"
+
 
 class ExtraSourceSchema(Schema):
     url = fields.Str(required=True)
     filename = fields.Str(required=True)
+
 
 class BuildSchema(Schema):
     method = fields.Str(required=True, validate=validate.OneOf(["binary_repack", "source_build"]))
@@ -61,9 +73,11 @@ class BuildSchema(Schema):
     extra_sources = fields.List(fields.Nested(ExtraSourceSchema), load_default=[])
     archs = fields.List(fields.Str(), load_default=["amd64", "arm64"])
 
+
 class ArtifactsSchema(Schema):
     rpm = fields.Nested(RPMSchema)
     docker = fields.Nested(DockerSchema)
+
 
 class ManifestSchema(Schema):
     name = fields.Str(required=True)

@@ -14,7 +14,7 @@ This exporter wraps the `omreport` command from Dell OpenManage Server Administr
 
 ### RPM (Enterprise Linux)
 ```bash
-sudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el9/$(arch)/ 
+sudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el9/$(arch)/
 sudo dnf install dellhw_exporter
 sudo systemctl enable --now dellhw_exporter
 ```

@@ -32,4 +32,3 @@ The exporter requires a configuration file with credentials and target arrays.
 Default location: `/etc/eseries_exporter/eseries_exporter.yml`.
 
 See upstream documentation: [sckyzo/eseries_exporter](https://github.com/sckyzo/eseries_exporter)
-

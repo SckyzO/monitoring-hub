@@ -25,10 +25,10 @@ updated: false                    # [OPTIONAL] Default: false. Shows an "Updated
 upstream:
   type: github                    # [REQUIRED] Currently only 'github' is supported.
   repo: owner/repo                # [REQUIRED] The upstream GitHub repository (e.g., prometheus/node_exporter).
-  
+
   # [OPTIONAL] Release Strategy
   # strategy: latest_release      # Default. Uses the latest GitHub Release.
-  
+
   # [OPTIONAL] Custom Archive Naming Pattern
   # If the upstream release artifacts don't follow standard naming conventions, define the pattern here.
   # Available variables:
@@ -44,7 +44,7 @@ upstream:
 build:
   method: binary_repack           # [REQUIRED] Currently the only supported method.
                                   # Downloads the upstream binary and repackages it.
-  
+
   binary_name: reference_exporter # [REQUIRED] The name of the binary file inside the upstream archive.
                                   # It will be installed to /usr/bin/<name>.
 
@@ -67,10 +67,10 @@ artifacts:
   rpm:
     enabled: true                 # [REQUIRED] Set to true to build RPMs.
     targets: [el8, el9, el10]     # [OPTIONAL] Default: [el8, el9, el10]. Target distributions.
-    
+
     summary: "..."                # [OPTIONAL] Short summary for RPM metadata. Defaults to description.
-    
-    install_path: null            # [OPTIONAL] Custom installation directory (e.g., /usr/sbin). 
+
+    install_path: null            # [OPTIONAL] Custom installation directory (e.g., /usr/sbin).
                                   # Default: /usr/bin (%{_bindir}).
 
     # [OPTIONAL] System User
@@ -110,7 +110,7 @@ artifacts:
 # --- Artifact: Docker Image ---------------------------------------------------
   docker:
     enabled: true                 # [REQUIRED] Set to true to build OCI images.
-    
+
     # [OPTIONAL] Base Image
     # We strongly recommend keeping the default for security and consistency.
     # base_image: registry.access.redhat.com/ubi9/ubi-minimal
@@ -124,11 +124,11 @@ artifacts:
     # These tests run immediately after build to ensure the image is functional.
     validation:
       enabled: true               # Master switch for validation.
-      
+
       # [OPTIONAL] Port Check
       # Starts the container and waits for HTTP 200 OK on /metrics (or standard prometheus endpoints).
       port: 9100
-      
+
       # [OPTIONAL] Command Check
       # Runs a specific command inside the container and expects exit code 0.
       # Useful for checking version output.
