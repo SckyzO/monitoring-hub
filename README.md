@@ -157,6 +157,29 @@ We welcome new exporters! Feel free to open a Pull Request following the guide a
 
 ---
 
+## 🔒 Security
+
+Monitoring Hub takes security seriously. We implement multiple layers of protection:
+
+### Security Measures
+
+- **Code Scanning**: Automated Bandit security scanner on all PRs
+- **Dependency Scanning**: pip-audit and Dependabot for vulnerability detection
+- **Container Scanning**: Trivy scans all container images
+- **Network Security**: All HTTP requests include timeouts and retry logic
+- **Template Security**: Jinja2 templates use autoescape to prevent injection attacks
+- **Input Validation**: Strict manifest schema validation with marshmallow
+
+### Reporting Vulnerabilities
+
+If you discover a security vulnerability, please follow our [Security Policy](SECURITY.md) for responsible disclosure. **Do not open public issues for security vulnerabilities.**
+
+For more details, see:
+- [SECURITY.md](SECURITY.md) - Vulnerability reporting process
+- [Security Guidelines](docs/contributing/security.md) - Development security best practices
+
+---
+
 ## <img src=".github/icons/scale-slate.svg" width="24" height="24" style="vertical-align: bottom;"> License
 
 Distributed under the MIT License. See `LICENSE` for more information.
