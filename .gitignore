@@ -48,3 +48,14 @@ build/
 .gemini/
 gha-creds-*.json
 site/
+
+# --- AI Assistant Files ---
+CLAUDE.md
+
+# --- Local Custom Exporters ---
+# The dev/ directory contains local binaries for testing/custom exporters.
+# We ignore all files except documentation and example configs.
+dev/*
+!dev/*.md
+!dev/*.yml.example
+!dev/README.md

@@ -3,6 +3,7 @@ Unit tests for core.engine.builder module.
 """
 
 import tarfile
+from typing import Any
 from unittest.mock import Mock, patch
 
 import pytest
@@ -146,7 +147,7 @@ class TestDownloadExtraSources:
         mock_response.content = b"config file content"
         mock_get.return_value = mock_response
 
-        manifest_data: dict[str, dict[str, list[dict[str, str]]]] = {
+        manifest_data: dict[str, Any] = {
             "build": {
                 "extra_sources": [
                     {"url": "https://example.com/config.yml", "filename": "config.yml"}
@@ -166,7 +167,7 @@ class TestDownloadExtraSources:
 
     def test_download_extra_sources_empty_list(self, temp_dir):
         """Test that empty extra_sources list is handled."""
-        manifest_data = {"build": {}}
+        manifest_data: dict[str, Any] = {"build": {}}
 
         output_dir = temp_dir / "output"
         output_dir.mkdir()
@@ -188,3 +189,131 @@ def test_version_cleaning(version, expected_clean):
     """Test version prefix stripping logic."""
     clean_version = version.lstrip("v") if version.startswith("v") else version
     assert clean_version == expected_clean
+
+
+class TestLocalBinarySupport:
+    """Tests for local binary source support."""
+
+    def test_load_manifest_with_local_binary(self, tmp_path):
+        """Test loading a manifest with local binary type."""
+        import yaml
+
+        manifest_content = {
+            "name": "local_exporter",
+            "description": "Test local exporter",
+            "version": "1.0.0",
+            "upstream": {"type": "local", "local_binary": "assets/local_exporter"},
+            "build": {"method": "binary_repack", "binary_name": "local_exporter"},
+            "artifacts": {
+                "rpm": {"enabled": True, "summary": "Test"},
+                "docker": {"enabled": True, "entrypoint": ["/usr/bin/local_exporter"]},
+            },
+        }
+
+        manifest_file = tmp_path / "manifest.yaml"
+        with open(manifest_file, "w") as f:
+            yaml.dump(manifest_content, f)
+
+        data = load_manifest(str(manifest_file))
+        assert data["upstream"]["type"] == "local"
+        assert data["upstream"]["local_binary"] == "assets/local_exporter"
+
+    def test_load_manifest_with_local_archive(self, tmp_path):
+        """Test loading a manifest with local archive."""
+        import yaml
+
+        manifest_content = {
+            "name": "local_exporter",
+            "description": "Test local exporter",
+            "version": "1.0.0",
+            "upstream": {"type": "local", "local_archive": "assets/local_exporter.tar.gz"},
+            "build": {"method": "binary_repack", "binary_name": "local_exporter"},
+            "artifacts": {
+                "rpm": {"enabled": True, "summary": "Test"},
+                "docker": {"enabled": True, "entrypoint": ["/usr/bin/local_exporter"]},
+            },
+        }
+
+        manifest_file = tmp_path / "manifest.yaml"
+        with open(manifest_file, "w") as f:
+            yaml.dump(manifest_content, f)
+
+        data = load_manifest(str(manifest_file))
+        assert data["upstream"]["type"] == "local"
+        assert data["upstream"]["local_archive"] == "assets/local_exporter.tar.gz"
+
+    def test_local_type_requires_source(self, tmp_path):
+        """Test that local type requires either local_binary or local_archive."""
+        import yaml
+        from click.exceptions import Abort
+
+        manifest_content = {
+            "name": "local_exporter",
+            "description": "Test local exporter",
+            "version": "1.0.0",
+            "upstream": {"type": "local"},  # Missing local_binary or local_archive
+            "build": {"method": "binary_repack", "binary_name": "local_exporter"},
+            "artifacts": {
+                "rpm": {"enabled": True, "summary": "Test"},
+                "docker": {"enabled": True, "entrypoint": ["/usr/bin/local_exporter"]},
+            },
+        }
+
+        manifest_file = tmp_path / "manifest.yaml"
+        with open(manifest_file, "w") as f:
+            yaml.dump(manifest_content, f)
+
+        with pytest.raises(Abort):
+            load_manifest(str(manifest_file))
+
+    def test_local_type_cannot_have_both_sources(self, tmp_path):
+        """Test that local type cannot have both local_binary and local_archive."""
+        import yaml
+        from click.exceptions import Abort
+
+        manifest_content = {
+            "name": "local_exporter",
+            "description": "Test local exporter",
+            "version": "1.0.0",
+            "upstream": {
+                "type": "local",
+                "local_binary": "assets/binary",
+                "local_archive": "assets/archive.tar.gz",
+            },
+            "build": {"method": "binary_repack", "binary_name": "local_exporter"},
+            "artifacts": {
+                "rpm": {"enabled": True, "summary": "Test"},
+                "docker": {"enabled": True, "entrypoint": ["/usr/bin/local_exporter"]},
+            },
+        }
+
+        manifest_file = tmp_path / "manifest.yaml"
+        with open(manifest_file, "w") as f:
+            yaml.dump(manifest_content, f)
+
+        with pytest.raises(Abort):
+            load_manifest(str(manifest_file))
+
+    def test_github_type_requires_repo(self, tmp_path):
+        """Test that github type requires repo field."""
+        import yaml
+        from click.exceptions import Abort
+
+        manifest_content = {
+            "name": "github_exporter",
+            "description": "Test github exporter",
+            "version": "1.0.0",
+            "upstream": {"type": "github"},  # Missing repo
+            "build": {"method": "binary_repack", "binary_name": "github_exporter"},
+            "artifacts": {
+                "rpm": {"enabled": True, "summary": "Test"},
+                "docker": {"enabled": True, "entrypoint": ["/usr/bin/github_exporter"]},
+            },
+        }
+
+        manifest_file = tmp_path / "manifest.yaml"
+        with open(manifest_file, "w") as f:
+            yaml.dump(manifest_content, f)
+
+        with pytest.raises(Abort):
+            load_manifest(str(manifest_file))
