@@ -6,8 +6,9 @@ import tarfile
 import click
 import requests
 import yaml
-from jinja2 import Environment, FileSystemLoader
+from jinja2 import Environment, FileSystemLoader, select_autoescape
 from marshmallow import ValidationError
+from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_exponential
 
 from core.config.settings import ARCH_MAP, TEMPLATES_DIR
 from core.engine.schema import ManifestSchema
@@ -29,6 +30,12 @@ def load_manifest(path):
         raise click.Abort() from err
 
 
+@retry(
+    stop=stop_after_attempt(3),
+    wait=wait_exponential(multiplier=1, min=2, max=10),
+    retry=retry_if_exception_type((requests.exceptions.RequestException, OSError)),
+    reraise=True,
+)
 def download_and_extract(data, output_dir, arch):
     """
     Downloads the upstream binary release and extracts it.
@@ -74,7 +81,7 @@ def download_and_extract(data, output_dir, arch):
     found_binaries = []
 
     try:
-        with requests.get(url, stream=True) as r:
+        with requests.get(url, stream=True, timeout=30) as r:
             r.raise_for_status()
             with open(local_file, "wb") as f:
                 for chunk in r.iter_content(chunk_size=8192):
@@ -86,7 +93,7 @@ def download_and_extract(data, output_dir, arch):
             final_path = os.path.join(output_dir, binary_name)
             with gzip.open(local_file, "rb") as f_in, open(final_path, "wb") as f_out:
                 shutil.copyfileobj(f_in, f_out)
-            os.chmod(final_path, 0o755)
+            os.chmod(final_path, 0o755)  # nosec B103 - Executable binary requires execute permissions
             found_binaries.append(binary_name)
             click.echo(f"Binary ready: {final_path}")
 
@@ -118,7 +125,7 @@ def download_and_extract(data, output_dir, arch):
                         if len(parts) > 1:
                             extracted_dirs.add(parts[0])
 
-                        os.chmod(final_path, 0o755)
+                        os.chmod(final_path, 0o755)  # nosec B103 - Executable binary requires execute permissions
                         found_binaries.append(b_name)
                         click.echo(f"Binary ready: {final_path}")
                     else:
@@ -142,6 +149,12 @@ def download_and_extract(data, output_dir, arch):
             os.remove(local_file)
 
 
+@retry(
+    stop=stop_after_attempt(3),
+    wait=wait_exponential(multiplier=1, min=2, max=10),
+    retry=retry_if_exception_type(requests.exceptions.RequestException),
+    reraise=True,
+)
 def download_extra_sources(data, output_dir):
     """
     Download additional files (like config examples) that are not in the release tarball.
@@ -152,7 +165,7 @@ def download_extra_sources(data, output_dir):
         filename = source["filename"]
         click.echo(f"Downloading extra source: {url}...")
         try:
-            r = requests.get(url)
+            r = requests.get(url, timeout=30)
             r.raise_for_status()
             with open(os.path.join(output_dir, filename), "wb") as f:
                 f.write(r.content)
@@ -175,7 +188,10 @@ def build(manifest, output_dir, arch):
 
         # Setup Jinja2 with Override Logic
         template_dirs = [os.path.join(os.path.dirname(manifest), "templates"), TEMPLATES_DIR]
-        env = Environment(loader=FileSystemLoader(template_dirs))
+        env = Environment(
+            loader=FileSystemLoader(template_dirs),
+            autoescape=select_autoescape(["html", "xml", "j2"]),
+        )
 
         os.makedirs(output_dir, exist_ok=True)
 
