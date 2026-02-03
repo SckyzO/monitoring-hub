@@ -4,7 +4,7 @@
       "name": "alertmanager",
       "description": "Handle alerts and notifications for the Prometheus ecosystem",
       "category": "Infrastructure",
-      "version": "0.30.1",
+      "version": "0.31.0",
       "updated": true,
       "upstream": {
         "type": "github",
@@ -1918,7 +1918,7 @@
     {
       "name": "nats_exporter",
       "description": "NATS metrics exporter for Prometheus.",
-      "version": "0.18.0",
+      "version": "0.19.0",
       "category": "Messaging",
       "new": true,
       "updated": false,
@@ -1971,7 +1971,7 @@
         "el8": {
           "x86_64": {
             "status": "success",
-            "path": "el8/x86_64/nats_exporter-v0.18.0-1.el8.x86_64.rpm"
+            "path": "el8/x86_64/nats_exporter-0.19.0-1.el8.x86_64.rpm"
           },
           "aarch64": {
             "status": "failed",
@@ -1981,7 +1981,7 @@
         "el9": {
           "x86_64": {
             "status": "success",
-            "path": "el9/x86_64/nats_exporter-v0.18.0-1.el9.x86_64.rpm"
+            "path": "el9/x86_64/nats_exporter-0.19.0-1.el9.x86_64.rpm"
           },
           "aarch64": {
             "status": "failed",
@@ -1991,7 +1991,7 @@
         "el10": {
           "x86_64": {
             "status": "success",
-            "path": "el10/x86_64/nats_exporter-v0.18.0-1.el10.x86_64.rpm"
+            "path": "el10/x86_64/nats_exporter-0.19.0-1.el10.x86_64.rpm"
           },
           "aarch64": {
             "status": "failed",
@@ -2165,7 +2165,7 @@
       "name": "ping_exporter",
       "description": "Prometheus exporter for ICMP ping metrics",
       "category": "Network",
-      "version": "1.1.4",
+      "version": "1.1.5",
       "updated": true,
       "upstream": {
         "type": "github",
