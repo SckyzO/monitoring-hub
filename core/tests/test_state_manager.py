@@ -171,10 +171,7 @@ class TestVersionComparison:
         both updates and rollbacks.
         """
         # Simulate the logic from state_manager.py main()
-        if remote is None:
-            needs_build = True
-        else:
-            needs_build = str(local) != str(remote)
+        needs_build = True if remote is None else str(local) != str(remote)
 
         assert needs_build == should_build
 
@@ -189,10 +186,7 @@ class TestForceRebuild:
         remote_version = "1.0.0"
 
         # When force_rebuild is True, should build regardless of versions
-        if force_rebuild:
-            should_build = True
-        else:
-            should_build = local_version != remote_version
+        should_build = True if force_rebuild else local_version != remote_version
 
         assert should_build is True
 
@@ -202,9 +196,6 @@ class TestForceRebuild:
         local_version = "1.0.0"
         remote_version = "1.0.0"
 
-        if force_rebuild:
-            should_build = True
-        else:
-            should_build = local_version != remote_version
+        should_build = True if force_rebuild else local_version != remote_version
 
         assert should_build is False

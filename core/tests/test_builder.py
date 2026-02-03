@@ -94,7 +94,7 @@ class TestDownloadAndExtract:
         output_dir = temp_dir / "output"
         output_dir.mkdir()
 
-        with pytest.raises(Exception):
+        with pytest.raises(requests.exceptions.HTTPError):
             download_and_extract(mock_manifest_data, str(output_dir), "amd64")
 
     def test_archive_name_pattern_with_clean_version(self, mock_manifest_data):

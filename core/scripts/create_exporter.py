@@ -48,7 +48,6 @@ def get_github_info(repo_name):
     assets = data.get("assets", [])
 
     # Analyze assets
-    has_amd64 = False
     has_arm64 = False
     sample_asset = None
 
@@ -65,10 +64,8 @@ def get_github_info(repo_name):
         # If it says linux, good. If it says nothing but has arch, assume linux (common for go binaries)
         is_explicit_linux = "linux" in name
 
-        if "amd64" in name or "x86_64" in name:
-            has_amd64 = True
-            if is_explicit_linux or not sample_asset:
-                sample_asset = asset["name"]
+        if ("amd64" in name or "x86_64" in name) and (is_explicit_linux or not sample_asset):
+            sample_asset = asset["name"]
 
         if "arm64" in name or "aarch64" in name:
             has_arm64 = True

@@ -26,7 +26,7 @@ def load_manifest(path):
         return schema.load(data)
     except ValidationError as err:
         click.echo(f"Validation error in {path}: {err.messages}", err=True)
-        raise click.Abort()
+        raise click.Abort() from err
 
 
 def download_and_extract(data, output_dir, arch):
@@ -84,9 +84,8 @@ def download_and_extract(data, output_dir, arch):
         if filename.endswith(".gz") and not filename.endswith(".tar.gz"):
             click.echo(f"Decompressing single binary {filename}...")
             final_path = os.path.join(output_dir, binary_name)
-            with gzip.open(local_file, "rb") as f_in:
-                with open(final_path, "wb") as f_out:
-                    shutil.copyfileobj(f_in, f_out)
+            with gzip.open(local_file, "rb") as f_in, open(final_path, "wb") as f_out:
+                shutil.copyfileobj(f_in, f_out)
             os.chmod(final_path, 0o755)
             found_binaries.append(binary_name)
             click.echo(f"Binary ready: {final_path}")
@@ -212,7 +211,7 @@ def build(manifest, output_dir, arch):
             try:
                 template = env.get_template(f"{data['name']}.spec.j2")
                 click.echo("Using custom spec template")
-            except:
+            except Exception:  # noqa: S110
                 template = env.get_template("default.spec.j2")
 
             output_content = template.render(data)
@@ -224,7 +223,7 @@ def build(manifest, output_dir, arch):
         if artifacts.get("docker", {}).get("enabled"):
             try:
                 template = env.get_template("Dockerfile.j2")
-            except:
+            except Exception:  # noqa: S110
                 template = env.get_template("Dockerfile.j2")
 
             output_content = template.render(data)

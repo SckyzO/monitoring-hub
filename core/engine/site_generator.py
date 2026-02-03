@@ -91,7 +91,7 @@ def generate(output, repo_dir):
     exporters_data.sort(key=lambda x: x["name"])
 
     # Collect unique categories dynamically
-    categories = sorted(list(set([e.get("category", "System") for e in exporters_data])))
+    categories = sorted({e.get("category", "System") for e in exporters_data})
 
     # Pre-serialize to JSON for the template
     import json
