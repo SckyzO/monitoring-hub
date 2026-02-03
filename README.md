@@ -10,8 +10,8 @@
 
 <br>
 
-| <a href="https://sckyzo.github.io/monitoring-hub/"><img src=".github/icons/globe-blue.svg" width="24" height="24"><br><b>Explore Portal</b></a> | <a href="https://github.com/SckyzO/monitoring-hub/packages"><img src=".github/icons/container-amber.svg" width="24" height="24"><br><b>OCI Registry</b></a> | <a href="https://github.com/SckyzO/monitoring-hub/issues/new"><img src=".github/icons/bug-rose.svg" width="24" height="24"><br><b>Report Bug</b></a> | <a href="CHANGELOG.md"><img src=".github/icons/history-purple.svg" width="24" height="24"><br><b>Changelog</b></a> |
-| :---: | :---: | :---: | :---: |
+| <a href="https://sckyzo.github.io/monitoring-hub/"><img src=".github/icons/globe-blue.svg" width="24" height="24"><br><b>Explore Portal</b></a> | <a href="https://sckyzo.github.io/monitoring-hub/docs/"><img src=".github/icons/book-emerald.svg" width="24" height="24"><br><b>Documentation</b></a> | <a href="https://github.com/SckyzO/monitoring-hub/packages"><img src=".github/icons/container-amber.svg" width="24" height="24"><br><b>OCI Registry</b></a> | <a href="https://github.com/SckyzO/monitoring-hub/issues/new"><img src=".github/icons/bug-rose.svg" width="24" height="24"><br><b>Report Bug</b></a> | <a href="CHANGELOG.md"><img src=".github/icons/history-purple.svg" width="24" height="24"><br><b>Changelog</b></a> |
+| :---: | :---: | :---: | :---: | :---: |
 
 </div>
 
