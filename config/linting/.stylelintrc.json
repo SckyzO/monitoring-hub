@@ -1,0 +1,14 @@
+{
+  "extends": "stylelint-config-standard",
+  "overrides": [
+    {
+      "files": ["**/*.html.j2"],
+      "customSyntax": "postcss-html"
+    }
+  ],
+  "rules": {
+    "selector-class-pattern": null,
+    "no-descending-specificity": null,
+    "value-keyword-case": null
+  }
+}
