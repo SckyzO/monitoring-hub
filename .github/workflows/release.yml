@@ -557,17 +557,17 @@ jobs:
 
                 # Generate Release file
                 cd dists/$dist
-                cat > Release <<EOF
-Origin: Monitoring Hub
-Label: Monitoring Hub
-Suite: $dist
-Codename: $dist
-Version: 1.0
-Architectures: amd64 arm64
-Components: main
-Description: Monitoring Hub Package Repository
-Date: $(date -R -u)
-EOF
+                {
+                  echo "Origin: Monitoring Hub"
+                  echo "Label: Monitoring Hub"
+                  echo "Suite: $dist"
+                  echo "Codename: $dist"
+                  echo "Version: 1.0"
+                  echo "Architectures: amd64 arm64"
+                  echo "Components: main"
+                  echo "Description: Monitoring Hub Package Repository"
+                  echo "Date: $(date -R -u)"
+                } > Release
 
                 # Add file checksums
                 apt-ftparchive release . >> Release
