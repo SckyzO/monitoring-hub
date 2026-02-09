@@ -1,0 +1,26 @@
+FROM python:3.12-slim
+
+WORKDIR /workspace
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    git \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements first for better caching
+COPY core/requirements.txt /tmp/core-requirements.txt
+COPY requirements-dev.txt /tmp/requirements-dev.txt
+COPY requirements-docs.txt /tmp/requirements-docs.txt
+
+# Install all dependencies
+RUN pip install --no-cache-dir \
+    -r /tmp/core-requirements.txt \
+    -r /tmp/requirements-dev.txt \
+    -r /tmp/requirements-docs.txt
+
+# Set PYTHONPATH to include the workspace root
+ENV PYTHONPATH=/workspace
+
+# Default command
+CMD ["/bin/bash"]
