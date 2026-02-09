@@ -350,8 +350,7 @@ jobs:
             --output gh-pages-dist/index.html \
             --repo-dir gh-pages-dist
 
-          # Also generate catalog.json in gh-pages
-          cp catalog.json gh-pages-dist/catalog.json
+          # catalog.json is automatically generated in gh-pages-dist/ by site_generator
 
       - name: Deploy to gh-pages (single commit)
         run: |
