@@ -33,14 +33,40 @@ make install
 # Run tests
 make test
 
-# Check linting
+# Check Python linting
 make lint
+
+# Check CSS linting (portal and templates)
+make docker-lint-css
+
+# Auto-fix linting issues (Python + CSS)
+make docker-lint-fix
 
 # Format code
 make format
 
+# Type checking
+make type-check
+
 # Validate everything
 make validate
+```
+
+### Docker-based Development
+
+If you prefer not to install Python locally, use Docker-based commands:
+
+```bash
+# Build dev container
+make docker-build
+
+# Run all checks in container
+make docker-ci              # All CI checks
+make docker-test            # Tests only
+make docker-lint            # Python linting
+make docker-lint-css        # CSS linting
+make docker-format          # Code formatting
+make docker-type-check      # Type checking
 ```
 
 ## Running Locally
