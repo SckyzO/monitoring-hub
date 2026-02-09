@@ -71,31 +71,31 @@
         "el8": {
           "x86_64": {
             "status": "success",
-            "path": "el8/x86_64/alertmanager-0.31.0-1.el8.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.31.0/alertmanager-0.31.0-1.el8.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el8/aarch64/alertmanager-0.31.0-1.el8.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.31.0/alertmanager-0.31.0-1.el8.aarch64.rpm"
           }
         },
         "el9": {
           "x86_64": {
             "status": "success",
-            "path": "el9/x86_64/alertmanager-0.31.0-1.el9.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.31.0/alertmanager-0.31.0-1.el9.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el9/aarch64/alertmanager-0.31.0-1.el9.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.31.0/alertmanager-0.31.0-1.el9.aarch64.rpm"
           }
         },
         "el10": {
           "x86_64": {
             "status": "success",
-            "path": "el10/x86_64/alertmanager-0.31.0-1.el10.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.31.0/alertmanager-0.31.0-1.el10.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el10/aarch64/alertmanager-0.31.0-1.el10.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.31.0/alertmanager-0.31.0-1.el10.aarch64.rpm"
           }
         }
       },
@@ -197,31 +197,31 @@
         "el8": {
           "x86_64": {
             "status": "success",
-            "path": "el8/x86_64/apache_exporter-1.0.12-1.el8.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.0.12/apache_exporter-1.0.12-1.el8.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el8/aarch64/apache_exporter-1.0.12-1.el8.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.0.12/apache_exporter-1.0.12-1.el8.aarch64.rpm"
           }
         },
         "el9": {
           "x86_64": {
             "status": "success",
-            "path": "el9/x86_64/apache_exporter-1.0.12-1.el9.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.0.12/apache_exporter-1.0.12-1.el9.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el9/aarch64/apache_exporter-1.0.12-1.el9.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.0.12/apache_exporter-1.0.12-1.el9.aarch64.rpm"
           }
         },
         "el10": {
           "x86_64": {
             "status": "success",
-            "path": "el10/x86_64/apache_exporter-1.0.12-1.el10.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.0.12/apache_exporter-1.0.12-1.el10.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el10/aarch64/apache_exporter-1.0.12-1.el10.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.0.12/apache_exporter-1.0.12-1.el10.aarch64.rpm"
           }
         }
       },
@@ -321,31 +321,31 @@
         "el8": {
           "x86_64": {
             "status": "success",
-            "path": "el8/x86_64/artifactory_exporter-1.16.1-1.el8.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.16.1/artifactory_exporter-1.16.1-1.el8.x86_64.rpm"
           },
           "aarch64": {
-            "status": "failed",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.16.1/artifactory_exporter-1.16.1-1.el8.aarch64.rpm"
           }
         },
         "el9": {
           "x86_64": {
             "status": "success",
-            "path": "el9/x86_64/artifactory_exporter-1.16.1-1.el9.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.16.1/artifactory_exporter-1.16.1-1.el9.x86_64.rpm"
           },
           "aarch64": {
-            "status": "failed",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.16.1/artifactory_exporter-1.16.1-1.el9.aarch64.rpm"
           }
         },
         "el10": {
           "x86_64": {
             "status": "success",
-            "path": "el10/x86_64/artifactory_exporter-1.16.1-1.el10.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.16.1/artifactory_exporter-1.16.1-1.el10.x86_64.rpm"
           },
           "aarch64": {
-            "status": "failed",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.16.1/artifactory_exporter-1.16.1-1.el10.aarch64.rpm"
           }
         }
       },
@@ -447,31 +447,31 @@
         "el8": {
           "x86_64": {
             "status": "success",
-            "path": "el8/x86_64/bind_exporter-0.8.0-1.el8.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.8.0/bind_exporter-0.8.0-1.el8.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el8/aarch64/bind_exporter-0.8.0-1.el8.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.8.0/bind_exporter-0.8.0-1.el8.aarch64.rpm"
           }
         },
         "el9": {
           "x86_64": {
             "status": "success",
-            "path": "el9/x86_64/bind_exporter-0.8.0-1.el9.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.8.0/bind_exporter-0.8.0-1.el9.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el9/aarch64/bind_exporter-0.8.0-1.el9.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.8.0/bind_exporter-0.8.0-1.el9.aarch64.rpm"
           }
         },
         "el10": {
           "x86_64": {
             "status": "success",
-            "path": "el10/x86_64/bind_exporter-0.8.0-1.el10.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.8.0/bind_exporter-0.8.0-1.el10.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el10/aarch64/bind_exporter-0.8.0-1.el10.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.8.0/bind_exporter-0.8.0-1.el10.aarch64.rpm"
           }
         }
       },
@@ -588,31 +588,31 @@
         "el8": {
           "x86_64": {
             "status": "success",
-            "path": "el8/x86_64/blackbox_exporter-0.28.0-1.el8.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.28.0/blackbox_exporter-0.28.0-1.el8.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el8/aarch64/blackbox_exporter-0.28.0-1.el8.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.28.0/blackbox_exporter-0.28.0-1.el8.aarch64.rpm"
           }
         },
         "el9": {
           "x86_64": {
             "status": "success",
-            "path": "el9/x86_64/blackbox_exporter-0.28.0-1.el9.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.28.0/blackbox_exporter-0.28.0-1.el9.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el9/aarch64/blackbox_exporter-0.28.0-1.el9.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.28.0/blackbox_exporter-0.28.0-1.el9.aarch64.rpm"
           }
         },
         "el10": {
           "x86_64": {
             "status": "success",
-            "path": "el10/x86_64/blackbox_exporter-0.28.0-1.el10.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.28.0/blackbox_exporter-0.28.0-1.el10.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el10/aarch64/blackbox_exporter-0.28.0-1.el10.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.28.0/blackbox_exporter-0.28.0-1.el10.aarch64.rpm"
           }
         }
       },
@@ -712,31 +712,31 @@
         "el8": {
           "x86_64": {
             "status": "success",
-            "path": "el8/x86_64/collectd_exporter-0.7.0-1.el8.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.7.0/collectd_exporter-0.7.0-1.el8.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el8/aarch64/collectd_exporter-0.7.0-1.el8.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.7.0/collectd_exporter-0.7.0-1.el8.aarch64.rpm"
           }
         },
         "el9": {
           "x86_64": {
             "status": "success",
-            "path": "el9/x86_64/collectd_exporter-0.7.0-1.el9.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.7.0/collectd_exporter-0.7.0-1.el9.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el9/aarch64/collectd_exporter-0.7.0-1.el9.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.7.0/collectd_exporter-0.7.0-1.el9.aarch64.rpm"
           }
         },
         "el10": {
           "x86_64": {
             "status": "success",
-            "path": "el10/x86_64/collectd_exporter-0.7.0-1.el10.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.7.0/collectd_exporter-0.7.0-1.el10.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el10/aarch64/collectd_exporter-0.7.0-1.el10.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.7.0/collectd_exporter-0.7.0-1.el10.aarch64.rpm"
           }
         }
       },
@@ -835,31 +835,31 @@
         "el8": {
           "x86_64": {
             "status": "success",
-            "path": "el8/x86_64/dellhw_exporter-1.13.13-1.el8.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.13.13/dellhw_exporter-1.13.13-1.el8.x86_64.rpm"
           },
           "aarch64": {
-            "status": "failed",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.13.13/dellhw_exporter-1.13.13-1.el8.aarch64.rpm"
           }
         },
         "el9": {
           "x86_64": {
             "status": "success",
-            "path": "el9/x86_64/dellhw_exporter-1.13.13-1.el9.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.13.13/dellhw_exporter-1.13.13-1.el9.x86_64.rpm"
           },
           "aarch64": {
-            "status": "failed",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.13.13/dellhw_exporter-1.13.13-1.el9.aarch64.rpm"
           }
         },
         "el10": {
           "x86_64": {
             "status": "success",
-            "path": "el10/x86_64/dellhw_exporter-1.13.13-1.el10.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.13.13/dellhw_exporter-1.13.13-1.el10.x86_64.rpm"
           },
           "aarch64": {
-            "status": "failed",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.13.13/dellhw_exporter-1.13.13-1.el10.aarch64.rpm"
           }
         }
       },
@@ -960,31 +960,31 @@
         "el8": {
           "x86_64": {
             "status": "success",
-            "path": "el8/x86_64/domain_exporter-1.24.1-1.el8.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.24.1/domain_exporter-1.24.1-1.el8.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el8/aarch64/domain_exporter-1.24.1-1.el8.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.24.1/domain_exporter-1.24.1-1.el8.aarch64.rpm"
           }
         },
         "el9": {
           "x86_64": {
             "status": "success",
-            "path": "el9/x86_64/domain_exporter-1.24.1-1.el9.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.24.1/domain_exporter-1.24.1-1.el9.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el9/aarch64/domain_exporter-1.24.1-1.el9.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.24.1/domain_exporter-1.24.1-1.el9.aarch64.rpm"
           }
         },
         "el10": {
           "x86_64": {
             "status": "success",
-            "path": "el10/x86_64/domain_exporter-1.24.1-1.el10.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.24.1/domain_exporter-1.24.1-1.el10.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el10/aarch64/domain_exporter-1.24.1-1.el10.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.24.1/domain_exporter-1.24.1-1.el10.aarch64.rpm"
           }
         }
       },
@@ -1087,31 +1087,31 @@
         "el8": {
           "x86_64": {
             "status": "success",
-            "path": "el8/x86_64/ebpf_exporter-2.5.1-1.el8.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v2.5.1/ebpf_exporter-2.5.1-1.el8.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el8/aarch64/ebpf_exporter-2.5.1-1.el8.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v2.5.1/ebpf_exporter-2.5.1-1.el8.aarch64.rpm"
           }
         },
         "el9": {
           "x86_64": {
             "status": "success",
-            "path": "el9/x86_64/ebpf_exporter-2.5.1-1.el9.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v2.5.1/ebpf_exporter-2.5.1-1.el9.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el9/aarch64/ebpf_exporter-2.5.1-1.el9.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v2.5.1/ebpf_exporter-2.5.1-1.el9.aarch64.rpm"
           }
         },
         "el10": {
           "x86_64": {
             "status": "success",
-            "path": "el10/x86_64/ebpf_exporter-2.5.1-1.el10.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v2.5.1/ebpf_exporter-2.5.1-1.el10.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el10/aarch64/ebpf_exporter-2.5.1-1.el10.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v2.5.1/ebpf_exporter-2.5.1-1.el10.aarch64.rpm"
           }
         }
       },
@@ -1209,31 +1209,31 @@
         "el8": {
           "x86_64": {
             "status": "success",
-            "path": "el8/x86_64/elasticsearch_exporter-1.10.0-1.el8.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.10.0/elasticsearch_exporter-1.10.0-1.el8.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el8/aarch64/elasticsearch_exporter-1.10.0-1.el8.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.10.0/elasticsearch_exporter-1.10.0-1.el8.aarch64.rpm"
           }
         },
         "el9": {
           "x86_64": {
             "status": "success",
-            "path": "el9/x86_64/elasticsearch_exporter-1.10.0-1.el9.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.10.0/elasticsearch_exporter-1.10.0-1.el9.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el9/aarch64/elasticsearch_exporter-1.10.0-1.el9.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.10.0/elasticsearch_exporter-1.10.0-1.el9.aarch64.rpm"
           }
         },
         "el10": {
           "x86_64": {
             "status": "success",
-            "path": "el10/x86_64/elasticsearch_exporter-1.10.0-1.el10.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.10.0/elasticsearch_exporter-1.10.0-1.el10.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el10/aarch64/elasticsearch_exporter-1.10.0-1.el10.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.10.0/elasticsearch_exporter-1.10.0-1.el10.aarch64.rpm"
           }
         }
       },
@@ -1347,31 +1347,31 @@
         "el8": {
           "x86_64": {
             "status": "success",
-            "path": "el8/x86_64/eseries_exporter-2.0.0-1.el8.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v2.0.0/eseries_exporter-2.0.0-1.el8.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el8/aarch64/eseries_exporter-2.0.0-1.el8.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v2.0.0/eseries_exporter-2.0.0-1.el8.aarch64.rpm"
           }
         },
         "el9": {
           "x86_64": {
             "status": "success",
-            "path": "el9/x86_64/eseries_exporter-2.0.0-1.el9.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v2.0.0/eseries_exporter-2.0.0-1.el9.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el9/aarch64/eseries_exporter-2.0.0-1.el9.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v2.0.0/eseries_exporter-2.0.0-1.el9.aarch64.rpm"
           }
         },
         "el10": {
           "x86_64": {
             "status": "success",
-            "path": "el10/x86_64/eseries_exporter-2.0.0-1.el10.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v2.0.0/eseries_exporter-2.0.0-1.el10.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el10/aarch64/eseries_exporter-2.0.0-1.el10.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v2.0.0/eseries_exporter-2.0.0-1.el10.aarch64.rpm"
           }
         }
       },
@@ -1477,31 +1477,31 @@
         "el8": {
           "x86_64": {
             "status": "success",
-            "path": "el8/x86_64/exim_exporter-1.6.2-1.el8.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.6.2/exim_exporter-1.6.2-1.el8.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el8/aarch64/exim_exporter-1.6.2-1.el8.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.6.2/exim_exporter-1.6.2-1.el8.aarch64.rpm"
           }
         },
         "el9": {
           "x86_64": {
             "status": "success",
-            "path": "el9/x86_64/exim_exporter-1.6.2-1.el9.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.6.2/exim_exporter-1.6.2-1.el9.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el9/aarch64/exim_exporter-1.6.2-1.el9.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.6.2/exim_exporter-1.6.2-1.el9.aarch64.rpm"
           }
         },
         "el10": {
           "x86_64": {
             "status": "success",
-            "path": "el10/x86_64/exim_exporter-1.6.2-1.el10.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.6.2/exim_exporter-1.6.2-1.el10.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el10/aarch64/exim_exporter-1.6.2-1.el10.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.6.2/exim_exporter-1.6.2-1.el10.aarch64.rpm"
           }
         }
       },
@@ -1608,31 +1608,31 @@
         "el8": {
           "x86_64": {
             "status": "success",
-            "path": "el8/x86_64/frr_exporter-1.10.0-1.el8.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.10.0/frr_exporter-1.10.0-1.el8.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el8/aarch64/frr_exporter-1.10.0-1.el8.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.10.0/frr_exporter-1.10.0-1.el8.aarch64.rpm"
           }
         },
         "el9": {
           "x86_64": {
             "status": "success",
-            "path": "el9/x86_64/frr_exporter-1.10.0-1.el9.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.10.0/frr_exporter-1.10.0-1.el9.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el9/aarch64/frr_exporter-1.10.0-1.el9.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.10.0/frr_exporter-1.10.0-1.el9.aarch64.rpm"
           }
         },
         "el10": {
           "x86_64": {
             "status": "success",
-            "path": "el10/x86_64/frr_exporter-1.10.0-1.el10.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.10.0/frr_exporter-1.10.0-1.el10.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el10/aarch64/frr_exporter-1.10.0-1.el10.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.10.0/frr_exporter-1.10.0-1.el10.aarch64.rpm"
           }
         }
       },
@@ -1730,31 +1730,31 @@
         "el8": {
           "x86_64": {
             "status": "success",
-            "path": "el8/x86_64/gpfs_exporter-3.2.1-1.el8.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v3.2.1/gpfs_exporter-3.2.1-1.el8.x86_64.rpm"
           },
           "aarch64": {
-            "status": "failed",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v3.2.1/gpfs_exporter-3.2.1-1.el8.aarch64.rpm"
           }
         },
         "el9": {
           "x86_64": {
             "status": "success",
-            "path": "el9/x86_64/gpfs_exporter-3.2.1-1.el9.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v3.2.1/gpfs_exporter-3.2.1-1.el9.x86_64.rpm"
           },
           "aarch64": {
-            "status": "failed",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v3.2.1/gpfs_exporter-3.2.1-1.el9.aarch64.rpm"
           }
         },
         "el10": {
           "x86_64": {
             "status": "success",
-            "path": "el10/x86_64/gpfs_exporter-3.2.1-1.el10.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v3.2.1/gpfs_exporter-3.2.1-1.el10.x86_64.rpm"
           },
           "aarch64": {
-            "status": "failed",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v3.2.1/gpfs_exporter-3.2.1-1.el10.aarch64.rpm"
           }
         }
       },
@@ -1850,31 +1850,31 @@
         "el8": {
           "x86_64": {
             "status": "success",
-            "path": "el8/x86_64/ha_cluster_exporter-1.4.0-1.el8.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.4.0/ha_cluster_exporter-1.4.0-1.el8.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el8/aarch64/ha_cluster_exporter-1.4.0-1.el8.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.4.0/ha_cluster_exporter-1.4.0-1.el8.aarch64.rpm"
           }
         },
         "el9": {
           "x86_64": {
             "status": "success",
-            "path": "el9/x86_64/ha_cluster_exporter-1.4.0-1.el9.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.4.0/ha_cluster_exporter-1.4.0-1.el9.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el9/aarch64/ha_cluster_exporter-1.4.0-1.el9.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.4.0/ha_cluster_exporter-1.4.0-1.el9.aarch64.rpm"
           }
         },
         "el10": {
           "x86_64": {
             "status": "success",
-            "path": "el10/x86_64/ha_cluster_exporter-1.4.0-1.el10.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.4.0/ha_cluster_exporter-1.4.0-1.el10.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el10/aarch64/ha_cluster_exporter-1.4.0-1.el10.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.4.0/ha_cluster_exporter-1.4.0-1.el10.aarch64.rpm"
           }
         }
       },
@@ -1980,31 +1980,31 @@
         "el8": {
           "x86_64": {
             "status": "success",
-            "path": "el8/x86_64/iperf3_exporter-1.3.1-1.el8.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.3.1/iperf3_exporter-1.3.1-1.el8.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el8/aarch64/iperf3_exporter-1.3.1-1.el8.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.3.1/iperf3_exporter-1.3.1-1.el8.aarch64.rpm"
           }
         },
         "el9": {
           "x86_64": {
             "status": "success",
-            "path": "el9/x86_64/iperf3_exporter-1.3.1-1.el9.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.3.1/iperf3_exporter-1.3.1-1.el9.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el9/aarch64/iperf3_exporter-1.3.1-1.el9.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.3.1/iperf3_exporter-1.3.1-1.el9.aarch64.rpm"
           }
         },
         "el10": {
           "x86_64": {
             "status": "success",
-            "path": "el10/x86_64/iperf3_exporter-1.3.1-1.el10.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.3.1/iperf3_exporter-1.3.1-1.el10.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el10/aarch64/iperf3_exporter-1.3.1-1.el10.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.3.1/iperf3_exporter-1.3.1-1.el10.aarch64.rpm"
           }
         }
       },
@@ -2124,31 +2124,31 @@
         "el8": {
           "x86_64": {
             "status": "success",
-            "path": "el8/x86_64/ipmi_exporter-1.10.1-1.el8.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.10.1/ipmi_exporter-1.10.1-1.el8.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el8/aarch64/ipmi_exporter-1.10.1-1.el8.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.10.1/ipmi_exporter-1.10.1-1.el8.aarch64.rpm"
           }
         },
         "el9": {
           "x86_64": {
             "status": "success",
-            "path": "el9/x86_64/ipmi_exporter-1.10.1-1.el9.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.10.1/ipmi_exporter-1.10.1-1.el9.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el9/aarch64/ipmi_exporter-1.10.1-1.el9.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.10.1/ipmi_exporter-1.10.1-1.el9.aarch64.rpm"
           }
         },
         "el10": {
           "x86_64": {
             "status": "success",
-            "path": "el10/x86_64/ipmi_exporter-1.10.1-1.el10.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.10.1/ipmi_exporter-1.10.1-1.el10.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el10/aarch64/ipmi_exporter-1.10.1-1.el10.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.10.1/ipmi_exporter-1.10.1-1.el10.aarch64.rpm"
           }
         }
       },
@@ -2264,31 +2264,31 @@
         "el8": {
           "x86_64": {
             "status": "success",
-            "path": "el8/x86_64/json_exporter-0.7.0-1.el8.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.7.0/json_exporter-0.7.0-1.el8.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el8/aarch64/json_exporter-0.7.0-1.el8.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.7.0/json_exporter-0.7.0-1.el8.aarch64.rpm"
           }
         },
         "el9": {
           "x86_64": {
             "status": "success",
-            "path": "el9/x86_64/json_exporter-0.7.0-1.el9.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.7.0/json_exporter-0.7.0-1.el9.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el9/aarch64/json_exporter-0.7.0-1.el9.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.7.0/json_exporter-0.7.0-1.el9.aarch64.rpm"
           }
         },
         "el10": {
           "x86_64": {
             "status": "success",
-            "path": "el10/x86_64/json_exporter-0.7.0-1.el10.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.7.0/json_exporter-0.7.0-1.el10.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el10/aarch64/json_exporter-0.7.0-1.el10.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.7.0/json_exporter-0.7.0-1.el10.aarch64.rpm"
           }
         }
       },
@@ -2393,31 +2393,31 @@
         "el8": {
           "x86_64": {
             "status": "success",
-            "path": "el8/x86_64/keepalived_exporter-1.7.0-1.el8.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.7.0/keepalived_exporter-1.7.0-1.el8.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el8/aarch64/keepalived_exporter-1.7.0-1.el8.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.7.0/keepalived_exporter-1.7.0-1.el8.aarch64.rpm"
           }
         },
         "el9": {
           "x86_64": {
             "status": "success",
-            "path": "el9/x86_64/keepalived_exporter-1.7.0-1.el9.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.7.0/keepalived_exporter-1.7.0-1.el9.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el9/aarch64/keepalived_exporter-1.7.0-1.el9.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.7.0/keepalived_exporter-1.7.0-1.el9.aarch64.rpm"
           }
         },
         "el10": {
           "x86_64": {
             "status": "success",
-            "path": "el10/x86_64/keepalived_exporter-1.7.0-1.el10.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.7.0/keepalived_exporter-1.7.0-1.el10.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el10/aarch64/keepalived_exporter-1.7.0-1.el10.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.7.0/keepalived_exporter-1.7.0-1.el10.aarch64.rpm"
           }
         }
       },
@@ -2522,31 +2522,31 @@
         "el8": {
           "x86_64": {
             "status": "success",
-            "path": "el8/x86_64/memcached_exporter-0.15.5-1.el8.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.15.5/memcached_exporter-0.15.5-1.el8.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el8/aarch64/memcached_exporter-0.15.5-1.el8.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.15.5/memcached_exporter-0.15.5-1.el8.aarch64.rpm"
           }
         },
         "el9": {
           "x86_64": {
             "status": "success",
-            "path": "el9/x86_64/memcached_exporter-0.15.5-1.el9.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.15.5/memcached_exporter-0.15.5-1.el9.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el9/aarch64/memcached_exporter-0.15.5-1.el9.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.15.5/memcached_exporter-0.15.5-1.el9.aarch64.rpm"
           }
         },
         "el10": {
           "x86_64": {
             "status": "success",
-            "path": "el10/x86_64/memcached_exporter-0.15.5-1.el10.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.15.5/memcached_exporter-0.15.5-1.el10.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el10/aarch64/memcached_exporter-0.15.5-1.el10.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.15.5/memcached_exporter-0.15.5-1.el10.aarch64.rpm"
           }
         }
       },
@@ -2651,31 +2651,31 @@
         "el8": {
           "x86_64": {
             "status": "success",
-            "path": "el8/x86_64/mongodb_exporter-0.47.2-1.el8.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.47.2/mongodb_exporter-0.47.2-1.el8.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el8/aarch64/mongodb_exporter-0.47.2-1.el8.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.47.2/mongodb_exporter-0.47.2-1.el8.aarch64.rpm"
           }
         },
         "el9": {
           "x86_64": {
             "status": "success",
-            "path": "el9/x86_64/mongodb_exporter-0.47.2-1.el9.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.47.2/mongodb_exporter-0.47.2-1.el9.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el9/aarch64/mongodb_exporter-0.47.2-1.el9.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.47.2/mongodb_exporter-0.47.2-1.el9.aarch64.rpm"
           }
         },
         "el10": {
           "x86_64": {
             "status": "success",
-            "path": "el10/x86_64/mongodb_exporter-0.47.2-1.el10.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.47.2/mongodb_exporter-0.47.2-1.el10.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el10/aarch64/mongodb_exporter-0.47.2-1.el10.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.47.2/mongodb_exporter-0.47.2-1.el10.aarch64.rpm"
           }
         }
       },
@@ -2787,31 +2787,31 @@
         "el8": {
           "x86_64": {
             "status": "success",
-            "path": "el8/x86_64/mysqld_exporter-0.18.0-1.el8.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.18.0/mysqld_exporter-0.18.0-1.el8.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el8/aarch64/mysqld_exporter-0.18.0-1.el8.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.18.0/mysqld_exporter-0.18.0-1.el8.aarch64.rpm"
           }
         },
         "el9": {
           "x86_64": {
             "status": "success",
-            "path": "el9/x86_64/mysqld_exporter-0.18.0-1.el9.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.18.0/mysqld_exporter-0.18.0-1.el9.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el9/aarch64/mysqld_exporter-0.18.0-1.el9.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.18.0/mysqld_exporter-0.18.0-1.el9.aarch64.rpm"
           }
         },
         "el10": {
           "x86_64": {
             "status": "success",
-            "path": "el10/x86_64/mysqld_exporter-0.18.0-1.el10.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.18.0/mysqld_exporter-0.18.0-1.el10.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el10/aarch64/mysqld_exporter-0.18.0-1.el10.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.18.0/mysqld_exporter-0.18.0-1.el10.aarch64.rpm"
           }
         }
       },
@@ -2917,31 +2917,31 @@
         "el8": {
           "x86_64": {
             "status": "success",
-            "path": "el8/x86_64/nats_exporter-0.19.1-1.el8.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.19.1/nats_exporter-0.19.1-1.el8.x86_64.rpm"
           },
           "aarch64": {
-            "status": "failed",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.19.1/nats_exporter-0.19.1-1.el8.aarch64.rpm"
           }
         },
         "el9": {
           "x86_64": {
             "status": "success",
-            "path": "el9/x86_64/nats_exporter-0.19.1-1.el9.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.19.1/nats_exporter-0.19.1-1.el9.x86_64.rpm"
           },
           "aarch64": {
-            "status": "failed",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.19.1/nats_exporter-0.19.1-1.el9.aarch64.rpm"
           }
         },
         "el10": {
           "x86_64": {
             "status": "success",
-            "path": "el10/x86_64/nats_exporter-0.19.1-1.el10.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.19.1/nats_exporter-0.19.1-1.el10.x86_64.rpm"
           },
           "aarch64": {
-            "status": "failed",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.19.1/nats_exporter-0.19.1-1.el10.aarch64.rpm"
           }
         }
       },
@@ -3044,31 +3044,31 @@
         "el8": {
           "x86_64": {
             "status": "success",
-            "path": "el8/x86_64/nginx_exporter-1.5.1-1.el8.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.5.1/nginx_exporter-1.5.1-1.el8.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el8/aarch64/nginx_exporter-1.5.1-1.el8.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.5.1/nginx_exporter-1.5.1-1.el8.aarch64.rpm"
           }
         },
         "el9": {
           "x86_64": {
             "status": "success",
-            "path": "el9/x86_64/nginx_exporter-1.5.1-1.el9.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.5.1/nginx_exporter-1.5.1-1.el9.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el9/aarch64/nginx_exporter-1.5.1-1.el9.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.5.1/nginx_exporter-1.5.1-1.el9.aarch64.rpm"
           }
         },
         "el10": {
           "x86_64": {
             "status": "success",
-            "path": "el10/x86_64/nginx_exporter-1.5.1-1.el10.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.5.1/nginx_exporter-1.5.1-1.el10.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el10/aarch64/nginx_exporter-1.5.1-1.el10.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.5.1/nginx_exporter-1.5.1-1.el10.aarch64.rpm"
           }
         }
       },
@@ -3177,78 +3177,78 @@
         "el8": {
           "x86_64": {
             "status": "success",
-            "path": "el8/x86_64/node_exporter-1.10.2-1.el8.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.10.2/node_exporter-1.10.2-1.el8.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el8/aarch64/node_exporter-1.10.2-1.el8.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.10.2/node_exporter-1.10.2-1.el8.aarch64.rpm"
           }
         },
         "el9": {
           "x86_64": {
             "status": "success",
-            "path": "el9/x86_64/node_exporter-1.10.2-1.el9.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.10.2/node_exporter-1.10.2-1.el9.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el9/aarch64/node_exporter-1.10.2-1.el9.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.10.2/node_exporter-1.10.2-1.el9.aarch64.rpm"
           }
         },
         "el10": {
           "x86_64": {
             "status": "success",
-            "path": "el10/x86_64/node_exporter-1.10.2-1.el10.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.10.2/node_exporter-1.10.2-1.el10.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el10/aarch64/node_exporter-1.10.2-1.el10.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.10.2/node_exporter-1.10.2-1.el10.aarch64.rpm"
           }
         }
       },
       "deb_availability": {
         "ubuntu-22.04": {
           "amd64": {
-            "status": "failed",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.10.2/node-exporter_1.10.2-1_amd64.deb"
           },
           "arm64": {
-            "status": "failed",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.10.2/node-exporter_1.10.2-1_arm64.deb"
           }
         },
         "ubuntu-24.04": {
           "amd64": {
-            "status": "failed",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.10.2/node-exporter_1.10.2-1_amd64.deb"
           },
           "arm64": {
-            "status": "failed",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.10.2/node-exporter_1.10.2-1_arm64.deb"
           }
         },
         "debian-12": {
           "amd64": {
-            "status": "failed",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.10.2/node-exporter_1.10.2-1_amd64.deb"
           },
           "arm64": {
-            "status": "failed",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.10.2/node-exporter_1.10.2-1_arm64.deb"
           }
         },
         "debian-13": {
           "amd64": {
-            "status": "failed",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.10.2/node-exporter_1.10.2-1_amd64.deb"
           },
           "arm64": {
-            "status": "failed",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.10.2/node-exporter_1.10.2-1_arm64.deb"
           }
         }
       },
       "rpm_status": "success",
-      "deb_status": "failed",
+      "deb_status": "success",
       "docker_status": "success"
     },
     {
@@ -3315,31 +3315,31 @@
         "el8": {
           "x86_64": {
             "status": "success",
-            "path": "el8/x86_64/ping_exporter-1.1.5-1.el8.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.1.5/ping_exporter-1.1.5-1.el8.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el8/aarch64/ping_exporter-1.1.5-1.el8.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.1.5/ping_exporter-1.1.5-1.el8.aarch64.rpm"
           }
         },
         "el9": {
           "x86_64": {
             "status": "success",
-            "path": "el9/x86_64/ping_exporter-1.1.5-1.el9.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.1.5/ping_exporter-1.1.5-1.el9.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el9/aarch64/ping_exporter-1.1.5-1.el9.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.1.5/ping_exporter-1.1.5-1.el9.aarch64.rpm"
           }
         },
         "el10": {
           "x86_64": {
             "status": "success",
-            "path": "el10/x86_64/ping_exporter-1.1.5-1.el10.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.1.5/ping_exporter-1.1.5-1.el10.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el10/aarch64/ping_exporter-1.1.5-1.el10.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.1.5/ping_exporter-1.1.5-1.el10.aarch64.rpm"
           }
         }
       },
@@ -3442,31 +3442,31 @@
         "el8": {
           "x86_64": {
             "status": "success",
-            "path": "el8/x86_64/podman_exporter-1.20.0-1.el8.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.20.0/podman_exporter-1.20.0-1.el8.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el8/aarch64/podman_exporter-1.20.0-1.el8.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.20.0/podman_exporter-1.20.0-1.el8.aarch64.rpm"
           }
         },
         "el9": {
           "x86_64": {
             "status": "success",
-            "path": "el9/x86_64/podman_exporter-1.20.0-1.el9.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.20.0/podman_exporter-1.20.0-1.el9.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el9/aarch64/podman_exporter-1.20.0-1.el9.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.20.0/podman_exporter-1.20.0-1.el9.aarch64.rpm"
           }
         },
         "el10": {
           "x86_64": {
             "status": "success",
-            "path": "el10/x86_64/podman_exporter-1.20.0-1.el10.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.20.0/podman_exporter-1.20.0-1.el10.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el10/aarch64/podman_exporter-1.20.0-1.el10.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.20.0/podman_exporter-1.20.0-1.el10.aarch64.rpm"
           }
         }
       },
@@ -3560,31 +3560,31 @@
         "el8": {
           "x86_64": {
             "status": "success",
-            "path": "el8/x86_64/process_exporter-0.8.7-1.el8.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.8.7/process_exporter-0.8.7-1.el8.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el8/aarch64/process_exporter-0.8.7-1.el8.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.8.7/process_exporter-0.8.7-1.el8.aarch64.rpm"
           }
         },
         "el9": {
           "x86_64": {
             "status": "success",
-            "path": "el9/x86_64/process_exporter-0.8.7-1.el9.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.8.7/process_exporter-0.8.7-1.el9.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el9/aarch64/process_exporter-0.8.7-1.el9.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.8.7/process_exporter-0.8.7-1.el9.aarch64.rpm"
           }
         },
         "el10": {
           "x86_64": {
             "status": "success",
-            "path": "el10/x86_64/process_exporter-0.8.7-1.el10.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.8.7/process_exporter-0.8.7-1.el10.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el10/aarch64/process_exporter-0.8.7-1.el10.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.8.7/process_exporter-0.8.7-1.el10.aarch64.rpm"
           }
         }
       },
@@ -3705,31 +3705,31 @@
         "el8": {
           "x86_64": {
             "status": "success",
-            "path": "el8/x86_64/prometheus-3.9.1-1.el8.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v3.9.1/prometheus-3.9.1-1.el8.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el8/aarch64/prometheus-3.9.1-1.el8.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v3.9.1/prometheus-3.9.1-1.el8.aarch64.rpm"
           }
         },
         "el9": {
           "x86_64": {
             "status": "success",
-            "path": "el9/x86_64/prometheus-3.9.1-1.el9.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v3.9.1/prometheus-3.9.1-1.el9.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el9/aarch64/prometheus-3.9.1-1.el9.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v3.9.1/prometheus-3.9.1-1.el9.aarch64.rpm"
           }
         },
         "el10": {
           "x86_64": {
             "status": "success",
-            "path": "el10/x86_64/prometheus-3.9.1-1.el10.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v3.9.1/prometheus-3.9.1-1.el10.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el10/aarch64/prometheus-3.9.1-1.el10.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v3.9.1/prometheus-3.9.1-1.el10.aarch64.rpm"
           }
         }
       },
@@ -3832,31 +3832,31 @@
         "el8": {
           "x86_64": {
             "status": "success",
-            "path": "el8/x86_64/redis_exporter-1.80.2-1.el8.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.80.2/redis_exporter-1.80.2-1.el8.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el8/aarch64/redis_exporter-1.80.2-1.el8.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.80.2/redis_exporter-1.80.2-1.el8.aarch64.rpm"
           }
         },
         "el9": {
           "x86_64": {
             "status": "success",
-            "path": "el9/x86_64/redis_exporter-1.80.2-1.el9.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.80.2/redis_exporter-1.80.2-1.el9.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el9/aarch64/redis_exporter-1.80.2-1.el9.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.80.2/redis_exporter-1.80.2-1.el9.aarch64.rpm"
           }
         },
         "el10": {
           "x86_64": {
             "status": "success",
-            "path": "el10/x86_64/redis_exporter-1.80.2-1.el10.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.80.2/redis_exporter-1.80.2-1.el10.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el10/aarch64/redis_exporter-1.80.2-1.el10.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.80.2/redis_exporter-1.80.2-1.el10.aarch64.rpm"
           }
         }
       },
@@ -3953,31 +3953,31 @@
         "el8": {
           "x86_64": {
             "status": "success",
-            "path": "el8/x86_64/slurm_exporter-1.2.0-1.el8.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.2.0/slurm_exporter-1.2.0-1.el8.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el8/aarch64/slurm_exporter-1.2.0-1.el8.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.2.0/slurm_exporter-1.2.0-1.el8.aarch64.rpm"
           }
         },
         "el9": {
           "x86_64": {
             "status": "success",
-            "path": "el9/x86_64/slurm_exporter-1.2.0-1.el9.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.2.0/slurm_exporter-1.2.0-1.el9.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el9/aarch64/slurm_exporter-1.2.0-1.el9.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.2.0/slurm_exporter-1.2.0-1.el9.aarch64.rpm"
           }
         },
         "el10": {
           "x86_64": {
             "status": "success",
-            "path": "el10/x86_64/slurm_exporter-1.2.0-1.el10.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.2.0/slurm_exporter-1.2.0-1.el10.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el10/aarch64/slurm_exporter-1.2.0-1.el10.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.2.0/slurm_exporter-1.2.0-1.el10.aarch64.rpm"
           }
         }
       },
@@ -4072,31 +4072,31 @@
         "el8": {
           "x86_64": {
             "status": "success",
-            "path": "el8/x86_64/smartctl_exporter-0.14.0-1.el8.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.14.0/smartctl_exporter-0.14.0-1.el8.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el8/aarch64/smartctl_exporter-0.14.0-1.el8.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.14.0/smartctl_exporter-0.14.0-1.el8.aarch64.rpm"
           }
         },
         "el9": {
           "x86_64": {
             "status": "success",
-            "path": "el9/x86_64/smartctl_exporter-0.14.0-1.el9.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.14.0/smartctl_exporter-0.14.0-1.el9.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el9/aarch64/smartctl_exporter-0.14.0-1.el9.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.14.0/smartctl_exporter-0.14.0-1.el9.aarch64.rpm"
           }
         },
         "el10": {
           "x86_64": {
             "status": "success",
-            "path": "el10/x86_64/smartctl_exporter-0.14.0-1.el10.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.14.0/smartctl_exporter-0.14.0-1.el10.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el10/aarch64/smartctl_exporter-0.14.0-1.el10.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.14.0/smartctl_exporter-0.14.0-1.el10.aarch64.rpm"
           }
         }
       },
@@ -4215,31 +4215,31 @@
         "el8": {
           "x86_64": {
             "status": "success",
-            "path": "el8/x86_64/snmp_exporter-0.30.1-1.el8.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.30.1/snmp_exporter-0.30.1-1.el8.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el8/aarch64/snmp_exporter-0.30.1-1.el8.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.30.1/snmp_exporter-0.30.1-1.el8.aarch64.rpm"
           }
         },
         "el9": {
           "x86_64": {
             "status": "success",
-            "path": "el9/x86_64/snmp_exporter-0.30.1-1.el9.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.30.1/snmp_exporter-0.30.1-1.el9.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el9/aarch64/snmp_exporter-0.30.1-1.el9.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.30.1/snmp_exporter-0.30.1-1.el9.aarch64.rpm"
           }
         },
         "el10": {
           "x86_64": {
             "status": "success",
-            "path": "el10/x86_64/snmp_exporter-0.30.1-1.el10.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.30.1/snmp_exporter-0.30.1-1.el10.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el10/aarch64/snmp_exporter-0.30.1-1.el10.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.30.1/snmp_exporter-0.30.1-1.el10.aarch64.rpm"
           }
         }
       },
@@ -4345,31 +4345,31 @@
         "el8": {
           "x86_64": {
             "status": "success",
-            "path": "el8/x86_64/textfile_exporter-0.1.4-1.el8.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.1.4/textfile_exporter-0.1.4-1.el8.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el8/aarch64/textfile_exporter-0.1.4-1.el8.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.1.4/textfile_exporter-0.1.4-1.el8.aarch64.rpm"
           }
         },
         "el9": {
           "x86_64": {
             "status": "success",
-            "path": "el9/x86_64/textfile_exporter-0.1.4-1.el9.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.1.4/textfile_exporter-0.1.4-1.el9.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el9/aarch64/textfile_exporter-0.1.4-1.el9.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.1.4/textfile_exporter-0.1.4-1.el9.aarch64.rpm"
           }
         },
         "el10": {
           "x86_64": {
             "status": "success",
-            "path": "el10/x86_64/textfile_exporter-0.1.4-1.el10.x86_64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.1.4/textfile_exporter-0.1.4-1.el10.x86_64.rpm"
           },
           "aarch64": {
             "status": "success",
-            "path": "el10/aarch64/textfile_exporter-0.1.4-1.el10.aarch64.rpm"
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.1.4/textfile_exporter-0.1.4-1.el10.aarch64.rpm"
           }
         }
       },
