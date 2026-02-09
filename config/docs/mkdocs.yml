@@ -6,6 +6,8 @@ site_author: SckyzO
 repo_url: https://github.com/SckyzO/monitoring-hub
 repo_name: SckyzO/monitoring-hub
 edit_uri: edit/main/docs/
+docs_dir: ../../docs
+site_dir: ../../site
 
 theme:
   name: material
