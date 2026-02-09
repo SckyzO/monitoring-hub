@@ -168,7 +168,10 @@ cmd_lint_fix() {
 cmd_lint_css() {
     ensure_image
     info "Running CSS linter..."
-    $DOCKER_RUN "$DEV_IMAGE" stylelint "**/*.css" "**/*.html.j2"
+    $DOCKER_RUN "$DEV_IMAGE" stylelint \
+        --config config/linting/.stylelintrc.json \
+        --ignore-path config/linting/.stylelintignore \
+        "**/*.css" "**/*.html.j2"
 }
 
 cmd_format() {
@@ -197,7 +200,7 @@ cmd_ci() {
         echo '==> Running linter...' && ruff check . && \
         echo '==> Checking format...' && ruff format --check . && \
         echo '==> Running type checker...' && mypy --explicit-package-bases core/ && \
-        echo '==> Running CSS linter...' && stylelint \"**/*.css\" \"**/*.html.j2\" && \
+        echo '==> Running CSS linter...' && stylelint --config config/linting/.stylelintrc.json --ignore-path config/linting/.stylelintignore \"**/*.css\" \"**/*.html.j2\" && \
         echo '==> Running tests...' && pytest -v"
     success "All CI checks passed"
 }
