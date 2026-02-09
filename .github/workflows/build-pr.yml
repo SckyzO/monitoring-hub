@@ -3,8 +3,6 @@ name: Build and Test PR
 on:
   pull_request:
     branches: [ main ]
-  push:
-    branches: [ main ]
 
 jobs:
   generate-artifacts:
