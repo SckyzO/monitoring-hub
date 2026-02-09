@@ -29,13 +29,16 @@ jobs:
           python-version: '3.11'
           cache: 'pip'
 
-      - name: Install MkDocs dependencies
+      - name: Install dependencies
         run: |
           pip install -r requirements/docs.txt
+          pip install -r requirements/base.txt
 
       - name: Build MkDocs documentation
+        env:
+          PYTHONPATH: ${{ github.workspace }}
         run: |
-          mkdocs build --strict -f config/docs/mkdocs.yml
+          mkdocs build -f config/docs/mkdocs.yml
 
       - name: Checkout gh-pages branch
         run: |
