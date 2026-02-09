@@ -257,10 +257,138 @@ jobs:
           if-no-files-found: ignore
           retention-days: 1
 
-  # 4. Publish YUM Repo & Website (Fan-in)
+  # 4. Build DEBs (Parallel per exporter, architecture AND distribution)
+  build-deb:
+    needs: discover
+    if: needs.discover.outputs.build_needed == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        exporter: ${{ fromJson(needs.discover.outputs.exporters) }}
+        arch: [amd64, arm64]
+        dist: [ubuntu-22.04, ubuntu-24.04, debian-12, debian-13]
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up QEMU
+        if: matrix.arch == 'arm64'
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements/base.txt
+
+      - name: Build DEB
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          EXPORTER: ${{ matrix.exporter }}
+          ARCH: ${{ matrix.arch }}
+          DIST: ${{ matrix.dist }}
+        run: |
+          is_target=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$EXPORTER/manifest.yaml')); print('$DIST' in m.get('artifacts', {}).get('deb', {}).get('targets', []))")
+          is_enabled=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$EXPORTER/manifest.yaml')); print(m.get('artifacts', {}).get('deb', {}).get('enabled', False))")
+          is_arch_supported=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$EXPORTER/manifest.yaml')); print('$ARCH' in m.get('build', {}).get('archs', ['amd64', 'arm64']))")
+
+          if [ "$is_enabled" != "True" ] || [ "$is_target" != "True" ] || [ "$is_arch_supported" != "True" ]; then
+            echo "DEB build, distribution $DIST or architecture $ARCH not requested for $EXPORTER. Skipping."
+            exit 0
+          fi
+
+          echo "Building DEB for $EXPORTER ($ARCH) on $DIST..."
+
+          case $DIST in
+            ubuntu-22.04) image="ubuntu:22.04" ;;
+            ubuntu-24.04) image="ubuntu:24.04" ;;
+            debian-12) image="debian:12" ;;
+            debian-13) image="debian:trixie" ;;
+            *) image="ubuntu:22.04" ;;
+          esac
+
+          build_dir="build/$EXPORTER-$ARCH-$DIST"
+          export PYTHONPATH=${{ github.workspace }}
+          python3 -m core.engine.builder --manifest "exporters/$EXPORTER/manifest.yaml" --output-dir "$build_dir" --arch "$ARCH"
+
+          if [ -d "$build_dir/debian" ]; then
+            chmod +x core/scripts/build_deb.sh core/scripts/deb_entrypoint.sh
+            mkdir -p "$build_dir/debs"
+            ./core/scripts/build_deb.sh "$build_dir" "$build_dir/debs" "$ARCH" "$image"
+          else
+            echo "No debian/ directory found. DEB disabled for $EXPORTER."
+            exit 0
+          fi
+
+      - name: Sign DEB
+        if: success()
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+          GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
+          EXPORTER: ${{ matrix.exporter }}
+          ARCH: ${{ matrix.arch }}
+          DIST: ${{ matrix.dist }}
+        run: |
+          build_dir="build/$EXPORTER-$ARCH-$DIST"
+
+          for deb in "$build_dir"/debs/*.deb; do
+            if [ -f "$deb" ]; then
+              echo "Signing $deb..."
+              chmod +x core/scripts/sign_deb_container.sh
+              ./core/scripts/sign_deb_container.sh "$deb" "$GPG_PRIVATE_KEY" "$GPG_PASSPHRASE" "$GPG_KEY_ID" "$DIST"
+            fi
+          done
+
+      - name: Install and Test DEB
+        if: success()
+        env:
+          EXPORTER: ${{ matrix.exporter }}
+          ARCH: ${{ matrix.arch }}
+          DIST: ${{ matrix.dist }}
+        run: |
+          build_dir="build/$EXPORTER-$ARCH-$DIST"
+
+          case $DIST in
+            ubuntu-22.04) image="ubuntu:22.04" ;;
+            ubuntu-24.04) image="ubuntu:24.04" ;;
+            debian-12) image="debian:12" ;;
+            debian-13) image="debian:trixie" ;;
+            *) image="ubuntu:22.04" ;;
+          esac
+
+          deb_file=$(find "$build_dir"/debs -name "*.deb" | head -1)
+
+          if [ -z "$deb_file" ]; then
+            echo "No DEB file found, skipping test."
+            exit 0
+          fi
+
+          echo "Testing installation of $(basename "$deb_file") in $image container..."
+
+          docker run --rm \
+            --platform "linux/$ARCH" \
+            -v "$(pwd)/$build_dir/debs:/debs:ro" \
+            "$image" \
+            bash -c "
+              apt-get update -qq > /dev/null 2>&1 &&
+              apt-get install -y /debs/*.deb &&
+              echo 'Installation successful!' &&
+              dpkg -L \$(dpkg-deb --field /debs/*.deb Package) | head -10
+            "
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: deb-${{ matrix.exporter }}-${{ matrix.arch }}-${{ matrix.dist }}
+          path: build/**/debs/**/*.deb*
+          if-no-files-found: ignore
+          retention-days: 1
+
+  # 5. Publish YUM Repo & Website (Fan-in)
   publish-yum:
     if: always() && !cancelled() && needs.discover.outputs.build_needed == 'true'
-    needs: [build-rpm, build-docker]
+    needs: [build-rpm, build-deb, build-docker]
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -341,6 +469,138 @@ jobs:
           else
             git commit -m "chore: update all yum repositories and portal [skip ci]"
             # Pull latest changes to avoid conflicts
+            git pull --rebase origin gh-pages
+            git push origin gh-pages
+          fi
+
+  # 6. Publish APT Repository (Fan-in)
+  publish-apt:
+    if: always() && !cancelled() && needs.discover.outputs.build_needed == 'true'
+    needs: [build-deb, build-docker]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Download All DEB Artifacts
+        uses: actions/download-artifact@v7
+        with:
+          path: all_debs
+          pattern: deb-*
+          merge-multiple: true
+        continue-on-error: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements/base.txt
+
+      - name: Create APT Repository
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+          GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
+          GPG_PUBLIC_KEY: ${{ secrets.GPG_PUBLIC_KEY }}
+        run: |
+          git fetch origin gh-pages
+          git worktree add -B gh-pages gh-pages-dist origin/gh-pages
+
+          cd gh-pages-dist
+
+          # Create APT repository structure
+          mkdir -p apt/pool/main
+          mkdir -p apt/dists/{jammy,noble,bookworm,trixie}/main/{binary-amd64,binary-arm64}
+
+          # Copy all DEBs to pool
+          echo "Copying DEB packages to pool..."
+          find ../all_debs -name "*.deb" -exec cp -v {} apt/pool/main/ \;
+
+          # Export GPG public key for users
+          echo "Exporting GPG public key..."
+          echo "$GPG_PUBLIC_KEY" | base64 -d > apt/monitoring-hub.asc
+
+          # Install required tools
+          docker run --rm \
+            -v $(pwd):/repo \
+            -e "GPG_PRIVATE_KEY=$GPG_PRIVATE_KEY" \
+            -e "GPG_KEY_ID=$GPG_KEY_ID" \
+            -e "GPG_PASSPHRASE=$GPG_PASSPHRASE" \
+            ubuntu:22.04 \
+            bash -c '
+              set -e
+              apt-get update -qq > /dev/null
+              apt-get install -y -qq dpkg-dev apt-utils gnupg > /dev/null
+
+              cd /repo/apt
+
+              # Import GPG key
+              export GNUPGHOME=$(mktemp -d)
+              echo "$GPG_PRIVATE_KEY" | base64 -d | gpg --batch --import
+              FINGERPRINT=$(gpg --list-keys --with-colons "$GPG_KEY_ID" | awk -F: '\''/^fpr:/ {print $10; exit}'\'')
+              echo "${FINGERPRINT}:6:" | gpg --import-ownertrust
+
+              # Generate Packages files for each distribution/architecture
+              for dist in jammy noble bookworm trixie; do
+                for arch in amd64 arm64; do
+                  echo "Generating Packages for $dist/$arch..."
+
+                  mkdir -p dists/$dist/main/binary-$arch
+
+                  # Generate Packages file
+                  dpkg-scanpackages --arch $arch pool/main /dev/null > dists/$dist/main/binary-$arch/Packages
+
+                  # Generate Packages.gz
+                  gzip -9c dists/$dist/main/binary-$arch/Packages > dists/$dist/main/binary-$arch/Packages.gz
+                done
+
+                # Generate Release file
+                cd dists/$dist
+                cat > Release <<EOF
+Origin: Monitoring Hub
+Label: Monitoring Hub
+Suite: $dist
+Codename: $dist
+Version: 1.0
+Architectures: amd64 arm64
+Components: main
+Description: Monitoring Hub Package Repository
+Date: $(date -R -u)
+EOF
+
+                # Add file checksums
+                apt-ftparchive release . >> Release
+
+                # Sign Release file (create InRelease and Release.gpg)
+                gpg --batch --yes --digest-algo SHA512 --clearsign -o InRelease Release
+                gpg --batch --yes --digest-algo SHA512 -abs -o Release.gpg Release
+
+                cd ../..
+              done
+
+              # Cleanup GPG home
+              rm -rf "$GNUPGHOME"
+
+              # Fix permissions
+              chown -R $(stat -c "%u:%g" /repo) /repo
+            '
+
+          cd ..
+
+          # Regenerate portal with APT availability
+          export PYTHONPATH=${{ github.workspace }}
+          python3 -m core.engine.site_generator --output gh-pages-dist/index.html --repo-dir gh-pages-dist
+
+          cd gh-pages-dist
+          git config user.name "Monitoring Hub Bot"
+          git config user.email "bot@monitoring-hub.local"
+          git add .
+
+          if git diff --staged --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "chore: update APT repository [skip ci]"
             git pull --rebase origin gh-pages
             git push origin gh-pages
           fi
