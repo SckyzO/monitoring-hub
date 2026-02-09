@@ -36,18 +36,58 @@
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
     <style>
-        [x-cloak] { display: none !important; }
-        .scrollbar-hide::-webkit-scrollbar { display: none; }
-        .card-glow { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); border: 1px solid transparent; }
+        [x-cloak] {
+            display: none !important;
+        }
+
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+
+        .card-glow {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid transparent;
+        }
+
         .card-glow:hover {
             transform: translateY(-4px);
-            box-shadow: 0 0 40px 5px rgba(var(--primary-rgba), 0.15);
-            border-color: rgba(var(--primary-rgba), 0.4) !important;
+            box-shadow: 0 0 40px 5px rgb(var(--primary-rgba) / 15%);
+            border-color: rgb(var(--primary-rgba) / 40%) !important;
         }
-        .kbd { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 4px; padding: 2px 6px; font-size: 10px; font-weight: 800; color: #71717a; }
-        .verified-badge { background: #e8f5e9; color: #2e7d32; padding: 2px 8px; border-radius: 6px; font-size: 0.7rem; font-weight: 800; display: inline-flex; align-items: center; gap: 4px; border: 1px solid #c8e6c9; }
-        .dark .verified-badge { background: #064e3b; color: #6ee7b7; border-color: #065f46; }
-        :root { --primary-rgb: 59 130 246; --primary-rgba: 59, 130, 246; }
+
+        .kbd {
+            background: rgb(255 255 255 / 5%);
+            border: 1px solid rgb(255 255 255 / 10%);
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-size: 10px;
+            font-weight: 800;
+            color: #71717a;
+        }
+
+        .verified-badge {
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            border: 1px solid #c8e6c9;
+        }
+
+        .dark .verified-badge {
+            background: #064e3b;
+            color: #6ee7b7;
+            border-color: #065f46;
+        }
+
+        :root {
+            --primary-rgb: 59 130 246;
+            --primary-rgba: 59, 130, 246;
+        }
     </style>
 </head>
 <body id="top" class="font-sans antialiased min-h-screen flex flex-col transition-colors duration-500 text-left"
