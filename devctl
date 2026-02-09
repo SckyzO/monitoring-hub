@@ -95,6 +95,7 @@ STATE & VERSION COMMANDS:
     watcher             Run version watcher to check for updates
 
 UTILITY COMMANDS:
+    clean               Clean build artifacts and caches (using Docker)
     python <cmd>        Run arbitrary Python command in container
     bash <cmd>          Run arbitrary bash command in container
     help                Show this help message
@@ -280,6 +281,13 @@ cmd_bash() {
     $DOCKER_RUN_IT "$DEV_IMAGE" /bin/bash -c "$*"
 }
 
+cmd_clean() {
+    ensure_image
+    info "Cleaning build artifacts and caches..."
+    $DOCKER_RUN "$DEV_IMAGE" /bin/bash -c "rm -rf .pytest_cache htmlcov .coverage coverage.xml .mypy_cache .ruff_cache catalog.json index.html build/ && find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true && find . -type f -name '*.pyc' -delete"
+    success "Cleanup completed"
+}
+
 # --- Main Command Router ---
 main() {
     check_docker
@@ -326,6 +334,7 @@ main() {
         watcher)         cmd_watcher "$@" ;;
 
         # Utilities
+        clean)           cmd_clean "$@" ;;
         python)          cmd_python "$@" ;;
         bash)            cmd_bash "$@" ;;
         help|--help|-h)  show_help ;;
