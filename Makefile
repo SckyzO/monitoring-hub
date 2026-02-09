@@ -73,6 +73,15 @@ docker-type-check: ## Run type checking inside Docker
 docker-test: ## Run tests inside Docker
 	$(DOCKER_RUN) pytest -v
 
+docker-portal: ## Generate the web portal (index.html) inside Docker
+	$(DOCKER_RUN) python3 -m core.engine.site_generator
+
+docker-docs-build: ## Build MkDocs documentation inside Docker
+	$(DOCKER_RUN) mkdocs build
+
+docker-docs-serve: ## Serve MkDocs documentation with live reload (accessible at localhost:8000)
+	docker run -it --rm -v $(shell pwd):/workspace -p 8000:8000 $(DEV_IMAGE) mkdocs serve -a 0.0.0.0:8000
+
 docker-ci: ## Run all CI checks (lint + format + type-check + tests) inside Docker
 	$(DOCKER_RUN) /bin/bash -c "ruff check . && ruff format --check . && mypy --explicit-package-bases core/ && pytest -v"
 
