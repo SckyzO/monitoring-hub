@@ -227,19 +227,25 @@ jobs:
           if-no-files-found: ignore
           retention-days: 7
 
-  # 3. Generate YUM Metadata (pointing to GitHub Releases)
-  publish-yum-metadata:
-    needs: [build-rpm]
+  # 3. Generate YUM/APT Metadata and Portal (single commit to gh-pages)
+  publish-metadata:
+    needs: [build-rpm, build-deb]
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
       - uses: actions/checkout@v6
 
-      - name: Download Release URLs
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements/base.txt
+
+      - name: Download Release URLs (RPM + DEB)
         uses: actions/download-artifact@v6
         with:
-          pattern: release-urls-rpm-*
+          pattern: release-urls-*
           path: release-urls/
           merge-multiple: true
 
@@ -283,47 +289,6 @@ jobs:
           if [ -n "${{ secrets.GPG_PUBLIC_KEY }}" ]; then
             echo "${{ secrets.GPG_PUBLIC_KEY }}" | base64 -d > gh-pages-dist/RPM-GPG-KEY-monitoring-hub
           fi
-
-      - name: Deploy to gh-pages
-        run: |
-          cd gh-pages-dist
-          git config user.name "Monitoring Hub Bot"
-          git config user.email "bot@monitoring-hub.local"
-          git add .
-
-          if git diff --staged --quiet; then
-            echo "No changes to commit"
-          else
-            git commit -m "chore: update YUM metadata [skip ci]"
-            git push origin gh-pages
-          fi
-
-  # 4. Generate APT Metadata (pointing to GitHub Releases)
-  publish-apt-metadata:
-    needs: [build-deb]
-    runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/checkout@v6
-
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: '3.12'
-      - run: pip install -r requirements/base.txt
-
-      - name: Download Release URLs
-        uses: actions/download-artifact@v6
-        with:
-          pattern: release-urls-deb-*
-          path: release-urls/
-          merge-multiple: true
-
-      - name: Checkout gh-pages
-        run: |
-          git fetch origin gh-pages
-          git worktree add -B gh-pages gh-pages-dist origin/gh-pages
 
       - name: Generate APT Metadata
         env:
@@ -379,7 +344,16 @@ jobs:
             echo "${{ secrets.GPG_PUBLIC_KEY }}" | base64 -d > gh-pages-dist/apt/monitoring-hub.asc
           fi
 
-      - name: Deploy to gh-pages
+      - name: Generate Portal
+        run: |
+          python3 -m core.engine.site_generator \
+            --output gh-pages-dist/index.html \
+            --repo-dir gh-pages-dist
+
+          # Also generate catalog.json in gh-pages
+          cp catalog.json gh-pages-dist/catalog.json
+
+      - name: Deploy to gh-pages (single commit)
         run: |
           cd gh-pages-dist
           git config user.name "Monitoring Hub Bot"
@@ -389,6 +363,6 @@ jobs:
           if git diff --staged --quiet; then
             echo "No changes to commit"
           else
-            git commit -m "chore: update APT metadata [skip ci]"
+            git commit -m "chore: update repository metadata and portal"
             git push origin gh-pages
           fi
