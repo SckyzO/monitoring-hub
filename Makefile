@@ -61,8 +61,12 @@ docker-build: ## Build the development Docker image
 docker-lint: ## Run linter inside Docker
 	$(DOCKER_RUN) ruff check .
 
+docker-lint-css: ## Run CSS linter inside Docker
+	$(DOCKER_RUN) stylelint "**/*.css"
+
 docker-lint-fix: ## Run linter and fix inside Docker
 	$(DOCKER_RUN) ruff check --fix .
+	$(DOCKER_RUN) stylelint "**/*.css" --fix
 
 docker-format: ## Run formatter inside Docker
 	$(DOCKER_RUN) ruff format .
@@ -83,7 +87,7 @@ docker-docs-serve: ## Serve MkDocs documentation with live reload (accessible at
 	docker run -it --rm -v $(shell pwd):/workspace -p 8000:8000 $(DEV_IMAGE) mkdocs serve -a 0.0.0.0:8000
 
 docker-ci: ## Run all CI checks (lint + format + type-check + tests) inside Docker
-	$(DOCKER_RUN) /bin/bash -c "ruff check . && ruff format --check . && mypy --explicit-package-bases core/ && pytest -v"
+	$(DOCKER_RUN) /bin/bash -c "ruff check . && ruff format --check . && mypy --explicit-package-bases core/ && stylelint \"**/*.css\" && pytest -v"
 
 docker-shell: ## Open a shell inside the development container
 	docker run -it --rm -v $(shell pwd):/workspace $(DEV_IMAGE) /bin/bash
