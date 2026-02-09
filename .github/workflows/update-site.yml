@@ -13,6 +13,11 @@ on:
 permissions:
   contents: write
 
+# Ensure only one workflow can update gh-pages at a time
+concurrency:
+  group: gh-pages-deployment
+  cancel-in-progress: false
+
 jobs:
   refresh-portal:
     runs-on: ubuntu-latest
@@ -59,5 +64,23 @@ jobs:
             echo "No changes to the portal. Skipping push."
           else
             git commit -m "chore(site): refresh portal UI/data [skip ci]"
-            git push origin gh-pages
+
+            # Push with retry logic for concurrent updates
+            MAX_RETRIES=3
+            RETRY_COUNT=0
+            while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
+              if git push origin gh-pages; then
+                echo "Successfully pushed to gh-pages"
+                exit 0
+              else
+                RETRY_COUNT=$((RETRY_COUNT + 1))
+                if [ $RETRY_COUNT -lt $MAX_RETRIES ]; then
+                  echo "Push failed, pulling latest changes and retrying ($RETRY_COUNT/$MAX_RETRIES)..."
+                  git pull --rebase origin gh-pages
+                else
+                  echo "Failed to push after $MAX_RETRIES attempts"
+                  exit 1
+                fi
+              fi
+            done
           fi

@@ -19,9 +19,9 @@ env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
 
-# Ensure only one release job runs at a time to prevent gh-pages conflicts
+# Ensure only one workflow can update gh-pages at a time
 concurrency:
-  group: release-publish
+  group: gh-pages-deployment
   cancel-in-progress: false
 
 jobs:
@@ -468,9 +468,25 @@ jobs:
             echo "No changes to commit."
           else
             git commit -m "chore: update all yum repositories and portal [skip ci]"
-            # Pull latest changes to avoid conflicts
-            git pull --rebase origin gh-pages
-            git push origin gh-pages
+
+            # Push with retry logic for concurrent updates
+            MAX_RETRIES=3
+            RETRY_COUNT=0
+            while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
+              if git push origin gh-pages; then
+                echo "Successfully pushed to gh-pages"
+                exit 0
+              else
+                RETRY_COUNT=$((RETRY_COUNT + 1))
+                if [ $RETRY_COUNT -lt $MAX_RETRIES ]; then
+                  echo "Push failed, pulling latest changes and retrying ($RETRY_COUNT/$MAX_RETRIES)..."
+                  git pull --rebase origin gh-pages
+                else
+                  echo "Failed to push after $MAX_RETRIES attempts"
+                  exit 1
+                fi
+              fi
+            done
           fi
 
   # 6. Publish APT Repository (Fan-in)
@@ -601,6 +617,23 @@ jobs:
             echo "No changes to commit."
           else
             git commit -m "chore: update APT repository [skip ci]"
-            git pull --rebase origin gh-pages
-            git push origin gh-pages
+
+            # Push with retry logic for concurrent updates
+            MAX_RETRIES=3
+            RETRY_COUNT=0
+            while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
+              if git push origin gh-pages; then
+                echo "Successfully pushed to gh-pages"
+                exit 0
+              else
+                RETRY_COUNT=$((RETRY_COUNT + 1))
+                if [ $RETRY_COUNT -lt $MAX_RETRIES ]; then
+                  echo "Push failed, pulling latest changes and retrying ($RETRY_COUNT/$MAX_RETRIES)..."
+                  git pull --rebase origin gh-pages
+                else
+                  echo "Failed to push after $MAX_RETRIES attempts"
+                  exit 1
+                fi
+              fi
+            done
           fi
