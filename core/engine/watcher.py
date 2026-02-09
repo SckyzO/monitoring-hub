@@ -51,6 +51,7 @@ def watch(update, token):
     """
     manifests = glob.glob(f"{EXPORTERS_DIR}/*/manifest.yaml")
     updates_found = False
+    updated_exporters = []
 
     for manifest_path in manifests:
         try:
@@ -78,6 +79,7 @@ def watch(update, token):
                     click.echo(f"  -> Updating {manifest_path}...")
                     data['version'] = latest_tag
                     save_manifest(manifest_path, data)
+                    updated_exporters.append(name)
                     click.echo("  -> Updated.")
             else:
                 click.echo(f"  -> Up to date.")
@@ -87,6 +89,12 @@ def watch(update, token):
 
     if updates_found and update:
         click.echo("Updates applied.")
+        if updated_exporters:
+            names_str = ", ".join(sorted(updated_exporters))
+            github_output = os.environ.get('GITHUB_OUTPUT')
+            if github_output:
+                with open(github_output, 'a') as f:
+                    f.write(f"updated_names={names_str}\\n")
     elif updates_found:
         click.echo("Updates available. Run with --update to apply.")
     else:
