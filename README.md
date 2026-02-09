@@ -6,6 +6,8 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge&logo=opensourceinitiative)](https://opensource.org/licenses/MIT)
 [![Build Status](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/release.yml?branch=main&label=Factory%20Build&style=for-the-badge&logo=githubactions)](https://github.com/SckyzO/monitoring-hub/actions/workflows/release.yml)
+[![PR Tests](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/build-pr.yml?branch=main&label=PR%20Tests&style=for-the-badge&logo=githubactions&color=blue)](https://github.com/SckyzO/monitoring-hub/actions/workflows/build-pr.yml)
+[![Security](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/security.yml?branch=main&label=Security&style=for-the-badge&logo=shippable&color=success)](https://github.com/SckyzO/monitoring-hub/actions/workflows/security.yml)
 [![Watcher](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/scan-updates.yml?branch=main&label=Watcher&style=for-the-badge&logo=github&color=blue)](https://github.com/SckyzO/monitoring-hub/actions/workflows/scan-updates.yml)
 
 <br>
