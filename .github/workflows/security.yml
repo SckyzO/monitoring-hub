@@ -76,6 +76,10 @@ jobs:
   trivy:
     name: Trivy Filesystem Scan
     runs-on: ubuntu-latest
+    permissions:
+      security-events: write
+      actions: read
+      contents: read
 
     steps:
       - name: Checkout code
