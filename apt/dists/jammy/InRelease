@@ -1,0 +1,32 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+Origin: Monitoring Hub
+Label: Monitoring Hub
+Suite: jammy
+Codename: jammy
+Architectures: amd64
+Components: main
+Description: Monitoring Hub APT Repository
+MD5Sum:
+ 373b401d8396111f29de81083d33e11d 452 main/binary-amd64/Packages
+ 56c92d2e65157ade09ea10109a986e36 346 main/binary-amd64/Packages.gz
+SHA256:
+ ee0f041b92dd85cdb2f9d32f065e960be973f225b85d01fda62a1965fe919cd8 452 main/binary-amd64/Packages
+ 01bff6d0b6f10141a0724cdb59f2c637a7bceb18c3612af0f894f020b566c756 346 main/binary-amd64/Packages.gz
+-----BEGIN PGP SIGNATURE-----
+
+iQIyBAEBCgAdFiEEH1M8/US0rCnBmACnJaaIp27upEcFAmmKZ7cACgkQJaaIp27u
+pEccag/4lnh+OaK+pqEarVuQa1/Mb7abyUp3xnOleoc4KDR0KNCryyYXVPaoc+4V
+cAvTZmgluVSQIV8njt8cf08UVY8Ox39ZFPudwb5LY1lTahEbruhaRhiF5ji8A5cI
+jrbddw39LiZOzVl7stTQ464W+88SD+lgWotuWILQoGZjChMsKnf0vdobllRCLl8g
+XxHL7sm/niPvOw1E5Txmubsh4vxU80dPZ+lUc4WoD6pgSlfMzshvkQKJLC/sZRTx
+0VoKC61xgAouSmsm+MnuxWRtS9bHZmvNmGVHuP+G2o5OcukstvTlQdG0kw9cHOUX
+45buSZWJ/oN1RMa3DN/iRv9GDxDe0YlucDwyfjhSx+MvrDnn9CvBe2kNVZFTJYxq
+7N0WiDxjni4h9qavcbzieA9HMh2INv7il+JBnNeNHsPAKu9pk16ecEfsZSf4Di/H
+lPzVWYNzVEQGnAL3hmbdgobwq05Dafi2Yu7b3svi4a5sfD+j1cKvKP8RFKZkESoI
+sWiW2MYKbTenC+NsGGMLPhHt64MIoeLdf8zrkVncWutzPAYzBa9FJpmir2HER7pS
+zNksRNeMl26NRuWCTJ767VyOZW11WxojJH1kjg6L4gQESiUPD86qSjR44nwmyEg2
+I0lj57W4IWo9bABwdOwjxkdHiPN2O6Erf4yQaiPilZ2Swi472g==
+=dRvo
+-----END PGP SIGNATURE-----
