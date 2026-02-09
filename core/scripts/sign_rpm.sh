@@ -31,10 +31,11 @@ trap 'rm -rf "$GPG_HOME"' EXIT
 
 # Import GPG key
 echo "Importing GPG key..."
-echo "$GPG_KEY_BASE64" | base64 -d | gpg --batch --import
+echo "$GPG_KEY_BASE64" | base64 -d | gpg --batch --import 2>&1
 
-# Trust the key ultimately
-echo "${GPG_KEY_ID}:6:" | gpg --import-ownertrust
+# Trust the key ultimately (use fingerprint, not key ID)
+FINGERPRINT=$(gpg --list-keys --with-colons "${GPG_KEY_ID}" | awk -F: '/^fpr:/ {print $10; exit}')
+echo "${FINGERPRINT}:6:" | gpg --import-ownertrust 2>&1
 
 # Configure RPM macros for signing
 mkdir -p ~/.rpmmacros.d

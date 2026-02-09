@@ -82,6 +82,10 @@ EXPORTER COMMANDS:
     create-exporter [name]     Create a new exporter interactively
     build-exporter <name>      Build a specific exporter locally
     test-exporter <name>       Test build an exporter (RPM + Docker)
+    test-rpm <name> [dist]     Test RPM build (default: el9, options: el8/el9/el10)
+    test-deb <name> [dist]     Test DEB build (default: ubuntu-22.04)
+    test-rpm-sign <rpm_file>   Test RPM signing with local GPG key
+    test-deb-sign <deb_file>   Test DEB signing with local GPG key
     list-exporters             List all available exporters
 
 PORTAL & DOCS COMMANDS:
@@ -105,6 +109,9 @@ EXAMPLES:
     ./devctl test                             # Run tests
     ./devctl create-exporter                  # Create new exporter interactively
     ./devctl build-exporter node_exporter     # Build specific exporter
+    ./devctl test-rpm node_exporter           # Test RPM build
+    ./devctl test-deb node_exporter           # Test DEB build
+    ./devctl test-rpm-sign build/file.rpm     # Test RPM signing
     ./devctl docs-serve                       # Serve docs at localhost:8000
     ./devctl shell                            # Open interactive shell
     ./devctl python -m core.engine.builder --help
@@ -226,6 +233,160 @@ cmd_test_exporter() {
     $DOCKER_RUN_IT "$DEV_IMAGE" ./core/scripts/local_test.sh "$@"
 }
 
+cmd_test_rpm() {
+    if [ $# -eq 0 ]; then
+        error "Usage: ./devctl test-rpm <exporter_name> [--el8|--el9|--el10]"
+        echo ""
+        echo "Examples:"
+        echo "  ./devctl test-rpm node_exporter"
+        echo "  ./devctl test-rpm node_exporter --el10"
+        echo "  ./devctl test-rpm node_exporter --el9 --smoke"
+        echo ""
+        echo "Options: --el8, --el9, --el10, --smoke, --docker"
+        exit 1
+    fi
+
+    local exporter_name="$1"
+    shift
+
+    info "Testing RPM build: $exporter_name"
+
+    # Pass all remaining arguments to local_test.sh
+    ./core/scripts/local_test.sh "$exporter_name" "$@"
+}
+
+cmd_test_deb() {
+    if [ $# -eq 0 ]; then
+        error "Usage: ./devctl test-deb <exporter_name> [distribution] [architecture]"
+        echo ""
+        echo "Examples:"
+        echo "  ./devctl test-deb node_exporter"
+        echo "  ./devctl test-deb node_exporter ubuntu-24.04"
+        echo "  ./devctl test-deb node_exporter debian-12 arm64"
+        echo ""
+        echo "Supported distributions: ubuntu-22.04, ubuntu-24.04, debian-12, debian-13"
+        echo "Supported architectures: amd64, arm64"
+        exit 1
+    fi
+
+    local exporter_name="$1"
+    local distribution="${2:-ubuntu-22.04}"
+    local architecture="${3:-amd64}"
+
+    info "Testing DEB build: $exporter_name ($distribution, $architecture)"
+    ./core/scripts/test_deb_build.sh "$exporter_name" "$distribution" "$architecture"
+}
+
+cmd_test_rpm_sign() {
+    if [ $# -eq 0 ]; then
+        error "Usage: ./devctl test-rpm-sign <rpm_file>"
+        echo ""
+        echo "This tests RPM signing with the local GPG key from secrets/"
+        echo ""
+        echo "Example:"
+        echo "  ./devctl test-rpm-sign build/node_exporter/rpms/node_exporter-1.10.2-1.el9.x86_64.rpm"
+        exit 1
+    fi
+
+    local rpm_file="$1"
+
+    if [ ! -f "$rpm_file" ]; then
+        error "RPM file not found: $rpm_file"
+        exit 1
+    fi
+
+    if [ ! -w "$rpm_file" ]; then
+        error "RPM file is not writable: $rpm_file"
+        echo ""
+        echo "Fix with: chmod 644 $rpm_file"
+        echo "Or if owned by root: sudo chown \$USER:\ USER $rpm_file"
+        exit 1
+    fi
+
+    if [ ! -d "secrets" ] || [ ! -f "secrets/GPG_PRIVATE_KEY" ]; then
+        error "GPG secrets not found. Run: ./core/scripts/generate_gpg_key.sh"
+        exit 1
+    fi
+
+    info "Testing RPM signature..."
+    info "RPM file: $rpm_file"
+
+    # Read secrets
+    local gpg_key=$(cat secrets/GPG_PRIVATE_KEY)
+    local gpg_passphrase=$(cat secrets/GPG_PASSPHRASE)
+    local gpg_key_id=$(cat secrets/GPG_KEY_ID)
+
+    # Sign the RPM
+    ./core/scripts/sign_rpm.sh "$rpm_file" "$gpg_key" "$gpg_passphrase" "$gpg_key_id"
+
+    success "RPM signed successfully!"
+    info "Verify with: rpm -qpi $rpm_file"
+}
+
+cmd_test_deb_sign() {
+    if [ $# -eq 0 ]; then
+        error "Usage: ./devctl test-deb-sign <deb_file>"
+        echo ""
+        echo "This tests DEB signing with the local GPG key from secrets/"
+        echo ""
+        echo "Example:"
+        echo "  ./devctl test-deb-sign build/test_node_exporter/debs/node-exporter_1.10.2-1_amd64.deb"
+        exit 1
+    fi
+
+    local deb_file="$1"
+
+    if [ ! -f "$deb_file" ]; then
+        error "DEB file not found: $deb_file"
+        exit 1
+    fi
+
+    if [ ! -d "secrets" ] || [ ! -f "secrets/GPG_PRIVATE_KEY" ]; then
+        error "GPG secrets not found. Run: ./core/scripts/generate_gpg_key.sh"
+        exit 1
+    fi
+
+    info "Testing DEB signature..."
+    info "DEB file: $deb_file"
+
+    # Read secrets
+    local gpg_key=$(cat secrets/GPG_PRIVATE_KEY)
+    local gpg_key_id=$(cat secrets/GPG_KEY_ID)
+    local gpg_passphrase=$(cat secrets/GPG_PASSPHRASE)
+
+    # Create temporary GPG home
+    local gpg_home=$(mktemp -d)
+    export GNUPGHOME="$gpg_home"
+    chmod 700 "$gpg_home"
+
+    info "Importing GPG key..."
+    echo "$gpg_key" | base64 -d | gpg --batch --import 2>&1 > /dev/null
+
+    # Get the fingerprint and trust the key
+    local fingerprint=$(gpg --list-keys --with-colons "${gpg_key_id}" | awk -F: '/^fpr:/ {print $10; exit}')
+    echo "${fingerprint}:6:" | gpg --import-ownertrust 2>&1 > /dev/null
+
+    # Sign the DEB
+    info "Signing DEB package..."
+    if [ -n "$gpg_passphrase" ]; then
+        echo "$gpg_passphrase" | gpg --batch --passphrase-fd 0 \
+            --detach-sign --armor -u "${gpg_key_id}" "$deb_file"
+    else
+        gpg --batch --detach-sign --armor -u "${gpg_key_id}" "$deb_file"
+    fi
+
+    # Verify signature
+    info "Verifying signature..."
+    gpg --verify "${deb_file}.asc" "$deb_file" 2>&1 | grep -E "(Good signature|gpg: Signature made)"
+
+    # Cleanup
+    rm -rf "$gpg_home"
+
+    success "DEB signed successfully!"
+    success "Signature file: ${deb_file}.asc"
+    info "Verify with: gpg --verify ${deb_file}.asc $deb_file"
+}
+
 cmd_list_exporters() {
     ensure_image
     info "Available exporters:"
@@ -321,6 +482,10 @@ main() {
         create-exporter) cmd_create_exporter "$@" ;;
         build-exporter)  cmd_build_exporter "$@" ;;
         test-exporter)   cmd_test_exporter "$@" ;;
+        test-rpm)        cmd_test_rpm "$@" ;;
+        test-deb)        cmd_test_deb "$@" ;;
+        test-rpm-sign)   cmd_test_rpm_sign "$@" ;;
+        test-deb-sign)   cmd_test_deb_sign "$@" ;;
         list-exporters)  cmd_list_exporters "$@" ;;
 
         # Portal & Docs
