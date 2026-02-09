@@ -409,6 +409,9 @@
                                         <template x-if="item.rpm_status !== 'na'">
                                             <div class="px-2.5 py-1.5 rounded-lg border transition-all flex items-center gap-2" :class="item.rpm_status === 'success' ? 'border-emerald-500/20 bg-emerald-500/5 text-emerald-500/80' : 'border-rose-500/20 bg-rose-500/5 text-rose-500'"><i data-lucide="box" class="w-3 h-3"></i><span class="text-[9px] font-black uppercase tracking-widest" x-text="`RPM ${item.rpm_status}`"></span></div>
                                         </template>
+                                        <template x-if="item.deb_status !== 'na'">
+                                            <div class="px-2.5 py-1.5 rounded-lg border transition-all flex items-center gap-2" :class="item.deb_status === 'success' ? 'border-purple-500/20 bg-purple-500/5 text-purple-500/80' : 'border-rose-500/20 bg-rose-500/5 text-rose-500'"><i data-lucide="package" class="w-3 h-3"></i><span class="text-[9px] font-black uppercase tracking-widest" x-text="`DEB ${item.deb_status}`"></span></div>
+                                        </template>
                                         <template x-if="item.docker_status !== 'na'">
                                             <div class="px-2.5 py-1.5 rounded-lg border transition-all flex items-center gap-2" :class="item.docker_status === 'success' ? 'border-emerald-500/20 bg-emerald-500/5 text-emerald-500/80' : 'border-rose-500/20 bg-rose-500/5 text-rose-500'"><i data-lucide="container" class="w-3 h-3"></i><span class="text-[9px] font-black uppercase tracking-widest" x-text="`OCI ${item.docker_status}`"></span></div>
                                         </template>
@@ -437,6 +440,9 @@
                                 <div class="hidden sm:flex gap-2">
                                     <template x-if="item.rpm_status !== 'na'">
                                         <div class="px-2.5 py-1.5 rounded-lg border transition-all flex items-center gap-2" :class="item.rpm_status === 'success' ? 'border-emerald-500/20 bg-emerald-500/5 text-emerald-500/80' : 'border-rose-500/20 bg-rose-500/5 text-rose-500'"><i data-lucide="box" class="w-3.5 h-3.5"></i><span class="text-[9px] font-black uppercase tracking-widest" x-text="`RPM ${item.rpm_status}`"></span></div>
+                                    </template>
+                                    <template x-if="item.deb_status !== 'na'">
+                                        <div class="px-2.5 py-1.5 rounded-lg border transition-all flex items-center gap-2" :class="item.deb_status === 'success' ? 'border-purple-500/20 bg-purple-500/5 text-purple-500/80' : 'border-rose-500/20 bg-rose-500/5 text-rose-500'"><i data-lucide="package" class="w-3.5 h-3.5"></i><span class="text-[9px] font-black uppercase tracking-widest" x-text="`DEB ${item.deb_status}`"></span></div>
                                     </template>
                                     <template x-if="item.docker_status !== 'na'">
                                         <div class="px-2.5 py-1.5 rounded-lg border transition-all flex items-center gap-2" :class="item.docker_status === 'success' ? 'border-emerald-500/20 bg-emerald-500/5 text-emerald-500/80' : 'border-rose-500/20 bg-rose-500/5 text-rose-500'"><i data-lucide="container" class="w-3.5 h-3.5"></i><span class="text-[9px] font-black uppercase tracking-widest" x-text="`OCI ${item.docker_status}`"></span></div>
@@ -515,7 +521,7 @@
             </div>
 
             <div class="flex-1 overflow-y-auto p-10 space-y-12 scrollbar-hide py-12">
-                <div x-data="{ elTab: 'el9', copiedRepo: false, copiedInstall: false, copiedPull: false, copiedRun: false }" class="space-y-10 text-left">
+                <div x-data="{ elTab: 'el9', debTab: 'jammy', copiedRepo: false, copiedInstall: false, copiedPull: false, copiedRun: false, copiedGpg: false, copiedUpdate: false }" class="space-y-10 text-left">
                     <div class="flex flex-col gap-4 text-left">
                         <h3 class="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-500 italic text-left">Deployment</h3>
                         <div class="flex p-2 rounded-2xl shadow-inner w-full sm:w-fit" :class="theme === 'light' ? 'bg-zinc-200/50' : 'bg-black/50 border border-white/5'">
@@ -526,6 +532,14 @@
                                     ]"
                                     :disabled="selectedItem?.artifacts?.rpm?.enabled === false"
                                     class="flex-1 sm:flex-none px-12 py-4 rounded-xl text-xs font-black uppercase tracking-widest transition-all">DNF (RPM)</button>
+
+                            <button @click="if(selectedItem?.artifacts?.deb?.enabled !== false) drawerTab = 'apt'"
+                                    :class="[
+                                        drawerTab === 'apt' ? 'bg-primary-600 text-white shadow-lg' : 'text-zinc-500 hover:text-zinc-300',
+                                        selectedItem?.artifacts?.deb?.enabled === false ? 'opacity-50 cursor-not-allowed' : ''
+                                    ]"
+                                    :disabled="selectedItem?.artifacts?.deb?.enabled === false"
+                                    class="flex-1 sm:flex-none px-12 py-4 rounded-xl text-xs font-black uppercase tracking-widest transition-all">APT (DEB)</button>
 
                             <button @click="if(selectedItem?.artifacts?.docker?.enabled !== false) drawerTab = 'docker'"
                                     :class="[
@@ -586,6 +600,98 @@
                             </div>
                         </div>
                     </div>
+
+                    <div x-show="drawerTab === 'apt'" x-transition class="space-y-10 text-left">
+                        <div class="space-y-4 text-left">
+                            <h4 class="text-[10px] font-black text-zinc-400 uppercase tracking-widest italic text-left">01 / Add GPG Key</h4>
+                            <div class="rounded-2xl border p-6 font-mono text-xs relative text-left" :class="theme === 'light' ? 'bg-zinc-100 border-zinc-200' : 'bg-black border-white/20'">
+                                <div class="flex items-center justify-between gap-4 text-left">
+                                    <code class="text-purple-500 font-bold break-all">curl -fsSL https://sckyzo.github.io/monitoring-hub/apt/monitoring-hub.asc | sudo gpg --dearmor -o /usr/share/keyrings/monitoring-hub.gpg</code>
+                                    <button @click="copyToClipboard('curl -fsSL https://sckyzo.github.io/monitoring-hub/apt/monitoring-hub.asc | sudo gpg --dearmor -o /usr/share/keyrings/monitoring-hub.gpg'); copiedGpg = true; setTimeout(() => copiedGpg = false, 2000)"
+                                            @mouseenter="showTip($event, 'Copy GPG Key Command')" @mouseleave="hideTip()"
+                                            class="p-2 rounded-lg bg-zinc-200/50 hover:bg-zinc-200 text-zinc-500 dark:bg-white/5 dark:hover:bg-white/10 dark:text-zinc-400 transition-all border-none" aria-label="Copy GPG Command">
+                                        <i x-show="!copiedGpg" data-lucide="copy" class="w-4 h-4"></i>
+                                        <i x-show="copiedGpg" data-lucide="check" class="w-4 h-4 text-emerald-500"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="space-y-4 text-left">
+                            <h4 class="text-[10px] font-black text-zinc-400 uppercase tracking-widest italic text-left">02 / Add Repository</h4>
+                            <div class="rounded-2xl border overflow-hidden transition-all" :class="theme === 'light' ? 'bg-zinc-100 border-zinc-200 shadow-sm' : 'bg-black border-white/20 shadow-2xl'">
+                                <div class="flex items-center justify-between p-3 border-b text-left" :class="theme === 'light' ? 'bg-zinc-50 border-zinc-200' : 'bg-white/[0.03] border-white/5'">
+                                    <div class="flex gap-2">
+                                        <template x-for="dist in [{code: 'jammy', name: 'Ubuntu 22.04'}, {code: 'noble', name: 'Ubuntu 24.04'}, {code: 'bookworm', name: 'Debian 12'}, {code: 'trixie', name: 'Debian 13'}]">
+                                            <button @click="debTab = dist.code"
+                                                    :class="debTab === dist.code ? 'text-primary-500 bg-primary-500/10' : 'text-zinc-500 hover:text-zinc-300'"
+                                                    class="px-3 py-2 rounded-xl text-[10px] font-black uppercase transition-all border-none"
+                                                    @mouseenter="showTip($event, dist.name)" @mouseleave="hideTip()"
+                                                    x-text="dist.code"></button>
+                                        </template>
+                                    </div>
+                                    <button @click="copyToClipboard(`echo 'deb [signed-by=/usr/share/keyrings/monitoring-hub.gpg] https://sckyzo.github.io/monitoring-hub/apt ${debTab} main' | sudo tee /etc/apt/sources.list.d/monitoring-hub.list`); copiedRepo = true; setTimeout(() => copiedRepo = false, 2000)"
+                                            @mouseenter="showTip($event, 'Copy Repo Setup Command')" @mouseleave="hideTip()"
+                                            class="p-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-zinc-400 transition-all border-none" aria-label="Copy Repo Setup">
+                                        <i x-show="!copiedRepo" data-lucide="copy" class="w-4 h-4"></i>
+                                        <i x-show="copiedRepo" data-lucide="check" class="w-4 h-4 text-emerald-500"></i>
+                                    </button>
+                                </div>
+                                <div class="p-8 font-mono text-xs text-left">
+                                    <code class="block break-all leading-relaxed text-primary-500 font-bold" x-text="`echo 'deb [signed-by=/usr/share/keyrings/monitoring-hub.gpg] https://sckyzo.github.io/monitoring-hub/apt ${debTab} main' | sudo tee /etc/apt/sources.list.d/monitoring-hub.list`"></code>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="space-y-4 text-left">
+                            <h4 class="text-[10px] font-black text-zinc-400 uppercase tracking-widest italic text-left">03 / Update Package Lists</h4>
+                            <div class="rounded-2xl border p-6 font-mono text-xs relative text-left" :class="theme === 'light' ? 'bg-zinc-100 border-zinc-200' : 'bg-black border-white/20'">
+                                <div class="flex items-center justify-between gap-4 text-left">
+                                    <code class="text-yellow-500 font-bold">sudo apt update</code>
+                                    <button @click="copyToClipboard('sudo apt update'); copiedUpdate = true; setTimeout(() => copiedUpdate = false, 2000)"
+                                            @mouseenter="showTip($event, 'Copy Update Command')" @mouseleave="hideTip()"
+                                            class="p-2 rounded-lg bg-zinc-200/50 hover:bg-zinc-200 text-zinc-500 dark:bg-white/5 dark:hover:bg-white/10 dark:text-zinc-400 transition-all border-none" aria-label="Copy Update Command">
+                                        <i x-show="!copiedUpdate" data-lucide="copy" class="w-4 h-4"></i>
+                                        <i x-show="copiedUpdate" data-lucide="check" class="w-4 h-4 text-emerald-500"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="space-y-4 text-left">
+                            <h4 class="text-[10px] font-black text-zinc-400 uppercase tracking-widest italic text-left">04 / Installation</h4>
+                            <div class="rounded-2xl border p-6 font-mono text-xs relative text-left" :class="theme === 'light' ? 'bg-zinc-100 border-zinc-200' : 'bg-black border-white/20'">
+                                <div class="flex items-center justify-between gap-4 text-left">
+                                    <code class="text-emerald-500 font-bold" x-text="`sudo apt install -y ${selectedItem?.name?.replace('_', '-')}`"></code>
+                                    <button @click="copyToClipboard(`sudo apt install -y ${selectedItem?.name?.replace('_', '-')}`); copiedInstall = true; setTimeout(() => copiedInstall = false, 2000)"
+                                            @mouseenter="showTip($event, 'Copy Install Command')" @mouseleave="hideTip()"
+                                            class="p-2 rounded-lg bg-zinc-200/50 hover:bg-zinc-200 text-zinc-500 dark:bg-white/5 dark:hover:bg-white/10 dark:text-zinc-400 transition-all border-none" aria-label="Copy Install Command">
+                                        <i x-show="!copiedInstall" data-lucide="copy" class="w-4 h-4"></i>
+                                        <i x-show="copiedInstall" data-lucide="check" class="w-4 h-4 text-emerald-500"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="space-y-4 text-left">
+                            <h4 class="text-[10px] font-black text-zinc-400 uppercase tracking-widest italic text-left">05 / Direct Binary Download</h4>
+                            <div class="grid grid-cols-1 gap-2 text-left">
+                                <template x-for="dist in (selectedItem?.artifacts?.deb?.targets || [])">
+                                    <div class="flex items-center justify-between p-4 rounded-xl border text-left transition-all" :class="theme === 'light' ? 'bg-zinc-50 border-zinc-200 shadow-sm' : 'bg-zinc-800/30 border-white/5'">
+                                        <span class="text-[11px] font-black text-zinc-500 uppercase tracking-widest" x-text="dist"></span>
+                                        <div class="flex gap-2">
+                                            <template x-for="arch in ['amd64', 'arm64']">
+                                                <a :href="getDebStatus(selectedItem, dist, arch) === 'success' ? getDebPath(selectedItem, dist, arch) : 'javascript:void(0)'"
+                                                   @mouseenter="showTip($event, getDebStatusTip(selectedItem, dist, arch))"
+                                                   @mouseleave="hideTip()"
+                                                   :class="getDebStatusClass(selectedItem, dist, arch)"
+                                                   class="px-4 py-2 rounded-xl text-[10px] font-black uppercase flex items-center gap-2 transition-all border-none">
+                                                    <i data-lucide="download" class="w-3.5 h-3.5"></i> <span x-text="arch"></span>
+                                                </a>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </div>
+
                     <div x-show="drawerTab === 'docker'" x-transition class="space-y-10 text-left">
                         <div class="space-y-4 text-left">
                             <h4 class="text-[10px] font-black text-zinc-400 uppercase tracking-widest italic text-left">01 / Registry Pull</h4>
@@ -636,11 +742,13 @@
                     <span class="text-[11px] font-black uppercase tracking-[0.3em] opacity-50">Factory Tools</span>
                 </div>
                 <!-- Stat 02: Primary + 30deg -->
-                <div class="p-10 rounded-[1.5rem] border border-white/5 bg-zinc-900/20 flex flex-col items-center justify-center text-center group transition-all hover:border-primary-500/30"
+                <div class="p-10 rounded-[1.5rem] border border-white/5 bg-zinc-900/20 flex flex-col items-center justify-center text-center group transition-all hover:border-primary-500/30 relative"
                      :style="`filter: hue-rotate(25deg)`"
-                     :class="theme === 'light' ? 'bg-white border-zinc-200 shadow-sm' : ''">
-                    <span class="text-5xl font-black tracking-tighter text-primary-500 mb-3" x-text="totalRPMs"></span>
-                    <span class="text-[11px] font-black uppercase tracking-[0.3em] opacity-50">Binary RPMs Ready</span>
+                     :class="theme === 'light' ? 'bg-white border-zinc-200 shadow-sm' : ''"
+                     @mouseenter="showTip($event, `RPM: ${totalRPMs} packages\nDEB: ${totalDEBs} packages`)"
+                     @mouseleave="hideTip()">
+                    <span class="text-5xl font-black tracking-tighter text-primary-500 mb-3" x-text="totalBinaryPackages"></span>
+                    <span class="text-[11px] font-black uppercase tracking-[0.3em] opacity-50">Binary Packages Ready</span>
                 </div>
                 <!-- Stat 03: Primary + 60deg -->
                 <div class="p-10 rounded-[1.5rem] border border-white/5 bg-zinc-900/20 flex flex-col items-center justify-center text-center group transition-all hover:border-primary-500/30"
@@ -650,9 +758,11 @@
                     <span class="text-[11px] font-black uppercase tracking-[0.3em] opacity-50">OCI Images Pushed</span>
                 </div>
                 <!-- Stat 04: Primary + 90deg -->
-                <div class="p-10 rounded-[1.5rem] border border-white/5 bg-zinc-900/20 flex flex-col items-center justify-center text-center group transition-all hover:border-primary-500/30"
+                <div class="p-10 rounded-[1.5rem] border border-white/5 bg-zinc-900/20 flex flex-col items-center justify-center text-center group transition-all hover:border-primary-500/30 relative"
                      :style="`filter: hue-rotate(75deg)`"
-                     :class="theme === 'light' ? 'bg-white border-zinc-200 shadow-sm' : ''">
+                     :class="theme === 'light' ? 'bg-white border-zinc-200 shadow-sm' : ''"
+                     @mouseenter="showTip($event, `RPM Targets: ${totalRPMTargets}\nDEB Targets: ${totalDEBTargets}`)"
+                     @mouseleave="hideTip()">
                     <span class="text-5xl font-black tracking-tighter text-primary-500 mb-3" x-text="totalTargets"></span>
                     <span class="text-[11px] font-black uppercase tracking-[0.3em] opacity-50">Build Matrix Integrity</span>
                 </div>
@@ -876,7 +986,7 @@
                             </div>
                             <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-500 transition-transform group-hover:scale-110"><i data-lucide="package" class="w-6 h-6"></i></div>
                         </div>
-                        <p class="text-sm leading-relaxed opacity-60 font-medium text-left">Dual distribution pipeline: <span class="text-emerald-500">DNF/RPM</span> for Enterprise Linux and <span class="text-emerald-500">OCI Images</span> based on UBI 9 Minimal.</p>
+                        <p class="text-sm leading-relaxed opacity-60 font-medium text-left">Multi-format distribution pipeline: <span class="text-emerald-500">DNF/RPM</span> for Enterprise Linux, <span class="text-purple-500">APT/DEB</span> for Debian/Ubuntu LTS, and <span class="text-emerald-500">OCI Images</span> based on UBI 9 Minimal.</p>
                         <div class="pt-6 border-t border-white/5 flex gap-3 font-mono text-left" :class="theme === 'light' ? 'border-zinc-100' : ''">
                             <span class="text-[9px] px-2.5 py-1 rounded-lg bg-zinc-800 text-zinc-400 border border-white/5">OS: UBI_9_MIN</span>
                             <span class="text-[9px] px-2.5 py-1 rounded-lg bg-zinc-800 text-zinc-400 border border-white/5">PLATFORM: CROSS</span>
@@ -1022,10 +1132,22 @@
                         return acc;
                     }, 0);
                 },
+                get totalDEBs() {
+                    return this.exporters.reduce((acc, e) => {
+                        if (e.deb_status === 'success' && e.artifacts && e.artifacts.deb && e.artifacts.deb.targets) {
+                            // Number of distros * 2 architectures (amd64, arm64)
+                            return acc + (e.artifacts.deb.targets.length * 2);
+                        }
+                        return acc;
+                    }, 0);
+                },
+                get totalBinaryPackages() {
+                    return this.totalRPMs + this.totalDEBs;
+                },
                 get totalOCI() {
                     return this.exporters.filter(e => e.docker_status === 'success').length * 2;
                 },
-                get totalTargets() {
+                get totalRPMTargets() {
                     let count = 0;
                     this.exporters.forEach(e => {
                         Object.values(e.availability || {}).forEach(dist => {
@@ -1035,6 +1157,20 @@
                         });
                     });
                     return count;
+                },
+                get totalDEBTargets() {
+                    let count = 0;
+                    this.exporters.forEach(e => {
+                        Object.values(e.deb_availability || {}).forEach(dist => {
+                            Object.values(dist).forEach(arch => {
+                                if(arch.status === 'success') count++;
+                            });
+                        });
+                    });
+                    return count;
+                },
+                get totalTargets() {
+                    return this.totalRPMTargets + this.totalDEBTargets;
                 },
                 getIcon(catName) { const icons = { 'Database': 'database', 'System': 'cpu', 'Infrastructure': 'layers', 'Network': 'network', 'Storage': 'hard-drive', 'Messaging': 'message-square', 'Web': 'globe' }; return icons[catName] || 'box'; },
                 getCardClass() { if (this.theme === 'light') return 'bg-white border-zinc-200 shadow-sm'; if (this.theme === 'deep') return 'bg-dark-800 border-white/5 shadow-xl'; return 'bg-dark-900 border-white/5'; },
@@ -1074,6 +1210,24 @@
                 getStatusTip(item, dist, arch) {
                     const status = this.getStatus(item, dist, arch);
                     if (status === 'success') return `Download ${arch} RPM`;
+                    if (status === 'failed') return 'Build Failed';
+                    return 'Not Available';
+                },
+                getDebStatus(item, dist, arch) {
+                    try { return item.deb_availability[dist][arch].status; } catch(e) { return 'na'; }
+                },
+                getDebPath(item, dist, arch) {
+                    try { return item.deb_availability[dist][arch].path; } catch(e) { return '#'; }
+                },
+                getDebStatusClass(item, dist, arch) {
+                    const status = this.getDebStatus(item, dist, arch);
+                    if (status === 'success') return 'bg-purple-500/10 text-purple-500 hover:bg-purple-600 hover:text-white cursor-pointer';
+                    if (status === 'failed') return 'bg-rose-500/10 text-rose-500 cursor-not-allowed';
+                    return 'bg-zinc-100 text-zinc-300 dark:bg-white/5 dark:text-zinc-600 cursor-not-allowed';
+                },
+                getDebStatusTip(item, dist, arch) {
+                    const status = this.getDebStatus(item, dist, arch);
+                    if (status === 'success') return `Download ${arch} DEB`;
                     if (status === 'failed') return 'Build Failed';
                     return 'Not Available';
                 }

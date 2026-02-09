@@ -7,7 +7,6 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 from core.config.settings import (
     CORE_VERSION,
-    DEB_CODENAME_MAP,
     EXPORTERS_DIR,
     PORTAL_VERSION,
     SUPPORTED_DEB_DISTROS,
@@ -78,14 +77,15 @@ def generate(output, repo_dir):
                 data["deb_availability"] = {}
 
                 for dist in SUPPORTED_DEB_DISTROS:
-                    codename = DEB_CODENAME_MAP.get(dist, dist)
                     data["deb_availability"][dist] = {}
                     for arch in ["amd64", "arm64"]:
                         # Search for DEBs in apt/pool/main/
+                        # DEB package names use dashes instead of underscores
+                        deb_name = data["name"].replace("_", "-")
                         pattern = os.path.join(
                             repo_dir,
                             "apt/pool/main",
-                            f"{data['name']}_*_{arch}.deb",
+                            f"{deb_name}_*_{arch}.deb",
                         )
                         found_files = glob.glob(pattern)
 
@@ -128,9 +128,13 @@ def generate(output, repo_dir):
                     data["rpm_status"] = "na"
 
                 # DEB Status
-                deb_enabled = data.get("artifacts", {}).get("deb", {}).get("enabled", False)
+                deb_enabled = (
+                    data.get("artifacts", {}).get("deb", {}).get("enabled", False)
+                )
                 if deb_enabled:
-                    targets = data.get("artifacts", {}).get("deb", {}).get("targets", [])
+                    targets = (
+                        data.get("artifacts", {}).get("deb", {}).get("targets", [])
+                    )
                     failed_targets = [
                         t
                         for t in targets
