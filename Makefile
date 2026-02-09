@@ -6,6 +6,8 @@ VENV := .venv
 PYTEST := PYTHONPATH=$(shell pwd) pytest
 RUFF := ruff
 MYPY := mypy
+DEV_IMAGE := monitoring-hub-dev
+DOCKER_RUN := docker run --rm -v $(shell pwd):/workspace $(DEV_IMAGE)
 
 help: ## Show this help message
 	@echo "Available commands:"
@@ -65,3 +67,25 @@ clean-all: clean ## Clean everything including venv
 validate: lint test ## Run all validation checks (skips mypy for now)
 
 ci: lint format-check type-check test ## Run all CI checks
+
+# Docker Development Commands
+docker-build: ## Build the development Docker image
+	docker build -t $(DEV_IMAGE) -f Dockerfile.dev .
+
+docker-lint: ## Run linter inside Docker
+	$(DOCKER_RUN) ruff check core/
+
+docker-format: ## Run formatter inside Docker
+	$(DOCKER_RUN) ruff format core/
+
+docker-type-check: ## Run type checking inside Docker
+	$(DOCKER_RUN) mypy --explicit-package-bases core/
+
+docker-test: ## Run tests inside Docker
+	$(DOCKER_RUN) pytest -v
+
+docker-ci: ## Run all CI checks inside Docker
+	$(DOCKER_RUN) /bin/bash -c "ruff check core/ && ruff format --check core/ && mypy --explicit-package-bases core/ && pytest -v"
+
+docker-shell: ## Open a shell inside the development container
+	docker run -it --rm -v $(shell pwd):/workspace $(DEV_IMAGE) /bin/bash
