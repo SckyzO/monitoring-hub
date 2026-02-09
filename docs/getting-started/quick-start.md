@@ -39,18 +39,20 @@ git clone https://github.com/SckyzO/monitoring-hub.git
 cd monitoring-hub
 ```
 
-### 2. Setup Environment
+### 2. Build Development Environment
+
+**No Python installation required - just Docker!**
 
 ```bash
-python -m venv .venv
-source .venv/bin/activate
-pip install -r core/requirements.txt
+./devctl build
 ```
+
+This creates a Docker image with all development tools pre-installed.
 
 ### 3. Create Exporter
 
 ```bash
-./core/scripts/create_exporter.py
+./devctl create-exporter
 ```
 
 Follow the interactive prompts:
@@ -63,8 +65,10 @@ Follow the interactive prompts:
 ### 4. Test Locally
 
 ```bash
-./core/scripts/local_test.sh my_exporter
+./devctl test-exporter my_exporter
 ```
+
+This will build RPM + Docker image and run validation tests.
 
 ### 5. Commit and Push
 

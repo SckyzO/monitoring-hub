@@ -35,23 +35,33 @@
 
 ## <img src=".github/icons/hammer-red.svg" width="24" height="24" style="vertical-align: bottom;"> Developer Guide: Adding an Exporter
 
-Adding a new tool takes less than 1 minute using our CLI tool.
+Adding a new tool takes less than 1 minute using our Docker-first CLI tool.
+
+### Prerequisites
+
+- **Docker** - The only requirement! No Python installation needed.
 
 ### 1. Run the Creator Script
-We provide a helper script to scaffold a new exporter following the [Reference Manifest](manifest.reference.yaml).
+
+We provide `./devctl` - a unified Docker-first CLI for all development tasks:
 
 ```bash
-# Interactive mode
-./core/scripts/create_exporter.py
+# Interactive mode (recommended)
+./devctl create-exporter
 
-# Or via arguments
-./core/scripts/create_exporter.py --name my_exporter --repo owner/repo --category System
+# Or specify name and repository
+./devctl create-exporter my_exporter --repo owner/repo --category System
 ```
 
 This will automatically:
 - Create the directory structure (`exporters/my_exporter/`).
 - Generate a clean `manifest.yaml`.
 - Generate a standard `README.md`.
+
+**Alternative:** If you prefer using Make:
+```bash
+make create-exporter
+```
 
 ### 2. Customize `manifest.yaml`
 Edit the generated file to match specific needs (binary names, config files).
@@ -82,51 +92,55 @@ COPY {{ build.binary_name }} /usr/bin/{{ name }}
 ENTRYPOINT {{ artifacts.docker.entrypoint | tojson }}
 ```
 
-### 5. Local Build Guide (Optional)
-You can build RPMs and Docker images locally for testing or custom use.
+### 5. Local Testing (Docker-First Workflow)
 
-#### Prerequisites
-- **Python 3.9+**
-- **Docker** (used for RPM isolation and image building)
+Test your exporter locally using our Docker-based development environment:
 
-#### Step-by-Step Example (node_exporter)
+#### Quick Test (Recommended)
+```bash
+# Test build an exporter (generates artifacts + builds RPM + Docker image)
+./devctl test-exporter node_exporter
 
-1. **Setup a Virtual Environment:**
-   ```bash
-   python -m venv .venv
-   source .venv/bin/activate
-   pip install -r core/requirements.txt
-   ```
+# Test with specific options
+./devctl test-exporter node_exporter --arch arm64 --el10
+```
 
-2. **Run the Test Script:**
-   We provide a helper script to automate generation, RPM build, and Docker build in one go.
-   ```bash
-   # Usage: ./core/scripts/local_test.sh <exporter> [arch] [distro] [--smoke]
-   ./core/scripts/local_test.sh node_exporter
-   ```
+**Or using Make:**
+```bash
+make test-exporter EXPORTER=node_exporter
+```
 
-   *That's it!* Artifacts will be in `build/node_exporter/`.
+#### Individual Build Steps
 
-#### Manual Build (Advanced)
-If you need to debug a specific step:
+**Build artifacts only:**
+```bash
+./devctl build-exporter node_exporter
+# Output: build/node_exporter/
+```
 
-1. **Generate build files:**
-   ```bash
-   export PYTHONPATH=$(pwd)
-   python3 -m core.engine.builder --manifest exporters/node_exporter/manifest.yaml --arch amd64 --output-dir build/node_exporter
-   ```
+**List all available exporters:**
+```bash
+./devctl list-exporters
+```
 
-2. **Build the RPM:**
-   ```bash
-   ./core/scripts/build_rpm.sh build/node_exporter/node_exporter.spec build/node_exporter/rpms amd64 almalinux:9
-   ```
+#### Advanced: Local Python Development
 
-3. **Build the Docker Image:**
-   ```bash
-   docker build -t monitoring-hub/node_exporter:local build/node_exporter
-   ```
+If you need to debug or develop the core engine locally:
 
-### 6. Local Custom Binaries
+```bash
+# Install dependencies locally
+make install
+
+# Run tests locally
+make local-test
+
+# Run linter locally
+make local-lint
+```
+
+**Note:** For most development tasks, the Docker workflow (`./devctl`) is recommended as it requires no Python installation and ensures consistency.
+
+### 6. Custom/Proprietary Binaries
 
 For proprietary or custom exporters not available on GitHub:
 
@@ -138,11 +152,11 @@ mkdir -p exporters/my_exporter/assets
 cp /path/to/my_exporter exporters/my_exporter/assets/
 chmod +x exporters/my_exporter/assets/my_exporter
 
-# Create manifest with upstream.type: local
-./core/scripts/create_exporter.py --name my_exporter --category Infrastructure
+# Create manifest interactively
+./devctl create-exporter
 ```
 
-Edit the generated `manifest.yaml` to set:
+Edit the generated `manifest.yaml` to use local binary:
 ```yaml
 upstream:
   type: local
@@ -151,7 +165,7 @@ upstream:
 
 Build and test:
 ```bash
-./core/scripts/local_test.sh my_exporter --el9 --docker
+./devctl test-exporter my_exporter
 ```
 
 **Note:** Local sources are not tracked by the automatic version watcher. Update the `version` field manually when your binary changes.
