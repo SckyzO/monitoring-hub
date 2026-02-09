@@ -6,7 +6,12 @@ WORKDIR /workspace
 RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     curl \
+    nodejs \
+    npm \
     && rm -rf /var/lib/apt/lists/*
+
+# Install global JS tools
+RUN npm install -g stylelint stylelint-config-standard
 
 # Copy requirements first for better caching
 COPY core/requirements.txt /tmp/core-requirements.txt
