@@ -7,7 +7,7 @@ Thumbs.db
 *.log
 logs/
 
-# --- Python (Core Builder) ---
+# --- Python ---
 __pycache__/
 *.py[cod]
 *.so
@@ -17,6 +17,9 @@ env/
 .pytest_cache/
 .coverage
 htmlcov/
+.mypy_cache/
+.ruff_cache/
+coverage.xml
 
 # --- IDEs & Editors ---
 .idea/
@@ -25,32 +28,29 @@ htmlcov/
 *.swo
 *~
 
-# --- Build Artifacts (Local) ---
+# --- Build Artifacts ---
 index.html
+catalog.json
 build/
 dist/
 archives/
 tmp/
+site/
 *.egg-info/
 
 # --- Secrets & Environment Variables ---
 secrets/
 .env
 .env.local
-
-# --- Architecture & Private Notes ---
-# Contains architecture plans, raw notes, and local POCs
-ARCHITECTURE/
-
-build/
-.venv/
-
-.gemini/
 gha-creds-*.json
-site/
+
+# --- Documentation ---
+# contains local POCs and raw architecture notes
+ARCHITECTURE/
 
 # --- AI Assistant Files ---
 CLAUDE.md
+.gemini/
 
 # --- Local Custom Exporters ---
 # The dev/ directory contains local binaries for testing/custom exporters.
