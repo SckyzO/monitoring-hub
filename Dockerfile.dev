@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Install global JS tools
-RUN npm install -g stylelint stylelint-config-standard
+RUN npm install -g stylelint stylelint-config-standard postcss-html
 
 # Copy requirements first for better caching
 COPY core/requirements.txt /tmp/core-requirements.txt
