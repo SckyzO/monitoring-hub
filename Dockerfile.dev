@@ -22,5 +22,8 @@ RUN pip install --no-cache-dir \
 # Set PYTHONPATH to include the workspace root
 ENV PYTHONPATH=/workspace
 
+# Fix Git ownership issues for mounted volumes
+RUN git config --global --add safe.directory /workspace
+
 # Default command
 CMD ["/bin/bash"]
