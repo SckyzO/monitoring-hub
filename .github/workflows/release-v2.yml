@@ -352,7 +352,7 @@ jobs:
 
               # Create InRelease (signed Release file)
               gpg --batch --passphrase "$GPG_PASSPHRASE" \
-                  --clearsign --output "${release_file%.Release}/InRelease" "$release_file"
+                  --clearsign --output "$(dirname "$release_file")/InRelease" "$release_file"
 
               # Create Release.gpg (detached signature)
               gpg --batch --passphrase "$GPG_PASSPHRASE" \
