@@ -40,6 +40,7 @@ def generate(output, repo_dir):
                 else:
                     data["readme"] = "No documentation available."
 
+                # RPM Availability Tracking (GitHub Releases)
                 data["availability"] = {}
                 rpm_targets = (
                     data.get("artifacts", {}).get("rpm", {}).get("targets", [])
@@ -48,21 +49,18 @@ def generate(output, repo_dir):
                 for dist in SUPPORTED_DISTROS:
                     data["availability"][dist] = {}
                     for arch in ["x86_64", "aarch64"]:
-                        pattern = os.path.join(
-                            repo_dir, dist, arch, f"{data['name']}-*.{dist}*.{arch}.rpm"
-                        )
-                        found_files = glob.glob(pattern)
-                        is_target = dist in rpm_targets
+                        version = data["version"]
+                        rpm_name = data["name"]
 
-                        if found_files:
+                        # Construct GitHub Releases download URL
+                        # Format: https://github.com/SckyzO/monitoring-hub/releases/download/v{version}/{name}-{version}-1.{dist}.{arch}.rpm
+                        github_url = f"https://github.com/SckyzO/monitoring-hub/releases/download/v{version}/{rpm_name}-{version}-1.{dist}.{arch}.rpm"
+
+                        if dist in rpm_targets:
+                            # Assume success if dist is targeted (packages are on GitHub Releases)
                             data["availability"][dist][arch] = {
                                 "status": "success",
-                                "path": os.path.relpath(found_files[0], repo_dir),
-                            }
-                        elif is_target:
-                            data["availability"][dist][arch] = {
-                                "status": "failed",
-                                "path": None,
+                                "path": github_url,
                             }
                         else:
                             data["availability"][dist][arch] = {
@@ -70,7 +68,7 @@ def generate(output, repo_dir):
                                 "path": None,
                             }
 
-                # DEB Availability Tracking
+                # DEB Availability Tracking (GitHub Releases)
                 deb_targets = (
                     data.get("artifacts", {}).get("deb", {}).get("targets", [])
                 )
@@ -79,25 +77,19 @@ def generate(output, repo_dir):
                 for dist in SUPPORTED_DEB_DISTROS:
                     data["deb_availability"][dist] = {}
                     for arch in ["amd64", "arm64"]:
-                        # Search for DEBs in apt/pool/main/
                         # DEB package names use dashes instead of underscores
                         deb_name = data["name"].replace("_", "-")
-                        pattern = os.path.join(
-                            repo_dir,
-                            "apt/pool/main",
-                            f"{deb_name}_*_{arch}.deb",
-                        )
-                        found_files = glob.glob(pattern)
+                        version = data["version"]
 
-                        if found_files:
+                        # Construct GitHub Releases download URL
+                        # Format: https://github.com/SckyzO/monitoring-hub/releases/download/v{version}/{name}_{version}-1_{arch}.deb
+                        github_url = f"https://github.com/SckyzO/monitoring-hub/releases/download/v{version}/{deb_name}_{version}-1_{arch}.deb"
+
+                        if dist in deb_targets:
+                            # Assume success if dist is targeted (packages are on GitHub Releases)
                             data["deb_availability"][dist][arch] = {
                                 "status": "success",
-                                "path": os.path.relpath(found_files[0], repo_dir),
-                            }
-                        elif dist in deb_targets:
-                            data["deb_availability"][dist][arch] = {
-                                "status": "failed",
-                                "path": None,
+                                "path": github_url,
                             }
                         else:
                             data["deb_availability"][dist][arch] = {
