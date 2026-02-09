@@ -174,6 +174,25 @@ Build and test:
 
 ## <img src=".github/icons/layers-purple.svg" width="24" height="24" style="vertical-align: bottom;"> Architecture
 
+### Project Structure
+
+```
+monitoring-hub/
+├── config/              # Configuration files (Docker, linting, Python, docs)
+├── requirements/        # Python dependencies (base, dev, docs)
+├── scripts/             # Utility scripts
+├── core/                # Core engine (builder, schema, templates, tests)
+├── exporters/           # Exporter manifests (one per directory)
+├── docs/                # MkDocs documentation
+├── devctl               # Docker-first development CLI
+├── Makefile             # Make commands (aliases to devctl)
+└── manifest.reference.yaml  # Manifest schema reference
+```
+
+See [config/README.md](config/README.md) and [requirements/README.md](requirements/README.md) for detailed documentation.
+
+### How It Works
+
 The "Magic" happens in the `core/` engine:
 1.  **Smart Filter:** Compares local manifests against the deployed `catalog.json` (State Management) to only rebuild what changed.
 2.  **Modular Engine (`core/engine/`):**

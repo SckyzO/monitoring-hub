@@ -8,7 +8,12 @@ import requests
 import yaml
 from jinja2 import Environment, FileSystemLoader, TemplateNotFound, select_autoescape
 from marshmallow import ValidationError
-from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_exponential
+from tenacity import (
+    retry,
+    retry_if_exception_type,
+    stop_after_attempt,
+    wait_exponential,
+)
 
 from core.config.settings import ARCH_MAP, TEMPLATES_DIR
 from core.engine.schema import ManifestSchema
@@ -115,7 +120,9 @@ def download_and_extract(data, output_dir, arch):
                     if member_to_extract:
                         # Flatten: we extract everything to the root of output_dir
                         tar.extract(member_to_extract, path=output_dir, filter="data")
-                        extracted_path = os.path.join(output_dir, member_to_extract.name)
+                        extracted_path = os.path.join(
+                            output_dir, member_to_extract.name
+                        )
                         final_path = os.path.join(output_dir, b_name)
 
                         if extracted_path != final_path:
@@ -244,7 +251,9 @@ def copy_local_binary(data, output_dir, manifest_dir):
 
                     if member_to_extract:
                         tar.extract(member_to_extract, path=output_dir)
-                        extracted_path = os.path.join(output_dir, member_to_extract.name)
+                        extracted_path = os.path.join(
+                            output_dir, member_to_extract.name
+                        )
                         final_path = os.path.join(output_dir, b_name)
 
                         if extracted_path != final_path:
@@ -322,7 +331,10 @@ def build(manifest, output_dir, arch):
             click.echo(f"License set to: {data['license']}")
 
         # Setup Jinja2 with Override Logic
-        template_dirs = [os.path.join(os.path.dirname(manifest), "templates"), TEMPLATES_DIR]
+        template_dirs = [
+            os.path.join(os.path.dirname(manifest), "templates"),
+            TEMPLATES_DIR,
+        ]
         env = Environment(
             loader=FileSystemLoader(template_dirs),
             autoescape=select_autoescape(["html", "xml", "j2"]),

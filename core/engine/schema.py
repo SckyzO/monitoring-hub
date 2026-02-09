@@ -76,7 +76,9 @@ class UpstreamSchema(Schema):
                     "'local_binary' or 'local_archive' required for upstream type 'local'"
                 )
             if data.get("local_binary") and data.get("local_archive"):
-                raise ValidationError("Only one of 'local_binary' or 'local_archive' allowed")
+                raise ValidationError(
+                    "Only one of 'local_binary' or 'local_archive' allowed"
+                )
 
 
 class ExtraSourceSchema(Schema):
@@ -85,7 +87,9 @@ class ExtraSourceSchema(Schema):
 
 
 class BuildSchema(Schema):
-    method = fields.Str(required=True, validate=validate.OneOf(["binary_repack", "source_build"]))
+    method = fields.Str(
+        required=True, validate=validate.OneOf(["binary_repack", "source_build"])
+    )
     binary_name = fields.Str(required=True)
     extra_binaries = fields.List(fields.Str(), load_default=[])
     extra_sources = fields.List(fields.Nested(ExtraSourceSchema), load_default=[])

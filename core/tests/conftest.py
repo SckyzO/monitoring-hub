@@ -25,7 +25,11 @@ def sample_manifest() -> dict[str, Any]:
         "description": "Test exporter for unit tests",
         "version": "v1.0.0",
         "category": "System",
-        "upstream": {"type": "github", "repo": "owner/test_exporter", "strategy": "latest_release"},
+        "upstream": {
+            "type": "github",
+            "repo": "owner/test_exporter",
+            "strategy": "latest_release",
+        },
         "build": {
             "method": "binary_repack",
             "binary_name": "test_exporter",
@@ -74,8 +78,16 @@ def mock_catalog() -> dict[str, Any]:
     """Provide a mock catalog.json for state management tests."""
     return {
         "exporters": [
-            {"name": "node_exporter", "version": "1.8.0", "description": "Hardware and OS metrics"},
-            {"name": "prometheus", "version": "2.45.0", "description": "Prometheus server"},
+            {
+                "name": "node_exporter",
+                "version": "1.8.0",
+                "description": "Hardware and OS metrics",
+            },
+            {
+                "name": "prometheus",
+                "version": "2.45.0",
+                "description": "Prometheus server",
+            },
         ]
     }
 

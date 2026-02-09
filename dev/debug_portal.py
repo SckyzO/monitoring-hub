@@ -11,7 +11,8 @@ async def debug_portal():
         # Listen for console logs and errors
         errors = []
         page.on(
-            "console", lambda msg: print(f"CONSOLE: {msg.text}") if msg.type == "error" else None
+            "console",
+            lambda msg: print(f"CONSOLE: {msg.text}") if msg.type == "error" else None,
         )
         page.on("pageerror", lambda exc: errors.append(exc))
 

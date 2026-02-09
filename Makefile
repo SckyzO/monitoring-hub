@@ -115,9 +115,9 @@ docs-serve: ## Serve docs with live reload
 # ==============================================================================
 
 install: ## Install development dependencies locally
-	$(PYTHON) -m pip install -r requirements-dev.txt
-	$(PYTHON) -m pip install -r core/requirements.txt
-	$(PYTHON) -m pip install -r requirements-docs.txt
+	$(PYTHON) -m pip install -r requirements/dev.txt
+	$(PYTHON) -m pip install -r requirements/base.txt
+	$(PYTHON) -m pip install -r requirements/docs.txt
 	pre-commit install
 
 local-test: ## Run tests locally (requires local Python)

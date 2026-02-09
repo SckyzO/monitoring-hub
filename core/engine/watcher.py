@@ -6,7 +6,12 @@ import requests
 import yaml
 from marshmallow import ValidationError
 from packaging.version import parse as parse_version
-from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_exponential
+from tenacity import (
+    retry,
+    retry_if_exception_type,
+    stop_after_attempt,
+    wait_exponential,
+)
 
 from core.config.settings import EXPORTERS_DIR
 from core.engine.schema import ManifestSchema
@@ -55,7 +60,9 @@ def get_latest_github_release(repo_name, token=None):
 
 
 @click.command()
-@click.option("--update/--no-update", default=False, help="Update manifest files in place")
+@click.option(
+    "--update/--no-update", default=False, help="Update manifest files in place"
+)
 @click.option("--token", envvar="GITHUB_TOKEN", help="GitHub API Token")
 def watch(update, token):
     """

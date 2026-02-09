@@ -6,7 +6,7 @@ on:
     paths:
       - 'docs/**'
       - 'mkdocs.yml'
-      - 'requirements-docs.txt'
+      - 'requirements/docs.txt'
       - '.github/workflows/deploy-docs.yml'
   workflow_dispatch:
 
@@ -31,7 +31,7 @@ jobs:
 
       - name: Install MkDocs dependencies
         run: |
-          pip install -r requirements-docs.txt
+          pip install -r requirements/docs.txt
 
       - name: Build MkDocs documentation
         run: |

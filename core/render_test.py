@@ -33,7 +33,12 @@ MOCK_EXPORTERS = [
                     }
                 ],
                 "directories": [
-                    {"path": "/etc/alertmanager", "mode": "0755", "owner": "root", "group": "root"},
+                    {
+                        "path": "/etc/alertmanager",
+                        "mode": "0755",
+                        "owner": "root",
+                        "group": "root",
+                    },
                     {
                         "path": "/var/lib/alertmanager",
                         "mode": "0755",
@@ -280,7 +285,11 @@ MOCK_EXPORTERS = [
                 "validation": {"enabled": False},
             },
         },
-        "build": {"method": "binary_repack", "binary_name": "gpfs_exporter", "archs": ["amd64"]},
+        "build": {
+            "method": "binary_repack",
+            "binary_name": "gpfs_exporter",
+            "archs": ["amd64"],
+        },
         "readme": "# gpfs_exporter\nRandomized production mock for UI stress-testing.",
         "availability": {
             "el8": {"x86_64": {"status": "na"}, "aarch64": {"status": "success"}},
@@ -467,7 +476,10 @@ MOCK_EXPORTERS = [
                 "validation": {"port": 9113},
             },
         },
-        "build": {"method": "binary_repack", "binary_name": "nginx-prometheus-exporter"},
+        "build": {
+            "method": "binary_repack",
+            "binary_name": "nginx-prometheus-exporter",
+        },
         "readme": "# nginx_exporter\nRandomized production mock for UI stress-testing.",
         "availability": {
             "el8": {"x86_64": {"status": "failed"}, "aarch64": {"status": "success"}},
@@ -541,7 +553,12 @@ MOCK_EXPORTERS = [
                     }
                 ],
                 "directories": [
-                    {"path": "/etc/ping_exporter", "mode": "0755", "owner": "root", "group": "root"}
+                    {
+                        "path": "/etc/ping_exporter",
+                        "mode": "0755",
+                        "owner": "root",
+                        "group": "root",
+                    }
                 ],
             },
             "docker": {
@@ -670,7 +687,12 @@ MOCK_EXPORTERS = [
                     }
                 ],
                 "directories": [
-                    {"path": "/etc/prometheus", "mode": "0755", "owner": "root", "group": "root"},
+                    {
+                        "path": "/etc/prometheus",
+                        "mode": "0755",
+                        "owner": "root",
+                        "group": "root",
+                    },
                     {
                         "path": "/var/lib/prometheus",
                         "mode": "0755",
@@ -840,10 +862,19 @@ MOCK_EXPORTERS = [
                 "service_file": True,
                 "system_user": "prometheus",
                 "extra_files": [
-                    {"source": "snmp.yml", "dest": "/etc/snmp_exporter/snmp.yml", "config": True}
+                    {
+                        "source": "snmp.yml",
+                        "dest": "/etc/snmp_exporter/snmp.yml",
+                        "config": True,
+                    }
                 ],
                 "directories": [
-                    {"path": "/etc/snmp_exporter", "mode": "0755", "owner": "root", "group": "root"}
+                    {
+                        "path": "/etc/snmp_exporter",
+                        "mode": "0755",
+                        "owner": "root",
+                        "group": "root",
+                    }
                 ],
             },
             "docker": {
@@ -923,14 +954,17 @@ MOCK_CATEGORIES = ["Database", "Infrastructure", "Network", "Storage", "System",
 
 @click.command()
 @click.option(
-    "--start-webserver", is_flag=True, help="Start a local webserver to preview the site."
+    "--start-webserver",
+    is_flag=True,
+    help="Start a local webserver to preview the site.",
 )
 def render(start_webserver):
     from jinja2 import Environment, FileSystemLoader, select_autoescape
 
     template_dir = os.path.join(os.path.dirname(__file__), "templates")
     env = Environment(
-        loader=FileSystemLoader(template_dir), autoescape=select_autoescape(["html", "xml", "j2"])
+        loader=FileSystemLoader(template_dir),
+        autoescape=select_autoescape(["html", "xml", "j2"]),
     )
     template = env.get_template("index.html.j2")
 

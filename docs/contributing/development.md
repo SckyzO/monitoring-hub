@@ -48,9 +48,9 @@ source .venv/bin/activate
 make install
 
 # This installs:
-# - core/requirements.txt (engine dependencies)
-# - requirements-dev.txt (ruff, pytest, mypy)
-# - requirements-docs.txt (mkdocs)
+# - requirements/base.txt (engine dependencies)
+# - requirements/dev.txt (ruff, pytest, mypy)
+# - requirements/docs.txt (mkdocs)
 # - pre-commit hooks
 ```
 

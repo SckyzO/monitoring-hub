@@ -27,7 +27,7 @@
 Install via `requirements.txt`:
 
 ```bash
-pip install -r core/requirements.txt
+pip install -r requirements/base.txt
 ```
 
 Dependencies include:
@@ -43,7 +43,7 @@ Dependencies include:
 For running tests and linting:
 
 ```bash
-pip install -r requirements-dev.txt
+pip install -r requirements/dev.txt
 ```
 
 Includes:
@@ -58,7 +58,7 @@ Includes:
 For building docs locally:
 
 ```bash
-pip install -r requirements-docs.txt
+pip install -r requirements/docs.txt
 ```
 
 ## For Building Exporters

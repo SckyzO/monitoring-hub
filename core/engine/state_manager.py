@@ -4,7 +4,12 @@ import sys
 
 import requests
 import yaml
-from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_exponential
+from tenacity import (
+    retry,
+    retry_if_exception_type,
+    stop_after_attempt,
+    wait_exponential,
+)
 
 from core.config.settings import DEFAULT_CATALOG_URL, EXPORTERS_DIR
 
@@ -35,7 +40,8 @@ def get_remote_catalog(catalog_url=DEFAULT_CATALOG_URL):
             return {}
     except Exception as e:
         print(
-            f"Warning: Could not fetch remote catalog: {e}. Assuming empty state.", file=sys.stderr
+            f"Warning: Could not fetch remote catalog: {e}. Assuming empty state.",
+            file=sys.stderr,
         )
         return {}
 
@@ -87,7 +93,10 @@ def main():
             continue
 
         if remote_version is None:
-            print(f"[BUILD] {name}: New exporter (Local: {local_version}).", file=sys.stderr)
+            print(
+                f"[BUILD] {name}: New exporter (Local: {local_version}).",
+                file=sys.stderr,
+            )
             to_build.append(name)
         elif str(local_version) != str(remote_version):
             print(

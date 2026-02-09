@@ -14,13 +14,13 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN npm install -g stylelint stylelint-config-standard postcss-html
 
 # Copy requirements first for better caching
-COPY core/requirements.txt /tmp/core-requirements.txt
-COPY requirements-dev.txt /tmp/requirements-dev.txt
-COPY requirements-docs.txt /tmp/requirements-docs.txt
+COPY requirements/base.txt /tmp/requirements-base.txt
+COPY requirements/dev.txt /tmp/requirements-dev.txt
+COPY requirements/docs.txt /tmp/requirements-docs.txt
 
 # Install all dependencies
 RUN pip install --no-cache-dir \
-    -r /tmp/core-requirements.txt \
+    -r /tmp/requirements-base.txt \
     -r /tmp/requirements-dev.txt \
     -r /tmp/requirements-docs.txt
 
