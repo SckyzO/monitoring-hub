@@ -20,6 +20,18 @@ artifacts:
     summary: Prometheus exporter for hardware and OS metrics
     systemd:
       enabled: true
+  deb:
+    enabled: true
+    targets:
+    - ubuntu-22.04
+    - ubuntu-24.04
+    - debian-12
+    - debian-13
+    summary: Prometheus exporter for hardware and OS metrics
+    systemd:
+      enabled: true
+    section: net
+    priority: optional
   docker:
     enabled: true
     # Default is UBI 9 Minimal, can be overridden but not recommended

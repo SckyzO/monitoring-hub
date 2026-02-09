@@ -1,0 +1,17 @@
+Source: {{ name | replace('_', '-') }}
+Section: {{ artifacts.deb.section }}
+Priority: {{ artifacts.deb.priority }}
+Maintainer: Monitoring Hub <noreply@monitoring-hub.local>
+Build-Depends: debhelper (>= 10)
+Standards-Version: 4.5.0
+Homepage: {{ upstream.repo if upstream.type == 'github' else 'https://sckyzo.github.io/monitoring-hub' }}
+
+Package: {{ name | replace('_', '-') }}
+Architecture: {% if arch == 'amd64' %}amd64{% elif arch == 'arm64' %}arm64{% else %}all{% endif %}
+{% if artifacts.deb.get('dependencies') -%}
+Depends: ${shlibs:Depends}, ${misc:Depends}, {{ artifacts.deb.dependencies | join(', ') }}
+{% else -%}
+Depends: ${shlibs:Depends}, ${misc:Depends}
+{% endif -%}
+Description: {{ artifacts.deb.summary or description }}
+ {{ description }}

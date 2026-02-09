@@ -1,0 +1,9 @@
+{{ name | replace('_', '-') }} ({{ version }}-1) unstable; urgency=medium
+
+  * Automated build of {{ name | replace('_', '-') }} version {{ version }}
+  * Upstream release: {{ version }}
+{%- if upstream.type == 'github' %}
+  * Source: https://github.com/{{ upstream.repo }}
+{%- endif %}
+
+ -- Monitoring Hub <noreply@monitoring-hub.local>  {{ build_date }}
