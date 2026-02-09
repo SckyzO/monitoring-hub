@@ -31,6 +31,8 @@ jobs:
               python3 -m core.engine.builder --manifest "${exporter}manifest.yaml" --output-dir "build/$name"
             fi
           done
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v6

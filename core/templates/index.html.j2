@@ -535,7 +535,7 @@
                             <h4 class="text-[10px] font-black text-zinc-400 uppercase tracking-widest italic text-left">03 / Direct Binary Download</h4>
                             <div class="grid grid-cols-1 gap-2 text-left">
                                 <template x-for="dist in (selectedItem?.artifacts?.rpm?.targets || [])"><div class="flex items-center justify-between p-4 rounded-xl border text-left transition-all" :class="theme === 'light' ? 'bg-zinc-50 border-zinc-200 shadow-sm' : 'bg-zinc-800/30 border-white/5'"><span class="text-[11px] font-black text-zinc-500 uppercase tracking-widest" x-text="dist"></span><div class="flex gap-2"><template x-for="arch in ['x86_64', 'aarch64']">
-                                        <a :href="getStatus(selectedItem, dist, arch) === 'success' ? `${dist}/${arch}/${selectedItem.name}-${selectedItem.version}-1.${dist}.${arch}.rpm` : 'javascript:void(0)'"
+                                        <a :href="getStatus(selectedItem, dist, arch) === 'success' ? getPath(selectedItem, dist, arch) : 'javascript:void(0)'"
                                            @mouseenter="showTip($event, getStatusTip(selectedItem, dist, arch))"
                                            @mouseleave="hideTip()"
                                            :class="getStatusClass(selectedItem, dist, arch)"
@@ -1021,6 +1021,9 @@
                 hideTip() { this.tooltip.visible = false; },
                 getStatus(item, dist, arch) {
                     try { return item.availability[dist][arch].status; } catch(e) { return 'na'; }
+                },
+                getPath(item, dist, arch) {
+                    try { return item.availability[dist][arch].path; } catch(e) { return '#'; }
                 },
                 getStatusClass(item, dist, arch) {
                     const status = this.getStatus(item, dist, arch);
