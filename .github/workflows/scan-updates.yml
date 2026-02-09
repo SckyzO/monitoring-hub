@@ -23,6 +23,7 @@ jobs:
         run: pip install -r core/requirements.txt
 
       - name: Run Watcher
+        id: watcher
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PYTHONPATH: ${{ github.workspace }}
@@ -33,8 +34,8 @@ jobs:
         uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ secrets.GH_PAT }}
-          commit-message: "chore: update exporters versions"
-          title: "chore: update exporters versions"
+          commit-message: "chore: update exporters versions - ${{ steps.watcher.outputs.updated_names }}"
+          title: "chore: update exporters versions - ${{ steps.watcher.outputs.updated_names }}"
           body: |
             This PR updates exporter versions detected by the Watcher.
             - Automated update via `core/watcher.py`
