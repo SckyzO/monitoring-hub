@@ -6,7 +6,7 @@ import tarfile
 import click
 import requests
 import yaml
-from jinja2 import Environment, FileSystemLoader, select_autoescape
+from jinja2 import Environment, FileSystemLoader, select_autoescape, TemplateNotFound
 from marshmallow import ValidationError
 from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_exponential
 
@@ -114,7 +114,7 @@ def download_and_extract(data, output_dir, arch):
 
                     if member_to_extract:
                         # Flatten: we extract everything to the root of output_dir
-                        tar.extract(member_to_extract, path=output_dir)
+                        tar.extract(member_to_extract, path=output_dir, filter='data')
                         extracted_path = os.path.join(output_dir, member_to_extract.name)
                         final_path = os.path.join(output_dir, b_name)
 
