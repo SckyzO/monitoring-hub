@@ -1,0 +1,380 @@
+name: Release V2 (GitHub Releases)
+
+on:
+  workflow_dispatch:
+    inputs:
+      exporter:
+        description: 'Exporter to build (for testing)'
+        required: true
+        default: 'node_exporter'
+        type: string
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+# Ensure only one release at a time
+concurrency:
+  group: release-v2
+  cancel-in-progress: false
+
+jobs:
+  # 1. Build RPM and upload to GitHub Releases
+  build-rpm:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Required for creating releases
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [amd64]  # Start with amd64 only for testing
+        dist: [el9]     # Start with el9 only for testing
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements/base.txt
+
+      - name: Build RPM
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: |
+          exporter="${{ inputs.exporter }}"
+          arch="${{ matrix.arch }}"
+          dist="${{ matrix.dist }}"
+
+          echo "Building RPM for $exporter ($arch) on $dist..."
+
+          case $dist in
+            el8) image="almalinux:8" ;;
+            el9) image="almalinux:9" ;;
+            el10) image="quay.io/centos/centos:stream10" ;;
+          esac
+
+          build_dir="build/$exporter-$arch-$dist"
+          python3 -m core.engine.builder --manifest "exporters/$exporter/manifest.yaml" --output-dir "$build_dir" --arch "$arch"
+
+          spec_file="$build_dir/$exporter.spec"
+          if [ -f "$spec_file" ]; then
+            chmod +x core/scripts/build_rpm.sh core/scripts/rpm_entrypoint.sh
+            ./core/scripts/build_rpm.sh "$spec_file" "$build_dir/rpms" "$arch" "$image"
+          fi
+
+      - name: Sign RPM
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+          GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
+        run: |
+          exporter="${{ inputs.exporter }}"
+          arch="${{ matrix.arch }}"
+          dist="${{ matrix.dist }}"
+
+          build_dir="build/$exporter-$arch-$dist"
+          rpm_file=$(find "$build_dir/rpms" -name "*.rpm" | head -1)
+
+          if [ -z "$rpm_file" ]; then
+            echo "No RPM file found, skipping signing"
+            exit 0
+          fi
+
+          echo "Signing RPM: $rpm_file"
+          chmod +x core/scripts/sign_rpm_container.sh
+          ./core/scripts/sign_rpm_container.sh "$rpm_file"
+
+      - name: Get Version
+        id: version
+        run: |
+          exporter="${{ inputs.exporter }}"
+          version=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(m['version'].lstrip('v'))")
+          echo "version=$version" >> $GITHUB_OUTPUT
+
+      - name: Upload to GitHub Releases
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          exporter="${{ inputs.exporter }}"
+          arch="${{ matrix.arch }}"
+          dist="${{ matrix.dist }}"
+          version="${{ steps.version.outputs.version }}"
+          build_dir="build/$exporter-$arch-$dist"
+
+          rpm_files=$(find "$build_dir/rpms" -name "*.rpm")
+          if [ -z "$rpm_files" ]; then
+            echo "No RPM files to upload"
+            exit 0
+          fi
+
+          # Upload to GitHub Releases
+          python3 core/scripts/upload_to_release.py \
+            --repo ${{ github.repository }} \
+            --exporter "$exporter" \
+            --version "$version" \
+            --files $rpm_files \
+            --output "$build_dir/release_urls.json"
+
+      - name: Upload Release URLs Artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: release-urls-rpm-${{ inputs.exporter }}-${{ matrix.arch }}-${{ matrix.dist }}
+          path: build/**/release_urls.json
+          if-no-files-found: ignore
+          retention-days: 7
+
+  # 2. Build DEB and upload to GitHub Releases
+  build-deb:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Required for creating releases
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [amd64]  # Start with amd64 only for testing
+        dist: [ubuntu-22.04]  # Start with one distro for testing
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements/base.txt
+
+      - name: Build DEB
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: |
+          exporter="${{ inputs.exporter }}"
+          arch="${{ matrix.arch }}"
+          dist="${{ matrix.dist }}"
+
+          echo "Building DEB for $exporter ($arch) on $dist..."
+
+          case $dist in
+            ubuntu-22.04) image="ubuntu:22.04" ;;
+            ubuntu-24.04) image="ubuntu:24.04" ;;
+            debian-12) image="debian:12" ;;
+            debian-13) image="debian:trixie" ;;
+          esac
+
+          build_dir="build/$exporter-$dist-$arch"
+          python3 -m core.engine.builder --manifest "exporters/$exporter/manifest.yaml" --output-dir "$build_dir" --arch "$arch"
+
+          chmod +x core/scripts/build_deb.sh core/scripts/deb_entrypoint.sh
+          ./core/scripts/build_deb.sh "$build_dir" "$build_dir/debs" "$arch" "$image"
+
+      - name: Sign DEB
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+          GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
+        run: |
+          exporter="${{ inputs.exporter }}"
+          arch="${{ matrix.arch }}"
+          dist="${{ matrix.dist }}"
+
+          build_dir="build/$exporter-$dist-$arch"
+          deb_file=$(find "$build_dir/debs" -name "*.deb" | head -1)
+
+          if [ -z "$deb_file" ]; then
+            echo "No DEB file found, skipping signing"
+            exit 0
+          fi
+
+          echo "Signing DEB: $deb_file"
+          chmod +x core/scripts/sign_deb_container.sh
+          ./core/scripts/sign_deb_container.sh "$deb_file" "$dist"
+
+      - name: Get Version
+        id: version
+        run: |
+          exporter="${{ inputs.exporter }}"
+          version=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(m['version'].lstrip('v'))")
+          echo "version=$version" >> $GITHUB_OUTPUT
+
+      - name: Upload to GitHub Releases
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          exporter="${{ inputs.exporter }}"
+          arch="${{ matrix.arch }}"
+          dist="${{ matrix.dist }}"
+          version="${{ steps.version.outputs.version }}"
+          build_dir="build/$exporter-$dist-$arch"
+
+          deb_files=$(find "$build_dir/debs" -name "*.deb")
+          if [ -z "$deb_files" ]; then
+            echo "No DEB files to upload"
+            exit 0
+          fi
+
+          # Upload to GitHub Releases
+          python3 core/scripts/upload_to_release.py \
+            --repo ${{ github.repository }} \
+            --exporter "$exporter" \
+            --version "$version" \
+            --files $deb_files \
+            --output "$build_dir/release_urls.json"
+
+      - name: Upload Release URLs Artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: release-urls-deb-${{ inputs.exporter }}-${{ matrix.arch }}-${{ matrix.dist }}
+          path: build/**/release_urls.json
+          if-no-files-found: ignore
+          retention-days: 7
+
+  # 3. Generate YUM Metadata (pointing to GitHub Releases)
+  publish-yum-metadata:
+    needs: [build-rpm]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Download Release URLs
+        uses: actions/download-artifact@v6
+        with:
+          pattern: release-urls-rpm-*
+          path: release-urls/
+          merge-multiple: true
+
+      - name: Checkout gh-pages
+        run: |
+          git fetch origin gh-pages
+          git worktree add -B gh-pages gh-pages-dist origin/gh-pages
+
+      - name: Generate YUM Metadata
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+          GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
+        run: |
+          # Generate metadata for each dist/arch combination
+          for dist in el9; do
+            for arch in x86_64; do
+              echo "Generating YUM metadata for $dist/$arch..."
+
+              python3 core/scripts/generate_yum_metadata.py \
+                --release-urls-dir release-urls/ \
+                --output-dir gh-pages-dist \
+                --dist "$dist" \
+                --arch "$arch"
+
+              # Sign repomd.xml with GPG
+              repomd_file="gh-pages-dist/$dist/$arch/repodata/repomd.xml"
+              if [ -f "$repomd_file" ]; then
+                echo "Signing repomd.xml for $dist/$arch..."
+                echo "$GPG_PRIVATE_KEY" | base64 -d | gpg --batch --import
+                gpg --batch --passphrase "$GPG_PASSPHRASE" \
+                    --detach-sign --armor "$repomd_file"
+              fi
+            done
+          done
+
+          # Publish GPG public key for RPM repos
+          if [ -n "${{ secrets.GPG_PUBLIC_KEY }}" ]; then
+            echo "${{ secrets.GPG_PUBLIC_KEY }}" | base64 -d > gh-pages-dist/RPM-GPG-KEY-monitoring-hub
+          fi
+
+      - name: Deploy to gh-pages
+        run: |
+          cd gh-pages-dist
+          git config user.name "Monitoring Hub Bot"
+          git config user.email "bot@monitoring-hub.local"
+          git add .
+
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "chore: update YUM metadata [skip ci]"
+            git push origin gh-pages
+          fi
+
+  # 4. Generate APT Metadata (pointing to GitHub Releases)
+  publish-apt-metadata:
+    needs: [build-deb]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements/base.txt
+
+      - name: Download Release URLs
+        uses: actions/download-artifact@v6
+        with:
+          pattern: release-urls-deb-*
+          path: release-urls/
+          merge-multiple: true
+
+      - name: Checkout gh-pages
+        run: |
+          git fetch origin gh-pages
+          git worktree add -B gh-pages gh-pages-dist origin/gh-pages
+
+      - name: Generate APT Metadata
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+          GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
+        run: |
+          # Generate metadata for each dist/arch combination
+          for dist in ubuntu-22.04; do
+            for arch in amd64; do
+              echo "Generating APT metadata for $dist/$arch..."
+
+              python3 core/scripts/generate_apt_metadata.py \
+                --release-urls-dir release-urls/ \
+                --output-dir gh-pages-dist/apt \
+                --dist "$dist" \
+                --arch "$arch"
+            done
+          done
+
+          # Import GPG key and sign Release files
+          echo "$GPG_PRIVATE_KEY" | base64 -d | gpg --batch --import
+
+          # Sign Release files for each distribution
+          for release_file in gh-pages-dist/apt/dists/*/Release; do
+            if [ -f "$release_file" ]; then
+              codename=$(basename $(dirname "$release_file"))
+              echo "Signing Release file for $codename..."
+
+              # Create InRelease (signed Release file)
+              gpg --batch --passphrase "$GPG_PASSPHRASE" \
+                  --clearsign --output "${release_file%.Release}/InRelease" "$release_file"
+
+              # Create Release.gpg (detached signature)
+              gpg --batch --passphrase "$GPG_PASSPHRASE" \
+                  --detach-sign --armor --output "$release_file.gpg" "$release_file"
+            fi
+          done
+
+          # Publish GPG public key for APT repos
+          if [ -n "${{ secrets.GPG_PUBLIC_KEY }}" ]; then
+            echo "${{ secrets.GPG_PUBLIC_KEY }}" | base64 -d > gh-pages-dist/apt/monitoring-hub.asc
+          fi
+
+      - name: Deploy to gh-pages
+        run: |
+          cd gh-pages-dist
+          git config user.name "Monitoring Hub Bot"
+          git config user.email "bot@monitoring-hub.local"
+          git add .
+
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "chore: update APT metadata [skip ci]"
+            git push origin gh-pages
+          fi

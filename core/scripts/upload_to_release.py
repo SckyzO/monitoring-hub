@@ -1,0 +1,164 @@
+#!/usr/bin/env python3
+"""
+Upload binaries to GitHub Releases.
+
+This script uploads RPM/DEB packages to GitHub Releases and returns
+the download URLs for use in YUM/APT repository metadata.
+"""
+
+import argparse
+import json
+import os
+import sys
+from pathlib import Path
+from typing import Dict, List
+
+import requests
+
+
+def get_release_tag(version: str) -> str:
+    """Generate release tag from version."""
+    if not version.startswith("v"):
+        return f"v{version}"
+    return version
+
+
+def get_or_create_release(
+    repo: str, tag: str, token: str, exporter_name: str
+) -> Dict:
+    """Get existing release or create new one."""
+    headers = {
+        "Authorization": f"token {token}",
+        "Accept": "application/vnd.github.v3+json",
+    }
+
+    # Check if release exists
+    url = f"https://api.github.com/repos/{repo}/releases/tags/{tag}"
+    response = requests.get(url, headers=headers, timeout=30)
+
+    if response.status_code == 200:
+        print(f"Release {tag} already exists")
+        return response.json()
+
+    # Create new release
+    create_url = f"https://api.github.com/repos/{repo}/releases"
+    data = {
+        "tag_name": tag,
+        "name": f"{exporter_name} {tag}",
+        "body": f"Release of {exporter_name} version {tag}\n\n"
+        f"Automated build from Monitoring Hub.",
+        "draft": False,
+        "prerelease": False,
+    }
+
+    response = requests.post(create_url, headers=headers, json=data, timeout=30)
+    response.raise_for_status()
+    print(f"Created release {tag}")
+    return response.json()
+
+
+def upload_asset(
+    release: Dict, file_path: Path, token: str, repo: str
+) -> Dict:
+    """Upload asset to release and return download URL."""
+    headers = {
+        "Authorization": f"token {token}",
+        "Content-Type": "application/octet-stream",
+    }
+
+    # Get upload URL
+    upload_url = release["upload_url"].replace("{?name,label}", "")
+    file_name = file_path.name
+
+    # Check if asset already exists
+    for asset in release.get("assets", []):
+        if asset["name"] == file_name:
+            print(f"Asset {file_name} already exists, deleting...")
+            delete_url = f"https://api.github.com/repos/{repo}/releases/assets/{asset['id']}"
+            requests.delete(
+                delete_url,
+                headers={"Authorization": f"token {token}"},
+                timeout=30,
+            )
+
+    # Upload asset
+    with open(file_path, "rb") as f:
+        params = {"name": file_name}
+        response = requests.post(
+            upload_url, headers=headers, params=params, data=f, timeout=300
+        )
+        response.raise_for_status()
+
+    asset_data = response.json()
+    print(f"Uploaded {file_name} -> {asset_data['browser_download_url']}")
+    return asset_data
+
+
+def main():
+    parser = argparse.ArgumentParser(
+        description="Upload binaries to GitHub Releases"
+    )
+    parser.add_argument("--repo", required=True, help="GitHub repo (owner/name)")
+    parser.add_argument("--exporter", required=True, help="Exporter name")
+    parser.add_argument("--version", required=True, help="Version number")
+    parser.add_argument(
+        "--files", required=True, nargs="+", help="Files to upload"
+    )
+    parser.add_argument(
+        "--token",
+        default=os.getenv("GITHUB_TOKEN"),
+        help="GitHub token (or use GITHUB_TOKEN env)",
+    )
+    parser.add_argument(
+        "--output",
+        help="JSON file to write download URLs",
+        default="release_urls.json",
+    )
+
+    args = parser.parse_args()
+
+    if not args.token:
+        print("Error: GitHub token required (--token or GITHUB_TOKEN env)")
+        sys.exit(1)
+
+    # Generate release tag
+    tag = get_release_tag(args.version)
+
+    # Get or create release
+    release = get_or_create_release(args.repo, tag, args.token, args.exporter)
+
+    # Upload all files
+    urls: List[Dict[str, str]] = []
+    for file_path_str in args.files:
+        file_path = Path(file_path_str)
+        if not file_path.exists():
+            print(f"Warning: {file_path} does not exist, skipping")
+            continue
+
+        asset = upload_asset(release, file_path, args.token, args.repo)
+        urls.append(
+            {
+                "file": file_path.name,
+                "url": asset["browser_download_url"],
+                "size": asset["size"],
+            }
+        )
+
+    # Write URLs to output file
+    output_data = {
+        "exporter": args.exporter,
+        "version": args.version,
+        "tag": tag,
+        "release_url": release["html_url"],
+        "assets": urls,
+    }
+
+    with open(args.output, "w") as f:
+        json.dump(output_data, f, indent=2)
+
+    print(f"\nUpload complete! URLs written to {args.output}")
+    print(f"Release: {release['html_url']}")
+
+
+if __name__ == "__main__":
+    main()
