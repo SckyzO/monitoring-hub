@@ -304,6 +304,95 @@ def get_upstream_license(repo_slug):
     return None
 
 
+def render_deb_templates(data, output_dir, arch, env, manifest_dir):
+    """
+    Generate the debian/ directory with all required DEB packaging files:
+    - control (package metadata)
+    - rules (build rules)
+    - changelog (version history)
+    - compat (debhelper compatibility level)
+    - <name>.service (systemd unit if enabled)
+    """
+    from datetime import datetime
+
+    debian_dir = os.path.join(output_dir, "debian")
+    os.makedirs(debian_dir, exist_ok=True)
+    click.echo(f"Creating debian/ directory at {debian_dir}")
+
+    # Add build date for changelog (RFC 2822 format required by Debian)
+    from datetime import timezone
+
+    dt = datetime.now(timezone.utc)
+    data["build_date"] = dt.strftime("%a, %d %b %Y %H:%M:%S %z")
+
+    # Add binary_name to root level for easier access in templates
+    data["binary_name"] = data.get("build", {}).get("binary_name", data["name"])
+
+    # 1. Generate debian/control
+    template = env.get_template("debian_control.j2")
+    control_content = template.render(data)
+    with open(os.path.join(debian_dir, "control"), "w") as f:
+        f.write(control_content)
+    click.echo("  Created debian/control")
+
+    # 2. Generate debian/rules
+    template = env.get_template("debian_rules.j2")
+    rules_content = template.render(data)
+    rules_path = os.path.join(debian_dir, "rules")
+    with open(rules_path, "w") as f:
+        f.write(rules_content)
+    os.chmod(rules_path, 0o755)  # nosec B103 - debian/rules must be executable
+    click.echo("  Created debian/rules")
+
+    # 3. Generate debian/changelog
+    template = env.get_template("debian_changelog.j2")
+    changelog_content = template.render(data)
+    with open(os.path.join(debian_dir, "changelog"), "w") as f:
+        f.write(changelog_content)
+    click.echo("  Created debian/changelog")
+
+    # 4. Create debian/compat (debhelper compatibility level)
+    with open(os.path.join(debian_dir, "compat"), "w") as f:
+        f.write("10\n")
+    click.echo("  Created debian/compat")
+
+    # 5. Generate systemd service if enabled
+    if data.get("artifacts", {}).get("deb", {}).get("systemd", {}).get("enabled"):
+        template = env.get_template("debian_service.j2")
+        service_content = template.render(data)
+        # Debian package names use dashes instead of underscores
+        deb_name = data["name"].replace("_", "-")
+        service_file = os.path.join(debian_dir, f"{deb_name}.service")
+        with open(service_file, "w") as f:
+            f.write(service_content)
+        click.echo(f"  Created debian/{deb_name}.service")
+
+    # 6. Handle extra files (copy to debian/ for rules to reference)
+    artifacts = data.get("artifacts", {})
+    deb_config = artifacts.get("deb", {})
+    for extra_file in deb_config.get("extra_files", []):
+        source_path = extra_file["source"]
+        local_src = os.path.join(manifest_dir, source_path)
+        downloaded_src = os.path.join(output_dir, source_path)
+
+        dst_name = os.path.basename(source_path)
+        dst_path = os.path.join(output_dir, dst_name)
+
+        if os.path.exists(local_src):
+            shutil.copy(local_src, dst_path)
+            click.echo(f"  Copied extra file: {dst_name}")
+        elif os.path.exists(downloaded_src):
+            if downloaded_src != dst_path:
+                shutil.copy(downloaded_src, dst_path)
+                click.echo(f"  Copied extra file: {dst_name}")
+        else:
+            click.echo(f"  Warning: Extra file {source_path} not found")
+
+        extra_file["build_source"] = dst_name
+
+    click.echo("✓ DEB packaging files generated successfully")
+
+
 @click.command()
 @click.option("--manifest", "-m", help="Path to manifest", required=True)
 @click.option("--output-dir", "-o", help="Output directory", default="./build")
@@ -392,7 +481,12 @@ def build(manifest, output_dir, arch):
             with open(output_file, "w") as f:
                 f.write(output_content)
 
-        # 3. Build Dockerfile
+        # 3. Build DEB packaging files
+        if artifacts.get("deb", {}).get("enabled"):
+            click.echo("\nGenerating DEB packaging files...")
+            render_deb_templates(data, output_dir, arch, env, manifest_dir)
+
+        # 4. Build Dockerfile
         if artifacts.get("docker", {}).get("enabled"):
             try:
                 template = env.get_template(f"{data['name']}.Dockerfile.j2")

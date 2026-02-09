@@ -7,8 +7,10 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 
 from core.config.settings import (
     CORE_VERSION,
+    DEB_CODENAME_MAP,
     EXPORTERS_DIR,
     PORTAL_VERSION,
+    SUPPORTED_DEB_DISTROS,
     SUPPORTED_DISTROS,
     TEMPLATES_DIR,
 )
@@ -69,6 +71,40 @@ def generate(output, repo_dir):
                                 "path": None,
                             }
 
+                # DEB Availability Tracking
+                deb_targets = (
+                    data.get("artifacts", {}).get("deb", {}).get("targets", [])
+                )
+                data["deb_availability"] = {}
+
+                for dist in SUPPORTED_DEB_DISTROS:
+                    codename = DEB_CODENAME_MAP.get(dist, dist)
+                    data["deb_availability"][dist] = {}
+                    for arch in ["amd64", "arm64"]:
+                        # Search for DEBs in apt/pool/main/
+                        pattern = os.path.join(
+                            repo_dir,
+                            "apt/pool/main",
+                            f"{data['name']}_*_{arch}.deb",
+                        )
+                        found_files = glob.glob(pattern)
+
+                        if found_files:
+                            data["deb_availability"][dist][arch] = {
+                                "status": "success",
+                                "path": os.path.relpath(found_files[0], repo_dir),
+                            }
+                        elif dist in deb_targets:
+                            data["deb_availability"][dist][arch] = {
+                                "status": "failed",
+                                "path": None,
+                            }
+                        else:
+                            data["deb_availability"][dist][arch] = {
+                                "status": "na",
+                                "path": None,
+                            }
+
                 # Aggregate Build Statuses
                 rpm_enabled = (
                     data.get("artifacts", {}).get("rpm", {}).get("enabled", True)
@@ -90,6 +126,23 @@ def generate(output, repo_dir):
                     data["rpm_status"] = "failed" if failed_targets else "success"
                 else:
                     data["rpm_status"] = "na"
+
+                # DEB Status
+                deb_enabled = data.get("artifacts", {}).get("deb", {}).get("enabled", False)
+                if deb_enabled:
+                    targets = data.get("artifacts", {}).get("deb", {}).get("targets", [])
+                    failed_targets = [
+                        t
+                        for t in targets
+                        if not any(
+                            data["deb_availability"].get(t, {}).get(a, {}).get("status")
+                            == "success"
+                            for a in ["amd64", "arm64"]
+                        )
+                    ]
+                    data["deb_status"] = "failed" if failed_targets else "success"
+                else:
+                    data["deb_status"] = "na"
 
                 data["docker_status"] = (
                     "success"

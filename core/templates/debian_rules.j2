@@ -1,0 +1,43 @@
+#!/usr/bin/make -f
+# Debian rules file for {{ name }}
+
+%:
+	dh $@
+
+override_dh_auto_build:
+	# No build step needed - binary is pre-compiled
+
+override_dh_auto_install:
+	# Install main binary
+	install -D -m 0755 {{ binary_name }} debian/{{ name | replace('_', '-') }}/usr/bin/{{ binary_name }}
+{% if build.get('extra_binaries') %}
+{% for extra_bin in build.extra_binaries %}
+	install -D -m 0755 {{ extra_bin }} debian/{{ name | replace('_', '-') }}/usr/bin/{{ extra_bin }}
+{% endfor %}
+{% endif %}
+
+{% if artifacts.deb.get('extra_files') %}
+	# Install extra files
+{% for file_item in artifacts.deb.extra_files %}
+	install -D -m {{ file_item.mode or '0644' }} {{ file_item.src }} debian/{{ name | replace('_', '-') }}{{ file_item.dest }}
+{% endfor %}
+{% endif %}
+
+{% if artifacts.deb.get('directories') %}
+	# Create directories
+{% for dir_item in artifacts.deb.directories %}
+	install -d -m {{ dir_item.mode or '0755' }} debian/{{ name | replace('_', '-') }}{{ dir_item.path }}
+{% endfor %}
+{% endif %}
+
+override_dh_auto_clean:
+	# Nothing to clean
+
+override_dh_strip:
+	# Skip stripping - binaries are already optimized
+
+override_dh_shlibdeps:
+	dh_shlibdeps --dpkg-shlibdeps-params=--ignore-missing-info
+
+override_dh_builddeb:
+	dh_builddeb -- -Zgzip
