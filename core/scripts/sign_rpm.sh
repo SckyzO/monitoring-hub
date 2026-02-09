@@ -91,7 +91,10 @@ rpmsign --addsign "$RPM_FILE"
 
 # Import public key to RPM keyring for verification
 echo "Importing public key to RPM database for verification..."
-gpg --export --armor "$FINGERPRINT" | rpm --import
+PUBLIC_KEY_FILE=$(mktemp)
+gpg --export --armor "$FINGERPRINT" > "$PUBLIC_KEY_FILE"
+rpm --import "$PUBLIC_KEY_FILE"
+rm -f "$PUBLIC_KEY_FILE"
 
 # Verify the signature
 echo "Verifying signature..."
