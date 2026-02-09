@@ -148,11 +148,9 @@ pre-commit: ## Run pre-commit hooks locally
 # Cleanup
 # ==============================================================================
 
-clean: ## Clean up generated files and caches
-	rm -rf .pytest_cache htmlcov .coverage coverage.xml .mypy_cache .ruff_cache
-	rm -f catalog.json index.html
-	find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
-	find . -type f -name "*.pyc" -delete
+clean: ## Clean up generated files and caches (uses Docker to avoid permission issues)
+	@./devctl clean
 
-clean-all: clean ## Deep clean including site, build and venv
-	sudo rm -rf site/ build/ dist/ $(VENV)
+clean-all: ## Deep clean including site, build, dist, and venv
+	@./devctl clean
+	@sudo rm -rf site/ dist/ $(VENV)
