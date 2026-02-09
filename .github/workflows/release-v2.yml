@@ -83,7 +83,7 @@ jobs:
 
           echo "Signing RPM: $rpm_file"
           chmod +x core/scripts/sign_rpm_container.sh
-          ./core/scripts/sign_rpm_container.sh "$rpm_file"
+          ./core/scripts/sign_rpm_container.sh "$rpm_file" "$GPG_PRIVATE_KEY" "$GPG_PASSPHRASE" "$GPG_KEY_ID"
 
       - name: Get Version
         id: version
@@ -186,7 +186,7 @@ jobs:
 
           echo "Signing DEB: $deb_file"
           chmod +x core/scripts/sign_deb_container.sh
-          ./core/scripts/sign_deb_container.sh "$deb_file" "$dist"
+          ./core/scripts/sign_deb_container.sh "$deb_file" "$GPG_PRIVATE_KEY" "$GPG_PASSPHRASE" "$GPG_KEY_ID" "$dist"
 
       - name: Get Version
         id: version
