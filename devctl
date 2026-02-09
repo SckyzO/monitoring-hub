@@ -242,7 +242,7 @@ cmd_generate_portal() {
 cmd_docs_build() {
     ensure_image
     info "Building MkDocs documentation..."
-    $DOCKER_RUN "$DEV_IMAGE" mkdocs build
+    $DOCKER_RUN "$DEV_IMAGE" mkdocs build -f config/docs/mkdocs.yml
     success "Documentation built: site/"
 }
 
@@ -250,7 +250,7 @@ cmd_docs_serve() {
     ensure_image
     info "Serving documentation at http://localhost:8000"
     info "Press Ctrl+C to stop..."
-    $DOCKER_RUN_IT -p 8000:8000 "$DEV_IMAGE" mkdocs serve -a 0.0.0.0:8000
+    $DOCKER_RUN_IT -p 8000:8000 "$DEV_IMAGE" mkdocs serve -a 0.0.0.0:8000 -f config/docs/mkdocs.yml
 }
 
 cmd_validate_site() {

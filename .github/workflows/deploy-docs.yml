@@ -5,7 +5,7 @@ on:
     branches: [main]
     paths:
       - 'docs/**'
-      - 'mkdocs.yml'
+      - 'config/docs/mkdocs.yml'
       - 'requirements/docs.txt'
       - '.github/workflows/deploy-docs.yml'
   workflow_dispatch:
@@ -35,7 +35,7 @@ jobs:
 
       - name: Build MkDocs documentation
         run: |
-          mkdocs build --strict
+          mkdocs build --strict -f config/docs/mkdocs.yml
 
       - name: Checkout gh-pages branch
         run: |
