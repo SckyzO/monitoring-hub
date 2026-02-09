@@ -175,6 +175,31 @@ credentials.json
 
 ## Security Testing
 
+### Automated CI Security Scanning
+
+The `security.yml` workflow runs on every pull request and push to main:
+
+**Bandit (Python Security Scanner)**
+- Scans Python code for common security issues
+- Checks for SQL injection, hardcoded passwords, insecure functions
+- Reports findings as GitHub annotations
+
+**pip-audit (Dependency Vulnerability Scanner)**
+- Scans Python dependencies for known CVEs
+- Checks against the OSV vulnerability database
+- Fails CI on high/critical vulnerabilities
+
+**Trivy (Container Security Scanner)**
+- Scans container images for vulnerabilities
+- Uploads SARIF reports to GitHub Security tab
+- Requires `security-events: write` permission
+- Integrates with GitHub Advanced Security
+
+View security findings:
+- Go to the **Security** tab in GitHub
+- Click **Code scanning alerts**
+- Review Trivy vulnerability reports
+
 ### Pre-Commit Checks
 
 Install pre-commit hooks:
@@ -199,6 +224,9 @@ pip-audit -r core/requirements.txt
 
 # Scan code for secrets
 gitleaks detect --no-git
+
+# Scan container image with Trivy
+trivy image --severity HIGH,CRITICAL monitoring-hub/exporter:latest
 ```
 
 ## Reporting Security Issues

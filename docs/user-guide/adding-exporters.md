@@ -41,7 +41,17 @@ name: my_exporter
 description: Exports metrics for My Service
 category: Database
 version: v1.2.3
+# Optional: License will be auto-detected from GitHub if not specified
+# license: Apache-2.0
 ```
+
+**License Auto-Detection:**
+The builder automatically queries the GitHub API to detect the upstream project's license (SPDX format). If detection fails or the field is omitted, it defaults to `Apache-2.0`. Common values include:
+- `MIT`
+- `Apache-2.0`
+- `GPL-3.0`
+- `BSD-3-Clause`
+- `MPL-2.0`
 
 ### Upstream Configuration
 

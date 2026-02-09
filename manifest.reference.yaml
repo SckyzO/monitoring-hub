@@ -21,6 +21,12 @@ category: System                  # [OPTIONAL] Default: System.
 new: true                         # [OPTIONAL] Default: false. Shows a "New" badge on the portal.
 updated: false                    # [OPTIONAL] Default: false. Shows an "Updated" badge on the portal.
 
+# --- License Information ------------------------------------------------------
+license: null                     # [OPTIONAL] SPDX license identifier (e.g., 'MIT', 'Apache-2.0', 'GPL-3.0')
+                                  # If not specified, the builder will automatically detect it from GitHub API
+                                  # for 'github' type upstreams. Falls back to 'Apache-2.0' if detection fails.
+                                  # Example values: MIT, Apache-2.0, BSD-3-Clause, GPL-3.0, MPL-2.0
+
 # --- Upstream Source ----------------------------------------------------------
 upstream:
   type: github                    # [REQUIRED] Supported values: 'github' or 'local'
