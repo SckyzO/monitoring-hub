@@ -81,9 +81,14 @@ jobs:
             exit 0
           fi
 
-          echo "Signing RPM: $rpm_file"
-          chmod +x core/scripts/sign_rpm_container.sh
-          ./core/scripts/sign_rpm_container.sh "$rpm_file" "$GPG_PRIVATE_KEY" "$GPG_PASSPHRASE" "$GPG_KEY_ID"
+          # TODO: Fix RPM signing issue (currently skipped)
+          echo "⚠️  RPM signing temporarily disabled - uploading unsigned package"
+          echo "RPM file: $rpm_file"
+
+          # Uncomment when GPG signing is fixed:
+          # echo "Signing RPM: $rpm_file"
+          # chmod +x core/scripts/sign_rpm_container.sh
+          # ./core/scripts/sign_rpm_container.sh "$rpm_file" "$GPG_PRIVATE_KEY" "$GPG_PASSPHRASE" "$GPG_KEY_ID"
 
       - name: Get Version
         id: version
