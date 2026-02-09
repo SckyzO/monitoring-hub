@@ -17,4 +17,4 @@ types-requests==2.32.0.20241016
 pre-commit==4.0.1
 
 # Retry logic
-tenacity==9.0.0
+tenacity==9.1.2

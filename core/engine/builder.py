@@ -6,7 +6,7 @@ import tarfile
 import click
 import requests
 import yaml
-from jinja2 import Environment, FileSystemLoader, select_autoescape, TemplateNotFound
+from jinja2 import Environment, FileSystemLoader, TemplateNotFound, select_autoescape
 from marshmallow import ValidationError
 from tenacity import retry, retry_if_exception_type, stop_after_attempt, wait_exponential
 
@@ -114,7 +114,7 @@ def download_and_extract(data, output_dir, arch):
 
                     if member_to_extract:
                         # Flatten: we extract everything to the root of output_dir
-                        tar.extract(member_to_extract, path=output_dir, filter='data')
+                        tar.extract(member_to_extract, path=output_dir, filter="data")
                         extracted_path = os.path.join(output_dir, member_to_extract.name)
                         final_path = os.path.join(output_dir, b_name)
 
@@ -284,7 +284,7 @@ def get_upstream_license(repo_slug):
         headers = {"Accept": "application/vnd.github.v3+json"}
         if token:
             headers["Authorization"] = f"token {token}"
-            
+
         url = f"https://api.github.com/repos/{repo_slug}/license"
         r = requests.get(url, headers=headers, timeout=5)
         if r.status_code == 200:
@@ -313,8 +313,12 @@ def build(manifest, output_dir, arch):
             if data["upstream"]["type"] == "github":
                 click.echo(f"Detecting license for {data['upstream']['repo']}...")
                 detected_license = get_upstream_license(data["upstream"]["repo"])
-            
-            data["license"] = detected_license if detected_license and detected_license != "NOASSERTION" else "Apache-2.0"
+
+            data["license"] = (
+                detected_license
+                if detected_license and detected_license != "NOASSERTION"
+                else "Apache-2.0"
+            )
             click.echo(f"License set to: {data['license']}")
 
         # Setup Jinja2 with Override Logic
