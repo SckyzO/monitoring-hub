@@ -1,0 +1,342 @@
+#!/usr/bin/env bash
+# ==============================================================================
+# Monitoring Hub - Docker-First Development CLI
+# ==============================================================================
+# This script provides a unified interface for all development tasks using Docker.
+# No local Python installation required - everything runs in containers.
+#
+# Usage: ./devctl <command> [args...]
+# ==============================================================================
+
+set -euo pipefail
+
+# --- Configuration ---
+DEV_IMAGE="monitoring-hub-dev:latest"
+WORKSPACE="/workspace"
+DOCKER_RUN="docker run --rm -v $(pwd):${WORKSPACE} -w ${WORKSPACE}"
+DOCKER_RUN_IT="docker run -it --rm -v $(pwd):${WORKSPACE} -w ${WORKSPACE}"
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+# --- Helper Functions ---
+info() {
+    echo -e "${BLUE}ℹ ${NC}$1"
+}
+
+success() {
+    echo -e "${GREEN}✓${NC} $1"
+}
+
+error() {
+    echo -e "${RED}✗${NC} $1" >&2
+}
+
+warning() {
+    echo -e "${YELLOW}⚠${NC} $1"
+}
+
+check_docker() {
+    if ! command -v docker &> /dev/null; then
+        error "Docker is not installed or not in PATH"
+        exit 1
+    fi
+}
+
+ensure_image() {
+    if ! docker image inspect "$DEV_IMAGE" &> /dev/null; then
+        warning "Development image not found. Building..."
+        docker build -t "$DEV_IMAGE" -f Dockerfile.dev .
+        success "Development image built successfully"
+    fi
+}
+
+show_help() {
+    cat << 'EOF'
+Monitoring Hub - Docker-First Development CLI
+
+USAGE:
+    ./devctl <command> [args...]
+
+SETUP COMMANDS:
+    build               Build the development Docker image
+    rebuild             Rebuild the development image from scratch
+    shell               Open an interactive bash shell in the container
+
+DEVELOPMENT COMMANDS:
+    test                Run all tests with pytest
+    test-cov            Run tests with coverage report
+    lint                Check code with ruff linter
+    lint-fix            Auto-fix linting issues
+    lint-css            Check CSS with stylelint
+    format              Format code with ruff
+    format-check        Check code formatting without changes
+    type-check          Run mypy type checking
+    ci                  Run all CI checks (lint, format, type-check, tests)
+
+EXPORTER COMMANDS:
+    create-exporter [name]     Create a new exporter interactively
+    build-exporter <name>      Build a specific exporter locally
+    test-exporter <name>       Test build an exporter (RPM + Docker)
+    list-exporters             List all available exporters
+
+PORTAL & DOCS COMMANDS:
+    generate-portal     Generate the web portal (index.html)
+    docs-build          Build MkDocs documentation
+    docs-serve          Serve docs with live reload at localhost:8000
+    validate-site       Validate generated portal
+
+STATE & VERSION COMMANDS:
+    state-manager       Run state manager to detect changes
+    watcher             Run version watcher to check for updates
+
+UTILITY COMMANDS:
+    python <cmd>        Run arbitrary Python command in container
+    bash <cmd>          Run arbitrary bash command in container
+    help                Show this help message
+
+EXAMPLES:
+    ./devctl build                            # Build dev image
+    ./devctl test                             # Run tests
+    ./devctl create-exporter                  # Create new exporter interactively
+    ./devctl build-exporter node_exporter     # Build specific exporter
+    ./devctl docs-serve                       # Serve docs at localhost:8000
+    ./devctl shell                            # Open interactive shell
+    ./devctl python -m core.engine.builder --help
+
+EOF
+}
+
+# --- Command Handlers ---
+cmd_build() {
+    info "Building development Docker image..."
+    docker build -t "$DEV_IMAGE" -f Dockerfile.dev .
+    success "Development image built successfully"
+}
+
+cmd_rebuild() {
+    info "Rebuilding development Docker image from scratch..."
+    docker build --no-cache -t "$DEV_IMAGE" -f Dockerfile.dev .
+    success "Development image rebuilt successfully"
+}
+
+cmd_shell() {
+    ensure_image
+    info "Opening interactive shell in development container..."
+    $DOCKER_RUN_IT "$DEV_IMAGE" /bin/bash
+}
+
+cmd_test() {
+    ensure_image
+    info "Running tests..."
+    $DOCKER_RUN "$DEV_IMAGE" pytest -v "$@"
+}
+
+cmd_test_cov() {
+    ensure_image
+    info "Running tests with coverage..."
+    $DOCKER_RUN "$DEV_IMAGE" pytest -v --cov=core --cov-report=term-missing --cov-report=html "$@"
+}
+
+cmd_lint() {
+    ensure_image
+    info "Running Python linter..."
+    $DOCKER_RUN "$DEV_IMAGE" ruff check .
+}
+
+cmd_lint_fix() {
+    ensure_image
+    info "Running linter with auto-fix..."
+    $DOCKER_RUN "$DEV_IMAGE" ruff check --fix .
+    success "Linting issues fixed"
+}
+
+cmd_lint_css() {
+    ensure_image
+    info "Running CSS linter..."
+    $DOCKER_RUN "$DEV_IMAGE" stylelint "**/*.css" "**/*.html.j2"
+}
+
+cmd_format() {
+    ensure_image
+    info "Formatting code..."
+    $DOCKER_RUN "$DEV_IMAGE" ruff format .
+    success "Code formatted"
+}
+
+cmd_format_check() {
+    ensure_image
+    info "Checking code formatting..."
+    $DOCKER_RUN "$DEV_IMAGE" ruff format --check .
+}
+
+cmd_type_check() {
+    ensure_image
+    info "Running type checker..."
+    $DOCKER_RUN "$DEV_IMAGE" mypy --explicit-package-bases core/
+}
+
+cmd_ci() {
+    ensure_image
+    info "Running all CI checks..."
+    $DOCKER_RUN "$DEV_IMAGE" /bin/bash -c "set -e && \
+        echo '==> Running linter...' && ruff check . && \
+        echo '==> Checking format...' && ruff format --check . && \
+        echo '==> Running type checker...' && mypy --explicit-package-bases core/ && \
+        echo '==> Running CSS linter...' && stylelint \"**/*.css\" \"**/*.html.j2\" && \
+        echo '==> Running tests...' && pytest -v"
+    success "All CI checks passed"
+}
+
+cmd_create_exporter() {
+    ensure_image
+    info "Creating new exporter..."
+    $DOCKER_RUN_IT "$DEV_IMAGE" python3 ./core/scripts/create_exporter.py "$@"
+}
+
+cmd_build_exporter() {
+    ensure_image
+    if [ $# -eq 0 ]; then
+        error "Usage: ./devctl build-exporter <exporter_name>"
+        exit 1
+    fi
+    local exporter_name="$1"
+    shift
+    info "Building exporter: $exporter_name"
+    $DOCKER_RUN "$DEV_IMAGE" python3 -m core.engine.builder \
+        --manifest "exporters/${exporter_name}/manifest.yaml" \
+        --output-dir "build/${exporter_name}" \
+        --arch amd64 \
+        "$@"
+    success "Exporter built: build/${exporter_name}"
+}
+
+cmd_test_exporter() {
+    ensure_image
+    if [ $# -eq 0 ]; then
+        error "Usage: ./devctl test-exporter <exporter_name> [--arch <amd64|arm64>] [--el8|--el9|--el10]"
+        exit 1
+    fi
+    info "Testing exporter: $1"
+    $DOCKER_RUN_IT "$DEV_IMAGE" ./core/scripts/local_test.sh "$@"
+}
+
+cmd_list_exporters() {
+    ensure_image
+    info "Available exporters:"
+    $DOCKER_RUN "$DEV_IMAGE" /bin/bash -c "ls -1 exporters/ | grep -v '^\.' | sort"
+}
+
+cmd_generate_portal() {
+    ensure_image
+    info "Generating web portal..."
+    $DOCKER_RUN "$DEV_IMAGE" python3 -m core.engine.site_generator
+    success "Portal generated: index.html"
+}
+
+cmd_docs_build() {
+    ensure_image
+    info "Building MkDocs documentation..."
+    $DOCKER_RUN "$DEV_IMAGE" mkdocs build
+    success "Documentation built: site/"
+}
+
+cmd_docs_serve() {
+    ensure_image
+    info "Serving documentation at http://localhost:8000"
+    info "Press Ctrl+C to stop..."
+    $DOCKER_RUN_IT -p 8000:8000 "$DEV_IMAGE" mkdocs serve -a 0.0.0.0:8000
+}
+
+cmd_validate_site() {
+    ensure_image
+    info "Validating generated portal..."
+    $DOCKER_RUN "$DEV_IMAGE" python3 ./core/scripts/validate_site.py
+}
+
+cmd_state_manager() {
+    ensure_image
+    info "Running state manager..."
+    $DOCKER_RUN "$DEV_IMAGE" python3 -m core.engine.state_manager "$@"
+}
+
+cmd_watcher() {
+    ensure_image
+    info "Running version watcher..."
+    $DOCKER_RUN "$DEV_IMAGE" python3 -m core.engine.watcher "$@"
+}
+
+cmd_python() {
+    ensure_image
+    $DOCKER_RUN_IT "$DEV_IMAGE" python3 "$@"
+}
+
+cmd_bash() {
+    ensure_image
+    $DOCKER_RUN_IT "$DEV_IMAGE" /bin/bash -c "$*"
+}
+
+# --- Main Command Router ---
+main() {
+    check_docker
+
+    if [ $# -eq 0 ]; then
+        show_help
+        exit 0
+    fi
+
+    local command="$1"
+    shift
+
+    case "$command" in
+        # Setup
+        build)          cmd_build "$@" ;;
+        rebuild)        cmd_rebuild "$@" ;;
+        shell)          cmd_shell "$@" ;;
+
+        # Development
+        test)           cmd_test "$@" ;;
+        test-cov)       cmd_test_cov "$@" ;;
+        lint)           cmd_lint "$@" ;;
+        lint-fix)       cmd_lint_fix "$@" ;;
+        lint-css)       cmd_lint_css "$@" ;;
+        format)         cmd_format "$@" ;;
+        format-check)   cmd_format_check "$@" ;;
+        type-check)     cmd_type_check "$@" ;;
+        ci)             cmd_ci "$@" ;;
+
+        # Exporters
+        create-exporter) cmd_create_exporter "$@" ;;
+        build-exporter)  cmd_build_exporter "$@" ;;
+        test-exporter)   cmd_test_exporter "$@" ;;
+        list-exporters)  cmd_list_exporters "$@" ;;
+
+        # Portal & Docs
+        generate-portal) cmd_generate_portal "$@" ;;
+        docs-build)      cmd_docs_build "$@" ;;
+        docs-serve)      cmd_docs_serve "$@" ;;
+        validate-site)   cmd_validate_site "$@" ;;
+
+        # State & Version
+        state-manager)   cmd_state_manager "$@" ;;
+        watcher)         cmd_watcher "$@" ;;
+
+        # Utilities
+        python)          cmd_python "$@" ;;
+        bash)            cmd_bash "$@" ;;
+        help|--help|-h)  show_help ;;
+
+        *)
+            error "Unknown command: $command"
+            echo ""
+            show_help
+            exit 1
+            ;;
+    esac
+}
+
+main "$@"

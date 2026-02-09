@@ -1,4 +1,17 @@
-.PHONY: help install test test-cov lint lint-fix format format-check type-check pre-commit clean docker-build docker-lint docker-lint-fix docker-format docker-type-check docker-test docker-ci docker-shell
+.PHONY: help install test test-cov lint lint-fix format format-check type-check pre-commit clean clean-all
+.PHONY: build rebuild shell ci docs-serve docs-build generate-portal
+.PHONY: create-exporter build-exporter test-exporter list-exporters
+.PHONY: local-test local-lint local-format local-type-check
+
+# ==============================================================================
+# Monitoring Hub - Unified Makefile
+# ==============================================================================
+# This Makefile provides a convenient interface to the Docker-first workflow.
+# Most commands delegate to ./devctl which runs everything in containers.
+#
+# Docker-First (Recommended):  make test, make lint, make format
+# Local Python (Advanced):     make local-test, make local-lint, make local-format
+# ==============================================================================
 
 # --- Variables ---
 PYTHON   := python3
@@ -10,46 +23,132 @@ RUFF     := $(shell [ -f $(VENV_BIN)/ruff ] && echo $(VENV_BIN)/ruff || echo ruf
 PYTEST   := $(shell [ -f $(VENV_BIN)/pytest ] && echo PYTHONPATH=$(shell pwd) $(VENV_BIN)/pytest || echo PYTHONPATH=$(shell pwd) pytest)
 MYPY     := $(shell [ -f $(VENV_BIN)/mypy ] && echo MYPYPATH=$(shell pwd) $(VENV_BIN)/mypy || echo mypy)
 
-# Docker Variables
-DEV_IMAGE  := monitoring-hub-dev
-DOCKER_RUN := docker run --rm -v $(shell pwd):/workspace $(DEV_IMAGE)
-
 # --- Help ---
 help: ## Show this help message
-	@echo "Available commands:"
+	@echo "Monitoring Hub - Makefile Commands"
+	@echo ""
+	@echo "RECOMMENDED: Use ./devctl for Docker-first workflow"
+	@echo "  ./devctl help          Show all available commands"
+	@echo "  ./devctl build         Build development image"
+	@echo "  ./devctl test          Run tests in container"
+	@echo "  ./devctl shell         Open interactive shell"
+	@echo ""
+	@echo "Available Make commands (delegates to ./devctl):"
+	@echo ""
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-20s\033[0m %s\n", $$1, $$2}'
 
-# --- Local Commands ---
-install: ## Install development dependencies
+# ==============================================================================
+# Docker-First Commands (Recommended - No Python install required)
+# ==============================================================================
+
+build: ## Build the development Docker image
+	@./devctl build
+
+rebuild: ## Rebuild Docker image from scratch
+	@./devctl rebuild
+
+shell: ## Open interactive shell in container
+	@./devctl shell
+
+test: ## Run tests in Docker container
+	@./devctl test
+
+test-cov: ## Run tests with coverage in Docker container
+	@./devctl test-cov
+
+lint: ## Run linter in Docker container
+	@./devctl lint
+
+lint-fix: ## Auto-fix linting issues in Docker container
+	@./devctl lint-fix
+
+lint-css: ## Run CSS linter in Docker container
+	@./devctl lint-css
+
+format: ## Format code in Docker container
+	@./devctl format
+
+format-check: ## Check code formatting in Docker container
+	@./devctl format-check
+
+type-check: ## Run type checker in Docker container
+	@./devctl type-check
+
+ci: ## Run all CI checks in Docker container
+	@./devctl ci
+
+# --- Exporter Commands ---
+
+create-exporter: ## Create a new exporter interactively
+	@./devctl create-exporter
+
+list-exporters: ## List all available exporters
+	@./devctl list-exporters
+
+build-exporter: ## Build specific exporter (usage: make build-exporter EXPORTER=node_exporter)
+	@if [ -z "$(EXPORTER)" ]; then \
+		echo "Usage: make build-exporter EXPORTER=<name>"; \
+		exit 1; \
+	fi
+	@./devctl build-exporter $(EXPORTER)
+
+test-exporter: ## Test build an exporter (usage: make test-exporter EXPORTER=node_exporter)
+	@if [ -z "$(EXPORTER)" ]; then \
+		echo "Usage: make test-exporter EXPORTER=<name>"; \
+		exit 1; \
+	fi
+	@./devctl test-exporter $(EXPORTER)
+
+# --- Portal & Docs ---
+
+generate-portal: ## Generate the web portal
+	@./devctl generate-portal
+
+docs-build: ## Build MkDocs documentation
+	@./devctl docs-build
+
+docs-serve: ## Serve docs with live reload
+	@./devctl docs-serve
+
+# ==============================================================================
+# Local Commands (Advanced - Requires Python 3.9+ installed locally)
+# ==============================================================================
+
+install: ## Install development dependencies locally
 	$(PYTHON) -m pip install -r requirements-dev.txt
 	$(PYTHON) -m pip install -r core/requirements.txt
+	$(PYTHON) -m pip install -r requirements-docs.txt
 	pre-commit install
 
-test: ## Run tests locally
+local-test: ## Run tests locally (requires local Python)
 	$(PYTEST) -v
 
-test-cov: ## Run tests with coverage report
+local-test-cov: ## Run tests with coverage locally
 	$(PYTEST) -v --cov=core --cov-report=term-missing --cov-report=html
 
-lint: ## Run linting checks locally
+local-lint: ## Run linter locally
 	$(RUFF) check .
 
-lint-fix: ## Run linting and auto-fix locally
+local-lint-fix: ## Auto-fix linting issues locally
 	$(RUFF) check --fix .
 
-format: ## Format code with ruff locally
+local-format: ## Format code locally
 	$(RUFF) format .
 
-format-check: ## Check code formatting locally
+local-format-check: ## Check code formatting locally
 	$(RUFF) format --check .
 
-type-check: ## Run type checking locally
+local-type-check: ## Run type checker locally
 	$(MYPY) --explicit-package-bases core/
 
-pre-commit: ## Run pre-commit hooks
+pre-commit: ## Run pre-commit hooks locally
 	pre-commit run --all-files
 
-clean: ## Clean up common generated files and caches
+# ==============================================================================
+# Cleanup
+# ==============================================================================
+
+clean: ## Clean up generated files and caches
 	rm -rf .pytest_cache htmlcov .coverage coverage.xml .mypy_cache .ruff_cache
 	rm -f catalog.json index.html
 	find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
@@ -57,41 +156,3 @@ clean: ## Clean up common generated files and caches
 
 clean-all: clean ## Deep clean including site, build and venv
 	sudo rm -rf site/ build/ dist/ $(VENV)
-
-# --- Docker Commands (No local install needed) ---
-docker-build: ## Build the development Docker image
-	docker build -t $(DEV_IMAGE) -f Dockerfile.dev .
-
-docker-lint: ## Run linter inside Docker
-	$(DOCKER_RUN) ruff check .
-
-docker-lint-css: ## Run CSS linter inside Docker
-	$(DOCKER_RUN) stylelint "**/*.css" "**/*.html.j2"
-
-docker-lint-fix: ## Run linter and fix inside Docker
-	$(DOCKER_RUN) ruff check --fix .
-	$(DOCKER_RUN) stylelint "**/*.css" "**/*.html.j2" --fix
-
-docker-format: ## Run formatter inside Docker
-	$(DOCKER_RUN) ruff format .
-
-docker-type-check: ## Run type checking inside Docker
-	$(DOCKER_RUN) mypy --explicit-package-bases core/
-
-docker-test: ## Run tests inside Docker
-	$(DOCKER_RUN) pytest -v
-
-docker-portal: ## Generate the web portal (index.html) inside Docker
-	$(DOCKER_RUN) python3 -m core.engine.site_generator
-
-docker-docs-build: ## Build MkDocs documentation inside Docker
-	$(DOCKER_RUN) mkdocs build
-
-docker-docs-serve: ## Serve MkDocs documentation with live reload (accessible at localhost:8000)
-	docker run -it --rm -v $(shell pwd):/workspace -p 8000:8000 $(DEV_IMAGE) mkdocs serve -a 0.0.0.0:8000
-
-docker-ci: ## Run all CI checks (lint + format + type-check + tests) inside Docker
-	$(DOCKER_RUN) /bin/bash -c "ruff check . && ruff format --check . && mypy --explicit-package-bases core/ && stylelint \"**/*.css\" \"**/*.html.j2\" && pytest -v"
-
-docker-shell: ## Open a shell inside the development container
-	docker run -it --rm -v $(shell pwd):/workspace $(DEV_IMAGE) /bin/bash

@@ -8,10 +8,15 @@ Adding a new exporter is a simple process that takes less than 5 minutes. The fa
 
 ## Step 1: Create Exporter Scaffold
 
-Use the interactive creator script:
+Use the Docker-first creator tool:
 
 ```bash
-./core/scripts/create_exporter.py
+./devctl create-exporter
+```
+
+**Or using Make:**
+```bash
+make create-exporter
 ```
 
 You'll be prompted for:
@@ -29,6 +34,8 @@ The script will automatically:
 - Generate `manifest.yaml` with sensible defaults
 - Create `README.md` template
 - Create `assets/` directory for config files
+
+**Note:** No Python installation required - everything runs in Docker!
 
 ## Step 2: Review and Customize Manifest
 
@@ -141,10 +148,15 @@ EOF
 
 ## Step 4: Test Locally
 
-Run the comprehensive test script:
+Run the comprehensive test using Docker:
 
 ```bash
-./core/scripts/local_test.sh my_exporter
+./devctl test-exporter my_exporter
+```
+
+**Or using Make:**
+```bash
+make test-exporter EXPORTER=my_exporter
 ```
 
 This will:
@@ -158,13 +170,19 @@ For specific options:
 
 ```bash
 # Test ARM64 build
-./core/scripts/local_test.sh my_exporter --arch arm64
+./devctl test-exporter my_exporter --arch arm64
 
 # Test specific EL version
-./core/scripts/local_test.sh my_exporter --el10
+./devctl test-exporter my_exporter --el10
 
-# Enable full validation
-./core/scripts/local_test.sh my_exporter --validate
+# Enable smoke tests
+./devctl test-exporter my_exporter --smoke
+```
+
+**Quick artifact generation only:**
+```bash
+./devctl build-exporter my_exporter
+# Output: build/my_exporter/
 ```
 
 ## Step 5: Create Pull Request
