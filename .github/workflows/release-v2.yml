@@ -356,12 +356,20 @@ jobs:
               echo "Signing Release file for $codename..."
 
               # Create InRelease (signed Release file)
-              gpg --batch --passphrase "$GPG_PASSPHRASE" \
-                  --clearsign --output "$(dirname "$release_file")/InRelease" "$release_file"
+              if [ -n "$GPG_PASSPHRASE" ]; then
+                gpg --batch --passphrase "$GPG_PASSPHRASE" \
+                    --clearsign --output "$(dirname "$release_file")/InRelease" "$release_file"
+              else
+                gpg --batch --clearsign --output "$(dirname "$release_file")/InRelease" "$release_file"
+              fi
 
               # Create Release.gpg (detached signature)
-              gpg --batch --passphrase "$GPG_PASSPHRASE" \
-                  --detach-sign --armor --output "$release_file.gpg" "$release_file"
+              if [ -n "$GPG_PASSPHRASE" ]; then
+                gpg --batch --passphrase "$GPG_PASSPHRASE" \
+                    --detach-sign --armor --output "$release_file.gpg" "$release_file"
+              else
+                gpg --batch --detach-sign --armor --output "$release_file.gpg" "$release_file"
+              fi
             fi
           done
 
