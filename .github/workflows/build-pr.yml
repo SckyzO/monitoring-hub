@@ -60,3 +60,46 @@ jobs:
           chmod +x core/scripts/*.sh
           # On utilise node_exporter comme "Canary" pour valider la chaîne
           ./core/scripts/local_test.sh node_exporter --validate
+
+  # Test DEB Build and Installation
+  deb-canary-test:
+    runs-on: ubuntu-latest
+    needs: generate-artifacts
+    strategy:
+      matrix:
+        dist: [ubuntu-22.04, debian-12]
+        arch: [amd64]
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r requirements/base.txt
+
+      - name: Test DEB Build
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DIST: ${{ matrix.dist }}
+          ARCH: ${{ matrix.arch }}
+        run: |
+          chmod +x core/scripts/*.sh
+          echo "Testing DEB build for node_exporter on $DIST ($ARCH)..."
+          ./core/scripts/test_deb_build.sh node_exporter "$DIST" "$ARCH"
+
+      - name: Validate DEB Package
+        run: |
+          deb_file=$(find build -name "*.deb" | grep node-exporter | head -1)
+
+          if [ -z "$deb_file" ]; then
+            echo "ERROR: No DEB file found"
+            exit 1
+          fi
+
+          echo "Validating DEB: $deb_file"
+          dpkg-deb --info "$deb_file"
+          dpkg-deb --contents "$deb_file" | grep -E "(usr/bin|systemd)"
+          echo "✓ DEB validation passed!"
