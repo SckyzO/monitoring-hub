@@ -49,10 +49,14 @@ type-check: ## Run type checking locally
 pre-commit: ## Run pre-commit hooks
 	pre-commit run --all-files
 
-clean: ## Clean up generated files
+clean: ## Clean up common generated files and caches
 	rm -rf .pytest_cache htmlcov .coverage coverage.xml .mypy_cache .ruff_cache
+	rm -f catalog.json index.html
 	find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
 	find . -type f -name "*.pyc" -delete
+
+clean-all: clean ## Deep clean including site, build and venv
+	sudo rm -rf site/ build/ dist/ $(VENV)
 
 # --- Docker Commands (No local install needed) ---
 docker-build: ## Build the development Docker image
