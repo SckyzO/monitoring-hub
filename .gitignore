@@ -58,4 +58,4 @@ CLAUDE.md
 dev/*
 !dev/*.md
 !dev/*.yml.example
-!dev/README.md
+!dev/README.mdsecrets/
