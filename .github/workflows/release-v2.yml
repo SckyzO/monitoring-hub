@@ -259,6 +259,9 @@ jobs:
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
           GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
         run: |
+          # Clean previous signatures
+          rm -rf gh-pages-dist/*/*/repodata/*.asc
+
           # Generate metadata for each dist/arch combination
           for dist in el9; do
             for arch in x86_64; do
@@ -333,6 +336,9 @@ jobs:
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
           GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
         run: |
+          # Clean previous metadata
+          rm -rf gh-pages-dist/apt/dists/*/InRelease gh-pages-dist/apt/dists/*/Release.gpg
+
           # Generate metadata for each dist/arch combination
           for dist in ubuntu-22.04; do
             for arch in amd64; do
