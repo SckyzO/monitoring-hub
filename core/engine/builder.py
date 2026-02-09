@@ -274,6 +274,27 @@ def copy_local_binary(data, output_dir, manifest_dir):
         raise click.Abort()
 
 
+def get_upstream_license(repo_slug):
+    """
+    Fetch license information from GitHub API.
+    Returns SPDX ID (e.g. 'MIT', 'Apache-2.0') or None.
+    """
+    try:
+        token = os.environ.get("GITHUB_TOKEN")
+        headers = {"Accept": "application/vnd.github.v3+json"}
+        if token:
+            headers["Authorization"] = f"token {token}"
+            
+        url = f"https://api.github.com/repos/{repo_slug}/license"
+        r = requests.get(url, headers=headers, timeout=5)
+        if r.status_code == 200:
+            data = r.json()
+            return data.get("license", {}).get("spdx_id")
+    except Exception as e:
+        click.echo(f"Warning: Could not fetch license for {repo_slug}: {e}")
+    return None
+
+
 @click.command()
 @click.option("--manifest", "-m", help="Path to manifest", required=True)
 @click.option("--output-dir", "-o", help="Output directory", default="./build")
@@ -285,6 +306,16 @@ def build(manifest, output_dir, arch):
         data = load_manifest(manifest)
         data["arch"] = arch
         data["rpm_arch"] = ARCH_MAP.get(arch, arch)
+
+        # License Detection Logic
+        if not data.get("license"):
+            detected_license = None
+            if data["upstream"]["type"] == "github":
+                click.echo(f"Detecting license for {data['upstream']['repo']}...")
+                detected_license = get_upstream_license(data["upstream"]["repo"])
+            
+            data["license"] = detected_license if detected_license and detected_license != "NOASSERTION" else "Apache-2.0"
+            click.echo(f"License set to: {data['license']}")
 
         # Setup Jinja2 with Override Logic
         template_dirs = [os.path.join(os.path.dirname(manifest), "templates"), TEMPLATES_DIR]
@@ -337,7 +368,7 @@ def build(manifest, output_dir, arch):
             try:
                 template = env.get_template(f"{data['name']}.spec.j2")
                 click.echo("Using custom spec template")
-            except Exception:  # noqa: S110
+            except TemplateNotFound:
                 template = env.get_template("default.spec.j2")
 
             output_content = template.render(data)
@@ -348,8 +379,9 @@ def build(manifest, output_dir, arch):
         # 3. Build Dockerfile
         if artifacts.get("docker", {}).get("enabled"):
             try:
-                template = env.get_template("Dockerfile.j2")
-            except Exception:  # noqa: S110
+                template = env.get_template(f"{data['name']}.Dockerfile.j2")
+                click.echo("Using custom Dockerfile template")
+            except TemplateNotFound:
                 template = env.get_template("Dockerfile.j2")
 
             output_content = template.render(data)
