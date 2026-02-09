@@ -1,6 +1,1 @@
-# Ignore generated artifacts
-site/
-htmlcov/
-build/
-.venv/
-node_modules/
+config/linting/.stylelintignore

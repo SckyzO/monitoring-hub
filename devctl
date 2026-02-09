@@ -50,7 +50,7 @@ check_docker() {
 ensure_image() {
     if ! docker image inspect "$DEV_IMAGE" &> /dev/null; then
         warning "Development image not found. Building..."
-        docker build -t "$DEV_IMAGE" -f Dockerfile.dev .
+        docker build -t "$DEV_IMAGE" -f config/docker/Dockerfile.dev .
         success "Development image built successfully"
     fi
 }
@@ -115,13 +115,13 @@ EOF
 # --- Command Handlers ---
 cmd_build() {
     info "Building development Docker image..."
-    docker build -t "$DEV_IMAGE" -f Dockerfile.dev .
+    docker build -t "$DEV_IMAGE" -f config/docker/Dockerfile.dev .
     success "Development image built successfully"
 }
 
 cmd_rebuild() {
     info "Rebuilding development Docker image from scratch..."
-    docker build --no-cache -t "$DEV_IMAGE" -f Dockerfile.dev .
+    docker build --no-cache -t "$DEV_IMAGE" -f config/docker/Dockerfile.dev .
     success "Development image rebuilt successfully"
 }
 

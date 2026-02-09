@@ -220,7 +220,7 @@ This runs:
 make security
 
 # Check for vulnerable dependencies
-pip-audit -r core/requirements.txt
+pip-audit -r requirements/base.txt
 
 # Scan code for secrets
 gitleaks detect --no-git

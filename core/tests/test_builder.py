@@ -90,7 +90,9 @@ class TestDownloadAndExtract:
     @patch("core.engine.builder.requests.get")
     def test_download_handles_http_error(self, mock_get, temp_dir, mock_manifest_data):
         """Test that HTTP errors are handled properly."""
-        mock_get.return_value.__enter__.side_effect = requests.exceptions.HTTPError("404")
+        mock_get.return_value.__enter__.side_effect = requests.exceptions.HTTPError(
+            "404"
+        )
 
         output_dir = temp_dir / "output"
         output_dir.mkdir()
@@ -122,7 +124,9 @@ class TestDownloadAndExtract:
 
     def test_archive_name_pattern_with_rpm_arch(self, mock_manifest_data):
         """Test archive name pattern with rpm_arch variable."""
-        mock_manifest_data["upstream"]["archive_name"] = "{name}-{version}-{rpm_arch}.tar.gz"
+        mock_manifest_data["upstream"]["archive_name"] = (
+            "{name}-{version}-{rpm_arch}.tar.gz"
+        )
 
         archive_pattern = mock_manifest_data["upstream"]["archive_name"]
         filename = archive_pattern.format(
@@ -226,7 +230,10 @@ class TestLocalBinarySupport:
             "name": "local_exporter",
             "description": "Test local exporter",
             "version": "1.0.0",
-            "upstream": {"type": "local", "local_archive": "assets/local_exporter.tar.gz"},
+            "upstream": {
+                "type": "local",
+                "local_archive": "assets/local_exporter.tar.gz",
+            },
             "build": {"method": "binary_repack", "binary_name": "local_exporter"},
             "artifacts": {
                 "rpm": {"enabled": True, "summary": "Test"},

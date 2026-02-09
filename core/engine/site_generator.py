@@ -40,7 +40,9 @@ def generate(output, repo_dir):
                     data["readme"] = "No documentation available."
 
                 data["availability"] = {}
-                rpm_targets = data.get("artifacts", {}).get("rpm", {}).get("targets", [])
+                rpm_targets = (
+                    data.get("artifacts", {}).get("rpm", {}).get("targets", [])
+                )
 
                 for dist in SUPPORTED_DISTROS:
                     data["availability"][dist] = {}
@@ -57,20 +59,31 @@ def generate(output, repo_dir):
                                 "path": os.path.relpath(found_files[0], repo_dir),
                             }
                         elif is_target:
-                            data["availability"][dist][arch] = {"status": "failed", "path": None}
+                            data["availability"][dist][arch] = {
+                                "status": "failed",
+                                "path": None,
+                            }
                         else:
-                            data["availability"][dist][arch] = {"status": "na", "path": None}
+                            data["availability"][dist][arch] = {
+                                "status": "na",
+                                "path": None,
+                            }
 
                 # Aggregate Build Statuses
-                rpm_enabled = data.get("artifacts", {}).get("rpm", {}).get("enabled", True)
+                rpm_enabled = (
+                    data.get("artifacts", {}).get("rpm", {}).get("enabled", True)
+                )
                 if rpm_enabled:
                     # Success only if ALL targeted distributions have at least one arch successful
-                    targets = data.get("artifacts", {}).get("rpm", {}).get("targets", [])
+                    targets = (
+                        data.get("artifacts", {}).get("rpm", {}).get("targets", [])
+                    )
                     failed_targets = [
                         t
                         for t in targets
                         if not any(
-                            data["availability"].get(t, {}).get(a, {}).get("status") == "success"
+                            data["availability"].get(t, {}).get(a, {}).get("status")
+                            == "success"
                             for a in ["x86_64", "aarch64"]
                         )
                     ]
@@ -100,7 +113,8 @@ def generate(output, repo_dir):
     categories_json = json.dumps(categories)
 
     env = Environment(
-        loader=FileSystemLoader(TEMPLATES_DIR), autoescape=select_autoescape(["html", "xml"])
+        loader=FileSystemLoader(TEMPLATES_DIR),
+        autoescape=select_autoescape(["html", "xml"]),
     )
     template = env.get_template("index.html.j2")
     rendered = template.render(

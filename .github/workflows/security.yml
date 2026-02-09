@@ -61,8 +61,8 @@ jobs:
 
       - name: Run pip-audit on core dependencies
         run: |
-          pip-audit -r core/requirements.txt --format json --output pip-audit-report.json || true
-          pip-audit -r core/requirements.txt --format markdown
+          pip-audit -r requirements/base.txt --format json --output pip-audit-report.json || true
+          pip-audit -r requirements/base.txt --format markdown
         continue-on-error: true
 
       - name: Upload pip-audit report

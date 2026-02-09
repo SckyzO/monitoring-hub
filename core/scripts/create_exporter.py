@@ -23,8 +23,18 @@ def get_github_info(repo_name):
 
     if gh_path:
         try:
-            click.echo(f"🔍 Fetching latest release info from {repo_name} using 'gh'...")
-            cmd = [gh_path, "release", "view", "-R", repo_name, "--json", "tagName,assets"]
+            click.echo(
+                f"🔍 Fetching latest release info from {repo_name} using 'gh'..."
+            )
+            cmd = [
+                gh_path,
+                "release",
+                "view",
+                "-R",
+                repo_name,
+                "--json",
+                "tagName,assets",
+            ]
             result = subprocess.run(cmd, capture_output=True, text=True, check=True)
             data = json.loads(result.stdout)
         except Exception as e:
@@ -57,14 +67,24 @@ def get_github_info(repo_name):
         # Exclude non-linux explicitly
         if any(
             os_name in name
-            for os_name in ["windows", "darwin", "macos", "freebsd", ".exe", ".dmg", ".zip"]
+            for os_name in [
+                "windows",
+                "darwin",
+                "macos",
+                "freebsd",
+                ".exe",
+                ".dmg",
+                ".zip",
+            ]
         ):
             continue
 
         # If it says linux, good. If it says nothing but has arch, assume linux (common for go binaries)
         is_explicit_linux = "linux" in name
 
-        if ("amd64" in name or "x86_64" in name) and (is_explicit_linux or not sample_asset):
+        if ("amd64" in name or "x86_64" in name) and (
+            is_explicit_linux or not sample_asset
+        ):
             sample_asset = asset["name"]
 
         if "arm64" in name or "aarch64" in name:
@@ -96,7 +116,9 @@ def get_github_info(repo_name):
 
 @click.command()
 @click.option(
-    "--name", prompt="Exporter Name (e.g., node_exporter)", help="Technical name of the exporter."
+    "--name",
+    prompt="Exporter Name (e.g., node_exporter)",
+    help="Technical name of the exporter.",
 )
 @click.option(
     "--repo",
@@ -123,9 +145,14 @@ def get_github_info(repo_name):
     help="Portal category.",
 )
 @click.option(
-    "--description", prompt="Description", default="Prometheus exporter.", help="Short description."
+    "--description",
+    prompt="Description",
+    default="Prometheus exporter.",
+    help="Short description.",
 )
-@click.option("--show-created-files", is_flag=True, help="Display the content of generated files.")
+@click.option(
+    "--show-created-files", is_flag=True, help="Display the content of generated files."
+)
 def create(name, repo, category, description, show_created_files):
     """
     Create a new exporter based on the reference manifest.
