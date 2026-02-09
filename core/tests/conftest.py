@@ -43,16 +43,16 @@ def sample_manifest() -> dict[str, Any]:
 
 
 @pytest.fixture
-def sample_manifest_file(temp_dir, sample_manifest) -> Path:  # type: ignore[misc]
+def sample_manifest_file(temp_dir: Path, sample_manifest: dict[str, Any]) -> Path:
     """Create a temporary manifest.yaml file."""
     manifest_path = temp_dir / "manifest.yaml"
     with open(manifest_path, "w") as f:
         yaml.dump(sample_manifest, f)
-    return manifest_path
+    return Path(manifest_path)
 
 
 @pytest.fixture
-def mock_exporter_dir(temp_dir, sample_manifest) -> Path:  # type: ignore[misc]
+def mock_exporter_dir(temp_dir: Path, sample_manifest: dict[str, Any]) -> Path:
     """Create a mock exporter directory structure."""
     exporter_dir = temp_dir / "exporters" / "test_exporter"
     exporter_dir.mkdir(parents=True)
@@ -66,7 +66,7 @@ def mock_exporter_dir(temp_dir, sample_manifest) -> Path:  # type: ignore[misc]
     assets_dir = exporter_dir / "assets"
     assets_dir.mkdir()
 
-    return exporter_dir
+    return Path(exporter_dir)
 
 
 @pytest.fixture
