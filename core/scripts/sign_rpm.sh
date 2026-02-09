@@ -33,14 +33,32 @@ trap 'rm -rf "$GPG_HOME"' EXIT
 echo "Importing GPG key..."
 echo "$GPG_KEY_BASE64" | base64 -d | gpg --batch --import 2>&1
 
-# Trust the key ultimately (use fingerprint, not key ID)
-FINGERPRINT=$(gpg --list-keys --with-colons "${GPG_KEY_ID}" | awk -F: '/^fpr:/ {print $10; exit}')
+# List imported keys for debugging
+echo "Imported keys:"
+gpg --list-keys --with-colons
+
+# Trust the key ultimately (use fingerprint)
+echo "Setting key trust..."
+FINGERPRINT=$(gpg --list-keys --with-colons | awk -F: '/^fpr:/ {print $10; exit}')
+if [ -z "$FINGERPRINT" ]; then
+    echo "Error: Could not extract fingerprint from imported key"
+    exit 1
+fi
+echo "Found fingerprint: $FINGERPRINT"
 echo "${FINGERPRINT}:6:" | gpg --import-ownertrust 2>&1
+
+# Verify the key is trusted
+echo "Verifying key trust:"
+gpg --list-keys --with-colons "$FINGERPRINT"
 
 # Configure RPM macros for signing
 mkdir -p ~/.rpmmacros.d
 
+# Use fingerprint instead of KEY_ID for better compatibility
+echo "Configuring RPM macros with fingerprint: $FINGERPRINT"
+
 # Create passphrase file if needed
+PASSPHRASE_FILE=""
 if [ -n "$GPG_PASSPHRASE" ]; then
     PASSPHRASE_FILE=$(mktemp)
     echo "$GPG_PASSPHRASE" > "$PASSPHRASE_FILE"
@@ -50,27 +68,22 @@ if [ -n "$GPG_PASSPHRASE" ]; then
     cat > ~/.rpmmacros <<EOF
 %_signature gpg
 %_gpg_path ${GPG_HOME}
-%_gpg_name ${GPG_KEY_ID}
+%_gpg_name ${FINGERPRINT}
 %_gpgbin /usr/bin/gpg
-%__gpg_sign_cmd %{__gpg} \\
-    gpg --batch --no-verbose --no-armor --pinentry-mode loopback --passphrase-file ${PASSPHRASE_FILE} \\
-    %{?_gpg_digest_algo:--digest-algo %{_gpg_digest_algo}} \\
-    --no-secmem-warning \\
-    -u "%{_gpg_name}" -sbo %{__signature_filename} %{__plaintext_filename}
+%__gpg_sign_cmd %{__gpg} gpg --batch --no-verbose --no-armor --pinentry-mode loopback --passphrase-file ${PASSPHRASE_FILE} --no-secmem-warning -u "%{_gpg_name}" -sbo %{__signature_filename} %{__plaintext_filename}
 EOF
 else
     cat > ~/.rpmmacros <<EOF
 %_signature gpg
 %_gpg_path ${GPG_HOME}
-%_gpg_name ${GPG_KEY_ID}
+%_gpg_name ${FINGERPRINT}
 %_gpgbin /usr/bin/gpg
-%__gpg_sign_cmd %{__gpg} \\
-    gpg --batch --no-verbose --no-armor \\
-    %{?_gpg_digest_algo:--digest-algo %{_gpg_digest_algo}} \\
-    --no-secmem-warning \\
-    -u "%{_gpg_name}" -sbo %{__signature_filename} %{__plaintext_filename}
+%__gpg_sign_cmd %{__gpg} gpg --batch --no-verbose --no-armor --no-secmem-warning -u "%{_gpg_name}" -sbo %{__signature_filename} %{__plaintext_filename}
 EOF
 fi
+
+echo "RPM macros configured"
+cat ~/.rpmmacros
 
 # Sign the RPM
 echo "Signing RPM with key ${GPG_KEY_ID}..."
