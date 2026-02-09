@@ -64,8 +64,10 @@ plugins:
       default_handler: python
       handlers:
         python:
+          paths: ["../../"]
           options:
             show_source: true
+            allow_untyped: true
             show_root_heading: true
             show_category_heading: true
             docstring_style: google
@@ -137,6 +139,7 @@ nav:
     - Development Setup: contributing/development.md
     - Coding Standards: contributing/standards.md
     - Testing: contributing/testing.md
+    - Security: contributing/security.md
     - Pull Requests: contributing/pull-requests.md
   - "← Back to Portal": https://sckyzo.github.io/monitoring-hub/
 

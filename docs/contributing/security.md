@@ -233,7 +233,7 @@ trivy image --severity HIGH,CRITICAL monitoring-hub/exporter:latest
 
 **Do not open public issues for security vulnerabilities.**
 
-Follow our [Security Policy](../../SECURITY.md) for responsible disclosure.
+Follow our [Security Policy](../security.md) for responsible disclosure.
 
 ## Security Checklist for Contributors
 
@@ -262,4 +262,4 @@ For security questions or concerns:
 
 - Open a GitHub Discussion
 - Contact maintainers privately for sensitive issues
-- See [SECURITY.md](../../SECURITY.md) for vulnerability reporting
+- See [SECURITY.md](../security.md) for vulnerability reporting

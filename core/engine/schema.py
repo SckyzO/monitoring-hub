@@ -1,6 +1,10 @@
 from marshmallow import Schema, ValidationError, fields, validate, validates_schema
 
-from core.config.settings import DEFAULT_BASE_IMAGE, SUPPORTED_DISTROS
+from core.config.settings import (
+    DEFAULT_BASE_IMAGE,
+    SUPPORTED_DEB_DISTROS,
+    SUPPORTED_DISTROS,
+)
 
 
 class FileInstallSchema(Schema):
@@ -35,6 +39,27 @@ class RPMSchema(Schema):
     system_user = fields.Str(allow_none=True)
     extra_files = fields.List(fields.Nested(FileInstallSchema), load_default=[])
     directories = fields.List(fields.Nested(DirectorySchema), load_default=[])
+
+
+class DebSystemdSchema(Schema):
+    enabled = fields.Bool(load_default=False)
+    arguments = fields.List(fields.Str(), load_default=[])
+    after = fields.List(fields.Str(), load_default=["network.target"])
+    restart = fields.Str(load_default="on-failure")
+    type = fields.Str(load_default="simple")
+
+
+class DebSchema(Schema):
+    enabled = fields.Bool(load_default=False)
+    targets = fields.List(fields.Str(), load_default=SUPPORTED_DEB_DISTROS)
+    summary = fields.Str()
+    systemd = fields.Nested(DebSystemdSchema, load_default={"enabled": False})
+    system_user = fields.Str(allow_none=True)
+    dependencies = fields.List(fields.Str(), load_default=[])
+    extra_files = fields.List(fields.Nested(FileInstallSchema), load_default=[])
+    directories = fields.List(fields.Nested(DirectorySchema), load_default=[])
+    section = fields.Str(load_default="utils")
+    priority = fields.Str(load_default="optional")
 
 
 class ValidationSchema(Schema):
@@ -98,6 +123,7 @@ class BuildSchema(Schema):
 
 class ArtifactsSchema(Schema):
     rpm = fields.Nested(RPMSchema)
+    deb = fields.Nested(DebSchema)
     docker = fields.Nested(DockerSchema)
 
 
