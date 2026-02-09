@@ -3,9 +3,9 @@ Version: 1.10.2-1
 Architecture: amd64
 Maintainer: Monitoring Hub <noreply@monitoring-hub.local>
 Filename: https://github.com/SckyzO/monitoring-hub/releases/download/v1.10.2/node-exporter_1.10.2-1_amd64.deb
-Size: 11634316
-MD5sum: c13f5dd864ce603c0a76adc3da694f4d
-SHA256: 6a9bdd4a7b1f7c150cd2e024ba9b56ac99661c9f3abc48425f42f89e83562499
+Size: 11634328
+MD5sum: 0c63f6afbe2afef10f177722f7d90f5a
+SHA256: 7f54f974d03ff45b3b8f7d35277523b998a99150f156be8c899aeec62196512d
 Section: net
 Priority: optional
 Description: Prometheus exporter for hardware and OS metrics
