@@ -101,6 +101,7 @@ class ManifestSchema(Schema):
     name = fields.Str(required=True)
     description = fields.Str(required=True)
     category = fields.Str(required=False, dump_default="System")
+    license = fields.Str(required=False, allow_none=True)
     new = fields.Bool(required=False, dump_default=False)
     updated = fields.Bool(required=False, dump_default=False)
     version = fields.Str(required=True)

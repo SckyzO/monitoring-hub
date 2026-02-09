@@ -5,14 +5,20 @@ import requests
 import glob
 from packaging.version import parse as parse_version
 from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
-from core.engine.schema import ManifestSchema
 from core.config.settings import EXPORTERS_DIR
+from core.engine.schema import ManifestSchema
 from marshmallow import ValidationError
 
 def load_manifest(path):
     with open(path, 'r') as f:
         data = yaml.safe_load(f)
-    return data
+    
+    schema = ManifestSchema()
+    try:
+        return schema.load(data)
+    except ValidationError as err:
+        click.echo(f"Validation error in {path}: {err.messages}", err=True)
+        raise click.Abort() from err
 
 def save_manifest(path, data):
     # Ensure version is stored as string
