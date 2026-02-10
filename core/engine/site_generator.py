@@ -44,6 +44,35 @@ def load_release_urls(release_urls_dir):
     return url_map
 
 
+def load_build_info(build_info_dir):
+    """
+    Load all build-info.json artifacts from the build.
+    Returns a dict mapping exporter -> latest build_date.
+    """
+    if not build_info_dir or not os.path.exists(build_info_dir):
+        return {}
+
+    build_dates = {}
+    import json
+
+    for root, dirs, files in os.walk(build_info_dir):
+        for file in files:
+            if file.endswith("build-info.json"):
+                try:
+                    with open(os.path.join(root, file)) as f:
+                        data = json.load(f)
+                        exporter = data.get("exporter")
+                        build_date = data.get("build_date")
+                        if exporter and build_date:
+                            # Keep the latest date if multiple builds for same exporter
+                            if exporter not in build_dates or build_date > build_dates[exporter]:
+                                build_dates[exporter] = build_date
+                except Exception as e:
+                    print(f"Warning: Failed to load {file}: {e}")
+
+    return build_dates
+
+
 @click.command()
 @click.option("--output", "-o", help="Output HTML file", default="index.html")
 @click.option("--repo-dir", "-r", help="Path to repo root", default=".")
@@ -64,6 +93,9 @@ def generate(output, repo_dir, release_urls_dir, skip_catalog):
     """
     # Load real availability from release_urls artifacts
     release_url_map = load_release_urls(release_urls_dir)
+
+    # Load build dates from artifacts
+    build_dates = load_build_info(release_urls_dir)
 
     manifests = glob.glob(f"{EXPORTERS_DIR}/*/manifest.yaml")
     exporters_data = []
@@ -242,6 +274,9 @@ def generate(output, repo_dir, release_urls_dir, skip_catalog):
                     if data.get("artifacts", {}).get("docker", {}).get("enabled", False)
                     else "na"
                 )
+
+                # Add build date from artifacts
+                data["build_date"] = build_dates.get(data["name"])
 
                 exporters_data.append(data)
         except Exception as e:

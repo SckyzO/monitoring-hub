@@ -406,7 +406,12 @@
                                                                     </div>                                    </div>
                                     <div class="flex flex-col items-end gap-2">
                                         <template x-if="item.new"><span class="px-2.5 py-1 bg-primary-500 text-white text-[8px] font-black rounded-full uppercase pulse-primary shadow-lg shadow-primary-500/20">New</span></template>
-                                        <template x-if="item.updated && !item.new"><span class="px-2.5 py-1 bg-emerald-500 text-white text-[8px] font-black rounded-full uppercase">Updated</span></template>
+                                        <template x-if="item.updated && !item.new">
+                                            <div class="flex flex-col items-end gap-1">
+                                                <span class="px-2.5 py-1 bg-emerald-500 text-white text-[8px] font-black rounded-full uppercase">Updated</span>
+                                                <span x-show="item.build_date" class="text-[9px] font-mono text-zinc-400" x-text="new Date(item.build_date).toLocaleDateString('en-US', {month: 'short', day: 'numeric'})"></span>
+                                            </div>
+                                        </template>
                                     </div>
                                 </div>
                                 <h3 class="text-2xl font-black mb-3 tracking-tight uppercase italic group-hover:translate-x-1 transition-transform" :class="theme === 'light' ? 'text-zinc-900' : 'text-white'" x-text="item.name"></h3>
@@ -567,7 +572,7 @@
                             <span class="verified-badge"><i data-lucide="shield-check" class="w-3 h-3"></i> Verified</span>
                             <div class="flex items-center gap-1.5 text-zinc-500 text-[10px] font-bold uppercase tracking-widest border-l border-white/20 pl-3">
                                 <i data-lucide="clock" class="w-3 h-3"></i>
-                                <span x-text="new Date().toLocaleDateString()"></span>
+                                <span x-text="selectedItem?.build_date ? new Date(selectedItem.build_date).toLocaleDateString() : 'N/A'"></span>
                             </div>
                             <a :href="`https://github.com/${selectedItem?.upstream?.repo}`" target="_blank"
                                class="flex items-center gap-1.5 text-zinc-500 hover:text-primary-500 transition-colors text-[10px] font-bold uppercase tracking-widest border-l border-white/20 pl-3"
