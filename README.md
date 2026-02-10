@@ -38,7 +38,7 @@
 <tr>
 <td align="center" style="vertical-align: top;">
 <a href="https://sckyzo.github.io/monitoring-hub/">
-<img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/firefox/firefox-original.svg" width="64" height="64">
+<img src=".github/icons/globe-blue.svg" width="64" height="64">
 <br><br>
 <b>Portal</b>
 <br><br>
@@ -47,7 +47,7 @@
 </td>
 <td align="center" style="vertical-align: top;">
 <a href="https://sckyzo.github.io/monitoring-hub/docs/">
-<img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/materialui/materialui-original.svg" width="64" height="64">
+<img src=".github/icons/book-emerald.svg" width="64" height="64">
 <br><br>
 <b>Documentation</b>
 <br><br>
@@ -56,7 +56,7 @@
 </td>
 <td align="center" style="vertical-align: top;">
 <a href="https://github.com/SckyzO/monitoring-hub/packages">
-<img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/docker/docker-original.svg" width="64" height="64">
+<img src=".github/icons/container-amber.svg" width="64" height="64">
 <br><br>
 <b>Registry</b>
 <br><br>
@@ -65,7 +65,7 @@
 </td>
 <td align="center" style="vertical-align: top;">
 <a href="https://github.com/SckyzO/monitoring-hub/issues/new">
-<img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/jira/jira-original.svg" width="64" height="64">
+<img src=".github/icons/bug-rose.svg" width="64" height="64">
 <br><br>
 <b>Issues</b>
 <br><br>
@@ -74,7 +74,7 @@
 </td>
 <td align="center" style="vertical-align: top;">
 <a href="CHANGELOG.md">
-<img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/git/git-original.svg" width="64" height="64">
+<img src=".github/icons/history-purple.svg" width="64" height="64">
 <br><br>
 <b>Changelog</b>
 <br><br>
