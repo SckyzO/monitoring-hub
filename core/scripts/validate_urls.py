@@ -25,9 +25,7 @@ def normalize_version(version: str) -> str:
     return version.lstrip("v")
 
 
-def construct_archive_url(
-    repo: str, version: str, archive_name: str, arch: str
-) -> str:
+def construct_archive_url(repo: str, version: str, archive_name: str, arch: str) -> str:
     """
     Construct GitHub release asset URL.
 
@@ -240,9 +238,7 @@ def main(exporter: str, arch: tuple, verbose: bool, fail_on_error: bool):
     success_count = sum(1 for r in results if r["status"] == "success")
     failed_count = sum(1 for r in results if r["status"] == "failed")
     partial_count = sum(1 for r in results if r["status"] == "partial")
-    error_count = sum(
-        1 for r in results if r["status"] == "error" and "reason" in r
-    )
+    error_count = sum(1 for r in results if r["status"] == "error" and "reason" in r)
     skipped_count = sum(1 for r in results if r["status"] == "skipped")
 
     click.secho(f"✓ Success:  {success_count}", fg="green")
@@ -268,9 +264,8 @@ def main(exporter: str, arch: tuple, verbose: bool, fail_on_error: bool):
                 continue
 
             # Show results for failed/partial/verbose
-            if (
-                result["status"] in ["failed", "partial"]
-                or (result["status"] == "success" and verbose)
+            if result["status"] in ["failed", "partial"] or (
+                result["status"] == "success" and verbose
             ):
                 status_color = {
                     "success": "green",
@@ -279,7 +274,9 @@ def main(exporter: str, arch: tuple, verbose: bool, fail_on_error: bool):
                 }.get(result["status"], "white")
 
                 click.secho(
-                    f"\n{result['name']} ({result['version']})", fg=status_color, bold=True
+                    f"\n{result['name']} ({result['version']})",
+                    fg=status_color,
+                    bold=True,
                 )
                 click.echo(f"  Repo: {result['repo']}")
 

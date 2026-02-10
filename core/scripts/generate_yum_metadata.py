@@ -27,7 +27,9 @@ def get_rpm_metadata(url: str, local_cache: Path) -> Dict:
     Cache locally to avoid repeated downloads.
     """
     # Create cache filename from URL - MD5 used only for filename, not security
-    cache_file = local_cache / hashlib.md5(url.encode(), usedforsecurity=False).hexdigest()  # nosec B324
+    cache_file = (
+        local_cache / hashlib.md5(url.encode(), usedforsecurity=False).hexdigest()
+    )  # nosec B324
 
     if cache_file.exists():
         print(f"Using cached RPM: {cache_file.name}")
