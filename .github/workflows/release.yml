@@ -27,8 +27,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        arch: [amd64]  # Start with amd64 only for testing
-        dist: [el9]     # Start with el9 only for testing
+        arch: [amd64, arm64]
+        dist: [el8, el9, el10]
     steps:
       - uses: actions/checkout@v6
 
@@ -156,8 +156,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        arch: [amd64]  # Start with amd64 only for testing
-        dist: [ubuntu-22.04]  # Start with one distro for testing
+        arch: [amd64, arm64]
+        dist: [ubuntu-22.04, ubuntu-24.04, debian-12, debian-13]
     steps:
       - uses: actions/checkout@v6
 
@@ -316,8 +316,8 @@ jobs:
           echo "✓ Cleaned"
           echo "::endgroup::"
 
-          for dist in el9; do
-            for arch in x86_64; do
+          for dist in el8 el9 el10; do
+            for arch in x86_64 aarch64; do
               echo "::group::📦 Generating YUM metadata for $dist/$arch"
 
               python3 core/scripts/generate_yum_metadata.py \
@@ -355,8 +355,8 @@ jobs:
           echo "✓ Cleaned"
           echo "::endgroup::"
 
-          for dist in ubuntu-22.04; do
-            for arch in amd64; do
+          for dist in ubuntu-22.04 ubuntu-24.04 debian-12 debian-13; do
+            for arch in amd64 arm64; do
               echo "::group::📦 Generating APT metadata for $dist/$arch"
 
               python3 core/scripts/generate_apt_metadata.py \
