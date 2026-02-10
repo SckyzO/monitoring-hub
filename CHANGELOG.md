@@ -5,6 +5,69 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.18.0] - 2026-02-09
+
+### 🚀 Major Features
+
+*   **Complete DEB/APT Support:** Full Debian and Ubuntu package support with multi-distribution repositories.
+    *   **APT Repository:** Published APT repository with signed metadata (Ubuntu 22.04/24.04, Debian 12/13).
+    *   **Multi-Arch DEB:** Native amd64 and arm64 package builds for all supported exporters.
+    *   **DEB Build Pipeline:** Automated DEB package generation using `dpkg-buildpackage` in Docker containers.
+    *   **Portal Integration:** New APT installation tab with distribution-specific instructions and download links.
+    *   **Package Naming:** Standardized DEB package naming (dashes instead of underscores, e.g., `node-exporter`).
+
+*   **Build Date Tracking:** Real-time build dates now visible in catalog and portal.
+    *   **Build Info Artifacts:** Each build generates `build-info.json` with timestamp metadata.
+    *   **Portal Display:** Build dates shown in drawer details and on "Updated" badges.
+    *   **Catalog Integration:** `catalog.json` now includes `build_date` field for each exporter.
+
+*   **Automatic File-Based Rebuilds:** Any file change in `exporters/` now triggers automatic rebuild.
+    *   **Git Diff Detection:** Replaced version-based detection with git diff for comprehensive change tracking.
+    *   **Asset Support:** Changes to configuration files, scripts, or templates now trigger rebuilds.
+    *   **Streamlined Workflow:** Removed Python dependency from auto-release workflow.
+
+### 🎨 Portal Improvements (v2.9.0)
+
+*   **Multi-Platform Messaging:** Updated subtitle to highlight RPM/DEB/Container support across RHEL, Ubuntu & Debian.
+*   **Visual Consistency:** Fixed DEB download links to use green color for success (was purple).
+*   **Enhanced Cards:** Build dates displayed below "Updated" badges with short date format.
+*   **Build Status:** Real-time availability tracking with "success", "pending", and "failed" states.
+
+### 🐛 Bug Fixes
+
+*   **DEB Template Issues:** Fixed `debian/rules` template to use correct `build_source` field for extra files.
+*   **Build Order:** Moved extra files copying to before template rendering to prevent missing file references.
+*   **ARM64 Builds:** Added QEMU emulation setup for cross-platform ARM64 builds in GitHub Actions.
+*   **Catalog Staleness:** Prevented `update-site.yml` from overwriting catalog with stale data using `--skip-catalog` flag.
+*   **Release Tags:** Include exporter name in GitHub Release tags to prevent conflicts (e.g., `node_exporter-v1.8.0`).
+*   **URL Accuracy:** Use real GitHub Release URLs from artifacts instead of generated URLs in catalog.
+*   **RPM/DEB Sync:** Fixed configuration inconsistencies between RPM and DEB artifacts for exporters.
+*   **gh-pages Conflicts:** Merged YUM and APT metadata jobs to prevent concurrent push conflicts.
+
+### 📚 Documentation
+
+*   **Comprehensive APT Guide:** New `docs/user-guide/package-repositories.md` with detailed YUM/APT/OCI instructions.
+*   **Installation Updates:** Added Ubuntu/Debian prerequisites and APT repository setup to installation guide.
+*   **README Enhancements:** Updated key features and distribution section to include DEB/APT support.
+*   **Security Policy:** Clarified version support model and removed premature GPG signature references.
+
+### ♻️ Refactoring
+
+*   **Exporter Card Layout:** Improved status badge positioning and spacing in portal UI.
+*   **Release Workflow:** Enhanced logging with emoji prefixes and collapsible sections for better readability.
+
+### ⚡ Performance & Quality
+
+*   **Workflow Security:** Improved GitHub Actions security with explicit permissions and timeout limits.
+*   **Code Quality:** Fixed all linting issues across Python (ruff) and CSS (stylelint).
+*   **Build Matrix:** Extended to full production coverage with all distribution and architecture combinations.
+
+### 🏗️ Infrastructure
+
+*   **Docker Multi-Arch:** Restored and enhanced Docker builds with amd64/arm64 manifest support.
+*   **Artifact Management:** Improved artifact naming and retention strategies.
+*   **Metadata Jobs:** Unified publish jobs for better reliability and reduced gh-pages conflicts.
+
 ## [0.17.0] - 2026-01-07
 
 ### 🚀 Major Modernization
