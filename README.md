@@ -36,33 +36,46 @@
 </p>
 
 
----
 
-<h3 align="center">🚀 Quick Links</h3>
-
-<p align="center">
-  <a href="https://sckyzo.github.io/monitoring-hub/">
-    <img src="https://img.shields.io/badge/🌐_Explore_Portal-View_All_Exporters-3b82f6?style=for-the-badge&labelColor=1e293b" alt="Explore Portal">
-  </a>
-  <a href="https://sckyzo.github.io/monitoring-hub/docs/">
-    <img src="https://img.shields.io/badge/📚_Documentation-User_Guides-10b981?style=for-the-badge&labelColor=1e293b" alt="Documentation">
-  </a>
-  <a href="https://github.com/SckyzO/monitoring-hub/packages">
-    <img src="https://img.shields.io/badge/📦_OCI_Registry-Container_Images-f59e0b?style=for-the-badge&labelColor=1e293b" alt="OCI Registry">
-  </a>
-</p>
-
-<p align="center">
-  <a href="https://github.com/SckyzO/monitoring-hub/issues/new">
-    <img src="https://img.shields.io/badge/🐛_Report_Bug-Open_Issue-ef4444?style=for-the-badge&labelColor=1e293b" alt="Report Bug">
-  </a>
-  <a href="CHANGELOG.md">
-    <img src="https://img.shields.io/badge/📝_Changelog-Release_Notes-8b5cf6?style=for-the-badge&labelColor=1e293b" alt="Changelog">
-  </a>
-  <a href="https://github.com/SckyzO/monitoring-hub/blob/main/CONTRIBUTING.md">
-    <img src="https://img.shields.io/badge/💡_Contributing-Get_Involved-ec4899?style=for-the-badge&labelColor=1e293b" alt="Contributing">
-  </a>
-</p>
+<table align="center">
+<tr>
+<td align="center" width="20%">
+<a href="https://sckyzo.github.io/monitoring-hub/">
+<img src=".github/icons/globe-blue.svg" width="48" height="48"><br>
+<b>🌐 Explore Portal</b><br>
+<sub>Browse all exporters</sub>
+</a>
+</td>
+<td align="center" width="20%">
+<a href="https://sckyzo.github.io/monitoring-hub/docs/">
+<img src=".github/icons/book-emerald.svg" width="48" height="48"><br>
+<b>📚 Documentation</b><br>
+<sub>User guides & API</sub>
+</a>
+</td>
+<td align="center" width="20%">
+<a href="https://github.com/SckyzO/monitoring-hub/packages">
+<img src=".github/icons/container-amber.svg" width="48" height="48"><br>
+<b>📦 OCI Registry</b><br>
+<sub>Container images</sub>
+</a>
+</td>
+<td align="center" width="20%">
+<a href="https://github.com/SckyzO/monitoring-hub/issues/new">
+<img src=".github/icons/bug-rose.svg" width="48" height="48"><br>
+<b>🐛 Report Issue</b><br>
+<sub>Found a bug?</sub>
+</a>
+</td>
+<td align="center" width="20%">
+<a href="CHANGELOG.md">
+<img src=".github/icons/history-purple.svg" width="48" height="48"><br>
+<b>📝 Changelog</b><br>
+<sub>Release notes</sub>
+</a>
+</td>
+</tr>
+</table>
 
 </div>
 
