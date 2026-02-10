@@ -159,11 +159,37 @@ jobs:
           echo "✓ Upload completed"
           echo "::endgroup::"
 
+      - name: 📅 Create Build Info
+        run: |
+          exporter="${{ inputs.exporter }}"
+          version="${{ needs.get-version.outputs.version }}"
+          build_dir="build/$exporter-${{ matrix.arch }}-${{ matrix.dist }}"
+
+          # Create build info with timestamp
+          cat > "$build_dir/build-info.json" <<EOF
+          {
+            "exporter": "$exporter",
+            "version": "$version",
+            "arch": "${{ matrix.arch }}",
+            "dist": "${{ matrix.dist }}",
+            "build_date": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")",
+            "artifact_type": "rpm"
+          }
+          EOF
+
       - name: Upload Release URLs Artifact
         uses: actions/upload-artifact@v6
         with:
           name: release-urls-rpm-${{ inputs.exporter }}-${{ matrix.arch }}-${{ matrix.dist }}
           path: build/**/release_urls.json
+          if-no-files-found: ignore
+          retention-days: 7
+
+      - name: Upload Build Info Artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: build-info-rpm-${{ inputs.exporter }}-${{ matrix.arch }}-${{ matrix.dist }}
+          path: build/**/build-info.json
           if-no-files-found: ignore
           retention-days: 7
 
@@ -288,11 +314,37 @@ jobs:
           echo "✓ Upload completed"
           echo "::endgroup::"
 
+      - name: 📅 Create Build Info
+        run: |
+          exporter="${{ inputs.exporter }}"
+          version="${{ needs.get-version.outputs.version }}"
+          build_dir="build/$exporter-${{ matrix.arch }}-${{ matrix.dist }}"
+
+          # Create build info with timestamp
+          cat > "$build_dir/build-info.json" <<EOF
+          {
+            "exporter": "$exporter",
+            "version": "$version",
+            "arch": "${{ matrix.arch }}",
+            "dist": "${{ matrix.dist }}",
+            "build_date": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")",
+            "artifact_type": "deb"
+          }
+          EOF
+
       - name: Upload Release URLs Artifact
         uses: actions/upload-artifact@v6
         with:
           name: release-urls-deb-${{ inputs.exporter }}-${{ matrix.arch }}-${{ matrix.dist }}
           path: build/**/release_urls.json
+          if-no-files-found: ignore
+          retention-days: 7
+
+      - name: Upload Build Info Artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: build-info-deb-${{ inputs.exporter }}-${{ matrix.arch }}-${{ matrix.dist }}
+          path: build/**/build-info.json
           if-no-files-found: ignore
           retention-days: 7
 
@@ -457,6 +509,13 @@ jobs:
         with:
           pattern: release-urls-*
           path: release-urls/
+          merge-multiple: true
+
+      - name: Download Build Info
+        uses: actions/download-artifact@v6
+        with:
+          pattern: build-info-*
+          path: build-info/
           merge-multiple: true
 
       - name: 📥 Checkout gh-pages
