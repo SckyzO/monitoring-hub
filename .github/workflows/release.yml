@@ -87,23 +87,42 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
+      - name: Check if architecture is supported
+        id: check-arch
+        run: |
+          exporter="${{ inputs.exporter }}"
+          arch="${{ matrix.arch }}"
+          supported_archs=$(python3 -c "import yaml; manifest = yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(' '.join(manifest.get('build', {}).get('archs', ['amd64', 'arm64'])))")
+          echo "Supported archs for $exporter: $supported_archs"
+          if echo "$supported_archs" | grep -qw "$arch"; then
+            echo "supported=true" >> $GITHUB_OUTPUT
+            echo "✓ Architecture $arch is supported"
+          else
+            echo "supported=false" >> $GITHUB_OUTPUT
+            echo "⊘ Architecture $arch not supported, skipping"
+          fi
+
       - name: Set up QEMU
-        if: (inputs.arch == 'all' || inputs.arch == matrix.arch) && (inputs.dist == 'all' || inputs.dist == matrix.dist)
+        if: steps.check-arch.outputs.supported == 'true' && (inputs.arch == 'all' || inputs.arch == matrix.arch) && (inputs.dist == 'all' || inputs.dist == matrix.dist)
         uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
+        if: steps.check-arch.outputs.supported == 'true'
         uses: docker/setup-buildx-action@v3
 
       - name: Set up Python
+        if: steps.check-arch.outputs.supported == 'true'
         uses: actions/setup-python@v6
         with:
           python-version: '3.12'
           cache: 'pip'
           cache-dependency-path: 'requirements/base.txt'
+
       - run: pip install -r requirements/base.txt
+        if: steps.check-arch.outputs.supported == 'true'
 
       - name: 🔨 Build RPM
-        if: (inputs.arch == 'all' || inputs.arch == matrix.arch) && (inputs.dist == 'all' || inputs.dist == matrix.dist)
+        if: steps.check-arch.outputs.supported == 'true' && (inputs.arch == 'all' || inputs.arch == matrix.arch) && (inputs.dist == 'all' || inputs.dist == matrix.dist)
         env:
           PYTHONPATH: ${{ github.workspace }}
         run: |
@@ -251,23 +270,42 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
+      - name: Check if architecture is supported
+        id: check-arch
+        run: |
+          exporter="${{ inputs.exporter }}"
+          arch="${{ matrix.arch }}"
+          supported_archs=$(python3 -c "import yaml; manifest = yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(' '.join(manifest.get('build', {}).get('archs', ['amd64', 'arm64'])))")
+          echo "Supported archs for $exporter: $supported_archs"
+          if echo "$supported_archs" | grep -qw "$arch"; then
+            echo "supported=true" >> $GITHUB_OUTPUT
+            echo "✓ Architecture $arch is supported"
+          else
+            echo "supported=false" >> $GITHUB_OUTPUT
+            echo "⊘ Architecture $arch not supported, skipping"
+          fi
+
       - name: Set up QEMU
-        if: (inputs.arch == 'all' || inputs.arch == matrix.arch) && (inputs.dist == 'all' || inputs.dist == matrix.dist)
+        if: steps.check-arch.outputs.supported == 'true' && (inputs.arch == 'all' || inputs.arch == matrix.arch) && (inputs.dist == 'all' || inputs.dist == matrix.dist)
         uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
+        if: steps.check-arch.outputs.supported == 'true'
         uses: docker/setup-buildx-action@v3
 
       - name: Set up Python
+        if: steps.check-arch.outputs.supported == 'true'
         uses: actions/setup-python@v6
         with:
           python-version: '3.12'
           cache: 'pip'
           cache-dependency-path: 'requirements/base.txt'
+
       - run: pip install -r requirements/base.txt
+        if: steps.check-arch.outputs.supported == 'true'
 
       - name: 🔨 Build DEB
-        if: (inputs.arch == 'all' || inputs.arch == matrix.arch) && (inputs.dist == 'all' || inputs.dist == matrix.dist)
+        if: steps.check-arch.outputs.supported == 'true' && (inputs.arch == 'all' || inputs.arch == matrix.arch) && (inputs.dist == 'all' || inputs.dist == matrix.dist)
         env:
           PYTHONPATH: ${{ github.workspace }}
         run: |
@@ -519,6 +557,10 @@ jobs:
 
           description=$(python3 -c "import yaml; manifest = yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(manifest.get('description', ''))")
 
+          # Read supported architectures from manifest (default to both if not specified)
+          supported_archs=$(python3 -c "import yaml; manifest = yaml.safe_load(open('exporters/$exporter/manifest.yaml')); archs = manifest.get('build', {}).get('archs', ['amd64', 'arm64']); print(','.join([f'linux/{arch}' for arch in archs]))")
+          echo "Building for platforms: $supported_archs"
+
           source_url="${{ github.server_url }}/${{ github.repository }}/tree/main/exporters/$exporter"
 
           docker buildx build \
@@ -530,7 +572,7 @@ jobs:
             --label "org.opencontainers.image.version=$version" \
             --tag "$image_id:$version" \
             --tag "$image_id:latest" \
-            --platform linux/amd64,linux/arm64 \
+            --platform $supported_archs \
             "build/$exporter"
 
           echo "✓ Image pushed: $image_id:$version"
