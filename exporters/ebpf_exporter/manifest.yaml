@@ -12,40 +12,40 @@ build:
   method: binary_repack
   binary_name: ebpf_exporter
   archs:
-  - amd64
-  - arm64
+    - amd64
+    - arm64
 artifacts:
   rpm:
     enabled: true
     summary: Prometheus exporter for custom eBPF metrics
     targets:
-    - el8
-    - el9
-    - el10
+      - el8
+      - el9
+      - el10
     dependencies:
-    - elfutils-libelf
-    - hwdata
+      - elfutils-libelf
+      - hwdata
     systemd:
       enabled: true
   deb:
     enabled: true
     targets:
-    - ubuntu-22.04
-    - ubuntu-24.04
-    - debian-12
-    - debian-13
+      - ubuntu-22.04
+      - ubuntu-24.04
+      - debian-12
+      - debian-13
     summary: Prometheus exporter for custom eBPF metrics.
     systemd:
       enabled: true
     section: net
     priority: optional
     dependencies:
-    - libelf1
-    - hwdata
+      - libelf1
+      - hwdata
   docker:
     enabled: true
     entrypoint:
-    - /usr/bin/ebpf_exporter
+      - /usr/bin/ebpf_exporter
     validation:
       enabled: true
       command: --version

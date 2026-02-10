@@ -11,38 +11,38 @@ build:
   method: binary_repack
   binary_name: prometheus
   extra_binaries:
-  - promtool
+    - promtool
 artifacts:
   rpm:
     enabled: true
     targets:
-    - el8
-    - el9
-    - el10
+      - el8
+      - el9
+      - el10
     summary: The Prometheus monitoring system and time series database.
     systemd:
       enabled: true
     system_user: prometheus
     extra_files:
-    - source: assets/prometheus.yml
-      dest: /etc/prometheus/prometheus.yml
-      config: true
+      - source: assets/prometheus.yml
+        dest: /etc/prometheus/prometheus.yml
+        config: true
     directories:
-    - path: /etc/prometheus
-      mode: '0755'
-      owner: root
-      group: root
-    - path: /var/lib/prometheus
-      mode: '0755'
-      owner: prometheus
-      group: prometheus
+      - path: /etc/prometheus
+        mode: '0755'
+        owner: root
+        group: root
+      - path: /var/lib/prometheus
+        mode: '0755'
+        owner: prometheus
+        group: prometheus
   deb:
     enabled: true
     targets:
-    - ubuntu-22.04
-    - ubuntu-24.04
-    - debian-12
-    - debian-13
+      - ubuntu-22.04
+      - ubuntu-24.04
+      - debian-12
+      - debian-13
     summary: The Prometheus monitoring system and time series database.
     systemd:
       enabled: true
@@ -50,24 +50,24 @@ artifacts:
     priority: optional
     system_user: prometheus
     extra_files:
-    - source: assets/prometheus.yml
-      dest: /etc/prometheus/prometheus.yml
-      config: true
+      - source: assets/prometheus.yml
+        dest: /etc/prometheus/prometheus.yml
+        config: true
     directories:
-    - path: /etc/prometheus
-      mode: '0755'
-      owner: root
-      group: root
-    - path: /var/lib/prometheus
-      mode: '0755'
-      owner: prometheus
-      group: prometheus
+      - path: /etc/prometheus
+        mode: '0755'
+        owner: root
+        group: root
+      - path: /var/lib/prometheus
+        mode: '0755'
+        owner: prometheus
+        group: prometheus
   docker:
     enabled: true
     entrypoint:
-    - /usr/bin/prometheus
+      - /usr/bin/prometheus
     cmd:
-    - --config.file=/etc/prometheus/prometheus.yml
+      - --config.file=/etc/prometheus/prometheus.yml
     validation:
       port: 9090
       enabled: true

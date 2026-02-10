@@ -1,5 +1,8 @@
 name: 🤖 Auto Release
-run-name: 🤖 ${{ github.event_name == 'workflow_dispatch' && format('Manual Release - {0}', inputs.exporters != '' && inputs.exporters || 'All exporters') || 'Automatic Release - New release' }}
+run-name: >-
+  🤖 ${{ github.event_name == 'workflow_dispatch'
+  && format('Manual Release - {0}', inputs.exporters != '' && inputs.exporters || 'All exporters')
+  || 'Automatic Release - New release' }}
 
 on:
   push:
@@ -52,7 +55,8 @@ jobs:
               echo "Building specific exporters: $INPUT_EXPORTERS"
 
               # Convert comma-separated list to JSON array
-              EXPORTERS_JSON=$(echo "$INPUT_EXPORTERS" | jq -R -c 'split(",") | map(gsub("^\\s+|\\s+$"; "")) | map(select(length > 0))')
+              EXPORTERS_JSON=$(echo "$INPUT_EXPORTERS" | jq -R -c \\
+                'split(\",\") | map(gsub(\"^\\\\s+|\\\\s+$\"; \"\")) | map(select(length > 0))')
 
               echo "exporters=$EXPORTERS_JSON" >> $GITHUB_OUTPUT
               echo "matrix={\"exporter\":$EXPORTERS_JSON}" >> $GITHUB_OUTPUT
@@ -151,12 +155,12 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           echo "::group::🚀 Triggering release for ${{ matrix.exporter }}"
-          
+
           gh workflow run release.yml \
             --repo ${{ github.repository }} \
             --ref main \
             --field exporter="${{ matrix.exporter }}"
-          
+
           echo "✓ Release workflow triggered for ${{ matrix.exporter }}"
           echo "::endgroup::"
 

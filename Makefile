@@ -1,4 +1,4 @@
-.PHONY: help install test test-cov lint lint-fix format format-check type-check pre-commit clean clean-all
+.PHONY: help install test test-cov lint lint-fix lint-css lint-yaml format format-check type-check pre-commit clean clean-all
 .PHONY: build rebuild shell ci docs-serve docs-build generate-portal
 .PHONY: create-exporter build-exporter test-exporter list-exporters validate-urls validate-url
 .PHONY: local-test local-lint local-format local-type-check
@@ -64,6 +64,9 @@ lint-fix: ## Auto-fix linting issues in Docker container
 
 lint-css: ## Run CSS linter in Docker container
 	@./devctl lint-css
+
+lint-yaml: ## Run YAML linter in Docker container
+	@./devctl lint-yaml
 
 format: ## Format code in Docker container
 	@./devctl format
