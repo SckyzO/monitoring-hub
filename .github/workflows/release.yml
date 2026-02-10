@@ -360,6 +360,7 @@ jobs:
     permissions:
       contents: read
       packages: write
+      security-events: write
     steps:
       - uses: actions/checkout@v6
 
@@ -414,7 +415,58 @@ jobs:
             exit 1
           fi
 
-          echo "::group::🐳 Building and pushing image"
+          echo "::group::🐳 Building test image for security scan"
+          image_id="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/$exporter"
+          image_id=$(echo $image_id | tr '[:upper:]' '[:lower:]')
+
+          # Build amd64 image locally for Trivy scan
+          docker buildx build \
+            --file "build/$exporter/Dockerfile" \
+            --load \
+            --platform linux/amd64 \
+            --tag "$image_id:scan-$version" \
+            "build/$exporter"
+          echo "✓ Test image built for scanning"
+          echo "::endgroup::"
+
+      - name: 🔒 Run Trivy Security Scan
+        env:
+          EXPORTER: ${{ inputs.exporter }}
+          VERSION: ${{ needs.get-version.outputs.version }}
+        run: |
+          exporter=$(echo "$EXPORTER" | tr '[:upper:]' '[:lower:]')
+          image_ref="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/$exporter:scan-$VERSION"
+
+          echo "::group::🔒 Scanning image for vulnerabilities"
+          echo "Image: $image_ref"
+
+          docker run --rm \
+            -v /var/run/docker.sock:/var/run/docker.sock \
+            -v $(pwd):/output \
+            aquasec/trivy:latest image \
+            --format sarif \
+            --output /output/trivy-results.sarif \
+            --severity CRITICAL,HIGH \
+            "$image_ref"
+
+          echo "✓ Security scan completed"
+          echo "::endgroup::"
+
+      - name: Upload Trivy Results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v4
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
+          category: trivy-container-${{ inputs.exporter }}
+
+      - name: 🐳 Build and Push Multi-Platform Image
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: |
+          exporter="${{ inputs.exporter }}"
+          version="${{ needs.get-version.outputs.version }}"
+
+          echo "::group::🐳 Building and pushing multi-platform image"
           image_id="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/$exporter"
           image_id=$(echo $image_id | tr '[:upper:]' '[:lower:]')
 
