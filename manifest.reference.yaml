@@ -130,6 +130,54 @@ artifacts:
     #     group: my_service_user      # Default: root (or system_user if defined)
     #     mode: "0755"                # Default: 0755
 
+# --- Artifact: DEB Package ----------------------------------------------------
+  deb:
+    enabled: true                 # [REQUIRED] Set to true to build DEB packages.
+    targets:                      # [OPTIONAL] Default: [ubuntu-22.04, ubuntu-24.04, debian-12, debian-13].
+      - ubuntu-22.04              # Ubuntu 22.04 LTS (Jammy Jellyfish)
+      - ubuntu-24.04              # Ubuntu 24.04 LTS (Noble Numbat)
+      - debian-12                 # Debian 12 (Bookworm)
+      - debian-13                 # Debian 13 (Trixie)
+
+    summary: "..."                # [OPTIONAL] Short summary for DEB metadata. Defaults to description.
+
+    # [OPTIONAL] Debian Control Fields
+    section: net                  # [OPTIONAL] Default: net. Package category (admin, utils, net, devel, etc.)
+    priority: optional            # [OPTIONAL] Default: optional. Package priority (required, important, standard, optional, extra)
+
+    # [OPTIONAL] System User
+    # If set, the build process will automatically:
+    # 1. Create this user/group on install (via postinst script).
+    # 2. Assign ownership of defined directories to this user.
+    # system_user: my_service_user
+
+    # [OPTIONAL] Modern Systemd Management
+    systemd:
+      enabled: true               # Set to true to generate and install a systemd service.
+      arguments: []               # [OPTIONAL] List of CLI arguments for ExecStart.
+      after: [network.target]     # [OPTIONAL] Units to start after.
+      restart: on-failure         # [OPTIONAL] Restart policy.
+      type: simple                # [OPTIONAL] Service type.
+
+    # [OPTIONAL] Runtime Dependencies
+    # List of DEB packages required by the exporter.
+    # dependencies: [openssl, adduser]
+
+    # [OPTIONAL] Extra Files Installation
+    # Map local assets (from `exporters/<name>/assets/` or downloaded `extra_sources`) to destination paths.
+    # extra_files:
+    #   - source: assets/config.yml       # Path relative to exporter directory
+    #     dest: /etc/reference/config.yml # Absolute path on target system
+    #     mode: "0640"                    # Default: 0644
+
+    # [OPTIONAL] Directory Creation
+    # Ensure specific directories exist with correct permissions.
+    # directories:
+    #   - path: /var/lib/reference_exporter
+    #     owner: my_service_user      # Default: root (or system_user if defined)
+    #     group: my_service_user      # Default: root (or system_user if defined)
+    #     mode: "0755"                # Default: 0755
+
 # --- Artifact: Docker Image ---------------------------------------------------
   docker:
     enabled: true                 # [REQUIRED] Set to true to build OCI images.

@@ -1,5 +1,5 @@
 name: eseries_exporter
-description: "Prometheus exporter for NetApp/Lenovo E-Series storage systems"
+description: Prometheus exporter for NetApp/Lenovo E-Series storage systems
 category: Storage
 version: v2.0.0
 updated: true
@@ -7,31 +7,48 @@ upstream:
   type: github
   repo: sckyzo/eseries_exporter
   strategy: latest_release
-  archive_name: "{name}_linux_{arch}.tar.gz"
+  archive_name: '{name}_linux_{arch}.tar.gz'
 build:
   method: binary_repack
   binary_name: eseries_exporter
 artifacts:
   rpm:
     enabled: true
-    targets: [el8, el9, el10]
+    targets:
+    - el8
+    - el9
+    - el10
     summary: Prometheus exporter for E-Series
     systemd:
       enabled: true
     system_user: prometheus
     extra_files:
-      - source: assets/eseries_exporter.yml
-        dest: /etc/eseries_exporter/eseries_exporter.yml
-        config: true
+    - source: assets/eseries_exporter.yml
+      dest: /etc/eseries_exporter/eseries_exporter.yml
+      config: true
     directories:
-      - path: /etc/eseries_exporter
-        mode: '0755'
-        owner: root
-        group: root
+    - path: /etc/eseries_exporter
+      mode: '0755'
+      owner: root
+      group: root
+  deb:
+    enabled: true
+    targets:
+    - ubuntu-22.04
+    - ubuntu-24.04
+    - debian-12
+    - debian-13
+    summary: Prometheus exporter for NetApp/Lenovo E-Series storage systems
+    systemd:
+      enabled: true
+    section: net
+    priority: optional
   docker:
     enabled: true
     base_image: registry.access.redhat.com/ubi9/ubi-minimal
-    entrypoint: [/usr/bin/eseries_exporter]
-    cmd: ["--config.file=/etc/eseries_exporter/eseries_exporter.yml"]
+    entrypoint:
+    - /usr/bin/eseries_exporter
+    cmd:
+    - --config.file=/etc/eseries_exporter/eseries_exporter.yml
     validation:
       port: 9313
