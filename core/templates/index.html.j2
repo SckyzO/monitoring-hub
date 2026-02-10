@@ -374,7 +374,7 @@
                             :class="sortKey === 'name' ? 'bg-white dark:bg-zinc-800 text-primary-500 shadow-sm' : 'text-zinc-500 hover:text-zinc-400'"
                             class="flex-1 text-center px-6 py-2.5 rounded-lg text-xs font-black uppercase tracking-widest transition-all">A-Z</button>
                     <button @click="sortKey = 'version'"
-                            @mouseenter="showTip($event, 'Sort by Version')" @mouseleave="hideTip()"
+                            @mouseenter="showTip($event, 'Sort by Build Date (Most Recent First)')" @mouseleave="hideTip()"
                             :class="sortKey === 'version' ? 'bg-white dark:bg-zinc-800 text-primary-500 shadow-sm' : 'text-zinc-500 hover:text-zinc-400'"
                             class="flex-1 text-center px-6 py-2.5 rounded-lg text-xs font-black uppercase tracking-widest transition-all">Latest</button>
                 </div>
@@ -1204,9 +1204,15 @@
                     let items = [...this.filteredItems];
                     if (this.sortKey === 'name') {
                         items.sort((a, b) => a.name.localeCompare(b.name));
-                    }
-                    if (this.sortKey === 'version') {
-                        items.sort((a, b) => b.version.localeCompare(a.version, undefined, { numeric: true, sensitivity: 'base' }));
+                    } else if (this.sortKey === 'version') {
+                        // Sort by build_date (most recent first), fallback to name if no date
+                        items.sort((a, b) => {
+                            if (a.build_date && b.build_date) {
+                                return new Date(b.build_date) - new Date(a.build_date);
+                            }
+                            // If no build_date, sort by name as fallback
+                            return a.name.localeCompare(b.name);
+                        });
                     }
                     return items;
                 },
