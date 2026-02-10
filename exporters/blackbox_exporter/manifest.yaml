@@ -20,11 +20,11 @@ artifacts:
     system_user: blackbox_exporter
     systemd:
       enabled: true
-    extra_files: &id001
+    extra_files:
     - source: assets/blackbox.yml
       dest: /etc/blackbox_exporter/blackbox.yml
       config: true
-    directories: &id002
+    directories:
     - path: /etc/blackbox_exporter
       owner: root
       group: root
@@ -46,8 +46,19 @@ artifacts:
     section: net
     priority: optional
     system_user: blackbox_exporter
-    extra_files: *id001
-    directories: *id002
+    extra_files:
+    - source: assets/blackbox.yml
+      dest: /etc/blackbox_exporter/blackbox.yml
+      config: true
+    directories:
+    - path: /etc/blackbox_exporter
+      owner: root
+      group: root
+      mode: '0755'
+    - path: /var/lib/blackbox_exporter
+      owner: blackbox_exporter
+      group: blackbox_exporter
+      mode: '0755'
   docker:
     enabled: true
     entrypoint:

@@ -20,7 +20,7 @@ artifacts:
     system_user: apache_exporter
     systemd:
       enabled: true
-    directories: &id001
+    directories:
     - path: /var/lib/apache_exporter
       owner: apache_exporter
       group: apache_exporter
@@ -38,7 +38,11 @@ artifacts:
     section: net
     priority: optional
     system_user: apache_exporter
-    directories: *id001
+    directories:
+    - path: /var/lib/apache_exporter
+      owner: apache_exporter
+      group: apache_exporter
+      mode: '0755'
   docker:
     enabled: true
     entrypoint:

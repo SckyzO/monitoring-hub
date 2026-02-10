@@ -22,11 +22,11 @@ artifacts:
     systemd:
       enabled: true
     system_user: prometheus
-    extra_files: &id001
+    extra_files:
     - source: assets/ping.yml
       dest: /etc/ping_exporter/ping.yml
       config: true
-    directories: &id002
+    directories:
     - path: /etc/ping_exporter
       mode: '0755'
       owner: root
@@ -44,8 +44,15 @@ artifacts:
     section: net
     priority: optional
     system_user: prometheus
-    extra_files: *id001
-    directories: *id002
+    extra_files:
+    - source: assets/ping.yml
+      dest: /etc/ping_exporter/ping.yml
+      config: true
+    directories:
+    - path: /etc/ping_exporter
+      mode: '0755'
+      owner: root
+      group: root
   docker:
     enabled: true
     base_image: registry.access.redhat.com/ubi9/ubi-minimal
