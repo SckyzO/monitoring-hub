@@ -10,10 +10,26 @@ import argparse
 import json
 import os
 import sys
+import time
 from pathlib import Path
 from typing import Dict, List
 
 import requests
+
+
+def retry_with_backoff(func, max_retries=3, initial_delay=2):
+    """Retry function with exponential backoff."""
+    for attempt in range(max_retries):
+        try:
+            return func()
+        except requests.exceptions.HTTPError as e:
+            if e.response.status_code == 404 and attempt < max_retries - 1:
+                delay = initial_delay * (2**attempt)
+                print(f"Attempt {attempt + 1} failed with 404, retrying in {delay}s...")
+                time.sleep(delay)
+            else:
+                raise
+    return None
 
 
 def get_release_tag(exporter_name: str, version: str) -> str:
@@ -97,15 +113,17 @@ def upload_asset(release: Dict, file_path: Path, token: str, repo: str) -> Dict:
                 timeout=30,
             )
 
-    # Upload asset
-    with open(file_path, "rb") as f:
-        params = {"name": file_name}
-        response = requests.post(
-            upload_url, headers=headers, params=params, data=f, timeout=300
-        )
-        response.raise_for_status()
+    # Upload asset with retry
+    def do_upload():
+        with open(file_path, "rb") as f:
+            params = {"name": file_name}
+            response = requests.post(
+                upload_url, headers=headers, params=params, data=f, timeout=300
+            )
+            response.raise_for_status()
+            return response.json()
 
-    asset_data = response.json()
+    asset_data = retry_with_backoff(do_upload, max_retries=3, initial_delay=2)
     print(f"Uploaded {file_name} -> {asset_data['browser_download_url']}")
     return asset_data
 
