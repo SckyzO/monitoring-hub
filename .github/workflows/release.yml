@@ -1,4 +1,4 @@
-name: Release V2 (GitHub Releases)
+name: 🚀 Release
 
 on:
   workflow_dispatch:
@@ -38,7 +38,7 @@ jobs:
           python-version: '3.12'
       - run: pip install -r requirements/base.txt
 
-      - name: Build RPM
+      - name: 🔨 Build RPM
         env:
           PYTHONPATH: ${{ github.workspace }}
         run: |
@@ -46,7 +46,11 @@ jobs:
           arch="${{ matrix.arch }}"
           dist="${{ matrix.dist }}"
 
-          echo "Building RPM for $exporter ($arch) on $dist..."
+          echo "::group::🔨 Building RPM Package"
+          echo "📦 Package: $exporter"
+          echo "🏗️  Architecture: $arch"
+          echo "🐧 Distribution: $dist"
+          echo "::endgroup::"
 
           case $dist in
             el8) image="almalinux:8" ;;
@@ -55,15 +59,22 @@ jobs:
           esac
 
           build_dir="build/$exporter-$arch-$dist"
+
+          echo "::group::🔧 Generating RPM spec file"
           python3 -m core.engine.builder --manifest "exporters/$exporter/manifest.yaml" --output-dir "$build_dir" --arch "$arch"
+          echo "✓ Spec file generated"
+          echo "::endgroup::"
 
           spec_file="$build_dir/$exporter.spec"
           if [ -f "$spec_file" ]; then
+            echo "::group::🐳 Building RPM in container ($image)"
             chmod +x core/scripts/build_rpm.sh core/scripts/rpm_entrypoint.sh
             ./core/scripts/build_rpm.sh "$spec_file" "$build_dir/rpms" "$arch" "$image"
+            echo "✓ RPM build completed"
+            echo "::endgroup::"
           fi
 
-      - name: Sign RPM
+      - name: 🔐 Sign RPM
         env:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
@@ -77,22 +88,26 @@ jobs:
           rpm_file=$(find "$build_dir/rpms" -name "*.rpm" | head -1)
 
           if [ -z "$rpm_file" ]; then
-            echo "No RPM file found, skipping signing"
+            echo "⚠️  No RPM file found, skipping signing"
             exit 0
           fi
 
-          echo "Signing RPM: $rpm_file"
+          echo "::group::🔐 Signing RPM with GPG"
+          echo "📄 File: $(basename "$rpm_file")"
           chmod +x core/scripts/sign_rpm_container.sh
           ./core/scripts/sign_rpm_container.sh "$rpm_file" "$GPG_PRIVATE_KEY" "$GPG_PASSPHRASE" "$GPG_KEY_ID"
+          echo "✓ RPM signed successfully"
+          echo "::endgroup::"
 
-      - name: Get Version
+      - name: 📋 Get Version
         id: version
         run: |
           exporter="${{ inputs.exporter }}"
           version=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(m['version'].lstrip('v'))")
           echo "version=$version" >> $GITHUB_OUTPUT
+          echo "📌 Version: v$version"
 
-      - name: Upload to GitHub Releases
+      - name: ⬆️  Upload to GitHub Releases
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
@@ -104,17 +119,26 @@ jobs:
 
           rpm_files=$(find "$build_dir/rpms" -name "*.rpm")
           if [ -z "$rpm_files" ]; then
-            echo "No RPM files to upload"
+            echo "⚠️  No RPM files to upload"
             exit 0
           fi
 
-          # Upload to GitHub Releases
+          echo "::group::⬆️  Uploading to GitHub Releases"
+          echo "🏷️  Release: v$version"
+          echo "📦 Files:"
+          for file in $rpm_files; do
+            echo "  → $(basename "$file")"
+          done
+
           python3 core/scripts/upload_to_release.py \
             --repo ${{ github.repository }} \
             --exporter "$exporter" \
             --version "$version" \
             --files $rpm_files \
             --output "$build_dir/release_urls.json"
+
+          echo "✓ Upload completed"
+          echo "::endgroup::"
 
       - name: Upload Release URLs Artifact
         uses: actions/upload-artifact@v6
@@ -143,7 +167,7 @@ jobs:
           python-version: '3.12'
       - run: pip install -r requirements/base.txt
 
-      - name: Build DEB
+      - name: 🔨 Build DEB
         env:
           PYTHONPATH: ${{ github.workspace }}
         run: |
@@ -151,7 +175,11 @@ jobs:
           arch="${{ matrix.arch }}"
           dist="${{ matrix.dist }}"
 
-          echo "Building DEB for $exporter ($arch) on $dist..."
+          echo "::group::🔨 Building DEB Package"
+          echo "📦 Package: $exporter"
+          echo "🏗️  Architecture: $arch"
+          echo "🐧 Distribution: $dist"
+          echo "::endgroup::"
 
           case $dist in
             ubuntu-22.04) image="ubuntu:22.04" ;;
@@ -161,12 +189,19 @@ jobs:
           esac
 
           build_dir="build/$exporter-$dist-$arch"
-          python3 -m core.engine.builder --manifest "exporters/$exporter/manifest.yaml" --output-dir "$build_dir" --arch "$arch"
 
+          echo "::group::🔧 Generating DEB control files"
+          python3 -m core.engine.builder --manifest "exporters/$exporter/manifest.yaml" --output-dir "$build_dir" --arch "$arch"
+          echo "✓ Control files generated"
+          echo "::endgroup::"
+
+          echo "::group::🐳 Building DEB in container ($image)"
           chmod +x core/scripts/build_deb.sh core/scripts/deb_entrypoint.sh
           ./core/scripts/build_deb.sh "$build_dir" "$build_dir/debs" "$arch" "$image"
+          echo "✓ DEB build completed"
+          echo "::endgroup::"
 
-      - name: Sign DEB
+      - name: 🔐 Sign DEB
         env:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
@@ -180,22 +215,26 @@ jobs:
           deb_file=$(find "$build_dir/debs" -name "*.deb" | head -1)
 
           if [ -z "$deb_file" ]; then
-            echo "No DEB file found, skipping signing"
+            echo "⚠️  No DEB file found, skipping signing"
             exit 0
           fi
 
-          echo "Signing DEB: $deb_file"
+          echo "::group::🔐 Signing DEB with GPG"
+          echo "📄 File: $(basename "$deb_file")"
           chmod +x core/scripts/sign_deb_container.sh
           ./core/scripts/sign_deb_container.sh "$deb_file" "$GPG_PRIVATE_KEY" "$GPG_PASSPHRASE" "$GPG_KEY_ID" "$dist"
+          echo "✓ DEB signed successfully"
+          echo "::endgroup::"
 
-      - name: Get Version
+      - name: 📋 Get Version
         id: version
         run: |
           exporter="${{ inputs.exporter }}"
           version=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(m['version'].lstrip('v'))")
           echo "version=$version" >> $GITHUB_OUTPUT
+          echo "📌 Version: v$version"
 
-      - name: Upload to GitHub Releases
+      - name: ⬆️  Upload to GitHub Releases
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
@@ -207,17 +246,26 @@ jobs:
 
           deb_files=$(find "$build_dir/debs" -name "*.deb")
           if [ -z "$deb_files" ]; then
-            echo "No DEB files to upload"
+            echo "⚠️  No DEB files to upload"
             exit 0
           fi
 
-          # Upload to GitHub Releases
+          echo "::group::⬆️  Uploading to GitHub Releases"
+          echo "🏷️  Release: v$version"
+          echo "📦 Files:"
+          for file in $deb_files; do
+            echo "  → $(basename "$file")"
+          done
+
           python3 core/scripts/upload_to_release.py \
             --repo ${{ github.repository }} \
             --exporter "$exporter" \
             --version "$version" \
             --files $deb_files \
             --output "$build_dir/release_urls.json"
+
+          echo "✓ Upload completed"
+          echo "::endgroup::"
 
       - name: Upload Release URLs Artifact
         uses: actions/upload-artifact@v6
@@ -249,24 +297,28 @@ jobs:
           path: release-urls/
           merge-multiple: true
 
-      - name: Checkout gh-pages
+      - name: 📥 Checkout gh-pages
         run: |
+          echo "::group::📥 Setting up gh-pages worktree"
           git fetch origin gh-pages
           git worktree add -B gh-pages gh-pages-dist origin/gh-pages
+          echo "✓ gh-pages ready"
+          echo "::endgroup::"
 
-      - name: Generate YUM Metadata
+      - name: 📦 Generate YUM Metadata
         env:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
           GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
         run: |
-          # Clean previous signatures
+          echo "::group::🧹 Cleaning previous signatures"
           rm -rf gh-pages-dist/*/*/repodata/*.asc
+          echo "✓ Cleaned"
+          echo "::endgroup::"
 
-          # Generate metadata for each dist/arch combination
           for dist in el9; do
             for arch in x86_64; do
-              echo "Generating YUM metadata for $dist/$arch..."
+              echo "::group::📦 Generating YUM metadata for $dist/$arch"
 
               python3 core/scripts/generate_yum_metadata.py \
                 --release-urls-dir release-urls/ \
@@ -274,94 +326,106 @@ jobs:
                 --dist "$dist" \
                 --arch "$arch"
 
-              # Sign repomd.xml with GPG
               repomd_file="gh-pages-dist/$dist/$arch/repodata/repomd.xml"
               if [ -f "$repomd_file" ]; then
-                echo "Signing repomd.xml for $dist/$arch..."
-                echo "$GPG_PRIVATE_KEY" | base64 -d | gpg --batch --import
+                echo "🔐 Signing repomd.xml..."
+                echo "$GPG_PRIVATE_KEY" | base64 -d | gpg --batch --import 2>/dev/null
                 gpg --batch --passphrase "$GPG_PASSPHRASE" \
                     --detach-sign --armor "$repomd_file"
+                echo "✓ Metadata generated and signed for $dist/$arch"
               fi
+              echo "::endgroup::"
             done
           done
 
-          # Publish GPG public key for RPM repos
           if [ -n "${{ secrets.GPG_PUBLIC_KEY }}" ]; then
+            echo "🔑 Publishing GPG public key..."
             echo "${{ secrets.GPG_PUBLIC_KEY }}" | base64 -d > gh-pages-dist/RPM-GPG-KEY-monitoring-hub
+            echo "✓ GPG key published"
           fi
 
-      - name: Generate APT Metadata
+      - name: 📦 Generate APT Metadata
         env:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
           GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
         run: |
-          # Clean previous metadata
+          echo "::group::🧹 Cleaning previous signatures"
           rm -rf gh-pages-dist/apt/dists/*/InRelease gh-pages-dist/apt/dists/*/Release.gpg
+          echo "✓ Cleaned"
+          echo "::endgroup::"
 
-          # Generate metadata for each dist/arch combination
           for dist in ubuntu-22.04; do
             for arch in amd64; do
-              echo "Generating APT metadata for $dist/$arch..."
+              echo "::group::📦 Generating APT metadata for $dist/$arch"
 
               python3 core/scripts/generate_apt_metadata.py \
                 --release-urls-dir release-urls/ \
                 --output-dir gh-pages-dist/apt \
                 --dist "$dist" \
                 --arch "$arch"
+
+              echo "✓ Metadata generated for $dist/$arch"
+              echo "::endgroup::"
             done
           done
 
-          # Import GPG key and sign Release files
-          echo "$GPG_PRIVATE_KEY" | base64 -d | gpg --batch --import
+          echo "::group::🔐 Signing Release files"
+          echo "$GPG_PRIVATE_KEY" | base64 -d | gpg --batch --import 2>/dev/null
 
-          # Sign Release files for each distribution
           for release_file in gh-pages-dist/apt/dists/*/Release; do
             if [ -f "$release_file" ]; then
               codename=$(basename $(dirname "$release_file"))
-              echo "Signing Release file for $codename..."
+              echo "  → Signing $codename..."
 
-              # Create InRelease (signed Release file)
               if [ -n "$GPG_PASSPHRASE" ]; then
                 gpg --batch --passphrase "$GPG_PASSPHRASE" \
-                    --clearsign --output "$(dirname "$release_file")/InRelease" "$release_file"
-              else
-                gpg --batch --clearsign --output "$(dirname "$release_file")/InRelease" "$release_file"
-              fi
-
-              # Create Release.gpg (detached signature)
-              if [ -n "$GPG_PASSPHRASE" ]; then
+                    --clearsign --output "$(dirname "$release_file")/InRelease" "$release_file" 2>/dev/null
                 gpg --batch --passphrase "$GPG_PASSPHRASE" \
-                    --detach-sign --armor --output "$release_file.gpg" "$release_file"
+                    --detach-sign --armor --output "$release_file.gpg" "$release_file" 2>/dev/null
               else
-                gpg --batch --detach-sign --armor --output "$release_file.gpg" "$release_file"
+                gpg --batch --clearsign --output "$(dirname "$release_file")/InRelease" "$release_file" 2>/dev/null
+                gpg --batch --detach-sign --armor --output "$release_file.gpg" "$release_file" 2>/dev/null
               fi
+              echo "    ✓ Signed"
             fi
           done
+          echo "::endgroup::"
 
-          # Publish GPG public key for APT repos
           if [ -n "${{ secrets.GPG_PUBLIC_KEY }}" ]; then
+            echo "🔑 Publishing GPG public key..."
             echo "${{ secrets.GPG_PUBLIC_KEY }}" | base64 -d > gh-pages-dist/apt/monitoring-hub.asc
+            echo "✓ GPG key published"
           fi
 
-      - name: Generate Portal
+      - name: 🌐 Generate Portal
         run: |
+          echo "::group::🌐 Generating web portal"
+
           python3 -m core.engine.site_generator \
             --output gh-pages-dist/index.html \
             --repo-dir gh-pages-dist
 
-          # catalog.json is automatically generated in gh-pages-dist/ by site_generator
+          echo "✓ Portal generated (index.html + catalog.json)"
+          echo "::endgroup::"
 
-      - name: Deploy to gh-pages (single commit)
+      - name: 🚀 Deploy to gh-pages
         run: |
+          echo "::group::🚀 Deploying to GitHub Pages"
           cd gh-pages-dist
           git config user.name "Monitoring Hub Bot"
           git config user.email "bot@monitoring-hub.local"
           git add .
 
           if git diff --staged --quiet; then
-            echo "No changes to commit"
+            echo "ℹ️  No changes to commit"
           else
+            echo "📝 Committing changes..."
             git commit -m "chore: update repository metadata and portal"
+
+            echo "⬆️  Pushing to gh-pages..."
             git push origin gh-pages
+
+            echo "✓ Deployment completed"
           fi
+          echo "::endgroup::"

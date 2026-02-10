@@ -1,4 +1,4 @@
-name: Watcher - Scan Updates
+name: 🔍 Scan Updates
 
 on:
   schedule:
