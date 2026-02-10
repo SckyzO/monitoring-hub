@@ -36,7 +36,21 @@ def get_or_create_release(repo: str, tag: str, token: str, exporter_name: str) -
 
     if response.status_code == 200:
         print(f"Release {tag} already exists")
-        return response.json()
+        release_data = response.json()
+        # Debug info
+        print(f"Release ID: {release_data.get('id', 'NOT FOUND')}")
+        print(f"Upload URL: {release_data.get('upload_url', 'NOT FOUND')}")
+        print(f"Assets count: {len(release_data.get('assets', []))}")
+
+        # Verify upload_url is present and valid
+        if "upload_url" not in release_data or not release_data["upload_url"]:
+            print(f"Warning: Release {tag} missing upload_url, recreating...")
+            # Delete and recreate
+            delete_url = f"https://api.github.com/repos/{repo}/releases/{release_data['id']}"
+            requests.delete(delete_url, headers=headers, timeout=30)
+            # Continue to create new release below
+        else:
+            return release_data
 
     # Create new release
     create_url = f"https://api.github.com/repos/{repo}/releases"
@@ -63,7 +77,11 @@ def upload_asset(release: Dict, file_path: Path, token: str, repo: str) -> Dict:
     }
 
     # Get upload URL
+    if "upload_url" not in release:
+        raise ValueError(f"Release missing upload_url: {release.get('id', 'unknown')}")
+
     upload_url = release["upload_url"].replace("{?name,label}", "")
+    print(f"Using upload URL: {upload_url}")
     file_name = file_path.name
 
     # Check if asset already exists
