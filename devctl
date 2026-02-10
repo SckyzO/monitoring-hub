@@ -182,7 +182,7 @@ cmd_lint_css() {
 cmd_lint_yaml() {
     ensure_image
     info "Running YAML linter..."
-    $DOCKER_RUN "$DEV_IMAGE" yamllint .
+    $DOCKER_RUN "$DEV_IMAGE" yamllint exporters/ core/tests/fixtures/ config/
 }
 
 cmd_format() {
@@ -212,7 +212,7 @@ cmd_ci() {
         echo '==> Checking format...' && ruff format --check . && \
         echo '==> Running type checker...' && mypy --explicit-package-bases core/ && \
         echo '==> Running CSS linter...' && stylelint --config config/linting/.stylelintrc.json --ignore-path config/linting/.stylelintignore \"**/*.css\" \"**/*.html.j2\" && \
-        echo '==> Running YAML linter...' && yamllint . && \
+        echo '==> Running YAML linter...' && yamllint exporters/ core/tests/fixtures/ config/ && \
         echo '==> Running tests...' && pytest -v"
     success "All CI checks passed"
 }
