@@ -136,6 +136,7 @@ jobs:
           echo "Release workflows will be triggered for each exporter." >> $GITHUB_STEP_SUMMARY
 
   trigger-releases:
+    name: Release - ${{ matrix.exporter }}
     needs: detect-changes
     if: needs.detect-changes.outputs.exporters != '[]'
     runs-on: ubuntu-latest
