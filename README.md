@@ -41,37 +41,47 @@
 <tr>
 <td align="center" width="20%" style="vertical-align: top;">
 <a href="https://sckyzo.github.io/monitoring-hub/">
-<img src="https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/googlechrome.svg" width="64" height="64" style="filter: invert(47%) sepia(78%) saturate(2476%) hue-rotate(200deg) brightness(101%) contrast(101%);"><br>
-<b style="display: block; height: 2.5em; line-height: 1.25em;">Portal</b>
-<sub style="display: block; margin-top: 4px;">Browse all exporters</sub>
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/chrome/chrome-original.svg" width="64" height="64">
+<br><br>
+<b>Portal</b>
+<br><br>
+<sub>Browse all exporters</sub>
 </a>
 </td>
 <td align="center" width="20%" style="vertical-align: top;">
 <a href="https://sckyzo.github.io/monitoring-hub/docs/">
-<img src="https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/materialformkdocs.svg" width="64" height="64" style="filter: invert(66%) sepia(44%) saturate(4292%) hue-rotate(157deg) brightness(95%) contrast(101%);"><br>
-<b style="display: block; height: 2.5em; line-height: 1.25em;">Documentation</b>
-<sub style="display: block; margin-top: 4px;">User guides & API</sub>
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/materialui/materialui-original.svg" width="64" height="64">
+<br><br>
+<b>Documentation</b>
+<br><br>
+<sub>User guides & API</sub>
 </a>
 </td>
 <td align="center" width="20%" style="vertical-align: top;">
 <a href="https://github.com/SckyzO/monitoring-hub/packages">
-<img src="https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/docker.svg" width="64" height="64" style="filter: invert(60%) sepia(75%) saturate(450%) hue-rotate(163deg) brightness(95%) contrast(101%);"><br>
-<b style="display: block; height: 2.5em; line-height: 1.25em;">Registry</b>
-<sub style="display: block; margin-top: 4px;">Container images</sub>
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/docker/docker-original.svg" width="64" height="64">
+<br><br>
+<b>Registry</b>
+<br><br>
+<sub>Container images</sub>
 </a>
 </td>
 <td align="center" width="20%" style="vertical-align: top;">
 <a href="https://github.com/SckyzO/monitoring-hub/issues/new">
-<img src="https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/github.svg" width="64" height="64" style="filter: invert(34%) sepia(95%) saturate(4218%) hue-rotate(346deg) brightness(90%) contrast(101%);"><br>
-<b style="display: block; height: 2.5em; line-height: 1.25em;">Issues</b>
-<sub style="display: block; margin-top: 4px;">Report bugs</sub>
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/github/github-original.svg" width="64" height="64">
+<br><br>
+<b>Issues</b>
+<br><br>
+<sub>Report bugs</sub>
 </a>
 </td>
 <td align="center" width="20%" style="vertical-align: top;">
 <a href="CHANGELOG.md">
-<img src="https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/git.svg" width="64" height="64" style="filter: invert(49%) sepia(89%) saturate(2619%) hue-rotate(251deg) brightness(90%) contrast(101%);"><br>
-<b style="display: block; height: 2.5em; line-height: 1.25em;">Changelog</b>
-<sub style="display: block; margin-top: 4px;">Release notes</sub>
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/git/git-original.svg" width="64" height="64">
+<br><br>
+<b>Changelog</b>
+<br><br>
+<sub>Release notes</sub>
 </a>
 </td>
 </tr>
