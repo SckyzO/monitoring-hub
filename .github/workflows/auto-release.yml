@@ -34,20 +34,19 @@ jobs:
 
       - name: 🔍 Detect Changed Exporters
         id: detect
+        env:
+          INPUT_EXPORTERS: ${{ inputs.exporters }}
         run: |
           echo "::group::🔍 Detecting modified exporters"
 
           # Check if workflow was manually triggered
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            # Get input and trim whitespace
-            INPUT_EXPORTERS=$(echo "${{ inputs.exporters }}" | xargs)
-
             echo "Manual trigger detected"
-            echo "Raw input: '${{ inputs.exporters }}'"
-            echo "Processed input: '$INPUT_EXPORTERS'"
+            echo "Input length: ${#INPUT_EXPORTERS}"
+            echo "Input value: '$INPUT_EXPORTERS'"
 
-            # Check if specific exporters were provided (non-empty after trimming)
-            if [ ! -z "$INPUT_EXPORTERS" ]; then
+            # Check if specific exporters were provided (non-empty input)
+            if [ "${#INPUT_EXPORTERS}" -gt 0 ]; then
               echo "Building specific exporters: $INPUT_EXPORTERS"
 
               # Convert comma-separated list to JSON array
