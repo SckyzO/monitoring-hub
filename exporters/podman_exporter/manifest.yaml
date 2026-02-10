@@ -19,8 +19,7 @@ artifacts:
     - el9
     - el10
     system_user: prometheus
-    extra_files: []
-    directories:
+    directories: &id001
     - path: /var/lib/prometheus
       owner: prometheus
       group: prometheus
@@ -37,6 +36,8 @@ artifacts:
       enabled: true
     section: net
     priority: optional
+    system_user: prometheus
+    directories: *id001
   docker:
     enabled: true
     entrypoint:
@@ -45,3 +46,4 @@ artifacts:
     - --collector.enable-all
     validation:
       command: --help
+      enabled: true

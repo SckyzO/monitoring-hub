@@ -1,7 +1,7 @@
 name: ha_cluster_exporter
 description: Prometheus exporter for High Availability clusters (Pacemaker, Corosync)
 category: Infrastructure
-version: 1.4.0
+version: v1.4.0
 updated: true
 upstream:
   type: github
@@ -34,6 +34,7 @@ artifacts:
       enabled: true
     section: net
     priority: optional
+    system_user: prometheus
   docker:
     enabled: true
     base_image: registry.access.redhat.com/ubi9/ubi-minimal
@@ -41,3 +42,4 @@ artifacts:
     - /usr/bin/ha_cluster_exporter
     validation:
       command: --version
+      enabled: true

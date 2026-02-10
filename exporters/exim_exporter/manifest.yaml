@@ -27,9 +27,6 @@ artifacts:
     systemd:
       enabled: true
     system_user: exim_exporter
-    dependencies: []
-    extra_files: []
-    directories: []
   deb:
     enabled: true
     targets:
@@ -42,6 +39,7 @@ artifacts:
       enabled: true
     section: net
     priority: optional
+    system_user: exim_exporter
   docker:
     enabled: true
     entrypoint:

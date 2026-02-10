@@ -22,11 +22,11 @@ artifacts:
     system_user: ipmi_exporter
     systemd:
       enabled: true
-    extra_files:
+    extra_files: &id001
     - source: assets/ipmi_remote.yml
       dest: /etc/ipmi_exporter/ipmi_remote.yml
       config: true
-    directories:
+    directories: &id002
     - path: /var/lib/ipmi_exporter
       owner: ipmi_exporter
       group: ipmi_exporter
@@ -47,6 +47,11 @@ artifacts:
       enabled: true
     section: net
     priority: optional
+    system_user: ipmi_exporter
+    extra_files: *id001
+    directories: *id002
+    dependencies:
+    - freeipmi-tools
   docker:
     enabled: true
     entrypoint:
@@ -55,3 +60,4 @@ artifacts:
     - --config.file=/etc/ipmi_exporter/ipmi_remote.yml
     validation:
       port: 9290
+      enabled: true

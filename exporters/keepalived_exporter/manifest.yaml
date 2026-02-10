@@ -27,9 +27,6 @@ artifacts:
     summary: Prometheus exporter for Keepalived metrics.
     systemd:
       enabled: true
-    dependencies: []
-    extra_files: []
-    directories: []
   deb:
     enabled: true
     targets:

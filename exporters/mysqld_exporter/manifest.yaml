@@ -20,12 +20,12 @@ artifacts:
     system_user: mysqld_exporter
     systemd:
       enabled: true
-    extra_files:
+    extra_files: &id001
     - source: assets/my.cnf
       dest: /var/lib/mysqld_exporter/.my.cnf
       config: true
       mode: '0600'
-    directories:
+    directories: &id002
     - path: /var/lib/mysqld_exporter
       owner: mysqld_exporter
       group: mysqld_exporter
@@ -42,6 +42,9 @@ artifacts:
       enabled: true
     section: net
     priority: optional
+    system_user: mysqld_exporter
+    extra_files: *id001
+    directories: *id002
   docker:
     enabled: true
     entrypoint:
@@ -50,3 +53,4 @@ artifacts:
     - --config.my-cnf=/var/lib/mysqld_exporter/.my.cnf
     validation:
       port: 9104
+      enabled: true

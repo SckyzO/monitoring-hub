@@ -33,6 +33,7 @@ artifacts:
       enabled: true
     section: net
     priority: optional
+    system_user: root
   docker:
     enabled: true
     base_image: registry.access.redhat.com/ubi9/ubi-minimal
@@ -40,3 +41,4 @@ artifacts:
     - /usr/bin/smartctl_exporter
     validation:
       port: 9633
+      enabled: true

@@ -7,7 +7,6 @@ updated: false
 upstream:
   type: github
   repo: tynany/frr_exporter
-  archive_name: null
 build:
   method: binary_repack
   binary_name: frr_exporter
@@ -41,6 +40,9 @@ artifacts:
       enabled: true
     section: net
     priority: optional
+    system_user: frr_exporter
+    dependencies:
+    - frr
   docker:
     enabled: true
     base_image: quay.io/frrouting/frr:10.1.3

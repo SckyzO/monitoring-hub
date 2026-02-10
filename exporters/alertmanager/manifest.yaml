@@ -23,11 +23,11 @@ artifacts:
     systemd:
       enabled: true
     system_user: alertmanager
-    extra_files:
+    extra_files: &id001
     - source: assets/alertmanager.yml
       dest: /etc/alertmanager/alertmanager.yml
       config: true
-    directories:
+    directories: &id002
     - path: /etc/alertmanager
       mode: '0755'
       owner: root
@@ -48,6 +48,9 @@ artifacts:
       enabled: true
     section: net
     priority: optional
+    system_user: alertmanager
+    extra_files: *id001
+    directories: *id002
   docker:
     enabled: true
     entrypoint:
@@ -56,3 +59,4 @@ artifacts:
     - --config.file=/etc/alertmanager/alertmanager.yml
     validation:
       port: 9093
+      enabled: true

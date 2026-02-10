@@ -22,11 +22,11 @@ artifacts:
     systemd:
       enabled: true
     system_user: prometheus
-    extra_files:
+    extra_files: &id001
     - source: assets/eseries_exporter.yml
       dest: /etc/eseries_exporter/eseries_exporter.yml
       config: true
-    directories:
+    directories: &id002
     - path: /etc/eseries_exporter
       mode: '0755'
       owner: root
@@ -43,6 +43,9 @@ artifacts:
       enabled: true
     section: net
     priority: optional
+    system_user: prometheus
+    extra_files: *id001
+    directories: *id002
   docker:
     enabled: true
     base_image: registry.access.redhat.com/ubi9/ubi-minimal
@@ -52,3 +55,4 @@ artifacts:
     - --config.file=/etc/eseries_exporter/eseries_exporter.yml
     validation:
       port: 9313
+      enabled: true

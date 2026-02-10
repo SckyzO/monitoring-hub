@@ -7,7 +7,6 @@ updated: false
 upstream:
   type: github
   repo: prometheus/memcached_exporter
-  archive_name: null
 build:
   method: binary_repack
   binary_name: memcached_exporter
@@ -26,9 +25,6 @@ artifacts:
     summary: Prometheus exporter for Memcached metrics.
     systemd:
       enabled: true
-    dependencies: []
-    extra_files: []
-    directories: []
   deb:
     enabled: true
     targets:

@@ -20,8 +20,7 @@ artifacts:
     system_user: apache_exporter
     systemd:
       enabled: true
-    extra_files: []
-    directories:
+    directories: &id001
     - path: /var/lib/apache_exporter
       owner: apache_exporter
       group: apache_exporter
@@ -38,9 +37,12 @@ artifacts:
       enabled: true
     section: net
     priority: optional
+    system_user: apache_exporter
+    directories: *id001
   docker:
     enabled: true
     entrypoint:
     - /usr/bin/apache_exporter
     validation:
       port: 9117
+      enabled: true

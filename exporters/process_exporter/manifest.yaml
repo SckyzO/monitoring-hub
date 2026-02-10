@@ -33,9 +33,11 @@ artifacts:
       enabled: true
     section: net
     priority: optional
+    system_user: prometheus
   docker:
     enabled: true
     entrypoint:
     - /usr/bin/process_exporter
     validation:
       port: 9256
+      enabled: true

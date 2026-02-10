@@ -1,6 +1,6 @@
 name: artifactory_exporter
 description: Prometheus exporter for JFrog Artifactory stats.
-category: DevOps
+category: Infrastructure
 version: v1.16.1
 new: true
 updated: false
@@ -37,6 +37,7 @@ artifacts:
       enabled: true
     section: net
     priority: optional
+    system_user: artifactory_exporter
   docker:
     enabled: true
     entrypoint:

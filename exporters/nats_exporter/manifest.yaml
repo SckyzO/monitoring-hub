@@ -27,9 +27,6 @@ artifacts:
     summary: NATS metrics exporter for Prometheus.
     systemd:
       enabled: true
-    dependencies: []
-    extra_files: []
-    directories: []
   deb:
     enabled: true
     targets:
