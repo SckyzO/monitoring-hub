@@ -62,7 +62,9 @@ def get_or_create_release(repo: str, tag: str, token: str, exporter_name: str) -
         if "upload_url" not in release_data or not release_data["upload_url"]:
             print(f"Warning: Release {tag} missing upload_url, recreating...")
             # Delete and recreate
-            delete_url = f"https://api.github.com/repos/{repo}/releases/{release_data['id']}"
+            delete_url = (
+                f"https://api.github.com/repos/{repo}/releases/{release_data['id']}"
+            )
             requests.delete(delete_url, headers=headers, timeout=30)
             # Continue to create new release below
         else:
