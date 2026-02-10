@@ -166,9 +166,7 @@ def main():
     parser.add_argument(
         "--output-dir", required=True, help="Output directory for repodata/"
     )
-    parser.add_argument(
-        "--dist", required=True, help="Distribution (el8, el9, el10)"
-    )
+    parser.add_argument("--dist", required=True, help="Distribution (el8, el9, el10)")
     parser.add_argument("--arch", required=True, help="Architecture (x86_64, aarch64)")
     parser.add_argument(
         "--cache-dir",
@@ -188,7 +186,9 @@ def main():
     cache_dir.mkdir(parents=True, exist_ok=True)
 
     # Find all release_urls.json files
-    json_files = glob.glob(str(release_urls_dir / "**" / "release_urls.json"), recursive=True)
+    json_files = glob.glob(
+        str(release_urls_dir / "**" / "release_urls.json"), recursive=True
+    )
 
     if not json_files:
         print("No release_urls.json files found")
