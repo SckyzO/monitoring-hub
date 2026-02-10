@@ -31,54 +31,69 @@ jobs:
           python-version: '3.12'
           cache: 'pip'
 
-      - name: Install dependencies
-        run: pip install -r requirements/base.txt
-
-      - name: Checkout Published Artifacts (gh-pages)
+      - name: 📦 Install dependencies
         run: |
+          echo "::group::📦 Installing dependencies"
+          pip install -r requirements/base.txt
+          echo "✓ Dependencies installed"
+          echo "::endgroup::"
+
+      - name: 📥 Checkout Published Artifacts (gh-pages)
+        run: |
+          echo "::group::📥 Setting up gh-pages worktree"
           git fetch origin gh-pages
           git worktree add -B gh-pages gh-pages-dist origin/gh-pages
+          echo "✓ gh-pages ready"
+          echo "::endgroup::"
 
-      - name: Regenerate Portal
+      - name: 🎨 Regenerate Portal
         run: |
+          echo "::group::🎨 Generating portal HTML and catalog"
           export PYTHONPATH=$GITHUB_WORKSPACE
-          # We tell the generator to look for RPMs in 'gh-pages-dist' (where artifacts are)
-          # And output the new HTML directly into that folder
           python3 -m core.engine.site_generator --output gh-pages-dist/index.html --repo-dir gh-pages-dist
+          echo "✓ Portal generated successfully"
+          echo "::endgroup::"
 
-      - name: Validate Site
-        run: python3 core/scripts/validate_site.py gh-pages-dist
+      - name: ✅ Validate Site
+        run: |
+          echo "::group::✅ Validating generated site"
+          python3 core/scripts/validate_site.py gh-pages-dist
+          echo "✓ Site validation passed"
+          echo "::endgroup::"
 
-      - name: Deploy Changes
+      - name: 🚀 Deploy Changes
         run: |
           cd gh-pages-dist
 
-          # Configuration Git pour le Bot
           git config user.name "Monitoring Hub Bot"
           git config user.email "bot@monitoring-hub.local"
 
-          # Add changes (index.html, catalog.json)
           git add index.html catalog.json
 
           if git diff --staged --quiet; then
-            echo "No changes to the portal. Skipping push."
+            echo "ℹ️  No changes to the portal. Skipping push."
           else
+            echo "::group::📝 Committing changes"
             git commit -m "chore(site): refresh portal UI/data [skip ci]"
+            echo "✓ Changes committed"
+            echo "::endgroup::"
 
-            # Push with retry logic for concurrent updates
+            echo "::group::⬆️  Pushing to gh-pages"
             MAX_RETRIES=3
             RETRY_COUNT=0
             while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
               if git push origin gh-pages; then
-                echo "Successfully pushed to gh-pages"
+                echo "✓ Successfully pushed to gh-pages"
+                echo "::endgroup::"
                 exit 0
               else
                 RETRY_COUNT=$((RETRY_COUNT + 1))
                 if [ $RETRY_COUNT -lt $MAX_RETRIES ]; then
-                  echo "Push failed, pulling latest changes and retrying ($RETRY_COUNT/$MAX_RETRIES)..."
+                  echo "⚠️  Push failed, retrying ($RETRY_COUNT/$MAX_RETRIES)..."
                   git pull --rebase origin gh-pages
                 else
-                  echo "Failed to push after $MAX_RETRIES attempts"
+                  echo "❌ Failed to push after $MAX_RETRIES attempts"
+                  echo "::endgroup::"
                   exit 1
                 fi
               fi
