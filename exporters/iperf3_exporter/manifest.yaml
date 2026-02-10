@@ -29,6 +29,18 @@ artifacts:
       enabled: true
     dependencies:
     - iperf3
+  deb:
+    enabled: true
+    targets:
+    - ubuntu-22.04
+    - ubuntu-24.04
+    - debian-12
+    - debian-13
+    summary: Prometheus exporter for iPerf3 metrics.
+    systemd:
+      enabled: true
+    section: net
+    priority: optional
   docker:
     enabled: true
     entrypoint:

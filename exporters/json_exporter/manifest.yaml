@@ -34,6 +34,18 @@ artifacts:
     directories:
     - path: /etc/json_exporter
       mode: '0755'
+  deb:
+    enabled: true
+    targets:
+    - ubuntu-22.04
+    - ubuntu-24.04
+    - debian-12
+    - debian-13
+    summary: A prometheus exporter which scrapes remote JSON by JSONPath.
+    systemd:
+      enabled: true
+    section: net
+    priority: optional
   docker:
     enabled: true
     entrypoint:

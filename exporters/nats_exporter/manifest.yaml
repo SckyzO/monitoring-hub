@@ -30,6 +30,18 @@ artifacts:
     dependencies: []
     extra_files: []
     directories: []
+  deb:
+    enabled: true
+    targets:
+    - ubuntu-22.04
+    - ubuntu-24.04
+    - debian-12
+    - debian-13
+    summary: NATS metrics exporter for Prometheus.
+    systemd:
+      enabled: true
+    section: net
+    priority: optional
   docker:
     enabled: true
     entrypoint:

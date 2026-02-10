@@ -26,6 +26,18 @@ artifacts:
       owner: apache_exporter
       group: apache_exporter
       mode: '0755'
+  deb:
+    enabled: true
+    targets:
+    - ubuntu-22.04
+    - ubuntu-24.04
+    - debian-12
+    - debian-13
+    summary: Prometheus exporter for Apache HTTP Server
+    systemd:
+      enabled: true
+    section: net
+    priority: optional
   docker:
     enabled: true
     entrypoint:

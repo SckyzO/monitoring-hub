@@ -29,6 +29,18 @@ artifacts:
     system_user: frr_exporter
     dependencies:
     - frr
+  deb:
+    enabled: true
+    targets:
+    - ubuntu-22.04
+    - ubuntu-24.04
+    - debian-12
+    - debian-13
+    summary: Prometheus exporter for FRR metrics.
+    systemd:
+      enabled: true
+    section: net
+    priority: optional
   docker:
     enabled: true
     base_image: quay.io/frrouting/frr:10.1.3

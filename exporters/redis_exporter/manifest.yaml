@@ -27,6 +27,18 @@ artifacts:
       owner: redis_exporter
       group: redis_exporter
       mode: '0755'
+  deb:
+    enabled: true
+    targets:
+    - ubuntu-22.04
+    - ubuntu-24.04
+    - debian-12
+    - debian-13
+    summary: Prometheus exporter for Redis metrics
+    systemd:
+      enabled: true
+    section: net
+    priority: optional
   docker:
     enabled: true
     entrypoint:

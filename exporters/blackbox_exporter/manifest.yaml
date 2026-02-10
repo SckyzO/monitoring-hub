@@ -1,42 +1,55 @@
 name: blackbox_exporter
-description: "Prometheus blackbox exporter for network probing (HTTP, DNS, TCP, ICMP)"
+description: Prometheus blackbox exporter for network probing (HTTP, DNS, TCP, ICMP)
 category: Network
-version: "v0.28.0"
+version: v0.28.0
 updated: true
-
 upstream:
   type: github
   repo: prometheus/blackbox_exporter
-
 build:
   method: binary_repack
   binary_name: blackbox_exporter
-
 artifacts:
   rpm:
     enabled: true
-    summary: "Prometheus blackbox exporter"
-    targets: [el8, el9, el10]
+    summary: Prometheus blackbox exporter
+    targets:
+    - el8
+    - el9
+    - el10
     system_user: blackbox_exporter
     systemd:
       enabled: true
     extra_files:
-      - source: assets/blackbox.yml
-        dest: /etc/blackbox_exporter/blackbox.yml
-        config: true
+    - source: assets/blackbox.yml
+      dest: /etc/blackbox_exporter/blackbox.yml
+      config: true
     directories:
-      - path: /etc/blackbox_exporter
-        owner: root
-        group: root
-        mode: "0755"
-      - path: /var/lib/blackbox_exporter
-        owner: blackbox_exporter
-        group: blackbox_exporter
-        mode: "0755"
-
+    - path: /etc/blackbox_exporter
+      owner: root
+      group: root
+      mode: '0755'
+    - path: /var/lib/blackbox_exporter
+      owner: blackbox_exporter
+      group: blackbox_exporter
+      mode: '0755'
+  deb:
+    enabled: true
+    targets:
+    - ubuntu-22.04
+    - ubuntu-24.04
+    - debian-12
+    - debian-13
+    summary: Prometheus blackbox exporter for network probing (HTTP, DNS, TCP, ICMP)
+    systemd:
+      enabled: true
+    section: net
+    priority: optional
   docker:
     enabled: true
-    entrypoint: ["/usr/bin/blackbox_exporter"]
-    cmd: ["--config.file=/etc/blackbox_exporter/blackbox.yml"]
+    entrypoint:
+    - /usr/bin/blackbox_exporter
+    cmd:
+    - --config.file=/etc/blackbox_exporter/blackbox.yml
     validation:
       port: 9115

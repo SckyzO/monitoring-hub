@@ -23,6 +23,18 @@ artifacts:
     systemd:
       enabled: true
     system_user: prometheus
+  deb:
+    enabled: true
+    targets:
+    - ubuntu-22.04
+    - ubuntu-24.04
+    - debian-12
+    - debian-13
+    summary: Prometheus exporter for IBM GPFS (Spectrum Scale) metrics
+    systemd:
+      enabled: true
+    section: net
+    priority: optional
   docker:
     enabled: true
     base_image: registry.access.redhat.com/ubi9/ubi-minimal
