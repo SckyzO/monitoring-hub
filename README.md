@@ -41,7 +41,7 @@
 <tr>
 <td align="center" style="vertical-align: top;">
 <a href="https://sckyzo.github.io/monitoring-hub/">
-<img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/chrome/chrome-original.svg" width="64" height="64">
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/firefox/firefox-original.svg" width="64" height="64">
 <br><br>
 <b>Portal</b>
 <br><br>
@@ -68,7 +68,7 @@
 </td>
 <td align="center" style="vertical-align: top;">
 <a href="https://github.com/SckyzO/monitoring-hub/issues/new">
-<img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/github/github-original.svg" width="64" height="64">
+<img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/jira/jira-original.svg" width="64" height="64">
 <br><br>
 <b>Issues</b>
 <br><br>
