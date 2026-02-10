@@ -21,7 +21,7 @@ artifacts:
     system_user: nginx_exporter
     systemd:
       enabled: true
-    directories: &id001
+    directories:
     - path: /var/lib/nginx_exporter
       owner: nginx_exporter
       group: nginx_exporter
@@ -39,7 +39,11 @@ artifacts:
     section: net
     priority: optional
     system_user: nginx_exporter
-    directories: *id001
+    directories:
+    - path: /var/lib/nginx_exporter
+      owner: nginx_exporter
+      group: nginx_exporter
+      mode: '0755'
   docker:
     enabled: true
     entrypoint:

@@ -19,7 +19,7 @@ artifacts:
     - el9
     - el10
     system_user: prometheus
-    directories: &id001
+    directories:
     - path: /var/lib/prometheus
       owner: prometheus
       group: prometheus
@@ -37,7 +37,11 @@ artifacts:
     section: net
     priority: optional
     system_user: prometheus
-    directories: *id001
+    directories:
+    - path: /var/lib/prometheus
+      owner: prometheus
+      group: prometheus
+      mode: '0755'
   docker:
     enabled: true
     entrypoint:
