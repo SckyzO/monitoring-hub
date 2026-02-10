@@ -66,7 +66,14 @@ jobs:
         id: version
         run: |
           exporter="${{ inputs.exporter }}"
-          version=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(m['version'].lstrip('v'))")
+          version=$(python3 - <<'PY'
+          import yaml
+
+          with open(f"exporters/{exporter}/manifest.yaml") as handle:
+              manifest = yaml.safe_load(handle)
+          print(manifest["version"].lstrip("v"))
+          PY
+          )
           echo "version=$version" >> $GITHUB_OUTPUT
           echo "📌 Version: v$version"
 
@@ -76,10 +83,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     needs: get-version
-    if: |
-      (inputs.package_type == 'all' || inputs.package_type == 'rpm') &&
-      (inputs.arch == 'all' || inputs.arch == matrix.arch) &&
-      (inputs.dist == 'all' || inputs.dist == matrix.dist)
+    if: inputs.package_type == 'all' || inputs.package_type == 'rpm'
     permissions:
       contents: write  # Required for creating releases
     strategy:
@@ -91,6 +95,7 @@ jobs:
       - uses: actions/checkout@v6
 
       - name: Set up QEMU
+        if: (inputs.arch == 'all' || inputs.arch == matrix.arch) && (inputs.dist == 'all' || inputs.dist == matrix.dist)
         uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
@@ -105,6 +110,7 @@ jobs:
       - run: pip install -r requirements/base.txt
 
       - name: 🔨 Build RPM
+        if: (inputs.arch == 'all' || inputs.arch == matrix.arch) && (inputs.dist == 'all' || inputs.dist == matrix.dist)
         env:
           PYTHONPATH: ${{ github.workspace }}
         run: |
@@ -127,7 +133,10 @@ jobs:
           build_dir="build/$exporter-$arch-$dist"
 
           echo "::group::🔧 Generating RPM spec file"
-          python3 -m core.engine.builder --manifest "exporters/$exporter/manifest.yaml" --output-dir "$build_dir" --arch "$arch"
+          python3 -m core.engine.builder \
+            --manifest "exporters/$exporter/manifest.yaml" \
+            --output-dir "$build_dir" \
+            --arch "$arch"
           echo "✓ Spec file generated"
           echo "::endgroup::"
 
@@ -238,10 +247,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     needs: get-version
-    if: |
-      (inputs.package_type == 'all' || inputs.package_type == 'deb') &&
-      (inputs.arch == 'all' || inputs.arch == matrix.arch) &&
-      (inputs.dist == 'all' || inputs.dist == matrix.dist)
+    if: inputs.package_type == 'all' || inputs.package_type == 'deb'
     permissions:
       contents: write  # Required for creating releases
     strategy:
@@ -253,6 +259,7 @@ jobs:
       - uses: actions/checkout@v6
 
       - name: Set up QEMU
+        if: (inputs.arch == 'all' || inputs.arch == matrix.arch) && (inputs.dist == 'all' || inputs.dist == matrix.dist)
         uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
@@ -267,6 +274,7 @@ jobs:
       - run: pip install -r requirements/base.txt
 
       - name: 🔨 Build DEB
+        if: (inputs.arch == 'all' || inputs.arch == matrix.arch) && (inputs.dist == 'all' || inputs.dist == matrix.dist)
         env:
           PYTHONPATH: ${{ github.workspace }}
         run: |
@@ -290,7 +298,10 @@ jobs:
           build_dir="build/$exporter-$arch-$dist"
 
           echo "::group::🔧 Generating DEB control files"
-          python3 -m core.engine.builder --manifest "exporters/$exporter/manifest.yaml" --output-dir "$build_dir" --arch "$arch"
+          python3 -m core.engine.builder \
+            --manifest "exporters/$exporter/manifest.yaml" \
+            --output-dir "$build_dir" \
+            --arch "$arch"
           echo "✓ Control files generated"
           echo "::endgroup::"
 
@@ -435,7 +446,14 @@ jobs:
           version="${{ needs.get-version.outputs.version }}"
 
           echo "::group::🔍 Checking Docker configuration"
-          is_enabled=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(m.get('artifacts', {}).get('docker', {}).get('enabled', False))")
+          is_enabled=$(python3 - <<'PY'
+          import yaml
+
+          with open(f"exporters/{exporter}/manifest.yaml") as handle:
+              manifest = yaml.safe_load(handle)
+          print(manifest.get("artifacts", {}).get("docker", {}).get("enabled", False))
+          PY
+          )
 
           if [ "$is_enabled" != "True" ]; then
             echo "Docker build disabled for $exporter. Skipping."
@@ -512,12 +530,21 @@ jobs:
           image_id="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/$exporter"
           image_id=$(echo $image_id | tr '[:upper:]' '[:lower:]')
 
-          description=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(m.get('description', ''))")
+          description=$(python3 - <<'PY'
+          import yaml
+
+          with open(f"exporters/{exporter}/manifest.yaml") as handle:
+              manifest = yaml.safe_load(handle)
+          print(manifest.get("description", ""))
+          PY
+          )
+
+          source_url="${{ github.server_url }}/${{ github.repository }}/tree/main/exporters/$exporter"
 
           docker buildx build \
             --file "build/$exporter/Dockerfile" \
             --push \
-            --label "org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}/tree/main/exporters/$exporter" \
+            --label "org.opencontainers.image.source=$source_url" \
             --label "org.opencontainers.image.documentation=https://sckyzo.github.io/monitoring-hub/" \
             --label "org.opencontainers.image.description=$description" \
             --label "org.opencontainers.image.version=$version" \
@@ -534,15 +561,36 @@ jobs:
           exporter="${{ inputs.exporter }}"
 
           echo "::group::🔍 Checking validation configuration"
-          v_enabled=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(m.get('artifacts', {}).get('docker', {}).get('validation', {}).get('enabled', True))")
+          v_enabled=$(python3 - <<'PY'
+          import yaml
+
+          with open(f"exporters/{exporter}/manifest.yaml") as handle:
+              manifest = yaml.safe_load(handle)
+          print(manifest.get("artifacts", {}).get("docker", {}).get("validation", {}).get("enabled", True))
+          PY
+          )
 
           if [ "$v_enabled" != "True" ]; then
             echo "Smoke test disabled for $exporter."
             exit 0
           fi
 
-          v_port=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(m.get('artifacts', {}).get('docker', {}).get('validation', {}).get('port', 'None'))")
-          v_cmd=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(m.get('artifacts', {}).get('docker', {}).get('validation', {}).get('command', 'None'))")
+          v_port=$(python3 - <<'PY'
+          import yaml
+
+          with open(f"exporters/{exporter}/manifest.yaml") as handle:
+              manifest = yaml.safe_load(handle)
+          print(manifest.get("artifacts", {}).get("docker", {}).get("validation", {}).get("port", "None"))
+          PY
+          )
+          v_cmd=$(python3 - <<'PY'
+          import yaml
+
+          with open(f"exporters/{exporter}/manifest.yaml") as handle:
+              manifest = yaml.safe_load(handle)
+          print(manifest.get("artifacts", {}).get("docker", {}).get("validation", {}).get("command", "None"))
+          PY
+          )
 
           if [ "$v_port" == "None" ] && [ "$v_cmd" == "None" ]; then
             echo "No validation configured. Skipping."
@@ -564,7 +612,14 @@ jobs:
           # Port-based validation
           if [ "$v_port" != "None" ]; then
             echo "::group::🧪 Testing HTTP endpoint on port $v_port"
-            v_args=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(m.get('artifacts', {}).get('docker', {}).get('validation', {}).get('args', ''))")
+            v_args=$(python3 - <<'PY'
+            import yaml
+
+            with open(f"exporters/{exporter}/manifest.yaml") as handle:
+                manifest = yaml.safe_load(handle)
+            print(manifest.get("artifacts", {}).get("docker", {}).get("validation", {}).get("args", ""))
+            PY
+            )
 
             container_id=$(docker run -d -p "$v_port:$v_port" "$image_id" $v_args)
             sleep 5

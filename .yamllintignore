@@ -1,0 +1,14 @@
+# Build and generated files
+build/
+dist/
+site/
+.venv/
+venv/
+__pycache__/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Temporary files
+*.tmp
+*.log

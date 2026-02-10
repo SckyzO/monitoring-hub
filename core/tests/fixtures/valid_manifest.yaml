@@ -13,9 +13,9 @@ artifacts:
   rpm:
     enabled: true
     targets:
-    - el8
-    - el9
-    - el10
+      - el8
+      - el9
+      - el10
     summary: Prometheus exporter for hardware and OS metrics
     systemd:
       enabled: true

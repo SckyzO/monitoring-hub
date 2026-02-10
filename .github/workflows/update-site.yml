@@ -3,7 +3,7 @@ name: 🌐 Update Site
 on:
   workflow_dispatch: # Allows manual trigger
   push:
-    branches: [ main ]
+    branches: [main]
     paths:
       - 'core/templates/**' # Trigger if templates change
       - 'core/engine/**'    # Trigger if generator logic changes

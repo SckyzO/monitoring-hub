@@ -73,6 +73,7 @@ DEVELOPMENT COMMANDS:
     lint                Check code with ruff linter
     lint-fix            Auto-fix linting issues
     lint-css            Check CSS with stylelint
+    lint-yaml           Check YAML with yamllint
     format              Format code with ruff
     format-check        Check code formatting without changes
     type-check          Run mypy type checking
@@ -178,6 +179,12 @@ cmd_lint_css() {
         "**/*.css" "**/*.html.j2"
 }
 
+cmd_lint_yaml() {
+    ensure_image
+    info "Running YAML linter..."
+    $DOCKER_RUN "$DEV_IMAGE" yamllint .
+}
+
 cmd_format() {
     ensure_image
     info "Formatting code..."
@@ -205,6 +212,7 @@ cmd_ci() {
         echo '==> Checking format...' && ruff format --check . && \
         echo '==> Running type checker...' && mypy --explicit-package-bases core/ && \
         echo '==> Running CSS linter...' && stylelint --config config/linting/.stylelintrc.json --ignore-path config/linting/.stylelintignore \"**/*.css\" \"**/*.html.j2\" && \
+        echo '==> Running YAML linter...' && yamllint . && \
         echo '==> Running tests...' && pytest -v"
     success "All CI checks passed"
 }
@@ -469,6 +477,7 @@ main() {
         lint)           cmd_lint "$@" ;;
         lint-fix)       cmd_lint_fix "$@" ;;
         lint-css)       cmd_lint_css "$@" ;;
+        lint-yaml)      cmd_lint_yaml "$@" ;;
         format)         cmd_format "$@" ;;
         format-check)   cmd_format_check "$@" ;;
         type-check)     cmd_type_check "$@" ;;
