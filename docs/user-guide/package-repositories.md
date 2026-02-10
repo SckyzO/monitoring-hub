@@ -22,6 +22,9 @@ Monitoring Hub provides multiple distribution channels for installing exporters 
 ### Installation
 
 ```bash
+# Import GPG key for package verification
+sudo rpm --import https://sckyzo.github.io/monitoring-hub/RPM-GPG-KEY-monitoring-hub
+
 # Add repository (replace el9 with your version)
 sudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el9/$(arch)/
 
