@@ -67,7 +67,9 @@ def get_deb_metadata(url: str, local_cache: Path) -> Dict:
         "Package": control.get("Package", "unknown"),
         "Version": control.get("Version", "0.0.0"),
         "Architecture": control.get("Architecture", "amd64"),
-        "Maintainer": control.get("Maintainer", "Monitoring Hub <bot@monitoring-hub.local>"),
+        "Maintainer": control.get(
+            "Maintainer", "Monitoring Hub <bot@monitoring-hub.local>"
+        ),
         "Description": control.get("Description", ""),
         "Section": control.get("Section", "net"),
         "Priority": control.get("Priority", "optional"),
@@ -154,17 +156,13 @@ def main():
         required=True,
         help="Directory containing release_urls.json files",
     )
-    parser.add_argument(
-        "--output-dir", required=True, help="Output directory for apt/"
-    )
+    parser.add_argument("--output-dir", required=True, help="Output directory for apt/")
     parser.add_argument(
         "--dist",
         required=True,
         help="Distribution (ubuntu-22.04, ubuntu-24.04, debian-12, debian-13)",
     )
-    parser.add_argument(
-        "--arch", required=True, help="Architecture (amd64, arm64)"
-    )
+    parser.add_argument("--arch", required=True, help="Architecture (amd64, arm64)")
     parser.add_argument(
         "--cache-dir",
         default="/tmp/deb-metadata-cache",
@@ -189,7 +187,9 @@ def main():
     cache_dir.mkdir(parents=True, exist_ok=True)
 
     # Find all release_urls.json files
-    json_files = glob.glob(str(release_urls_dir / "**" / "release_urls.json"), recursive=True)
+    json_files = glob.glob(
+        str(release_urls_dir / "**" / "release_urls.json"), recursive=True
+    )
 
     if not json_files:
         print("No release_urls.json files found")
