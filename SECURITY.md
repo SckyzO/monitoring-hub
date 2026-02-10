@@ -2,12 +2,12 @@
 
 ## Supported Versions
 
-We actively support the latest version of Monitoring Hub. Security updates are applied to the `main` branch and included in the next release.
+We actively support the latest version of Monitoring Hub. Security updates are applied to the `main` branch and deployed automatically to production.
 
-| Version | Supported          |
-| ------- | ------------------ |
-| main    | :white_check_mark: |
-| < 1.0   | :x:                |
+| Branch | Supported          |
+| ------ | ------------------ |
+| main   | :white_check_mark: |
+| other  | :x:                |
 
 ## Reporting a Vulnerability
 
@@ -70,7 +70,7 @@ Monitoring Hub implements several security best practices:
 
 - **Input Validation**: Strict manifest schema validation with marshmallow
 - **Template Security**: Jinja2 templates use autoescape to prevent injection
-- **Signed Releases**: Future releases will include GPG signatures
+- **Artifact Verification**: All packages published to GitHub Releases with checksums
 
 ### Container Security
 

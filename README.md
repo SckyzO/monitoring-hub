@@ -26,8 +26,9 @@
 ## <img src=".github/icons/rocket-amber.svg" width="24" height="24" style="vertical-align: bottom;"> Key Features
 
 *   **Native Multi-Arch:** Every tool is built for `x86_64` and `aarch64` (ARM64).
+*   **Multi-Format Packages:** RPM (RHEL/CentOS/Rocky/Alma), DEB (Ubuntu/Debian), and OCI containers.
 *   **Hardened Security:** All Docker images use **Red Hat UBI 9 Minimal**.
-*   **Linux Standard (FHS):** RPMs include system users, standard paths (`/etc`, `/var/lib`), and systemd integration.
+*   **Linux Standard (FHS):** Packages include system users, standard paths (`/etc`, `/var/lib`), and systemd integration.
 *   **Zero-Click Updates:** An automated Watcher opens PRs, triggers CI validation, and merges automatically when tests pass.
 *   **Always Up-to-Date:** Never worry about upstream releases again.
 
@@ -206,12 +207,25 @@ The "Magic" happens in the `core/` engine:
 
 ### YUM Repository (RPM)
 ```bash
-# Example for EL9
+# RHEL/CentOS/Rocky/Alma 8, 9, 10
 sudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el9/$(arch)/
 sudo dnf install <exporter_name>
 ```
 
-### Container Registry (Docker)
+### APT Repository (DEB)
+```bash
+# Ubuntu 22.04/24.04, Debian 12/13
+curl -fsSL https://sckyzo.github.io/monitoring-hub/apt/monitoring-hub.asc | \
+  sudo gpg --dearmor -o /usr/share/keyrings/monitoring-hub.gpg
+
+echo "deb [signed-by=/usr/share/keyrings/monitoring-hub.gpg] \
+  https://sckyzo.github.io/monitoring-hub/apt jammy main" | \
+  sudo tee /etc/apt/sources.list.d/monitoring-hub.list
+
+sudo apt update && sudo apt install <exporter_name>
+```
+
+### Container Registry (OCI)
 ```bash
 docker pull ghcr.io/sckyzo/monitoring-hub/<exporter_name>:latest
 ```
