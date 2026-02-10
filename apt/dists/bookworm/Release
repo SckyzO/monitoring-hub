@@ -1,13 +1,13 @@
 Origin: Monitoring Hub
 Label: Monitoring Hub
-Suite: jammy
-Codename: jammy
+Suite: bookworm
+Codename: bookworm
 Architectures: arm64
 Components: main
 Description: Monitoring Hub APT Repository
 MD5Sum:
  956abd31fc8a1797f806cefaeda70c6e 2008 main/binary-arm64/Packages
- e5ec639be8b3d7b2b52f8aee5b7248cc 397 main/binary-arm64/Packages.gz
+ 3bf83a34526cf9364e070bf1933ace2a 397 main/binary-arm64/Packages.gz
 SHA256:
  3eb1e963c173bc8327b469930432ff402956d343b2ef25a650bec16ddc95b30a 2008 main/binary-arm64/Packages
- 64897358ef95a1d7cb0a961ffe6126d825563627cfe6934e742596e3466a75b4 397 main/binary-arm64/Packages.gz
+ 3a4184bae68821711ee9bac4e44f268fb6074f0d8f45dcc9a586d1a7a6a583d9 397 main/binary-arm64/Packages.gz

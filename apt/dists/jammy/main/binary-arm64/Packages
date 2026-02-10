@@ -1,0 +1,48 @@
+Package: blackbox-exporter
+Version: 0.28.0-1
+Architecture: arm64
+Maintainer: Monitoring Hub <noreply@monitoring-hub.local>
+Filename: https://github.com/SckyzO/monitoring-hub/releases/download/blackbox_exporter-v0.28.0/blackbox-exporter_0.28.0-1_arm64.deb
+Size: 14782396
+MD5sum: e7fc18365db2585951a682d39868cfb4
+SHA256: ea3ea7ef433153d7a441dec03b2e29f07901b3288898d101931650757020d73c
+Section: net
+Priority: optional
+Description: Prometheus blackbox exporter for network probing (HTTP, DNS, TCP, ICMP)
+
+Package: blackbox-exporter
+Version: 0.28.0-1
+Architecture: arm64
+Maintainer: Monitoring Hub <noreply@monitoring-hub.local>
+Filename: https://github.com/SckyzO/monitoring-hub/releases/download/blackbox_exporter-v0.28.0/blackbox-exporter_0.28.0-1_arm64.deb
+Size: 14782396
+MD5sum: e7fc18365db2585951a682d39868cfb4
+SHA256: ea3ea7ef433153d7a441dec03b2e29f07901b3288898d101931650757020d73c
+Section: net
+Priority: optional
+Description: Prometheus blackbox exporter for network probing (HTTP, DNS, TCP, ICMP)
+
+Package: blackbox-exporter
+Version: 0.28.0-1
+Architecture: arm64
+Maintainer: Monitoring Hub <noreply@monitoring-hub.local>
+Filename: https://github.com/SckyzO/monitoring-hub/releases/download/blackbox_exporter-v0.28.0/blackbox-exporter_0.28.0-1_arm64.deb
+Size: 14782396
+MD5sum: e7fc18365db2585951a682d39868cfb4
+SHA256: ea3ea7ef433153d7a441dec03b2e29f07901b3288898d101931650757020d73c
+Section: net
+Priority: optional
+Description: Prometheus blackbox exporter for network probing (HTTP, DNS, TCP, ICMP)
+
+Package: blackbox-exporter
+Version: 0.28.0-1
+Architecture: arm64
+Maintainer: Monitoring Hub <noreply@monitoring-hub.local>
+Filename: https://github.com/SckyzO/monitoring-hub/releases/download/blackbox_exporter-v0.28.0/blackbox-exporter_0.28.0-1_arm64.deb
+Size: 14782396
+MD5sum: e7fc18365db2585951a682d39868cfb4
+SHA256: ea3ea7ef433153d7a441dec03b2e29f07901b3288898d101931650757020d73c
+Section: net
+Priority: optional
+Description: Prometheus blackbox exporter for network probing (HTTP, DNS, TCP, ICMP)
+

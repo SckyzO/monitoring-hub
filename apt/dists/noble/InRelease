@@ -1,0 +1,32 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+Origin: Monitoring Hub
+Label: Monitoring Hub
+Suite: noble
+Codename: noble
+Architectures: arm64
+Components: main
+Description: Monitoring Hub APT Repository
+MD5Sum:
+ 956abd31fc8a1797f806cefaeda70c6e 2008 main/binary-arm64/Packages
+ 3bf83a34526cf9364e070bf1933ace2a 397 main/binary-arm64/Packages.gz
+SHA256:
+ 3eb1e963c173bc8327b469930432ff402956d343b2ef25a650bec16ddc95b30a 2008 main/binary-arm64/Packages
+ 3a4184bae68821711ee9bac4e44f268fb6074f0d8f45dcc9a586d1a7a6a583d9 397 main/binary-arm64/Packages.gz
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEEH1M8/US0rCnBmACnJaaIp27upEcFAmmKnSUACgkQJaaIp27u
+pEcVOhAAoOKIG25FstW7pW3jdZ8jmBrkiFZMuBYsA+62U2Loa5wxMG0Tu8btYODa
+jDSIgRuGZq0uBqgvFoAQj0sKerIfi007vQOSD1NpIdhWnf0sGz77T2dFcYdor6rG
+5qbu4tb8NRsi2+stosQnXvfxgRQt7DgOLgK0hE9WqBR3/JQT/ZU4jJ2Ga2wpXoh1
+2vQkS5cKIzEEdFxPJdoAAVUWjvsoRCKkSxOPjiU/Lyip/aT5TYskG36WBKhQdlfy
+7Tyqa0d9vnptZlt2zXFBijngfjE6D27Se8BLK1dt5SgHXieycGtXI5v1ov9yjk9/
+i8lJcEVsdYJgSOwql5DCBovIX9fOvyHapxkRCxZDg7TWTjkYjKIiB/ZnXWKyDlEW
+So9e2hpF6YlVz53RlUpq79K4QCmPVLOa9hKxIyM0w1hnSFzAv8zt2RwCDwfSgWvc
+2PKARcB1xVCvaA4rh0hZic4kBQY5CSW4aNx3oUN41MNRlJ79sw2GDDKMCyrlC/9V
+tAHV8vOt7DFih1nMEJGYXZS9n7nbH3qPdtzgj7lCPETcNICPbhjRRUIIIXDvBcLL
+zKDdof57Do1WSqS9uFLtidGUo/raYyhb9q/mcN9kkUlNd19bJ4u0IhRol/NEcncX
+8c6hP/bh+5iAR4wEO+vjfsRHR4/0NPohIiHcHn+KvAMUx1ye/2Q=
+=NMuI
+-----END PGP SIGNATURE-----

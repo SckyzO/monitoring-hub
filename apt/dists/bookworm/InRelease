@@ -1,0 +1,32 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+Origin: Monitoring Hub
+Label: Monitoring Hub
+Suite: bookworm
+Codename: bookworm
+Architectures: arm64
+Components: main
+Description: Monitoring Hub APT Repository
+MD5Sum:
+ 956abd31fc8a1797f806cefaeda70c6e 2008 main/binary-arm64/Packages
+ 3bf83a34526cf9364e070bf1933ace2a 397 main/binary-arm64/Packages.gz
+SHA256:
+ 3eb1e963c173bc8327b469930432ff402956d343b2ef25a650bec16ddc95b30a 2008 main/binary-arm64/Packages
+ 3a4184bae68821711ee9bac4e44f268fb6074f0d8f45dcc9a586d1a7a6a583d9 397 main/binary-arm64/Packages.gz
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEEH1M8/US0rCnBmACnJaaIp27upEcFAmmKnSUACgkQJaaIp27u
+pEefMA//Te5lH4GfbOyavrVsQBDpu21BP8z/zymXmGZn/byl2kUFkN9FqsNjyqPc
+bX9W+S8oIXuG1NpkbM1nBGbThDtxQlPMfEX72bg0thodibLHme5DK3l7pIRI9BxG
+si66f6WNyQNgfTi92bq/H+1D5SAHK0gCwuz6EpqFGUKm7G7g2IzXADK0LZIgVkOE
+02RsVjMhhJpP0tx3iDWgiTrZUzifkNXbXRYL+7srIdlhWa3qoLwBCPQ2rZPy/sk4
+lkEEV5PNSzjoHRSNFILRdfz9okcNxuswB7jWpgWnt0KHtu/MR9DEgrWu9ioT0iTB
+1eZTjN11Gx5BU8kA4RB5vBBoMKp9TDHEbTsESlJGvwe+omNkekffy31viABCxNXx
+uRlcB2cx9J7a3J8Zy2D4+tLFdIv7v9NlvU+NS6w54QhTFHHoslvaFFm42z7/p5kC
+TRxUY9eiT29d0ZB5D54bDSW0M+t0tWq4BfWJWvBXruJBQUUDqRILoYyjRsKIKs43
+WBRnYwLsk2lmxV1PTGWfHxAzbUBeVK1Zh8UZkE48uL722mykLywyJzw9cCfcQe+H
+Z2vMiVF75QtiQKcSLQoIFlj5mR7JdjyuWa3oBGHe63DZ2P0MVL8wbLshRKKiHRDa
+nGxlV4FBpUxBmbzTY8beFQC9Sq5a9bTIy6s1qqGt4UVSb/7Q8eY=
+=8oXn
+-----END PGP SIGNATURE-----

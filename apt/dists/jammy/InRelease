@@ -5,28 +5,28 @@ Origin: Monitoring Hub
 Label: Monitoring Hub
 Suite: jammy
 Codename: jammy
-Architectures: amd64
+Architectures: arm64
 Components: main
 Description: Monitoring Hub APT Repository
 MD5Sum:
- d22cee216a52348b34225e8e22db5f0e 452 main/binary-amd64/Packages
- 2409e2596b879f3d059b988451788076 346 main/binary-amd64/Packages.gz
+ 956abd31fc8a1797f806cefaeda70c6e 2008 main/binary-arm64/Packages
+ e5ec639be8b3d7b2b52f8aee5b7248cc 397 main/binary-arm64/Packages.gz
 SHA256:
- 9dcaef08a12b3375aae51dd9a887f7c5ca6fd297f04de4c432933654b7d9cc8f 452 main/binary-amd64/Packages
- 087d7bb81071b086ddd7901929831066aa5cb6f490a4897e2bc977dda41305a6 346 main/binary-amd64/Packages.gz
+ 3eb1e963c173bc8327b469930432ff402956d343b2ef25a650bec16ddc95b30a 2008 main/binary-arm64/Packages
+ 64897358ef95a1d7cb0a961ffe6126d825563627cfe6934e742596e3466a75b4 397 main/binary-arm64/Packages.gz
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAEBCgAdFiEEH1M8/US0rCnBmACnJaaIp27upEcFAmmKdv4ACgkQJaaIp27u
-pEfMBRAAm5KZ70IX59gEaDrtNVFVJRmWPUVZyse6RDMS4JY1pLpCKDFlsiddjqMM
-5rFqLBIiYR0jyIRFR5I/jIuxp7pNdG28XaQ4rS4K+7kUHprgfE7RikqfuNinoqhH
-OENLRU3zTv8L53EJl17VtAdLm+oMkl6+ptIjlgkyuyREw7EfUqnyMWLgBxNiIqsG
-+aZ+CgljOvmVr9qnuijXxLMv4n1rmcYhvg8BgIdyJGhW++Q7noA76NnEr6W0QXU4
-W/uSMFDPOMLUp9kcod/AM1zEKRxIu7Q/smMghx4n/cGD2WxKFsbNcONqYamcaTEG
-ijzGWp+3QTsiJHRjS4iqRutHhrwtCmU3lLQFayJWDE5P5fFozz2kDxA8WKWk7KxW
-zBWbGmnX9KtGhIxUpofuIozmVQF/XtV5xyNNoZ9valaJNe7E2ztrPvF1YWczEqWc
-guepaE2GQQfSlQjtPOgZemAKlivqDAfOkQtaLjmUYZzM4qGfMINgl91s85pWxfCY
-OM01rmubnTmIoK4YFmw6KUPwb2F4VKRWUv/mZHp2JGbqZi5o7DGgrn5K+Bhc3Ip2
-FI1GOXoYxlAhbDhP/+P9ajircdeYWkZ79GYxCcSjhP9iVLdXmv7AqiWXtCWutROb
-xQ57lLTDWKZxYQXIuLkCt/LzDsxvHO9+YO0ZjPcDXm/RyP+k44E=
-=KvhG
+iQIzBAEBCgAdFiEEH1M8/US0rCnBmACnJaaIp27upEcFAmmKnSUACgkQJaaIp27u
+pEd1YQ/7Bs/vTx7/SWf4AOTg4PQAQ3iDkIyMc3TQY+dZWBZaPW5/m8Z9oHKK5BKq
+Sgp+VZa4ketf0qNgxZzmHhLNZg4BD+wZVX5WtLrSDZqR3/m5jJAIRZY6YBRiz9NM
+5K7L+KJLrJfpkUPbnwiXx07rJ8p+XvtEVmK0kSdho2ucFS96EB+30/TbW1xRv3rf
+KuQGkBTZxkkT2oUNecloRNTAlyPBRbKArnznO51UrDbmyTcf1QWGYiqTZht3Yu+r
+ST75DrkDeC4rLof8Eg+3Ri3h+GKg43WuawqxoFTr5sP63BNV9cr5m9EkxBTnsIgB
+vJFeXn93GzaAXokLl3Tcep0TocueIyUIKoCDbLFUgZjsUUNaxIp+BPiQPR9TGVMD
++7Yw5N7KNeHppYFHK+Qmjk7gaknXvjZWc8MmaxZlEsiBSghDBZZTesWf5EeU0XgP
+mPRakpK6BBHqzMXa6fqMDlAOSxcAwB6uROhdBatcRxnpxQQxm7W8ogPB2onGAcGQ
+uAHpURoNxFrl+O31ISgsyWOrhhmd5YNX2xsfJc3mUEBtQCOdKApQYhNRDvcXHJEr
++v0g/ZeLuIrFSGPtC9Cca5jvBOVDDDTYGeUtnDlY6PIP01s7oe8cSnmTZnRChgVe
+KercqSbIfUvnBI1zzgiHHlBq+bKdlieq5vauwNzPduqK60p0pzk=
+=OiVC
 -----END PGP SIGNATURE-----

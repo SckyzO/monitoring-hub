@@ -1,0 +1,32 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
+
+Origin: Monitoring Hub
+Label: Monitoring Hub
+Suite: trixie
+Codename: trixie
+Architectures: arm64
+Components: main
+Description: Monitoring Hub APT Repository
+MD5Sum:
+ 956abd31fc8a1797f806cefaeda70c6e 2008 main/binary-arm64/Packages
+ a2f4d215a294343c4df048605e751cc6 397 main/binary-arm64/Packages.gz
+SHA256:
+ 3eb1e963c173bc8327b469930432ff402956d343b2ef25a650bec16ddc95b30a 2008 main/binary-arm64/Packages
+ c059172715eb0c9a4f2196ed066aacfd1068f29344feb8e16c13a76653083d12 397 main/binary-arm64/Packages.gz
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEEH1M8/US0rCnBmACnJaaIp27upEcFAmmKnSUACgkQJaaIp27u
+pEfTmQ//TDQ2kP4UauZOu0hL2D8vv8Dzp1izq/V/1CWDik5czWHM5Qex707qvlJV
+//He3Mo1enOmpbxXhOKoOEfRhgMINOIW+WHSvA0LTkwQ17WYkiUp+Q4/EKTSDopX
+MU4MS0CkNHHpIzSK7TNt1Og/N2rz4Nmx3mvFyuK+1IR/gXdjwWCbV3ZRbZ9/iFgO
+UhyJJmzziPlx3Srp/9kjAbSKPW87RG63jGEOjjgoZM/ghfc0krC9ZSJw///Pc6bz
+AnmLACS3J4pm9NJdQoAebNpcdbXwqV1+mIAEJ8pY5STph8//SjNqE3QImqSn7zfv
+OY6LBY0QDFuHsc4jr/OhfKMvV1BJW+UrxcI03hNxOrO9ue77eHjTZo7udMgzID79
+j/8cP1+X4bNvAB/5C5nS78qMpEC/0h6//VnYzZRxW79PyCOu6zkKjObuUGGbDqAz
+Y9jz3htMaAJ6/lbKQ0RBwk44dR47aXVDbUTy7DgLraThpMtYTqjNVoyCR5Fq4NYK
+tbpS7pioth3/sHB4CNwe7aLuwgfXvKloXgAqsMXRfPB1fGvELpSmM9TBDlyK52dN
+zg+jtrMRuO/h6a4nIYgmBQ5uJ8tYJC1tjAVUloPdqVS8Mhx7cK7zDHZl4a0a1+0n
+6kj0eI4Mr6OcEjkuPj/fz3EFmla0yiy/5p33yJq/QWZcUNhnyeI=
+=aQCC
+-----END PGP SIGNATURE-----
