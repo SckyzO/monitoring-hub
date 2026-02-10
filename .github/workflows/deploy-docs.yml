@@ -34,60 +34,74 @@ jobs:
           python-version: '3.11'
           cache: 'pip'
 
-      - name: Install dependencies
+      - name: 📦 Install dependencies
         run: |
+          echo "::group::📦 Installing documentation dependencies"
           pip install -r requirements/docs.txt
           pip install -r requirements/base.txt
+          echo "✓ Dependencies installed"
+          echo "::endgroup::"
 
-      - name: Build MkDocs documentation
+      - name: 🔨 Build MkDocs documentation
         env:
           PYTHONPATH: ${{ github.workspace }}
         run: |
+          echo "::group::🔨 Building MkDocs site"
           mkdocs build -f config/docs/mkdocs.yml
+          echo "✓ Documentation built successfully"
+          echo "::endgroup::"
 
-      - name: Checkout gh-pages branch
+      - name: 📥 Checkout gh-pages branch
         run: |
+          echo "::group::📥 Setting up gh-pages worktree"
           git fetch origin gh-pages
           git worktree add -B gh-pages gh-pages-dist origin/gh-pages
+          echo "✓ gh-pages ready"
+          echo "::endgroup::"
 
-      - name: Deploy documentation to /docs
+      - name: 🚀 Deploy documentation to /docs
         run: |
-          # Remove old docs if they exist
+          echo "::group::🗑️  Cleaning old documentation"
           rm -rf gh-pages-dist/docs
+          echo "✓ Old docs removed"
+          echo "::endgroup::"
 
-          # Copy new docs
+          echo "::group::📋 Copying new documentation"
           cp -r site gh-pages-dist/docs
+          echo "✓ Documentation copied"
+          echo "::endgroup::"
 
-          # Navigate to gh-pages worktree
           cd gh-pages-dist
 
-          # Configure git
           git config user.name "Monitoring Hub Bot"
           git config user.email "bot@monitoring-hub.local"
 
-          # Add changes
           git add docs/
 
-          # Commit if there are changes
           if git diff --staged --quiet; then
-            echo "No changes to documentation. Skipping push."
+            echo "ℹ️  No changes to documentation. Skipping push."
           else
+            echo "::group::📝 Committing changes"
             git commit -m "docs: update MkDocs documentation [skip ci]"
+            echo "✓ Changes committed"
+            echo "::endgroup::"
 
-            # Push with retry logic for concurrent updates
+            echo "::group::⬆️  Pushing to gh-pages"
             MAX_RETRIES=3
             RETRY_COUNT=0
             while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
               if git push origin gh-pages; then
-                echo "Successfully pushed to gh-pages"
+                echo "✓ Successfully pushed to gh-pages"
+                echo "::endgroup::"
                 exit 0
               else
                 RETRY_COUNT=$((RETRY_COUNT + 1))
                 if [ $RETRY_COUNT -lt $MAX_RETRIES ]; then
-                  echo "Push failed, pulling latest changes and retrying ($RETRY_COUNT/$MAX_RETRIES)..."
+                  echo "⚠️  Push failed, retrying ($RETRY_COUNT/$MAX_RETRIES)..."
                   git pull --rebase origin gh-pages
                 else
-                  echo "Failed to push after $MAX_RETRIES attempts"
+                  echo "❌ Failed to push after $MAX_RETRIES attempts"
+                  echo "::endgroup::"
                   exit 1
                 fi
               fi
