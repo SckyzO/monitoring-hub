@@ -13,26 +13,26 @@ build:
   method: binary_repack
   binary_name: domain_exporter
   archs:
-  - amd64
-  - arm64
+    - amd64
+    - arm64
 artifacts:
   rpm:
     enabled: true
     summary: Prometheus domain Exporter
     targets:
-    - el8
-    - el9
-    - el10
+      - el8
+      - el9
+      - el10
     system_user: domain_exporter
     systemd:
       enabled: true
   deb:
     enabled: true
     targets:
-    - ubuntu-22.04
-    - ubuntu-24.04
-    - debian-12
-    - debian-13
+      - ubuntu-22.04
+      - ubuntu-24.04
+      - debian-12
+      - debian-13
     summary: Exports the expiration time of your domains as Prometheus metrics.
     systemd:
       enabled: true
@@ -42,7 +42,7 @@ artifacts:
   docker:
     enabled: true
     entrypoint:
-    - /usr/bin/domain_exporter
+      - /usr/bin/domain_exporter
     validation:
       enabled: true
       port: 9222

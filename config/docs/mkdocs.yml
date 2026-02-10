@@ -118,30 +118,30 @@ markdown_extensions:
 nav:
   - Home: index.md
   - Getting Started:
-    - Installation: getting-started/installation.md
-    - Quick Start: getting-started/quick-start.md
-    - Requirements: getting-started/requirements.md
+      - Installation: getting-started/installation.md
+      - Quick Start: getting-started/quick-start.md
+      - Requirements: getting-started/requirements.md
   - User Guide:
-    - Adding Exporters: user-guide/adding-exporters.md
-    - Package Repositories: user-guide/package-repositories.md
-    - Manifest Reference: user-guide/manifest-reference.md
-    - Local Testing: user-guide/local-testing.md
-    - Troubleshooting: user-guide/troubleshooting.md
+      - Adding Exporters: user-guide/adding-exporters.md
+      - Package Repositories: user-guide/package-repositories.md
+      - Manifest Reference: user-guide/manifest-reference.md
+      - Local Testing: user-guide/local-testing.md
+      - Troubleshooting: user-guide/troubleshooting.md
   - Architecture:
-    - Overview: architecture/overview.md
-    - Build Pipeline: architecture/build-pipeline.md
-    - State Management: architecture/state-management.md
-    - CI/CD Workflows: architecture/ci-cd.md
+      - Overview: architecture/overview.md
+      - Build Pipeline: architecture/build-pipeline.md
+      - State Management: architecture/state-management.md
+      - CI/CD Workflows: architecture/ci-cd.md
   - API Reference:
-    - Builder: api-reference/builder.md
-    - Schema: api-reference/schema.md
-    - State Manager: api-reference/state-manager.md
+      - Builder: api-reference/builder.md
+      - Schema: api-reference/schema.md
+      - State Manager: api-reference/state-manager.md
   - Contributing:
-    - Development Setup: contributing/development.md
-    - Coding Standards: contributing/standards.md
-    - Testing: contributing/testing.md
-    - Security: contributing/security.md
-    - Pull Requests: contributing/pull-requests.md
+      - Development Setup: contributing/development.md
+      - Coding Standards: contributing/standards.md
+      - Testing: contributing/testing.md
+      - Security: contributing/security.md
+      - Pull Requests: contributing/pull-requests.md
   - "← Back to Portal": https://sckyzo.github.io/monitoring-hub/
 
 extra:

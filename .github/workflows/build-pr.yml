@@ -2,7 +2,7 @@ name: 🔨 Build & Test PR
 
 on:
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 permissions:
   contents: read

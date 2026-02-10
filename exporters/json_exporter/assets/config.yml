@@ -2,6 +2,6 @@
 modules:
   default:
     metrics:
-    - name: example_value
-      path: '{ .value }'
-      help: Example metric
+      - name: example_value
+        path: '{ .value }'
+        help: Example metric

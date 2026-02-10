@@ -17,20 +17,22 @@ version: "1.0.0"                  # [REQUIRED] Semantic version. The Watcher aut
 
 # --- Portal Metadata (UI v2) --------------------------------------------------
 category: System                  # [OPTIONAL] Default: System.
-                                  # Options: System, Database, Web, Network, Storage, Messaging, Infrastructure
+# Options: System, Database, Web, Network, Storage, Messaging, Infrastructure
 new: true                         # [OPTIONAL] Default: false. Shows a "New" badge on the portal.
 updated: false                    # [OPTIONAL] Default: false. Shows an "Updated" badge on the portal.
 
 # --- License Information ------------------------------------------------------
 license: null                     # [OPTIONAL] SPDX license identifier (e.g., 'MIT', 'Apache-2.0', 'GPL-3.0')
-                                  # If not specified, the builder will automatically detect it from GitHub API
-                                  # for 'github' type upstreams. Falls back to 'Apache-2.0' if detection fails.
-                                  # Example values: MIT, Apache-2.0, BSD-3-Clause, GPL-3.0, MPL-2.0
+# If not specified, the builder will automatically detect it from GitHub API
+# for 'github' type upstreams. Falls back to 'Apache-2.0' if detection fails.
+# Example values: MIT, Apache-2.0, BSD-3-Clause, GPL-3.0, MPL-2.0
 
 # --- Upstream Source ----------------------------------------------------------
 upstream:
   type: github                    # [REQUIRED] Supported values: 'github' or 'local'
-  repo: owner/repo                # [REQUIRED for github] The upstream GitHub repository (e.g., prometheus/node_exporter).
+  # [REQUIRED for github] The upstream GitHub repository.
+  # Example: prometheus/node_exporter
+  repo: owner/repo
 
   # [OPTIONAL] Release Strategy
   # strategy: latest_release      # Default. Uses the latest GitHub Release.
@@ -66,10 +68,10 @@ upstream:
 # --- Build Configuration ------------------------------------------------------
 build:
   method: binary_repack           # [REQUIRED] Currently the only supported method.
-                                  # Downloads the upstream binary and repackages it.
+  # Downloads the upstream binary and repackages it.
 
   binary_name: reference_exporter # [REQUIRED] The name of the binary file inside the upstream archive.
-                                  # It will be installed to /usr/bin/<name>.
+  # It will be installed to /usr/bin/<name>.
 
   # [OPTIONAL] Extra Binaries
   # If the archive contains other tools you want to install (e.g., CLI tools).
@@ -94,21 +96,13 @@ artifacts:
     summary: "..."                # [OPTIONAL] Short summary for RPM metadata. Defaults to description.
 
     install_path: null            # [OPTIONAL] Custom installation directory (e.g., /usr/sbin).
-                                  # Default: /usr/bin (%{_bindir}).
+    # Default: /usr/bin (%{_bindir}).
 
     # [OPTIONAL] System User
     # If set, the build process will automatically:
     # 1. Create this user/group on install.
     # 2. Assign ownership of defined directories to this user.
     system_user: my_service_user
-
-    # [OPTIONAL] Modern Systemd Management
-    systemd:
-      enabled: true               # Set to true to generate and install a systemd service.
-      arguments: []               # [OPTIONAL] List of CLI arguments for ExecStart.
-      after: [network.target]     # [OPTIONAL] Units to start after.
-      restart: on-failure         # [OPTIONAL] Restart policy.
-      type: simple                # [OPTIONAL] Service type.
 
     # [OPTIONAL] Runtime Dependencies
     # List of RPM packages required by the exporter.
@@ -130,7 +124,15 @@ artifacts:
     #     group: my_service_user      # Default: root (or system_user if defined)
     #     mode: "0755"                # Default: 0755
 
-# --- Artifact: DEB Package ----------------------------------------------------
+    # [OPTIONAL] Modern Systemd Management
+    systemd:
+      enabled: true               # Set to true to generate and install a systemd service.
+      arguments: []               # [OPTIONAL] List of CLI arguments for ExecStart.
+      after: [network.target]     # [OPTIONAL] Units to start after.
+      restart: on-failure         # [OPTIONAL] Restart policy.
+      type: simple                # [OPTIONAL] Service type.
+
+  # --- Artifact: DEB Package --------------------------------------------------
   deb:
     enabled: true                 # [REQUIRED] Set to true to build DEB packages.
     targets:                      # [OPTIONAL] Default: [ubuntu-22.04, ubuntu-24.04, debian-12, debian-13].
@@ -143,21 +145,15 @@ artifacts:
 
     # [OPTIONAL] Debian Control Fields
     section: net                  # [OPTIONAL] Default: net. Package category (admin, utils, net, devel, etc.)
-    priority: optional            # [OPTIONAL] Default: optional. Package priority (required, important, standard, optional, extra)
+    # [OPTIONAL] Default: optional. Package priority (required, important, standard,
+    # optional, extra)
+    priority: optional
 
     # [OPTIONAL] System User
     # If set, the build process will automatically:
     # 1. Create this user/group on install (via postinst script).
     # 2. Assign ownership of defined directories to this user.
     # system_user: my_service_user
-
-    # [OPTIONAL] Modern Systemd Management
-    systemd:
-      enabled: true               # Set to true to generate and install a systemd service.
-      arguments: []               # [OPTIONAL] List of CLI arguments for ExecStart.
-      after: [network.target]     # [OPTIONAL] Units to start after.
-      restart: on-failure         # [OPTIONAL] Restart policy.
-      type: simple                # [OPTIONAL] Service type.
 
     # [OPTIONAL] Runtime Dependencies
     # List of DEB packages required by the exporter.
@@ -178,7 +174,15 @@ artifacts:
     #     group: my_service_user      # Default: root (or system_user if defined)
     #     mode: "0755"                # Default: 0755
 
-# --- Artifact: Docker Image ---------------------------------------------------
+    # [OPTIONAL] Modern Systemd Management
+    systemd:
+      enabled: true               # Set to true to generate and install a systemd service.
+      arguments: []               # [OPTIONAL] List of CLI arguments for ExecStart.
+      after: [network.target]     # [OPTIONAL] Units to start after.
+      restart: on-failure         # [OPTIONAL] Restart policy.
+      type: simple                # [OPTIONAL] Service type.
+
+  # --- Artifact: Docker Image -------------------------------------------------
   docker:
     enabled: true                 # [REQUIRED] Set to true to build OCI images.
 
