@@ -148,6 +148,7 @@ jobs:
     timeout-minutes: 5
     strategy:
       fail-fast: false
+      max-parallel: 5
       matrix: ${{ fromJson(needs.detect-changes.outputs.matrix) }}
     steps:
       - name: 🚀 Trigger Release for ${{ matrix.exporter }}
