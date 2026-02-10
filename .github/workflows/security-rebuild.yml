@@ -1,0 +1,221 @@
+name: 🔒 Security Rebuild
+run-name: 🔒 Security Rebuild - Refresh base images and packages
+
+on:
+  schedule:
+    # Every Monday at 2:00 AM UTC (after Red Hat typically releases updates)
+    - cron: '0 2 * * 1'
+  workflow_dispatch:
+    inputs:
+      scope:
+        description: 'Rebuild scope'
+        required: false
+        type: choice
+        options:
+          - all
+          - docker-only
+          - packages-only
+        default: 'all'
+      exporters:
+        description: 'Comma-separated list of exporters (leave empty for ALL)'
+        required: false
+        type: string
+        default: ''
+
+permissions:
+  actions: write
+  contents: read
+
+concurrency:
+  group: security-rebuild
+  cancel-in-progress: false
+
+jobs:
+  check-base-image:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      ubi9_digest: ${{ steps.pull.outputs.digest }}
+      rebuild_needed: ${{ steps.check.outputs.rebuild_needed }}
+    steps:
+      - name: 🔍 Pull Latest UBI9 Minimal
+        id: pull
+        run: |
+          echo "::group::🔍 Checking UBI9 Minimal base image"
+
+          # Pull latest image
+          docker pull registry.access.redhat.com/ubi9/ubi-minimal:latest
+
+          # Get digest
+          digest=$(docker inspect registry.access.redhat.com/ubi9/ubi-minimal:latest \
+            --format='{{index .RepoDigests 0}}' | cut -d'@' -f2)
+
+          echo "digest=$digest" >> $GITHUB_OUTPUT
+          echo "📦 Current UBI9 digest: $digest"
+          echo "::endgroup::"
+
+      - name: 🔎 Check if Rebuild Needed
+        id: check
+        run: |
+          # Always rebuild on schedule (weekly security patches)
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            echo "rebuild_needed=true" >> $GITHUB_OUTPUT
+            echo "✓ Scheduled rebuild - forcing refresh"
+          else
+            # Manual trigger - always rebuild
+            echo "rebuild_needed=true" >> $GITHUB_OUTPUT
+            echo "✓ Manual trigger - rebuilding"
+          fi
+
+  detect-exporters:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: check-base-image
+    if: needs.check-base-image.outputs.rebuild_needed == 'true'
+    outputs:
+      exporters: ${{ steps.detect.outputs.exporters }}
+      count: ${{ steps.detect.outputs.count }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: 🔍 Detect Exporters to Rebuild
+        id: detect
+        env:
+          INPUT_EXPORTERS: ${{ inputs.exporters }}
+          SCOPE: ${{ inputs.scope || 'all' }}
+        run: |
+          echo "::group::🔍 Detecting exporters to rebuild"
+
+          # Check if specific exporters were provided
+          if [ "${#INPUT_EXPORTERS}" -gt 0 ]; then
+            echo "Rebuilding specific exporters: $INPUT_EXPORTERS"
+
+            # Convert comma-separated list to JSON array
+            EXPORTERS_JSON=$(echo "$INPUT_EXPORTERS" | jq -R -c \
+              'split(",") | map(gsub("^\\s+|\\s+$"; "")) | map(select(length > 0))')
+
+            echo "exporters=$EXPORTERS_JSON" >> $GITHUB_OUTPUT
+            COUNT=$(echo "$EXPORTERS_JSON" | jq '. | length')
+            echo "count=$COUNT" >> $GITHUB_OUTPUT
+            echo "✓ Rebuilding $COUNT specific exporter(s)"
+            echo "::endgroup::"
+            exit 0
+          fi
+
+          # No specific exporters - rebuild ALL
+          echo "Rebuilding ALL exporters"
+
+          # List all exporters (directories in exporters/)
+          ALL_EXPORTERS=$(ls -1 exporters/ | jq -R -s -c 'split("\n") | map(select(length > 0))')
+
+          echo "exporters=$ALL_EXPORTERS" >> $GITHUB_OUTPUT
+          COUNT=$(echo "$ALL_EXPORTERS" | jq '. | length')
+          echo "count=$COUNT" >> $GITHUB_OUTPUT
+          echo "✓ Rebuilding ALL exporters (total: $COUNT)"
+          echo "::endgroup::"
+
+      - name: 📊 Generate Summary
+        env:
+          EXPORTERS_LIST: ${{ steps.detect.outputs.exporters }}
+          COUNT: ${{ steps.detect.outputs.count }}
+          UBI9_DIGEST: ${{ needs.check-base-image.outputs.ubi9_digest }}
+          INPUT_SCOPE: ${{ inputs.scope || 'all' }}
+        run: |
+          echo "## 🔒 Security Rebuild Triggered" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Reason:** Refresh base images and system packages" >> $GITHUB_STEP_SUMMARY
+          echo "**UBI9 Digest:** \`${UBI9_DIGEST:0:12}...\`" >> $GITHUB_STEP_SUMMARY
+          echo "**Scope:** $INPUT_SCOPE" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Exporters to rebuild:** $COUNT" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Show first 10 exporters
+          echo "$EXPORTERS_LIST" | jq -r '.[:10][] | "- **" + . + "**"' >> $GITHUB_STEP_SUMMARY
+
+          if [ "$COUNT" -gt 10 ]; then
+            remaining=$((COUNT - 10))
+            echo "- *...and $remaining more*" >> $GITHUB_STEP_SUMMARY
+          fi
+
+  trigger-rebuilds:
+    name: Trigger - ${{ matrix.exporter }}
+    needs: [check-base-image, detect-exporters]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    if: needs.check-base-image.outputs.rebuild_needed == 'true'
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        exporter: ${{ fromJson(needs.detect-exporters.outputs.exporters) }}
+    steps:
+      - name: 🚀 Trigger Release Rebuild
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          EXPORTER: ${{ matrix.exporter }}
+          SCOPE: ${{ inputs.scope || 'all' }}
+          REPO: ${{ github.repository }}
+        run: |
+          echo "::group::🚀 Triggering security rebuild for $EXPORTER"
+
+          # Determine package type based on scope
+          package_type="all"
+          if [ "$SCOPE" = "docker-only" ]; then
+            package_type="docker"
+          elif [ "$SCOPE" = "packages-only" ]; then
+            # Trigger both RPM and DEB but skip Docker
+            package_type="all"
+            echo "Note: Will build RPM and DEB only"
+          fi
+
+          # Retry up to 3 times with 10s delay
+          max_retries=3
+          for i in $(seq 1 $max_retries); do
+            if gh workflow run release.yml \
+              --repo "$REPO" \
+              --ref main \
+              --field exporter="$EXPORTER" \
+              --field package_type="$package_type"; then
+              echo "✓ Release workflow triggered for $EXPORTER"
+              break
+            else
+              if [ $i -lt $max_retries ]; then
+                echo "⚠️  Attempt $i failed, retrying in 10s..."
+                sleep 10
+              else
+                echo "❌ Failed to trigger workflow after $max_retries attempts"
+                exit 1
+              fi
+            fi
+          done
+
+          echo "::endgroup::"
+
+      - name: 📋 Log Rebuild
+        env:
+          EXPORTER: ${{ matrix.exporter }}
+        run: |
+          echo "✓ Triggered security rebuild for **$EXPORTER**" >> $GITHUB_STEP_SUMMARY
+
+  summary:
+    needs: [detect-exporters, trigger-rebuilds]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    if: always()
+    steps:
+      - name: 📊 Final Summary
+        env:
+          COUNT: ${{ needs.detect-exporters.outputs.count }}
+          REPO: ${{ github.repository }}
+        run: |
+          echo "## ✅ Security Rebuild Complete" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Triggered rebuild for **$COUNT exporter(s)**" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "All exporters will receive:" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Latest UBI9 Minimal base image" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Latest system packages (glibc, openssl, etc.)" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Fresh Trivy security scan" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Monitor progress in the [Release workflow runs](https://github.com/$REPO/actions/workflows/release.yml)" >> $GITHUB_STEP_SUMMARY
