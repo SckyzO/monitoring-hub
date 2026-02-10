@@ -328,6 +328,29 @@ def render_deb_templates(data, output_dir, arch, env, manifest_dir):
     # Add binary_name to root level for easier access in templates
     data["binary_name"] = data.get("build", {}).get("binary_name", data["name"])
 
+    # 0. Handle extra files FIRST (copy and set build_source before rendering templates)
+    artifacts = data.get("artifacts", {})
+    deb_config = artifacts.get("deb", {})
+    for extra_file in deb_config.get("extra_files", []):
+        source_path = extra_file["source"]
+        local_src = os.path.join(manifest_dir, source_path)
+        downloaded_src = os.path.join(output_dir, source_path)
+
+        dst_name = os.path.basename(source_path)
+        dst_path = os.path.join(output_dir, dst_name)
+
+        if os.path.exists(local_src):
+            shutil.copy(local_src, dst_path)
+            click.echo(f"  Copied extra file: {dst_name}")
+        elif os.path.exists(downloaded_src):
+            if downloaded_src != dst_path:
+                shutil.copy(downloaded_src, dst_path)
+                click.echo(f"  Copied extra file: {dst_name}")
+        else:
+            click.echo(f"  Warning: Extra file {source_path} not found")
+
+        extra_file["build_source"] = dst_name
+
     # 1. Generate debian/control
     template = env.get_template("debian_control.j2")
     control_content = template.render(data)
@@ -366,29 +389,6 @@ def render_deb_templates(data, output_dir, arch, env, manifest_dir):
         with open(service_file, "w") as f:
             f.write(service_content)
         click.echo(f"  Created debian/{deb_name}.service")
-
-    # 6. Handle extra files (copy to debian/ for rules to reference)
-    artifacts = data.get("artifacts", {})
-    deb_config = artifacts.get("deb", {})
-    for extra_file in deb_config.get("extra_files", []):
-        source_path = extra_file["source"]
-        local_src = os.path.join(manifest_dir, source_path)
-        downloaded_src = os.path.join(output_dir, source_path)
-
-        dst_name = os.path.basename(source_path)
-        dst_path = os.path.join(output_dir, dst_name)
-
-        if os.path.exists(local_src):
-            shutil.copy(local_src, dst_path)
-            click.echo(f"  Copied extra file: {dst_name}")
-        elif os.path.exists(downloaded_src):
-            if downloaded_src != dst_path:
-                shutil.copy(downloaded_src, dst_path)
-                click.echo(f"  Copied extra file: {dst_name}")
-        else:
-            click.echo(f"  Warning: Extra file {source_path} not found")
-
-        extra_file["build_source"] = dst_name
 
     click.echo("✓ DEB packaging files generated successfully")
 
