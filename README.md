@@ -74,14 +74,14 @@
 
 ## <img src=".github/icons/rocket-amber.svg" width="24" height="24" style="vertical-align: bottom;"> Key Features
 
-*   **🏗️ Native Multi-Arch:** Every tool is built for `x86_64` and `aarch64` (ARM64).
-*   **📦 Multi-Format Packages:** RPM (RHEL/CentOS/Rocky/Alma), DEB (Ubuntu/Debian), and OCI containers.
-*   **🔐 GPG-Signed Packages:** All RPM and DEB packages are cryptographically signed for integrity verification.
-*   **🛡️ Security-First:** Container images scanned with Trivy, Python code with Bandit, dependencies with pip-audit.
-*   **🐳 Hardened Containers:** All Docker images use **Red Hat UBI 9 Minimal** base.
-*   **📏 Linux Standards (FHS):** Packages include system users, standard paths (`/etc`, `/var/lib`), and systemd integration.
-*   **🤖 Zero-Touch Automation:** Version watcher opens PRs, triggers CI validation, and auto-merges when tests pass.
-*   **🔄 Always Up-to-Date:** Never worry about upstream releases again.
+*   **Native Multi-Arch:** Every tool is built for `x86_64` and `aarch64` (ARM64).
+*   **Multi-Format Packages:** RPM (RHEL/CentOS/Rocky/Alma), DEB (Ubuntu/Debian), and OCI containers.
+*   **GPG-Signed Packages:** All RPM and DEB packages are cryptographically signed for integrity verification.
+*   **Security-First:** Container images scanned with Trivy, Python code with Bandit, dependencies with pip-audit.
+*   **Hardened Containers:** All Docker images use Red Hat UBI 9 Minimal base.
+*   **Linux Standards (FHS):** Packages include system users, standard paths (`/etc`, `/var/lib`), and systemd integration.
+*   **Zero-Touch Automation:** Version watcher opens PRs, triggers CI validation, and auto-merges when tests pass.
+*   **Always Up-to-Date:** Never worry about upstream releases again.
 
 ---
 
