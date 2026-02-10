@@ -39,39 +39,39 @@
 
 <table align="center">
 <tr>
-<td align="center" width="20%">
+<td align="center" width="20%" style="vertical-align: top;">
 <a href="https://sckyzo.github.io/monitoring-hub/">
-<img src=".github/icons/globe-blue.svg" width="48" height="48"><br>
-<b>🌐 Explore Portal</b><br>
-<sub>Browse all exporters</sub>
+<img src="https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/googlechrome.svg" width="64" height="64" style="filter: invert(47%) sepia(78%) saturate(2476%) hue-rotate(200deg) brightness(101%) contrast(101%);"><br>
+<b style="display: block; height: 2.5em; line-height: 1.25em;">Portal</b>
+<sub style="display: block; margin-top: 4px;">Browse all exporters</sub>
 </a>
 </td>
-<td align="center" width="20%">
+<td align="center" width="20%" style="vertical-align: top;">
 <a href="https://sckyzo.github.io/monitoring-hub/docs/">
-<img src=".github/icons/book-emerald.svg" width="48" height="48"><br>
-<b>📚 Documentation</b><br>
-<sub>User guides & API</sub>
+<img src="https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/materialformkdocs.svg" width="64" height="64" style="filter: invert(66%) sepia(44%) saturate(4292%) hue-rotate(157deg) brightness(95%) contrast(101%);"><br>
+<b style="display: block; height: 2.5em; line-height: 1.25em;">Documentation</b>
+<sub style="display: block; margin-top: 4px;">User guides & API</sub>
 </a>
 </td>
-<td align="center" width="20%">
+<td align="center" width="20%" style="vertical-align: top;">
 <a href="https://github.com/SckyzO/monitoring-hub/packages">
-<img src=".github/icons/container-amber.svg" width="48" height="48"><br>
-<b>📦 OCI Registry</b><br>
-<sub>Container images</sub>
+<img src="https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/docker.svg" width="64" height="64" style="filter: invert(60%) sepia(75%) saturate(450%) hue-rotate(163deg) brightness(95%) contrast(101%);"><br>
+<b style="display: block; height: 2.5em; line-height: 1.25em;">Registry</b>
+<sub style="display: block; margin-top: 4px;">Container images</sub>
 </a>
 </td>
-<td align="center" width="20%">
+<td align="center" width="20%" style="vertical-align: top;">
 <a href="https://github.com/SckyzO/monitoring-hub/issues/new">
-<img src=".github/icons/bug-rose.svg" width="48" height="48"><br>
-<b>🐛 Report Issue</b><br>
-<sub>Found a bug?</sub>
+<img src="https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/github.svg" width="64" height="64" style="filter: invert(34%) sepia(95%) saturate(4218%) hue-rotate(346deg) brightness(90%) contrast(101%);"><br>
+<b style="display: block; height: 2.5em; line-height: 1.25em;">Issues</b>
+<sub style="display: block; margin-top: 4px;">Report bugs</sub>
 </a>
 </td>
-<td align="center" width="20%">
+<td align="center" width="20%" style="vertical-align: top;">
 <a href="CHANGELOG.md">
-<img src=".github/icons/history-purple.svg" width="48" height="48"><br>
-<b>📝 Changelog</b><br>
-<sub>Release notes</sub>
+<img src="https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/git.svg" width="64" height="64" style="filter: invert(49%) sepia(89%) saturate(2619%) hue-rotate(251deg) brightness(90%) contrast(101%);"><br>
+<b style="display: block; height: 2.5em; line-height: 1.25em;">Changelog</b>
+<sub style="display: block; margin-top: 4px;">Release notes</sub>
 </a>
 </td>
 </tr>
