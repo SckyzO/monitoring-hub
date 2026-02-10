@@ -3,7 +3,9 @@
 **The definitive Software Factory for Prometheus Exporters.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Build Status](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/release.yml?branch=main&label=Build)](https://github.com/SckyzO/monitoring-hub/actions/workflows/release.yml)
+[![Release Pipeline](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/release.yml?branch=main&label=Release)](https://github.com/SckyzO/monitoring-hub/actions/workflows/release.yml)
+[![Auto Release](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/auto-release.yml?branch=main&label=Auto%20Release)](https://github.com/SckyzO/monitoring-hub/actions/workflows/auto-release.yml)
+[![Security](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/security.yml?branch=main&label=Security)](https://github.com/SckyzO/monitoring-hub/actions/workflows/security.yml)
 [![Watcher](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/scan-updates.yml?branch=main&label=Watcher)](https://github.com/SckyzO/monitoring-hub/actions/workflows/scan-updates.yml)
 
 ---
@@ -15,8 +17,10 @@
 ## 🚀 Key Features
 
 - **Native Multi-Arch:** Every tool is built for `x86_64` and `aarch64` (ARM64)
-- **Hardened Security:** All Docker images use Red Hat UBI 9 Minimal
-- **Linux Standard (FHS):** RPMs include system users, standard paths, and systemd integration
+- **Multi-Format Packages:** RPM (RHEL/CentOS/Rocky/Alma), DEB (Ubuntu/Debian), and OCI containers
+- **GPG-Signed Packages:** All RPM and DEB packages are cryptographically signed for integrity
+- **Hardened Security:** All Docker images use Red Hat UBI 9 Minimal with Trivy scanning
+- **Linux Standard (FHS):** Packages include system users, standard paths, and systemd integration
 - **Zero-Click Updates:** Automated watcher opens PRs and merges when tests pass
 - **Always Up-to-Date:** Never worry about upstream releases again
 
@@ -78,11 +82,33 @@ graph LR
 ### YUM Repository (RPM)
 
 ```bash
+# Add GPG key
+sudo rpm --import https://sckyzo.github.io/monitoring-hub/RPM-GPG-KEY-monitoring-hub
+
 # Configure repository
 sudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el9/$(arch)/
 
 # Install any exporter
 sudo dnf install node_exporter
+
+# Enable and start
+sudo systemctl enable --now node_exporter
+```
+
+### APT Repository (DEB)
+
+```bash
+# Add GPG key
+curl -fsSL https://sckyzo.github.io/monitoring-hub/apt/monitoring-hub.asc | \
+  sudo gpg --dearmor -o /usr/share/keyrings/monitoring-hub.gpg
+
+# Add repository (Ubuntu 22.04 "jammy" example)
+echo "deb [signed-by=/usr/share/keyrings/monitoring-hub.gpg] \
+  https://sckyzo.github.io/monitoring-hub/apt jammy main" | \
+  sudo tee /etc/apt/sources.list.d/monitoring-hub.list
+
+# Install any exporter
+sudo apt update && sudo apt install node-exporter
 
 # Enable and start
 sudo systemctl enable --now node_exporter
