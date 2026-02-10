@@ -39,11 +39,16 @@ jobs:
 
           # Check if workflow was manually triggered
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            INPUT_EXPORTERS="${{ inputs.exporters }}"
+            # Get input and trim whitespace
+            INPUT_EXPORTERS=$(echo "${{ inputs.exporters }}" | xargs)
 
-            # Check if specific exporters were provided (non-empty input)
-            if [ -n "$INPUT_EXPORTERS" ] && [ "$INPUT_EXPORTERS" != "null" ]; then
-              echo "Manual trigger with specific exporters: $INPUT_EXPORTERS"
+            echo "Manual trigger detected"
+            echo "Raw input: '${{ inputs.exporters }}'"
+            echo "Processed input: '$INPUT_EXPORTERS'"
+
+            # Check if specific exporters were provided (non-empty after trimming)
+            if [ ! -z "$INPUT_EXPORTERS" ]; then
+              echo "Building specific exporters: $INPUT_EXPORTERS"
 
               # Convert comma-separated list to JSON array
               EXPORTERS_JSON=$(echo "$INPUT_EXPORTERS" | jq -R -c 'split(",") | map(gsub("^\\s+|\\s+$"; "")) | map(select(length > 0))')
@@ -52,12 +57,12 @@ jobs:
               echo "matrix={\"exporter\":$EXPORTERS_JSON}" >> $GITHUB_OUTPUT
 
               COUNT=$(echo "$EXPORTERS_JSON" | jq '. | length')
-              echo "✓ Manual build requested for $COUNT exporter(s): $(echo "$EXPORTERS_JSON" | jq -r 'join(", ")')"
+              echo "✓ Building $COUNT specific exporter(s): $(echo "$EXPORTERS_JSON" | jq -r 'join(", ")')"
               echo "::endgroup::"
               exit 0
             else
               # No specific exporters - build ALL
-              echo "Manual trigger without specific exporters - building ALL"
+              echo "Building ALL exporters"
 
               # List all exporters (directories in exporters/)
               ALL_EXPORTERS=$(ls -1 exporters/ | jq -R -s -c 'split("\n") | map(select(length > 0))')
@@ -66,7 +71,7 @@ jobs:
               echo "matrix={\"exporter\":$ALL_EXPORTERS}" >> $GITHUB_OUTPUT
 
               COUNT=$(echo "$ALL_EXPORTERS" | jq '. | length')
-              echo "✓ Manual build requested for ALL exporters ($COUNT total)"
+              echo "✓ Building ALL exporters (total: $COUNT)"
               echo "::endgroup::"
               exit 0
             fi
