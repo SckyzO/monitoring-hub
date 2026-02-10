@@ -38,6 +38,7 @@ artifacts:
       enabled: true
     section: net
     priority: optional
+    system_user: domain_exporter
   docker:
     enabled: true
     entrypoint:

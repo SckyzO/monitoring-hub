@@ -39,6 +39,9 @@ artifacts:
       enabled: true
     section: net
     priority: optional
+    dependencies:
+    - libelf1
+    - hwdata
   docker:
     enabled: true
     entrypoint:

@@ -21,8 +21,7 @@ artifacts:
     system_user: textfile_exporter
     systemd:
       enabled: true
-    extra_files: []
-    directories:
+    directories: &id001
     - path: /var/lib/textfile_exporter
       owner: textfile_exporter
       group: textfile_exporter
@@ -39,6 +38,8 @@ artifacts:
       enabled: true
     section: net
     priority: optional
+    system_user: textfile_exporter
+    directories: *id001
   docker:
     enabled: true
     entrypoint:
@@ -47,3 +48,4 @@ artifacts:
     - --textfile.directory=/var/lib/textfile_exporter
     validation:
       port: 9014
+      enabled: true

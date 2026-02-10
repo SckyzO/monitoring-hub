@@ -35,6 +35,7 @@ artifacts:
       enabled: true
     section: net
     priority: optional
+    system_user: prometheus
   docker:
     enabled: true
     base_image: registry.access.redhat.com/ubi9/ubi-minimal
@@ -42,3 +43,4 @@ artifacts:
     - /usr/bin/slurm_exporter
     validation:
       port: 9341
+      enabled: true

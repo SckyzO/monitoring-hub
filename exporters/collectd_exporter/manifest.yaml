@@ -37,6 +37,7 @@ artifacts:
       enabled: true
     section: net
     priority: optional
+    system_user: collectd_exporter
   docker:
     enabled: true
     entrypoint:
