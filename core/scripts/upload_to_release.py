@@ -23,9 +23,7 @@ def get_release_tag(exporter_name: str, version: str) -> str:
     return f"{exporter_name}-{version}"
 
 
-def get_or_create_release(
-    repo: str, tag: str, token: str, exporter_name: str
-) -> Dict:
+def get_or_create_release(repo: str, tag: str, token: str, exporter_name: str) -> Dict:
     """Get existing release or create new one."""
     headers = {
         "Authorization": f"token {token}",
@@ -57,9 +55,7 @@ def get_or_create_release(
     return response.json()
 
 
-def upload_asset(
-    release: Dict, file_path: Path, token: str, repo: str
-) -> Dict:
+def upload_asset(release: Dict, file_path: Path, token: str, repo: str) -> Dict:
     """Upload asset to release and return download URL."""
     headers = {
         "Authorization": f"token {token}",
@@ -74,7 +70,9 @@ def upload_asset(
     for asset in release.get("assets", []):
         if asset["name"] == file_name:
             print(f"Asset {file_name} already exists, deleting...")
-            delete_url = f"https://api.github.com/repos/{repo}/releases/assets/{asset['id']}"
+            delete_url = (
+                f"https://api.github.com/repos/{repo}/releases/assets/{asset['id']}"
+            )
             requests.delete(
                 delete_url,
                 headers={"Authorization": f"token {token}"},
@@ -95,15 +93,11 @@ def upload_asset(
 
 
 def main():
-    parser = argparse.ArgumentParser(
-        description="Upload binaries to GitHub Releases"
-    )
+    parser = argparse.ArgumentParser(description="Upload binaries to GitHub Releases")
     parser.add_argument("--repo", required=True, help="GitHub repo (owner/name)")
     parser.add_argument("--exporter", required=True, help="Exporter name")
     parser.add_argument("--version", required=True, help="Version number")
-    parser.add_argument(
-        "--files", required=True, nargs="+", help="Files to upload"
-    )
+    parser.add_argument("--files", required=True, nargs="+", help="Files to upload")
     parser.add_argument(
         "--token",
         default=os.getenv("GITHUB_TOKEN"),
