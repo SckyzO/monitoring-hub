@@ -14,9 +14,6 @@
   <a href="https://github.com/SckyzO/monitoring-hub/actions/workflows/build-pr.yml">
     <img src="https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/build-pr.yml?branch=main&style=flat-square&labelColor=18181b&logo=githubactions&logoColor=white&label=PR%20Validation&color=3b82f6" alt="PR Validation">
   </a>
-</p>
-
-<p align="center">
   <a href="https://github.com/SckyzO/monitoring-hub/actions/workflows/security.yml">
     <img src="https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/security.yml?branch=main&style=flat-square&labelColor=18181b&logo=trivy&logoColor=white&label=Security%20Scan&color=10b981" alt="Security Scan">
   </a>
@@ -35,7 +32,7 @@
   <img src="https://img.shields.io/badge/Containers-UBI9%20Minimal-ec4899?style=flat-square&labelColor=18181b&logo=redhat&logoColor=white" alt="UBI9 Minimal">
 </p>
 
-
+---
 
 <table align="center" width="90%">
 <tr>
