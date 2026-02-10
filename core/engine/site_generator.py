@@ -76,6 +76,39 @@ def load_build_info(build_info_dir):
     return build_dates
 
 
+def load_security_stats(repo_dir):
+    """
+    Load security statistics from security-stats.json.
+    Returns the security stats dict, or empty stats if not found.
+    """
+    import json
+
+    stats_path = os.path.join(repo_dir, "security-stats.json")
+
+    if not os.path.exists(stats_path):
+        # Return empty stats if file doesn't exist
+        return {
+            "total_vulnerabilities": 0,
+            "by_severity": {"CRITICAL": 0, "HIGH": 0, "MEDIUM": 0, "LOW": 0},
+            "top_exporters": [],
+            "scan_date": None,
+            "total_exporters_scanned": 0,
+        }
+
+    try:
+        with open(stats_path) as f:
+            return json.load(f)
+    except Exception as e:
+        print(f"Warning: Failed to load security stats: {e}")
+        return {
+            "total_vulnerabilities": 0,
+            "by_severity": {"CRITICAL": 0, "HIGH": 0, "MEDIUM": 0, "LOW": 0},
+            "top_exporters": [],
+            "scan_date": None,
+            "total_exporters_scanned": 0,
+        }
+
+
 @click.command()
 @click.option("--output", "-o", help="Output HTML file", default="index.html")
 @click.option("--repo-dir", "-r", help="Path to repo root", default=".")
@@ -290,11 +323,15 @@ def generate(output, repo_dir, release_urls_dir, skip_catalog):
     # Collect unique categories dynamically
     categories = sorted({e.get("category", "System") for e in exporters_data})
 
+    # Load security statistics
+    security_stats = load_security_stats(repo_dir)
+
     # Pre-serialize to JSON for the template
     import json
 
     exporters_json = json.dumps(exporters_data)
     categories_json = json.dumps(categories)
+    security_stats_json = json.dumps(security_stats)
 
     env = Environment(
         loader=FileSystemLoader(TEMPLATES_DIR),
@@ -305,6 +342,8 @@ def generate(output, repo_dir, release_urls_dir, skip_catalog):
         exporters=exporters_data,
         exporters_json=exporters_json,
         categories_json=categories_json,
+        security_stats=security_stats,
+        security_stats_json=security_stats_json,
         core_version=CORE_VERSION,
         portal_version=PORTAL_VERSION,
     )
