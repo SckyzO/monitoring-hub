@@ -12,3 +12,6 @@ __pycache__/
 # Temporary files
 *.tmp
 *.log
+
+# Workflows with embedded Python/Shell code (causes yamllint false positives)
+.github/workflows/
