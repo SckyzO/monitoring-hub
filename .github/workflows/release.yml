@@ -81,7 +81,7 @@ jobs:
       contents: write  # Required for creating releases
     strategy:
       fail-fast: false
-      max-parallel: 4
+      max-parallel: 2
       matrix:
         arch: [amd64, arm64]
         dist: [el8, el9, el10]
@@ -265,7 +265,7 @@ jobs:
       contents: write  # Required for creating releases
     strategy:
       fail-fast: false
-      max-parallel: 4
+      max-parallel: 2
       matrix:
         arch: [amd64, arm64]
         dist: [ubuntu-22.04, ubuntu-24.04, debian-12, debian-13]

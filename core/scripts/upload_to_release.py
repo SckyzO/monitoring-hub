@@ -9,6 +9,7 @@ the download URLs for use in YUM/APT repository metadata.
 import argparse
 import json
 import os
+import random
 import sys
 import time
 from pathlib import Path
@@ -17,8 +18,8 @@ from typing import Dict, List
 import requests
 
 
-def retry_with_backoff(func, max_retries=5, initial_delay=5):
-    """Retry function with exponential backoff for transient errors."""
+def retry_with_backoff(func, max_retries=5, initial_delay=15):
+    """Retry function with exponential backoff and jitter for transient errors."""
     for attempt in range(max_retries):
         try:
             return func()
@@ -29,10 +30,13 @@ def retry_with_backoff(func, max_retries=5, initial_delay=5):
         ) as e:
             # Network/SSL errors - always retry with longer delays
             if attempt < max_retries - 1:
-                delay = initial_delay * (2**attempt)
+                base_delay = initial_delay * (2**attempt)
+                # Add jitter (±20%) to avoid thundering herd
+                jitter = base_delay * 0.2 * (2 * random.random() - 1)
+                delay = base_delay + jitter
                 print(
                     f"Attempt {attempt + 1} failed with {type(e).__name__}, "
-                    f"retrying in {delay}s..."
+                    f"retrying in {delay:.1f}s..."
                 )
                 time.sleep(delay)
             else:
@@ -47,10 +51,13 @@ def retry_with_backoff(func, max_retries=5, initial_delay=5):
                 e.response.status_code in [404, 429, 500, 502, 503, 504]
                 and attempt < max_retries - 1
             ):
-                delay = initial_delay * (2**attempt)
+                base_delay = initial_delay * (2**attempt)
+                # Add jitter (±20%) to avoid thundering herd
+                jitter = base_delay * 0.2 * (2 * random.random() - 1)
+                delay = base_delay + jitter
                 print(
                     f"Attempt {attempt + 1} failed with HTTP {e.response.status_code}, "
-                    f"retrying in {delay}s..."
+                    f"retrying in {delay:.1f}s..."
                 )
                 time.sleep(delay)
             else:
@@ -115,8 +122,8 @@ def get_or_create_release(repo: str, tag: str, token: str, exporter_name: str) -
 
 def upload_asset(release: Dict, file_path: Path, token: str, repo: str) -> Dict:
     """Upload asset to release and return download URL."""
-    # Small delay to avoid hammering GitHub API immediately
-    time.sleep(1)
+    # Random delay (2-5s) to avoid hammering GitHub API and spread load
+    time.sleep(2 + random.random() * 3)
 
     headers = {
         "Authorization": f"token {token}",
@@ -155,7 +162,7 @@ def upload_asset(release: Dict, file_path: Path, token: str, repo: str) -> Dict:
             response.raise_for_status()
             return response.json()
 
-    asset_data = retry_with_backoff(do_upload, max_retries=5, initial_delay=5)
+    asset_data = retry_with_backoff(do_upload)  # Uses defaults: 5 retries, 15s initial
     print(f"Uploaded {file_name} -> {asset_data['browser_download_url']}")
     return asset_data
 
