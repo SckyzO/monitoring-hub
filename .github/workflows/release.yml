@@ -496,6 +496,7 @@ jobs:
         run: |
           exporter=$(echo "$EXPORTER" | tr '[:upper:]' '[:lower:]')
           image_ref="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/$exporter:scan-$VERSION"
+          image_ref=$(echo "$image_ref" | tr '[:upper:]' '[:lower:]')
 
           echo "::group::🔒 Scanning image for vulnerabilities"
           echo "Image: $image_ref"
