@@ -156,12 +156,26 @@ jobs:
         run: |
           echo "::group::🚀 Triggering release for ${{ matrix.exporter }}"
 
-          gh workflow run release.yml \
-            --repo ${{ github.repository }} \
-            --ref main \
-            --field exporter="${{ matrix.exporter }}"
+          # Retry up to 3 times with 10s delay (GitHub may need time to sync workflow changes)
+          max_retries=3
+          for i in $(seq 1 $max_retries); do
+            if gh workflow run release.yml \
+              --repo ${{ github.repository }} \
+              --ref main \
+              --field exporter="${{ matrix.exporter }}"; then
+              echo "✓ Release workflow triggered for ${{ matrix.exporter }}"
+              break
+            else
+              if [ $i -lt $max_retries ]; then
+                echo "⚠️  Attempt $i failed, retrying in 10s..."
+                sleep 10
+              else
+                echo "❌ Failed to trigger workflow after $max_retries attempts"
+                exit 1
+              fi
+            fi
+          done
 
-          echo "✓ Release workflow triggered for ${{ matrix.exporter }}"
           echo "::endgroup::"
 
       - name: 📋 Log Triggered Release
