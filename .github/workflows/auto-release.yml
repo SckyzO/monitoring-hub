@@ -54,9 +54,9 @@ jobs:
             if [ "${#INPUT_EXPORTERS}" -gt 0 ]; then
               echo "Building specific exporters: $INPUT_EXPORTERS"
 
-              # Convert comma-separated list to JSON array
-              EXPORTERS_JSON=$(echo "$INPUT_EXPORTERS" | jq -R -c \\
-                'split(\",\") | map(gsub(\"^\\\\s+|\\\\s+$\"; \"\")) | map(select(length > 0))')
+              # Convert comma-separated list to JSON array (trim spaces and filter empty)
+              EXPORTERS_JSON=$(echo "$INPUT_EXPORTERS" | jq -R -c \
+                'split(",") | map(gsub("^\\s+|\\s+$"; "")) | map(select(length > 0))')
 
               echo "exporters=$EXPORTERS_JSON" >> $GITHUB_OUTPUT
               echo "matrix={\"exporter\":$EXPORTERS_JSON}" >> $GITHUB_OUTPUT
