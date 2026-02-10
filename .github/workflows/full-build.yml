@@ -55,37 +55,19 @@ jobs:
           # Check if exporters were provided as input
           if [ -n "$INPUT_EXPORTERS" ] && [ "$INPUT_EXPORTERS" != "[]" ]; then
             echo "Using provided exporters list"
-            EXPORTERS_JSON="$INPUT_EXPORTERS"
+            echo "exporters=$INPUT_EXPORTERS" >> $GITHUB_OUTPUT
             echo "build_needed=true" >> $GITHUB_OUTPUT
+
+            count=$(echo "$INPUT_EXPORTERS" | jq '. | length')
+            echo "✓ Found $count exporter(s) to build (from input)"
+            echo "$INPUT_EXPORTERS" | jq -r '.[]' | while read exp; do
+              echo "  → $exp"
+            done
           else
             echo "Auto-detecting exporters using state manager"
+            # state_manager writes directly to $GITHUB_OUTPUT (exporters and build_needed)
             python3 -m core.engine.state_manager
-
-            # Check if state_manager produced output
-            if [ -f "exporters_to_build.json" ]; then
-              EXPORTERS_JSON=$(cat exporters_to_build.json)
-
-              # Check if any exporters need building
-              count=$(echo "$EXPORTERS_JSON" | jq '. | length')
-              if [ "$count" -gt 0 ]; then
-                echo "build_needed=true" >> $GITHUB_OUTPUT
-              else
-                echo "build_needed=false" >> $GITHUB_OUTPUT
-              fi
-            else
-              echo "No exporters to build"
-              EXPORTERS_JSON="[]"
-              echo "build_needed=false" >> $GITHUB_OUTPUT
-            fi
           fi
-
-          echo "exporters=$EXPORTERS_JSON" >> $GITHUB_OUTPUT
-
-          count=$(echo "$EXPORTERS_JSON" | jq '. | length')
-          echo "✓ Found $count exporter(s) to build"
-          echo "$EXPORTERS_JSON" | jq -r '.[]' | while read exp; do
-            echo "  → $exp"
-          done
 
           echo "::endgroup::"
 
