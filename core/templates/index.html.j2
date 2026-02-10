@@ -1147,6 +1147,84 @@
                     </div>
                     <a href="https://github.com/SckyzO/monitoring-hub" target="_blank" class="px-8 py-4 rounded-xl bg-primary-600 text-white text-xs font-black uppercase tracking-widest hover:bg-primary-500 transition-all shadow-lg shadow-primary-500/20 active:scale-95">Open Source Community</a>
                 </div>
+
+                <!-- Security Overview Section -->
+                {% if security_stats.total_vulnerabilities > 0 %}
+                <div class="mt-16 space-y-6">
+                    <div class="flex items-center gap-4">
+                        <div class="h-px flex-1 bg-zinc-800" :class="theme === 'light' ? 'bg-zinc-100' : ''"></div>
+                        <h3 class="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-500">Security Overview</h3>
+                        <div class="h-px flex-1 bg-zinc-800" :class="theme === 'light' ? 'bg-zinc-100' : ''"></div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <!-- Total CVEs -->
+                        <div class="p-6 rounded-2xl border border-white/5 bg-zinc-950" :class="theme === 'light' ? 'bg-white border-zinc-200' : ''">
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="text-xs font-black uppercase tracking-widest text-zinc-500">Total CVEs</span>
+                                <i data-lucide="shield-alert" class="w-5 h-5 text-zinc-600"></i>
+                            </div>
+                            <div class="text-3xl font-black" :class="theme === 'light' ? 'text-zinc-900' : 'text-white'">{{ security_stats.total_vulnerabilities }}</div>
+                            <p class="text-[10px] font-medium text-zinc-500 mt-2">Across {{ security_stats.total_exporters_scanned }} exporters</p>
+                        </div>
+
+                        <!-- Critical -->
+                        <div class="p-6 rounded-2xl border border-rose-500/20 bg-rose-500/5">
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="text-xs font-black uppercase tracking-widest text-rose-500">Critical</span>
+                                <i data-lucide="alert-octagon" class="w-5 h-5 text-rose-500"></i>
+                            </div>
+                            <div class="text-3xl font-black text-rose-500">{{ security_stats.by_severity.CRITICAL }}</div>
+                            <p class="text-[10px] font-medium text-rose-400 mt-2">Immediate attention</p>
+                        </div>
+
+                        <!-- High -->
+                        <div class="p-6 rounded-2xl border border-orange-500/20 bg-orange-500/5">
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="text-xs font-black uppercase tracking-widest text-orange-500">High</span>
+                                <i data-lucide="alert-triangle" class="w-5 h-5 text-orange-500"></i>
+                            </div>
+                            <div class="text-3xl font-black text-orange-500">{{ security_stats.by_severity.HIGH }}</div>
+                            <p class="text-[10px] font-medium text-orange-400 mt-2">Priority patches</p>
+                        </div>
+
+                        <!-- Medium + Low -->
+                        <div class="p-6 rounded-2xl border border-yellow-500/20 bg-yellow-500/5">
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="text-xs font-black uppercase tracking-widest text-yellow-500">Medium/Low</span>
+                                <i data-lucide="info" class="w-5 h-5 text-yellow-500"></i>
+                            </div>
+                            <div class="text-3xl font-black text-yellow-500">{{ security_stats.by_severity.MEDIUM + security_stats.by_severity.LOW }}</div>
+                            <p class="text-[10px] font-medium text-yellow-400 mt-2">Monitored</p>
+                        </div>
+                    </div>
+
+                    <!-- Charts -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Severity Chart -->
+                        <div class="p-8 rounded-2xl border border-white/5 bg-zinc-950" :class="theme === 'light' ? 'bg-white border-zinc-200' : ''">
+                            <h4 class="text-sm font-black uppercase tracking-wider mb-6" :class="theme === 'light' ? 'text-zinc-900' : 'text-white'">CVE Distribution</h4>
+                            <div class="w-full max-h-[250px]">
+                                <canvas id="severityChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Top Exporters Chart -->
+                        <div class="p-8 rounded-2xl border border-white/5 bg-zinc-950" :class="theme === 'light' ? 'bg-white border-zinc-200' : ''">
+                            <h4 class="text-sm font-black uppercase tracking-wider mb-6" :class="theme === 'light' ? 'text-zinc-900' : 'text-white'">Top 5 Affected Exporters</h4>
+                            <div class="w-full max-h-[250px]">
+                                <canvas id="exportersChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if security_stats.scan_date %}
+                    <div class="text-center text-[10px] font-medium text-zinc-500 mt-4">
+                        Last security scan: {{ security_stats.scan_date[:10] }} | Automated weekly rebuilds active
+                    </div>
+                    {% endif %}
+                </div>
+                {% endif %}
             </div>
         </div>
     </template>
@@ -1154,6 +1232,10 @@
     <!-- Data -->
     <script id="exporters-data" type="application/json">{{ exporters_json | safe }}</script>
     <script id="categories-data" type="application/json">{{ categories_json | safe }}</script>
+    <script id="security-stats-data" type="application/json">{{ security_stats_json | safe }}</script>
+
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
     <script>
         function registry() {
@@ -1187,11 +1269,148 @@
                         setTimeout(() => { this.showWelcomeTip = false; localStorage.setItem('hub-factory-visited', 'true'); }, 10000);
                     }
 
-                    this.$nextTick(() => { lucide.createIcons(); });
+                    this.$nextTick(() => {
+                        lucide.createIcons();
+                        this.initSecurityCharts();
+                    });
                     this.$watch('filteredItems', () => this.$nextTick(() => lucide.createIcons()));
                     this.$watch('currentPage', () => this.$nextTick(() => lucide.createIcons()));
                     this.$watch('perPage', () => this.$nextTick(() => lucide.createIcons()));
                     this.$watch('showCommandPalette', (v) => { if(v) this.$nextTick(() => this.$refs.commandInput.focus()); });
+                    this.$watch('theme', () => this.$nextTick(() => this.initSecurityCharts()));
+                },
+                initSecurityCharts() {
+                    // Load security stats
+                    let securityStats;
+                    try {
+                        securityStats = JSON.parse(document.getElementById('security-stats-data').textContent);
+                    } catch(e) {
+                        console.log('No security stats available');
+                        return;
+                    }
+
+                    if (securityStats.total_vulnerabilities === 0) return;
+
+                    const isDark = this.theme !== 'light';
+                    const textColor = isDark ? '#a1a1aa' : '#52525b';
+                    const gridColor = isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)';
+
+                    // Destroy existing charts if they exist
+                    if (window.severityChart) window.severityChart.destroy();
+                    if (window.exportersChart) window.exportersChart.destroy();
+
+                    // Severity Donut Chart
+                    const severityCtx = document.getElementById('severityChart');
+                    if (severityCtx) {
+                        window.severityChart = new Chart(severityCtx, {
+                            type: 'doughnut',
+                            data: {
+                                labels: ['Critical', 'High', 'Medium', 'Low'],
+                                datasets: [{
+                                    data: [
+                                        securityStats.by_severity.CRITICAL,
+                                        securityStats.by_severity.HIGH,
+                                        securityStats.by_severity.MEDIUM,
+                                        securityStats.by_severity.LOW
+                                    ],
+                                    backgroundColor: [
+                                        'rgba(244, 63, 94, 0.8)',
+                                        'rgba(249, 115, 22, 0.8)',
+                                        'rgba(234, 179, 8, 0.8)',
+                                        'rgba(132, 204, 22, 0.8)'
+                                    ],
+                                    borderWidth: 0
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: true,
+                                plugins: {
+                                    legend: {
+                                        position: 'bottom',
+                                        labels: {
+                                            color: textColor,
+                                            font: { size: 11, weight: '600' },
+                                            padding: 15
+                                        }
+                                    },
+                                    tooltip: {
+                                        backgroundColor: isDark ? '#18181b' : '#ffffff',
+                                        titleColor: isDark ? '#ffffff' : '#000000',
+                                        bodyColor: isDark ? '#a1a1aa' : '#52525b',
+                                        borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)',
+                                        borderWidth: 1,
+                                        padding: 12,
+                                        displayColors: true,
+                                        callbacks: {
+                                            label: function(context) {
+                                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                                const percentage = ((context.parsed / total) * 100).toFixed(1);
+                                                return ` ${context.label}: ${context.parsed} (${percentage}%)`;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    }
+
+                    // Top Exporters Bar Chart
+                    const exportersCtx = document.getElementById('exportersChart');
+                    if (exportersCtx && securityStats.top_exporters && securityStats.top_exporters.length > 0) {
+                        const top5 = securityStats.top_exporters.slice(0, 5);
+                        window.exportersChart = new Chart(exportersCtx, {
+                            type: 'bar',
+                            data: {
+                                labels: top5.map(e => e.name),
+                                datasets: [{
+                                    label: 'CVEs',
+                                    data: top5.map(e => e.count),
+                                    backgroundColor: 'rgba(59, 130, 246, 0.8)',
+                                    borderRadius: 8,
+                                    barThickness: 30
+                                }]
+                            },
+                            options: {
+                                indexAxis: 'y',
+                                responsive: true,
+                                maintainAspectRatio: true,
+                                plugins: {
+                                    legend: { display: false },
+                                    tooltip: {
+                                        backgroundColor: isDark ? '#18181b' : '#ffffff',
+                                        titleColor: isDark ? '#ffffff' : '#000000',
+                                        bodyColor: isDark ? '#a1a1aa' : '#52525b',
+                                        borderColor: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)',
+                                        borderWidth: 1,
+                                        padding: 12,
+                                        callbacks: {
+                                            label: function(context) {
+                                                return ` ${context.parsed.x} vulnerabilities`;
+                                            }
+                                        }
+                                    }
+                                },
+                                scales: {
+                                    x: {
+                                        beginAtZero: true,
+                                        ticks: {
+                                            color: textColor,
+                                            font: { size: 10, weight: '600' }
+                                        },
+                                        grid: { color: gridColor }
+                                    },
+                                    y: {
+                                        ticks: {
+                                            color: textColor,
+                                            font: { size: 11, weight: '600' }
+                                        },
+                                        grid: { display: false }
+                                    }
+                                }
+                            }
+                        });
+                    }
                 },
                 setThemeColor(color) { this.currentColor = color.name; this.currentColorRGBA = color.value; localStorage.setItem('color-theme', color.name); document.documentElement.style.setProperty('--primary-rgb', color.value.replace(/,/g, '')); document.documentElement.style.setProperty('--primary-rgba', color.value); },
                 changeCategory(cat) { this.filterCategory = 'none'; this.currentPage = 1; this.$nextTick(() => { this.filterCategory = cat; }); },
