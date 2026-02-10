@@ -37,36 +37,39 @@ jobs:
         run: |
           echo "::group::🔍 Detecting modified exporters"
 
-          # Check if workflow was manually triggered with specific exporters
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ -n "${{ inputs.exporters }}" ]; then
-            echo "Manual trigger detected with exporters: ${{ inputs.exporters }}"
-
-            # Convert comma-separated list to JSON array
-            EXPORTERS_JSON=$(echo "${{ inputs.exporters }}" | jq -R -c 'split(",") | map(gsub("^\\s+|\\s+$"; "")) | map(select(length > 0))')
-
-            echo "exporters=$EXPORTERS_JSON" >> $GITHUB_OUTPUT
-            echo "matrix={\"exporter\":$EXPORTERS_JSON}" >> $GITHUB_OUTPUT
-
-            COUNT=$(echo "$EXPORTERS_JSON" | jq '. | length')
-            echo "✓ Manual build requested for $COUNT exporter(s): $(echo "$EXPORTERS_JSON" | jq -r 'join(", ")')"
-            echo "::endgroup::"
-            exit 0
-          fi
-
-          # Check if workflow was manually triggered without specific exporters (build all)
+          # Check if workflow was manually triggered
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            echo "Manual trigger detected - building ALL exporters"
+            INPUT_EXPORTERS="${{ inputs.exporters }}"
 
-            # List all exporters (directories in exporters/)
-            ALL_EXPORTERS=$(ls -1 exporters/ | jq -R -s -c 'split("\n") | map(select(length > 0))')
+            # Check if specific exporters were provided (non-empty input)
+            if [ -n "$INPUT_EXPORTERS" ] && [ "$INPUT_EXPORTERS" != "null" ]; then
+              echo "Manual trigger with specific exporters: $INPUT_EXPORTERS"
 
-            echo "exporters=$ALL_EXPORTERS" >> $GITHUB_OUTPUT
-            echo "matrix={\"exporter\":$ALL_EXPORTERS}" >> $GITHUB_OUTPUT
+              # Convert comma-separated list to JSON array
+              EXPORTERS_JSON=$(echo "$INPUT_EXPORTERS" | jq -R -c 'split(",") | map(gsub("^\\s+|\\s+$"; "")) | map(select(length > 0))')
 
-            COUNT=$(echo "$ALL_EXPORTERS" | jq '. | length')
-            echo "✓ Manual build requested for ALL exporters ($COUNT total)"
-            echo "::endgroup::"
-            exit 0
+              echo "exporters=$EXPORTERS_JSON" >> $GITHUB_OUTPUT
+              echo "matrix={\"exporter\":$EXPORTERS_JSON}" >> $GITHUB_OUTPUT
+
+              COUNT=$(echo "$EXPORTERS_JSON" | jq '. | length')
+              echo "✓ Manual build requested for $COUNT exporter(s): $(echo "$EXPORTERS_JSON" | jq -r 'join(", ")')"
+              echo "::endgroup::"
+              exit 0
+            else
+              # No specific exporters - build ALL
+              echo "Manual trigger without specific exporters - building ALL"
+
+              # List all exporters (directories in exporters/)
+              ALL_EXPORTERS=$(ls -1 exporters/ | jq -R -s -c 'split("\n") | map(select(length > 0))')
+
+              echo "exporters=$ALL_EXPORTERS" >> $GITHUB_OUTPUT
+              echo "matrix={\"exporter\":$ALL_EXPORTERS}" >> $GITHUB_OUTPUT
+
+              COUNT=$(echo "$ALL_EXPORTERS" | jq '. | length')
+              echo "✓ Manual build requested for ALL exporters ($COUNT total)"
+              echo "::endgroup::"
+              exit 0
+            fi
           fi
 
           # Auto-detect changes from git diff (normal push workflow)
