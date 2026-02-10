@@ -8,9 +8,10 @@ on:
   workflow_dispatch:
     inputs:
       exporters:
-        description: 'Comma-separated list of exporters to build (leave empty for auto-detect from last commit)'
+        description: 'Comma-separated list of exporters to build (leave empty to build ALL exporters)'
         required: false
         type: string
+        default: ''
 
 permissions:
   contents: write
@@ -114,14 +115,25 @@ jobs:
 
       - name: 📊 Generate Summary
         if: steps.detect.outputs.exporters != '[]'
+        env:
+          EXPORTERS_LIST: ${{ steps.detect.outputs.exporters }}
+          TRIGGER_MODE: ${{ github.event_name }}
         run: |
           echo "## 🚀 Auto Release Triggered" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "Detected file changes in the following exporters:" >> $GITHUB_STEP_SUMMARY
+
+          if [ "$TRIGGER_MODE" = "workflow_dispatch" ]; then
+            echo "**Mode:** Manual trigger" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "**Mode:** Automatic (push to main)" >> $GITHUB_STEP_SUMMARY
+          fi
+
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "${{ steps.detect.outputs.exporters }}" | jq -r '.[] | "- **" + . + "**"' >> $GITHUB_STEP_SUMMARY
+          echo "**Exporters to build:**" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "Release workflows will be triggered to rebuild each modified exporter." >> $GITHUB_STEP_SUMMARY
+          echo "$EXPORTERS_LIST" | jq -r '.[] | "- **" + . + "**"' >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Release workflows will be triggered for each exporter." >> $GITHUB_STEP_SUMMARY
 
   trigger-releases:
     needs: detect-changes
