@@ -37,6 +37,6 @@ BUILD_DIR = "build"
 
 # Versioning
 
-CORE_VERSION = "v0.17.0"
+CORE_VERSION = "v0.18.0"
 
-PORTAL_VERSION = "v2.8.0"
+PORTAL_VERSION = "v2.9.0"
