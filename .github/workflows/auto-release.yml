@@ -1,5 +1,5 @@
 name: 🤖 Auto Release
-run-name: 🤖 Auto Release - ${{ github.event_name == 'workflow_dispatch' && (inputs.exporters != '' && inputs.exporters || 'ALL exporters') || 'Auto' }}
+run-name: 🤖 ${{ github.event_name == 'workflow_dispatch' && (inputs.exporters != '' && inputs.exporters || 'ALL exporters') || format('Auto (push by {0})', github.actor) }}
 
 on:
   push:
