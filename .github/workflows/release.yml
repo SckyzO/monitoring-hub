@@ -243,7 +243,7 @@ jobs:
             debian-13) image="debian:trixie" ;;
           esac
 
-          build_dir="build/$exporter-$dist-$arch"
+          build_dir="build/$exporter-$arch-$dist"
 
           echo "::group::🔧 Generating DEB control files"
           python3 -m core.engine.builder --manifest "exporters/$exporter/manifest.yaml" --output-dir "$build_dir" --arch "$arch"
@@ -289,7 +289,7 @@ jobs:
           arch="${{ matrix.arch }}"
           dist="${{ matrix.dist }}"
           version="${{ needs.get-version.outputs.version }}"
-          build_dir="build/$exporter-$dist-$arch"
+          build_dir="build/$exporter-$arch-$dist"
 
           deb_files=$(find "$build_dir/debs" -name "*.deb")
           if [ -z "$deb_files" ]; then
