@@ -101,8 +101,9 @@ def generate(output, repo_dir, release_urls_dir):
                             }
                         elif dist in rpm_targets:
                             # Targeted but not uploaded yet (build may be in progress or failed)
-                            # Generate expected URL as fallback
-                            github_url = f"https://github.com/SckyzO/monitoring-hub/releases/download/v{version}/{filename}"
+                            # Generate expected URL as fallback (tag format: exporter-vVersion)
+                            tag = f"{rpm_name}-v{version}"
+                            github_url = f"https://github.com/SckyzO/monitoring-hub/releases/download/{tag}/{filename}"
                             data["availability"][dist][arch] = {
                                 "status": "pending",
                                 "path": github_url,
@@ -139,8 +140,9 @@ def generate(output, repo_dir, release_urls_dir):
                             }
                         elif dist in deb_targets:
                             # Targeted but not uploaded yet (build may be in progress or failed)
-                            # Generate expected URL as fallback
-                            github_url = f"https://github.com/SckyzO/monitoring-hub/releases/download/v{version}/{filename}"
+                            # Generate expected URL as fallback (tag format: exporter-vVersion)
+                            tag = f"{data['name']}-v{version}"
+                            github_url = f"https://github.com/SckyzO/monitoring-hub/releases/download/{tag}/{filename}"
                             data["deb_availability"][dist][arch] = {
                                 "status": "pending",
                                 "path": github_url,

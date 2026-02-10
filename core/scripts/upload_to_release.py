@@ -16,11 +16,11 @@ from typing import Dict, List
 import requests
 
 
-def get_release_tag(version: str) -> str:
-    """Generate release tag from version."""
+def get_release_tag(exporter_name: str, version: str) -> str:
+    """Generate release tag from exporter name and version."""
     if not version.startswith("v"):
-        return f"v{version}"
-    return version
+        version = f"v{version}"
+    return f"{exporter_name}-{version}"
 
 
 def get_or_create_release(
@@ -122,7 +122,7 @@ def main():
         sys.exit(1)
 
     # Generate release tag
-    tag = get_release_tag(args.version)
+    tag = get_release_tag(args.exporter, args.version)
 
     # Get or create release
     release = get_or_create_release(args.repo, tag, args.token, args.exporter)
