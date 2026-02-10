@@ -21,8 +21,7 @@ artifacts:
     system_user: redis_exporter
     systemd:
       enabled: true
-    extra_files: []
-    directories:
+    directories: &id001
     - path: /var/lib/redis_exporter
       owner: redis_exporter
       group: redis_exporter
@@ -39,9 +38,12 @@ artifacts:
       enabled: true
     section: net
     priority: optional
+    system_user: redis_exporter
+    directories: *id001
   docker:
     enabled: true
     entrypoint:
     - /usr/bin/redis_exporter
     validation:
       port: 9121
+      enabled: true

@@ -7,7 +7,6 @@ updated: false
 upstream:
   type: github
   repo: percona/mongodb_exporter
-  archive_name: null
 build:
   method: binary_repack
   binary_name: mongodb_exporter
@@ -26,9 +25,6 @@ artifacts:
     summary: MongoDB exporter for Prometheus.
     systemd:
       enabled: true
-    dependencies: []
-    extra_files: []
-    directories: []
   deb:
     enabled: true
     targets:

@@ -35,6 +35,7 @@ artifacts:
       enabled: true
     section: net
     priority: optional
+    system_user: prometheus
   docker:
     enabled: true
     base_image: registry.access.redhat.com/ubi9/ubi-minimal

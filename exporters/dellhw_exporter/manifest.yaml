@@ -36,6 +36,7 @@ artifacts:
       enabled: true
     section: net
     priority: optional
+    system_user: dellhw_exporter
   docker:
     enabled: true
     entrypoint:

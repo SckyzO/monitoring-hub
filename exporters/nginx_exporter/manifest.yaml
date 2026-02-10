@@ -21,8 +21,7 @@ artifacts:
     system_user: nginx_exporter
     systemd:
       enabled: true
-    extra_files: []
-    directories:
+    directories: &id001
     - path: /var/lib/nginx_exporter
       owner: nginx_exporter
       group: nginx_exporter
@@ -39,9 +38,12 @@ artifacts:
       enabled: true
     section: net
     priority: optional
+    system_user: nginx_exporter
+    directories: *id001
   docker:
     enabled: true
     entrypoint:
     - /usr/bin/nginx_exporter
     validation:
       port: 9113
+      enabled: true

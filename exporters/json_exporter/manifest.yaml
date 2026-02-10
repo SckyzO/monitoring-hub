@@ -7,7 +7,6 @@ updated: false
 upstream:
   type: github
   repo: prometheus-community/json_exporter
-  archive_name: null
 build:
   method: binary_repack
   binary_name: json_exporter
@@ -26,12 +25,11 @@ artifacts:
     summary: A prometheus exporter which scrapes remote JSON by JSONPath.
     systemd:
       enabled: true
-    dependencies: []
-    extra_files:
+    extra_files: &id001
     - source: assets/config.yml
       dest: /etc/json_exporter/config.yml
       mode: '0644'
-    directories:
+    directories: &id002
     - path: /etc/json_exporter
       mode: '0755'
   deb:
@@ -46,6 +44,8 @@ artifacts:
       enabled: true
     section: net
     priority: optional
+    extra_files: *id001
+    directories: *id002
   docker:
     enabled: true
     entrypoint:

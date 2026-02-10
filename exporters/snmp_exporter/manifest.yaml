@@ -24,11 +24,11 @@ artifacts:
     systemd:
       enabled: true
     system_user: prometheus
-    extra_files:
+    extra_files: &id001
     - source: snmp.yml
       dest: /etc/snmp_exporter/snmp.yml
       config: true
-    directories:
+    directories: &id002
     - path: /etc/snmp_exporter
       mode: '0755'
       owner: root
@@ -45,6 +45,9 @@ artifacts:
       enabled: true
     section: net
     priority: optional
+    system_user: prometheus
+    extra_files: *id001
+    directories: *id002
   docker:
     enabled: true
     base_image: registry.access.redhat.com/ubi9/ubi-minimal
@@ -54,3 +57,4 @@ artifacts:
     - --config.file=/etc/snmp_exporter/snmp.yml
     validation:
       port: 9116
+      enabled: true

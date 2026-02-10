@@ -23,11 +23,11 @@ artifacts:
     systemd:
       enabled: true
     system_user: prometheus
-    extra_files:
+    extra_files: &id001
     - source: assets/prometheus.yml
       dest: /etc/prometheus/prometheus.yml
       config: true
-    directories:
+    directories: &id002
     - path: /etc/prometheus
       mode: '0755'
       owner: root
@@ -48,6 +48,9 @@ artifacts:
       enabled: true
     section: net
     priority: optional
+    system_user: prometheus
+    extra_files: *id001
+    directories: *id002
   docker:
     enabled: true
     entrypoint:
@@ -56,3 +59,4 @@ artifacts:
     - --config.file=/etc/prometheus/prometheus.yml
     validation:
       port: 9090
+      enabled: true
