@@ -208,6 +208,7 @@ The "Magic" happens in the `core/` engine:
 ### YUM Repository (RPM)
 ```bash
 # RHEL/CentOS/Rocky/Alma 8, 9, 10
+sudo rpm --import https://sckyzo.github.io/monitoring-hub/RPM-GPG-KEY-monitoring-hub
 sudo dnf config-manager --add-repo https://sckyzo.github.io/monitoring-hub/el9/$(arch)/
 sudo dnf install <exporter_name>
 ```
