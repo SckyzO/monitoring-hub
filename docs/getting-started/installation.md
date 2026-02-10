@@ -11,6 +11,14 @@ Choose your preferred installation method based on your environment.
 
 ## YUM Repository
 
+### Add GPG Key
+
+First, import the repository GPG key to verify package signatures:
+
+```bash
+sudo rpm --import https://sckyzo.github.io/monitoring-hub/RPM-GPG-KEY-monitoring-hub
+```
+
 ### Configure Repository
 
 === "EL9 (Recommended)"
