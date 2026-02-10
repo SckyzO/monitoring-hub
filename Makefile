@@ -1,6 +1,6 @@
 .PHONY: help install test test-cov lint lint-fix format format-check type-check pre-commit clean clean-all
 .PHONY: build rebuild shell ci docs-serve docs-build generate-portal
-.PHONY: create-exporter build-exporter test-exporter list-exporters
+.PHONY: create-exporter build-exporter test-exporter list-exporters validate-urls validate-url
 .PHONY: local-test local-lint local-format local-type-check
 
 # ==============================================================================
@@ -76,6 +76,18 @@ type-check: ## Run type checker in Docker container
 
 ci: ## Run all CI checks in Docker container
 	@./devctl ci
+
+# --- URL Validation ---
+
+validate-urls: ## Validate all exporter artifact URLs
+	@./devctl validate-urls
+
+validate-url: ## Validate specific exporter URLs (usage: make validate-url EXPORTER=node_exporter)
+	@if [ -z "$(EXPORTER)" ]; then \
+		echo "Usage: make validate-url EXPORTER=<name>"; \
+		exit 1; \
+	fi
+	@./devctl validate-url $(EXPORTER)
 
 # --- Exporter Commands ---
 

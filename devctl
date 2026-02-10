@@ -96,6 +96,10 @@ PORTAL & DOCS COMMANDS:
     docs-serve          Serve docs with live reload at localhost:8000
     validate-site       Validate generated portal
 
+URL VALIDATION COMMANDS:
+    validate-urls       Validate all exporter artifact URLs
+    validate-url <name> Validate specific exporter URLs
+
 STATE & VERSION COMMANDS:
     state-manager       Run state manager to detect changes
     watcher             Run version watcher to check for updates
@@ -394,6 +398,24 @@ cmd_validate_site() {
     $DOCKER_RUN "$DEV_IMAGE" python3 ./core/scripts/validate_site.py
 }
 
+cmd_validate_urls() {
+    ensure_image
+    info "Validating artifact URLs for all exporters..."
+    $DOCKER_RUN "$DEV_IMAGE" python3 ./core/scripts/validate_urls.py "$@"
+}
+
+cmd_validate_url() {
+    ensure_image
+    if [ $# -eq 0 ]; then
+        error "Usage: ./devctl validate-url <exporter_name>"
+        exit 1
+    fi
+    local exporter_name="$1"
+    shift
+    info "Validating artifact URLs for: $exporter_name"
+    $DOCKER_RUN "$DEV_IMAGE" python3 ./core/scripts/validate_urls.py --exporter "$exporter_name" "$@"
+}
+
 cmd_state_manager() {
     ensure_image
     info "Running state manager..."
@@ -467,6 +489,10 @@ main() {
         docs-build)      cmd_docs_build "$@" ;;
         docs-serve)      cmd_docs_serve "$@" ;;
         validate-site)   cmd_validate_site "$@" ;;
+
+        # URL Validation
+        validate-urls)   cmd_validate_urls "$@" ;;
+        validate-url)    cmd_validate_url "$@" ;;
 
         # State & Version
         state-manager)   cmd_state_manager "$@" ;;

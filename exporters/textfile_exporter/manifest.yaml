@@ -21,7 +21,7 @@ artifacts:
     system_user: textfile_exporter
     systemd:
       enabled: true
-    directories: &id001
+    directories:
     - path: /var/lib/textfile_exporter
       owner: textfile_exporter
       group: textfile_exporter
@@ -39,7 +39,11 @@ artifacts:
     section: net
     priority: optional
     system_user: textfile_exporter
-    directories: *id001
+    directories:
+    - path: /var/lib/textfile_exporter
+      owner: textfile_exporter
+      group: textfile_exporter
+      mode: '0755'
   docker:
     enabled: true
     entrypoint:

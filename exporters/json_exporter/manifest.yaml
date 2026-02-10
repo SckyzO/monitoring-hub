@@ -25,11 +25,11 @@ artifacts:
     summary: A prometheus exporter which scrapes remote JSON by JSONPath.
     systemd:
       enabled: true
-    extra_files: &id001
+    extra_files:
     - source: assets/config.yml
       dest: /etc/json_exporter/config.yml
       mode: '0644'
-    directories: &id002
+    directories:
     - path: /etc/json_exporter
       mode: '0755'
   deb:
@@ -44,8 +44,13 @@ artifacts:
       enabled: true
     section: net
     priority: optional
-    extra_files: *id001
-    directories: *id002
+    extra_files:
+    - source: assets/config.yml
+      dest: /etc/json_exporter/config.yml
+      mode: '0644'
+    directories:
+    - path: /etc/json_exporter
+      mode: '0755'
   docker:
     enabled: true
     entrypoint:
