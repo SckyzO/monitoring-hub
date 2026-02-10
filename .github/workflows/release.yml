@@ -648,6 +648,10 @@ jobs:
     needs: [build-rpm, build-deb, build-docker]
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    # Serialize all gh-pages pushes to prevent conflicts
+    concurrency:
+      group: gh-pages-deploy
+      cancel-in-progress: false
     permissions:
       contents: write
     steps:
