@@ -44,6 +44,23 @@ Supported architectures: `amd64`, `arm64`
 ./devctl test-exporter my_exporter --el10  # Enterprise Linux 10
 ```
 
+### Test DEB Builds
+
+Test Debian/Ubuntu package build:
+
+```bash
+./devctl test-deb my_exporter                    # Ubuntu 22.04 / amd64 (default)
+./devctl test-deb my_exporter ubuntu-24.04       # Ubuntu 24.04
+./devctl test-deb my_exporter debian-12          # Debian 12
+./devctl test-deb my_exporter debian-13 arm64    # Debian 13 / arm64
+```
+
+Supported distributions:
+- `ubuntu-22.04`, `ubuntu-24.04`
+- `debian-12`, `debian-13`
+
+Supported architectures: `amd64`, `arm64`
+
 ### Enable Smoke Tests
 
 ```bash
@@ -124,6 +141,39 @@ curl http://localhost:9100/metrics
 # Cleanup
 docker stop test_exporter && docker rm test_exporter
 ```
+
+## URL Validation
+
+Validate GitHub release URLs before building:
+
+```bash
+# Validate all exporters
+make validate-urls
+
+# Validate specific exporter
+make validate-url EXPORTER=node_exporter
+
+# With verbose output (show successful URLs)
+./devctl validate-urls --verbose
+
+# Test specific architectures only
+./devctl validate-urls --arch amd64
+
+# Fail on errors (useful for CI)
+./devctl validate-urls --fail-on-error
+```
+
+This checks that GitHub release assets are accessible and correctly named:
+- ✅ Constructs expected URLs from manifest configuration
+- ✅ Tests HTTP accessibility (HEAD requests)
+- ✅ Reports success/failed/partial results
+- ⚠️ Partial = some architectures missing (often arm64 unavailable upstream)
+
+**When to use:**
+- Before building new exporters
+- After updating versions in manifests
+- When upstream releases change naming patterns
+- To debug 404 download errors
 
 ## Validation Checklist
 
