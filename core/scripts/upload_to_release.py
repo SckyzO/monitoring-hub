@@ -18,14 +18,40 @@ import requests
 
 
 def retry_with_backoff(func, max_retries=3, initial_delay=2):
-    """Retry function with exponential backoff."""
+    """Retry function with exponential backoff for transient errors."""
     for attempt in range(max_retries):
         try:
             return func()
-        except requests.exceptions.HTTPError as e:
-            if e.response.status_code == 404 and attempt < max_retries - 1:
+        except (
+            requests.exceptions.SSLError,
+            requests.exceptions.ConnectionError,
+            requests.exceptions.Timeout,
+        ) as e:
+            # Network/SSL errors - always retry
+            if attempt < max_retries - 1:
                 delay = initial_delay * (2**attempt)
-                print(f"Attempt {attempt + 1} failed with 404, retrying in {delay}s...")
+                print(
+                    f"Attempt {attempt + 1} failed with {type(e).__name__}, "
+                    f"retrying in {delay}s..."
+                )
+                time.sleep(delay)
+            else:
+                print(
+                    f"Max retries ({max_retries}) reached for {type(e).__name__}, "
+                    "giving up"
+                )
+                raise
+        except requests.exceptions.HTTPError as e:
+            # HTTP errors - only retry 404 and 5xx
+            if (
+                e.response.status_code in [404, 500, 502, 503, 504]
+                and attempt < max_retries - 1
+            ):
+                delay = initial_delay * (2**attempt)
+                print(
+                    f"Attempt {attempt + 1} failed with HTTP {e.response.status_code}, "
+                    f"retrying in {delay}s..."
+                )
                 time.sleep(delay)
             else:
                 raise
