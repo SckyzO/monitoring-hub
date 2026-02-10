@@ -1,0 +1,32 @@
+/* Custom styles for Monitoring Hub documentation */
+
+:root {
+  --md-primary-fg-color: #2196F3;
+  --md-accent-fg-color: #FFC107;
+}
+
+/* Code block improvements */
+.highlight pre {
+  border-radius: 0.5rem;
+}
+
+/* Better spacing for admonitions */
+.admonition {
+  margin: 1.5rem 0;
+}
+
+/* Terminal-like code blocks */
+code.language-bash::before {
+  content: "$ ";
+  color: var(--md-accent-fg-color);
+  user-select: none;
+}
+
+/* Portal link styling */
+nav .md-tabs__link[href*="portal"] {
+  background: var(--md-accent-fg-color);
+  color: #000;
+  border-radius: 0.25rem;
+  padding: 0.5rem 1rem !important;
+  margin: 0.25rem;
+}
