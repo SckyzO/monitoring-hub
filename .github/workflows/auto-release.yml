@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'exporters/*/manifest.yaml'
+      - 'exporters/**'
 
 permissions:
   contents: write
@@ -23,52 +23,51 @@ jobs:
       matrix: ${{ steps.detect.outputs.matrix }}
     steps:
       - uses: actions/checkout@v6
-
-      - name: Set up Python
-        uses: actions/setup-python@v6
         with:
-          python-version: '3.12'
-          cache: 'pip'
-          cache-dependency-path: 'requirements/base.txt'
-
-      - name: 📦 Install dependencies
-        run: |
-          echo "::group::📦 Installing dependencies"
-          pip install -r requirements/base.txt
-          echo "✓ Dependencies installed"
-          echo "::endgroup::"
+          fetch-depth: 2  # Need at least 2 commits to diff
 
       - name: 🔍 Detect Changed Exporters
         id: detect
-        env:
-          PYTHONPATH: ${{ github.workspace }}
-          CATALOG_URL: https://sckyzo.github.io/monitoring-hub/catalog.json
         run: |
-          echo "::group::🔍 Detecting version changes"
-          
-          # Run state manager to detect changes
-          python3 -m core.engine.state_manager > changed_exporters.json
-          
-          # Read the JSON array
-          EXPORTERS=$(cat changed_exporters.json)
-          
-          echo "Changed exporters: $EXPORTERS"
-          
+          echo "::group::🔍 Detecting modified exporters"
+
+          # Get changed files in exporters/ directory from the last commit
+          # Use git diff to compare with previous commit
+          CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD | grep '^exporters/' || true)
+
+          if [ -z "$CHANGED_FILES" ]; then
+            echo "No changes detected in exporters/"
+            echo "exporters=[]" >> $GITHUB_OUTPUT
+            echo "matrix={\"exporter\":[]}" >> $GITHUB_OUTPUT
+            echo "::endgroup::"
+            exit 0
+          fi
+
+          # Extract unique exporter names from changed paths
+          # exporters/node_exporter/manifest.yaml -> node_exporter
+          # exporters/blackbox_exporter/assets/config.yml -> blackbox_exporter
+          CHANGED_EXPORTERS=$(echo "$CHANGED_FILES" | cut -d'/' -f2 | sort -u)
+
+          # Convert to JSON array
+          EXPORTERS_JSON=$(echo "$CHANGED_EXPORTERS" | jq -R -s -c 'split("\n") | map(select(length > 0))')
+
+          echo "Changed exporters: $EXPORTERS_JSON"
+
           # Count exporters
-          COUNT=$(echo "$EXPORTERS" | jq '. | length')
-          echo "Found $COUNT exporter(s) with version changes"
-          
+          COUNT=$(echo "$EXPORTERS_JSON" | jq '. | length')
+          echo "Found $COUNT modified exporter(s)"
+
           # Set outputs
-          echo "exporters=$EXPORTERS" >> $GITHUB_OUTPUT
-          echo "matrix={\"exporter\":$EXPORTERS}" >> $GITHUB_OUTPUT
-          
+          echo "exporters=$EXPORTERS_JSON" >> $GITHUB_OUTPUT
+          echo "matrix={\"exporter\":$EXPORTERS_JSON}" >> $GITHUB_OUTPUT
+
           # Display summary
           if [ "$COUNT" -gt 0 ]; then
-            echo "✓ Will trigger release for: $(echo "$EXPORTERS" | jq -r 'join(", ")')"
+            echo "✓ Will trigger release for: $(echo "$EXPORTERS_JSON" | jq -r 'join(", ")')"
           else
-            echo "ℹ️  No version changes detected"
+            echo "ℹ️  No exporters detected"
           fi
-          
+
           echo "::endgroup::"
 
       - name: 📊 Generate Summary
@@ -76,11 +75,11 @@ jobs:
         run: |
           echo "## 🚀 Auto Release Triggered" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "Detected version changes in the following exporters:" >> $GITHUB_STEP_SUMMARY
+          echo "Detected file changes in the following exporters:" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "${{ steps.detect.outputs.exporters }}" | jq -r '.[] | "- **" + . + "**"' >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "Release workflows will be triggered for each exporter." >> $GITHUB_STEP_SUMMARY
+          echo "Release workflows will be triggered to rebuild each modified exporter." >> $GITHUB_STEP_SUMMARY
 
   trigger-releases:
     needs: detect-changes
