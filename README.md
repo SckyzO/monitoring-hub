@@ -4,11 +4,36 @@
 
 **The definitive Software Factory for Prometheus Exporters.**
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge&logo=opensourceinitiative)](https://opensource.org/licenses/MIT)
-[![Build Status](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/release.yml?branch=main&label=Factory%20Build&style=for-the-badge&logo=githubactions)](https://github.com/SckyzO/monitoring-hub/actions/workflows/release.yml)
-[![PR Tests](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/build-pr.yml?branch=main&label=PR%20Tests&style=for-the-badge&logo=githubactions&color=blue)](https://github.com/SckyzO/monitoring-hub/actions/workflows/build-pr.yml)
-[![Security](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/security.yml?branch=main&label=Security&style=for-the-badge&logo=shippable&color=success)](https://github.com/SckyzO/monitoring-hub/actions/workflows/security.yml)
-[![Watcher](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/scan-updates.yml?branch=main&label=Watcher&style=for-the-badge&logo=github&color=blue)](https://github.com/SckyzO/monitoring-hub/actions/workflows/scan-updates.yml)
+<p align="center">
+  <a href="https://opensource.org/licenses/MIT">
+    <img src="https://img.shields.io/badge/License-MIT-fbbf24?style=flat-square&labelColor=18181b&logo=opensourceinitiative&logoColor=white" alt="MIT License">
+  </a>
+  <a href="https://github.com/SckyzO/monitoring-hub/actions/workflows/release.yml">
+    <img src="https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/release.yml?branch=main&style=flat-square&labelColor=18181b&logo=githubactions&logoColor=white&label=Release%20Pipeline" alt="Release Pipeline">
+  </a>
+  <a href="https://github.com/SckyzO/monitoring-hub/actions/workflows/build-pr.yml">
+    <img src="https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/build-pr.yml?branch=main&style=flat-square&labelColor=18181b&logo=githubactions&logoColor=white&label=PR%20Validation&color=3b82f6" alt="PR Validation">
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/SckyzO/monitoring-hub/actions/workflows/security.yml">
+    <img src="https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/security.yml?branch=main&style=flat-square&labelColor=18181b&logo=trivy&logoColor=white&label=Security%20Scan&color=10b981" alt="Security Scan">
+  </a>
+  <a href="https://github.com/SckyzO/monitoring-hub/actions/workflows/scan-updates.yml">
+    <img src="https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/scan-updates.yml?branch=main&style=flat-square&labelColor=18181b&logo=dependabot&logoColor=white&label=Version%20Watcher&color=8b5cf6" alt="Version Watcher">
+  </a>
+  <a href="https://sckyzo.github.io/monitoring-hub/docs/">
+    <img src="https://img.shields.io/badge/Docs-MkDocs-06b6d4?style=flat-square&labelColor=18181b&logo=materialformkdocs&logoColor=white" alt="Documentation">
+  </a>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/RPM-Signed-ef4444?style=flat-square&labelColor=18181b&logo=redhat&logoColor=white" alt="RPM Signed">
+  <img src="https://img.shields.io/badge/DEB-Signed-ef4444?style=flat-square&labelColor=18181b&logo=debian&logoColor=white" alt="DEB Signed">
+  <img src="https://img.shields.io/badge/Multi--Arch-x86__64%20%7C%20ARM64-6366f1?style=flat-square&labelColor=18181b&logo=arm&logoColor=white" alt="Multi-Architecture">
+  <img src="https://img.shields.io/badge/Containers-UBI9%20Minimal-ec4899?style=flat-square&labelColor=18181b&logo=redhat&logoColor=white" alt="UBI9 Minimal">
+</p>
 
 <br>
 
