@@ -32,6 +32,8 @@ jobs:
     outputs:
       exporters: ${{ steps.detect.outputs.exporters }}
       build_needed: ${{ steps.detect.outputs.build_needed }}
+      rpm_matrix: ${{ steps.generate-matrices.outputs.rpm_matrix }}
+      deb_matrix: ${{ steps.generate-matrices.outputs.deb_matrix }}
     steps:
       - uses: actions/checkout@v6
 
@@ -68,6 +70,79 @@ jobs:
             # state_manager writes directly to $GITHUB_OUTPUT (exporters and build_needed)
             python3 -m core.engine.state_manager
           fi
+
+          echo "::endgroup::"
+
+      - name: 🔧 Generate Dynamic Matrices
+        if: steps.detect.outputs.build_needed == 'true'
+        id: generate-matrices
+        env:
+          EXPORTERS_LIST: ${{ steps.detect.outputs.exporters }}
+        run: |
+          echo "::group::🔧 Generating filtered build matrices"
+
+          python3 << 'PYTHON_EOF'
+          import json
+          import os
+          import yaml
+
+          exporters = json.loads(os.environ['EXPORTERS_LIST'])
+
+          rpm_combinations = []
+          deb_combinations = []
+
+          rpm_dists = ['el8', 'el9', 'el10']
+          deb_dists = ['ubuntu-22.04', 'ubuntu-24.04', 'debian-12', 'debian-13']
+
+          for exporter in exporters:
+              manifest_path = f'exporters/{exporter}/manifest.yaml'
+              try:
+                  with open(manifest_path) as f:
+                      manifest = yaml.safe_load(f)
+
+                  # Get supported architectures
+                  supported_archs = manifest.get('build', {}).get('archs', ['amd64', 'arm64'])
+
+                  # RPM matrix
+                  if manifest.get('artifacts', {}).get('rpm', {}).get('enabled', False):
+                      rpm_targets = manifest.get('artifacts', {}).get('rpm', {}).get('targets', [])
+                      for dist in rpm_targets:
+                          if dist in rpm_dists:
+                              for arch in supported_archs:
+                                  rpm_combinations.append({
+                                      'exporter': exporter,
+                                      'arch': arch,
+                                      'dist': dist
+                                  })
+
+                  # DEB matrix
+                  if manifest.get('artifacts', {}).get('deb', {}).get('enabled', False):
+                      deb_targets = manifest.get('artifacts', {}).get('deb', {}).get('targets', [])
+                      for dist in deb_targets:
+                          if dist in deb_dists:
+                              for arch in supported_archs:
+                                  deb_combinations.append({
+                                      'exporter': exporter,
+                                      'arch': arch,
+                                      'dist': dist
+                                  })
+
+              except Exception as e:
+                  print(f"Warning: Failed to process {exporter}: {e}")
+                  continue
+
+          # Generate matrices
+          rpm_matrix = {'include': rpm_combinations} if rpm_combinations else {'include': []}
+          deb_matrix = {'include': deb_combinations} if deb_combinations else {'include': []}
+
+          # Write to GITHUB_OUTPUT
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+              f.write(f'rpm_matrix={json.dumps(rpm_matrix)}\n')
+              f.write(f'deb_matrix={json.dumps(deb_matrix)}\n')
+
+          print(f"✓ Generated RPM matrix: {len(rpm_combinations)} jobs")
+          print(f"✓ Generated DEB matrix: {len(deb_combinations)} jobs")
+          PYTHON_EOF
 
           echo "::endgroup::"
 
@@ -262,49 +337,25 @@ jobs:
     timeout-minutes: 60
     strategy:
       fail-fast: false
-      matrix:
-        exporter: ${{ fromJson(needs.discover.outputs.exporters) }}
-        arch: [amd64, arm64]
-        dist: [el8, el9, el10]
+      matrix: ${{ fromJson(needs.discover.outputs.rpm_matrix) }}
     permissions:
       contents: write
     steps:
       - uses: actions/checkout@v6
 
-      - name: Check if RPM build is enabled
-        id: check-rpm
-        run: |
-          exporter="${{ matrix.exporter }}"
-          arch="${{ matrix.arch }}"
-          dist="${{ matrix.dist }}"
-
-          is_target=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print('$dist' in m.get('artifacts', {}).get('rpm', {}).get('targets', []))")
-          is_enabled=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(m.get('artifacts', {}).get('rpm', {}).get('enabled', False))")
-          is_arch_supported=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print('$arch' in m.get('build', {}).get('archs', ['amd64', 'arm64']))")
-
-          if [ "$is_enabled" = "True" ] && [ "$is_target" = "True" ] && [ "$is_arch_supported" = "True" ]; then
-            echo "enabled=true" >> $GITHUB_OUTPUT
-          else
-            echo "enabled=false" >> $GITHUB_OUTPUT
-            echo "RPM build not enabled for $exporter ($dist/$arch)"
-          fi
-
       - name: Set up QEMU
-        if: steps.check-rpm.outputs.enabled == 'true' && matrix.arch == 'arm64'
+        if: matrix.arch == 'arm64'
         uses: docker/setup-qemu-action@v3
 
       - name: Set up Python
-        if: steps.check-rpm.outputs.enabled == 'true'
         uses: actions/setup-python@v6
         with:
           python-version: '3.12'
 
       - name: Install dependencies
-        if: steps.check-rpm.outputs.enabled == 'true'
         run: pip install -r requirements/base.txt
 
       - name: 📦 Build RPM
-        if: steps.check-rpm.outputs.enabled == 'true'
         env:
           PYTHONPATH: ${{ github.workspace }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -337,7 +388,6 @@ jobs:
           fi
 
       - name: 🔐 Sign RPM
-        if: steps.check-rpm.outputs.enabled == 'true'
         env:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
@@ -358,7 +408,6 @@ jobs:
           echo "::endgroup::"
 
       - name: ⬆️  Upload to GitHub Releases
-        if: steps.check-rpm.outputs.enabled == 'true'
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
@@ -382,7 +431,6 @@ jobs:
           echo "::endgroup::"
 
       - name: 📅 Create Build Info
-        if: steps.check-rpm.outputs.enabled == 'true'
         run: |
           exporter="${{ matrix.exporter }}"
           build_dir="build/$exporter-${{ matrix.arch }}-${{ matrix.dist }}"
@@ -400,7 +448,6 @@ jobs:
           EOF
 
       - name: Upload Artifacts
-        if: steps.check-rpm.outputs.enabled == 'true'
         uses: actions/upload-artifact@v6
         with:
           name: rpm-${{ matrix.exporter }}-${{ matrix.arch }}-${{ matrix.dist }}
@@ -419,49 +466,25 @@ jobs:
     timeout-minutes: 60
     strategy:
       fail-fast: false
-      matrix:
-        exporter: ${{ fromJson(needs.discover.outputs.exporters) }}
-        arch: [amd64, arm64]
-        dist: [ubuntu-22.04, ubuntu-24.04, debian-12, debian-13]
+      matrix: ${{ fromJson(needs.discover.outputs.deb_matrix) }}
     permissions:
       contents: write
     steps:
       - uses: actions/checkout@v6
 
-      - name: Check if DEB build is enabled
-        id: check-deb
-        run: |
-          exporter="${{ matrix.exporter }}"
-          arch="${{ matrix.arch }}"
-          dist="${{ matrix.dist }}"
-
-          is_target=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print('$dist' in m.get('artifacts', {}).get('deb', {}).get('targets', []))")
-          is_enabled=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(m.get('artifacts', {}).get('deb', {}).get('enabled', False))")
-          is_arch_supported=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print('$arch' in m.get('build', {}).get('archs', ['amd64', 'arm64']))")
-
-          if [ "$is_enabled" = "True" ] && [ "$is_target" = "True" ] && [ "$is_arch_supported" = "True" ]; then
-            echo "enabled=true" >> $GITHUB_OUTPUT
-          else
-            echo "enabled=false" >> $GITHUB_OUTPUT
-            echo "DEB build not enabled for $exporter ($dist/$arch)"
-          fi
-
       - name: Set up QEMU
-        if: steps.check-deb.outputs.enabled == 'true' && matrix.arch == 'arm64'
+        if: matrix.arch == 'arm64'
         uses: docker/setup-qemu-action@v3
 
       - name: Set up Python
-        if: steps.check-deb.outputs.enabled == 'true'
         uses: actions/setup-python@v6
         with:
           python-version: '3.12'
 
       - name: Install dependencies
-        if: steps.check-deb.outputs.enabled == 'true'
         run: pip install -r requirements/base.txt
 
       - name: 📦 Build DEB
-        if: steps.check-deb.outputs.enabled == 'true'
         env:
           PYTHONPATH: ${{ github.workspace }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -486,7 +509,6 @@ jobs:
           fi
 
       - name: 🔐 Sign DEB
-        if: steps.check-deb.outputs.enabled == 'true'
         env:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
@@ -506,7 +528,6 @@ jobs:
           echo "::endgroup::"
 
       - name: ⬆️  Upload to GitHub Releases
-        if: steps.check-deb.outputs.enabled == 'true'
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
@@ -530,7 +551,6 @@ jobs:
           echo "::endgroup::"
 
       - name: 📅 Create Build Info
-        if: steps.check-deb.outputs.enabled == 'true'
         run: |
           exporter="${{ matrix.exporter }}"
           build_dir="build/$exporter-${{ matrix.arch }}-${{ matrix.dist }}"
@@ -548,7 +568,6 @@ jobs:
           EOF
 
       - name: Upload Artifacts
-        if: steps.check-deb.outputs.enabled == 'true'
         uses: actions/upload-artifact@v6
         with:
           name: deb-${{ matrix.exporter }}-${{ matrix.arch }}-${{ matrix.dist }}
