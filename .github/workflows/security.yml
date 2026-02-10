@@ -16,10 +16,20 @@ on:
     - cron: '0 9 * * 1'
   workflow_dispatch:
 
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+
+concurrency:
+  group: security-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   bandit:
     name: Bandit Security Scan
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     container:
       image: python:3.11-slim
 
@@ -48,6 +58,7 @@ jobs:
   pip-audit:
     name: Dependency Vulnerability Scan
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     container:
       image: python:3.11-slim
 
@@ -76,6 +87,7 @@ jobs:
   trivy:
     name: Trivy Filesystem Scan
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       security-events: write
       actions: read
@@ -104,6 +116,7 @@ jobs:
   summary:
     name: Security Scan Summary
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     needs: [bandit, pip-audit, trivy]
     if: always()
 
