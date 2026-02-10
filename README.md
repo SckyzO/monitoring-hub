@@ -11,6 +11,9 @@
   <a href="https://github.com/SckyzO/monitoring-hub/actions/workflows/release.yml">
     <img src="https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/release.yml?branch=main&style=flat-square&labelColor=18181b&logo=githubactions&logoColor=white&label=Release%20Pipeline" alt="Release Pipeline">
   </a>
+  <a href="https://github.com/SckyzO/monitoring-hub/actions/workflows/auto-release.yml">
+    <img src="https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/auto-release.yml?branch=main&style=flat-square&labelColor=18181b&logo=githubactions&logoColor=white&label=Auto%20Release&color=f59e0b" alt="Auto Release">
+  </a>
   <a href="https://github.com/SckyzO/monitoring-hub/actions/workflows/build-pr.yml">
     <img src="https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/build-pr.yml?branch=main&style=flat-square&labelColor=18181b&logo=githubactions&logoColor=white&label=PR%20Validation&color=3b82f6" alt="PR Validation">
   </a>
@@ -30,6 +33,8 @@
   <img src="https://img.shields.io/badge/DEB-Signed-ef4444?style=flat-square&labelColor=18181b&logo=debian&logoColor=white" alt="DEB Signed">
   <img src="https://img.shields.io/badge/Multi--Arch-x86__64%20%7C%20ARM64-6366f1?style=flat-square&labelColor=18181b&logo=arm&logoColor=white" alt="Multi-Architecture">
   <img src="https://img.shields.io/badge/Containers-UBI9%20Minimal-ec4899?style=flat-square&labelColor=18181b&logo=redhat&logoColor=white" alt="UBI9 Minimal">
+  <img src="https://img.shields.io/badge/Code%20Quality-Ruff%20%7C%20Mypy%20%7C%20Yamllint-22c55e?style=flat-square&labelColor=18181b&logo=python&logoColor=white" alt="Code Quality">
+  <img src="https://img.shields.io/badge/Security-Trivy%20%7C%20Bandit%20%7C%20pip--audit-dc2626?style=flat-square&labelColor=18181b&logo=trivy&logoColor=white" alt="Security Tools">
 </p>
 
 ---
@@ -316,10 +321,13 @@ Monitoring Hub takes security seriously. We implement multiple layers of protect
 
 - **Code Scanning**: Automated Bandit security scanner on all PRs
 - **Dependency Scanning**: pip-audit and Dependabot for vulnerability detection
-- **Container Scanning**: Trivy scans all container images
-- **Network Security**: All HTTP requests include timeouts and retry logic
+- **Container Scanning**: Trivy scans all container images with SARIF upload to GitHub Security
+- **YAML Validation**: yamllint ensures configuration file integrity
+- **Network Security**: All HTTP requests include timeouts and exponential backoff retry logic
+- **SSL/TLS Resilience**: Automatic retry on SSL errors and connection failures
 - **Template Security**: Jinja2 templates use autoescape to prevent injection attacks
 - **Input Validation**: Strict manifest schema validation with marshmallow
+- **Package Signing**: GPG-signed RPM and DEB packages for integrity verification
 
 ### Reporting Vulnerabilities
 
