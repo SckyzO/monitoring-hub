@@ -66,15 +66,7 @@ jobs:
         id: version
         run: |
           exporter="${{ inputs.exporter }}"
-          version=$(python3 - "$exporter" <<'EOF'
-import yaml
-import sys
-exporter = sys.argv[1]
-with open(f'exporters/{exporter}/manifest.yaml') as handle:
-    manifest = yaml.safe_load(handle)
-print(manifest['version'].lstrip('v'))
-EOF
-)
+          version=$(python3 -c "import yaml, sys; manifest = yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(manifest['version'].lstrip('v'))")
           echo "version=$version" >> $GITHUB_OUTPUT
           echo "📌 Version: v$version"
 
@@ -447,15 +439,7 @@ EOF
           version="${{ needs.get-version.outputs.version }}"
 
           echo "::group::🔍 Checking Docker configuration"
-          is_enabled=$(python3 - "$exporter" <<'EOF'
-import yaml
-import sys
-exporter = sys.argv[1]
-with open(f'exporters/{exporter}/manifest.yaml') as handle:
-    manifest = yaml.safe_load(handle)
-print(manifest.get('artifacts', {}).get('docker', {}).get('enabled', False))
-EOF
-)
+          is_enabled=$(python3 -c "import yaml; manifest = yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(manifest.get('artifacts', {}).get('docker', {}).get('enabled', False))")
 
           if [ "$is_enabled" != "True" ]; then
             echo "Docker build disabled for $exporter. Skipping."
@@ -533,15 +517,7 @@ EOF
           image_id="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/$exporter"
           image_id=$(echo $image_id | tr '[:upper:]' '[:lower:]')
 
-          description=$(python3 - "$exporter" <<'EOF'
-import yaml
-import sys
-exporter = sys.argv[1]
-with open(f'exporters/{exporter}/manifest.yaml') as handle:
-    manifest = yaml.safe_load(handle)
-print(manifest.get('description', ''))
-EOF
-)
+          description=$(python3 -c "import yaml; manifest = yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(manifest.get('description', ''))")
 
           source_url="${{ github.server_url }}/${{ github.repository }}/tree/main/exporters/$exporter"
 
@@ -565,39 +541,15 @@ EOF
           exporter="${{ inputs.exporter }}"
 
           echo "::group::🔍 Checking validation configuration"
-          v_enabled=$(python3 - "$exporter" <<'EOF'
-import yaml
-import sys
-exporter = sys.argv[1]
-with open(f'exporters/{exporter}/manifest.yaml') as handle:
-    manifest = yaml.safe_load(handle)
-print(manifest.get('artifacts', {}).get('docker', {}).get('validation', {}).get('enabled', True))
-EOF
-)
+          v_enabled=$(python3 -c "import yaml; manifest = yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(manifest.get('artifacts', {}).get('docker', {}).get('validation', {}).get('enabled', True))")
 
           if [ "$v_enabled" != "True" ]; then
             echo "Smoke test disabled for $exporter."
             exit 0
           fi
 
-          v_port=$(python3 - "$exporter" <<'EOF'
-import yaml
-import sys
-exporter = sys.argv[1]
-with open(f'exporters/{exporter}/manifest.yaml') as handle:
-    manifest = yaml.safe_load(handle)
-print(manifest.get('artifacts', {}).get('docker', {}).get('validation', {}).get('port', 'None'))
-EOF
-)
-          v_cmd=$(python3 - "$exporter" <<'EOF'
-import yaml
-import sys
-exporter = sys.argv[1]
-with open(f'exporters/{exporter}/manifest.yaml') as handle:
-    manifest = yaml.safe_load(handle)
-print(manifest.get('artifacts', {}).get('docker', {}).get('validation', {}).get('command', 'None'))
-EOF
-)
+          v_port=$(python3 -c "import yaml; manifest = yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(manifest.get('artifacts', {}).get('docker', {}).get('validation', {}).get('port', 'None'))")
+          v_cmd=$(python3 -c "import yaml; manifest = yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(manifest.get('artifacts', {}).get('docker', {}).get('validation', {}).get('command', 'None'))")
 
           if [ "$v_port" == "None" ] && [ "$v_cmd" == "None" ]; then
             echo "No validation configured. Skipping."
@@ -619,15 +571,7 @@ EOF
           # Port-based validation
           if [ "$v_port" != "None" ]; then
             echo "::group::🧪 Testing HTTP endpoint on port $v_port"
-            v_args=$(python3 - "$exporter" <<'EOF'
-import yaml
-import sys
-exporter = sys.argv[1]
-with open(f'exporters/{exporter}/manifest.yaml') as handle:
-    manifest = yaml.safe_load(handle)
-print(manifest.get('artifacts', {}).get('docker', {}).get('validation', {}).get('args', ''))
-EOF
-)
+            v_args=$(python3 -c "import yaml; manifest = yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(manifest.get('artifacts', {}).get('docker', {}).get('validation', {}).get('args', ''))")
 
             container_id=$(docker run -d -p "$v_port:$v_port" "$image_id" $v_args)
             sleep 5
