@@ -2,7 +2,7 @@
 <repomd xmlns="http://linux.duke.edu/metadata/repo">
   <data type="primary">
     <location href="repodata/primary.xml.gz" />
-    <checksum type="sha256">60d163bb4d1087009ba45c10f990d8868c212de7f48449f3de20571dda324b72</checksum>
-    <size>512</size>
+    <checksum type="sha256">65f40078a7b466b03be1007020757b8e824d0d891cfb3dc14741c3e1024111ad</checksum>
+    <size>511</size>
   </data>
 </repomd>
