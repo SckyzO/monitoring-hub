@@ -13,9 +13,9 @@ env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
 
-# Ensure only one release at a time
+# Ensure only one release per exporter at a time (allow parallel builds for different exporters)
 concurrency:
-  group: release-v2
+  group: release-${{ inputs.exporter }}
   cancel-in-progress: false
 
 jobs:
