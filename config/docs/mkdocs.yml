@@ -123,6 +123,7 @@ nav:
     - Requirements: getting-started/requirements.md
   - User Guide:
     - Adding Exporters: user-guide/adding-exporters.md
+    - Package Repositories: user-guide/package-repositories.md
     - Manifest Reference: user-guide/manifest-reference.md
     - Local Testing: user-guide/local-testing.md
     - Troubleshooting: user-guide/troubleshooting.md
