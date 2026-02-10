@@ -1,0 +1,715 @@
+name: 🏗️  Full Build (Batch)
+run-name: 🏗️  Full Build - ${{ inputs.exporters && 'Custom list' || 'Auto-detected' }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      exporters:
+        description: 'JSON array of exporters to build (leave empty for auto-detection)'
+        required: false
+        type: string
+        default: ''
+      force_rebuild:
+        description: 'Force rebuild of all exporters'
+        required: false
+        type: boolean
+        default: false
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+# Ensure only one full build runs at a time to prevent conflicts
+concurrency:
+  group: full-build
+  cancel-in-progress: false
+
+jobs:
+  # Discover exporters to build (either from input or auto-detection)
+  discover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      exporters: ${{ steps.detect.outputs.exporters }}
+      build_needed: ${{ steps.detect.outputs.build_needed }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r core/requirements.txt
+
+      - name: 🔍 Detect Exporters to Build
+        id: detect
+        env:
+          INPUT_EXPORTERS: ${{ inputs.exporters }}
+          FORCE_REBUILD: ${{ inputs.force_rebuild }}
+          PYTHONPATH: ${{ github.workspace }}
+        run: |
+          echo "::group::🔍 Determining exporters to build"
+
+          # Check if exporters were provided as input
+          if [ -n "$INPUT_EXPORTERS" ] && [ "$INPUT_EXPORTERS" != "[]" ]; then
+            echo "Using provided exporters list"
+            EXPORTERS_JSON="$INPUT_EXPORTERS"
+            echo "build_needed=true" >> $GITHUB_OUTPUT
+          else
+            echo "Auto-detecting exporters using state manager"
+            python3 -m core.engine.state_manager
+
+            # Check if state_manager produced output
+            if [ -f "exporters_to_build.json" ]; then
+              EXPORTERS_JSON=$(cat exporters_to_build.json)
+
+              # Check if any exporters need building
+              count=$(echo "$EXPORTERS_JSON" | jq '. | length')
+              if [ "$count" -gt 0 ]; then
+                echo "build_needed=true" >> $GITHUB_OUTPUT
+              else
+                echo "build_needed=false" >> $GITHUB_OUTPUT
+              fi
+            else
+              echo "No exporters to build"
+              EXPORTERS_JSON="[]"
+              echo "build_needed=false" >> $GITHUB_OUTPUT
+            fi
+          fi
+
+          echo "exporters=$EXPORTERS_JSON" >> $GITHUB_OUTPUT
+
+          count=$(echo "$EXPORTERS_JSON" | jq '. | length')
+          echo "✓ Found $count exporter(s) to build"
+          echo "$EXPORTERS_JSON" | jq -r '.[]' | while read exp; do
+            echo "  → $exp"
+          done
+
+          echo "::endgroup::"
+
+      - name: 📊 Generate Summary
+        if: steps.detect.outputs.build_needed == 'true'
+        env:
+          EXPORTERS_LIST: ${{ steps.detect.outputs.exporters }}
+        run: |
+          echo "## 🏗️  Full Build Started" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Exporters to build:**" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "$EXPORTERS_LIST" | jq -r '.[] | "- **" + . + "**"' >> $GITHUB_STEP_SUMMARY
+
+  # Build Docker images (parallel per exporter)
+  build-docker:
+    name: Docker - ${{ matrix.exporter }}
+    needs: discover
+    if: needs.discover.outputs.build_needed == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        exporter: ${{ fromJson(needs.discover.outputs.exporters) }}
+    permissions:
+      contents: read
+      packages: write
+      security-events: write
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r core/requirements.txt
+
+      - name: Check if Docker build is enabled
+        id: check
+        run: |
+          exporter="${{ matrix.exporter }}"
+          is_enabled=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(m.get('artifacts', {}).get('docker', {}).get('enabled', False))")
+          is_arch_supported=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print('amd64' in m.get('build', {}).get('archs', ['amd64', 'arm64']))")
+
+          if [ "$is_enabled" = "True" ] && [ "$is_arch_supported" = "True" ]; then
+            echo "enabled=true" >> $GITHUB_OUTPUT
+          else
+            echo "enabled=false" >> $GITHUB_OUTPUT
+            echo "Docker build disabled or amd64 not supported for $exporter"
+          fi
+
+      - name: Log in to Registry
+        if: steps.check.outputs.enabled == 'true'
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        if: steps.check.outputs.enabled == 'true'
+        uses: docker/setup-buildx-action@v3
+
+      - name: 🐳 Build and Push Docker Image
+        if: steps.check.outputs.enabled == 'true'
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          exporter="${{ matrix.exporter }}"
+
+          echo "::group::🔧 Generating build files"
+          python3 -m core.engine.builder \
+            --manifest "exporters/$exporter/manifest.yaml" \
+            --output-dir "build/$exporter" \
+            --arch amd64
+          echo "::endgroup::"
+
+          version=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(m['version'].lstrip('v'))")
+          description=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(m.get('description', ''))")
+
+          if [ -f "build/$exporter/Dockerfile" ]; then
+            echo "::group::🐳 Building and pushing image"
+            image_id="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/$exporter"
+            image_id=$(echo $image_id | tr '[:upper:]' '[:lower:]')
+
+            docker buildx build \
+              --file "build/$exporter/Dockerfile" \
+              --push \
+              --label "org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}/tree/main/exporters/$exporter" \
+              --label "org.opencontainers.image.documentation=https://sckyzo.github.io/monitoring-hub/" \
+              --label "org.opencontainers.image.description=$description" \
+              --tag "$image_id:$version" \
+              --tag "$image_id:latest" \
+              --platform linux/amd64 \
+              "build/$exporter"
+
+            echo "✓ Built and pushed: $image_id:$version"
+            echo "::endgroup::"
+          fi
+
+      - name: 🔒 Security Scan with Trivy
+        if: steps.check.outputs.enabled == 'true'
+        uses: aquasecurity/trivy-action@0.33.1
+        with:
+          image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/${{ matrix.exporter }}:latest
+          format: 'sarif'
+          output: 'trivy-${{ matrix.exporter }}.sarif'
+          severity: 'CRITICAL,HIGH,MEDIUM'
+        continue-on-error: true
+
+      - name: Upload Trivy Results
+        if: steps.check.outputs.enabled == 'true'
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: 'trivy-${{ matrix.exporter }}.sarif'
+          category: 'trivy-${{ matrix.exporter }}'
+        continue-on-error: true
+
+      - name: 🧪 Container Smoke Test
+        if: steps.check.outputs.enabled == 'true'
+        run: |
+          exporter="${{ matrix.exporter }}"
+
+          v_enabled=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(m.get('artifacts', {}).get('docker', {}).get('validation', {}).get('enabled', True))")
+          v_port=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(m.get('artifacts', {}).get('docker', {}).get('validation', {}).get('port', 'None'))")
+          v_cmd=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(m.get('artifacts', {}).get('docker', {}).get('validation', {}).get('command', 'None'))")
+          v_args=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(m.get('artifacts', {}).get('docker', {}).get('validation', {}).get('args', 'None'))")
+
+          if [ "$v_enabled" != "True" ]; then
+            echo "Smoke test disabled for $exporter"
+            exit 0
+          fi
+
+          if [ "$v_port" = "None" ] && [ "$v_cmd" = "None" ]; then
+            echo "No validation configured, skipping"
+            exit 0
+          fi
+
+          image_id="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/$exporter:latest"
+          image_id=$(echo $image_id | tr '[:upper:]' '[:lower:]')
+
+          # Command-based validation
+          if [ "$v_cmd" != "None" ]; then
+            echo "🧪 Testing command: $v_cmd"
+            if docker run --rm $image_id $v_cmd; then
+              echo "✅ Command validation passed"
+            else
+              echo "❌ Command validation failed"
+              exit 1
+            fi
+          fi
+
+          # Port-based validation
+          if [ "$v_port" != "None" ]; then
+            echo "🧪 Testing port: $v_port"
+
+            run_args=""
+            [ "$v_args" != "None" ] && run_args="$v_args"
+
+            container_id=$(docker run -d -p 9999:$v_port $image_id $run_args)
+
+            success=false
+            for i in {1..5}; do
+              echo "Attempt $i: Checking http://localhost:9999/metrics"
+              if curl -s --fail http://localhost:9999/metrics | grep -qiE "prometheus|exporter|metrics|# HELP|# TYPE"; then
+                echo "✅ Port validation passed"
+                success=true
+                break
+              fi
+              sleep 2
+            done
+
+            if [ "$success" = false ]; then
+              echo "❌ Port validation failed"
+              docker logs $container_id
+              docker rm -f $container_id
+              exit 1
+            fi
+            docker rm -f $container_id
+          fi
+
+  # Build RPM packages (parallel per exporter, arch, dist)
+  build-rpm:
+    name: RPM - ${{ matrix.exporter }} (${{ matrix.dist }}/${{ matrix.arch }})
+    needs: discover
+    if: needs.discover.outputs.build_needed == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        exporter: ${{ fromJson(needs.discover.outputs.exporters) }}
+        arch: [amd64, arm64]
+        dist: [el8, el9, el10]
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Check if RPM build is enabled
+        id: check-rpm
+        run: |
+          exporter="${{ matrix.exporter }}"
+          arch="${{ matrix.arch }}"
+          dist="${{ matrix.dist }}"
+
+          is_target=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print('$dist' in m.get('artifacts', {}).get('rpm', {}).get('targets', []))")
+          is_enabled=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(m.get('artifacts', {}).get('rpm', {}).get('enabled', False))")
+          is_arch_supported=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print('$arch' in m.get('build', {}).get('archs', ['amd64', 'arm64']))")
+
+          if [ "$is_enabled" = "True" ] && [ "$is_target" = "True" ] && [ "$is_arch_supported" = "True" ]; then
+            echo "enabled=true" >> $GITHUB_OUTPUT
+          else
+            echo "enabled=false" >> $GITHUB_OUTPUT
+            echo "RPM build not enabled for $exporter ($dist/$arch)"
+          fi
+
+      - name: Set up QEMU
+        if: steps.check-rpm.outputs.enabled == 'true' && matrix.arch == 'arm64'
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Python
+        if: steps.check-rpm.outputs.enabled == 'true'
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        if: steps.check-rpm.outputs.enabled == 'true'
+        run: pip install -r core/requirements.txt
+
+      - name: 📦 Build RPM
+        if: steps.check-rpm.outputs.enabled == 'true'
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          exporter="${{ matrix.exporter }}"
+          arch="${{ matrix.arch }}"
+          dist="${{ matrix.dist }}"
+
+          echo "::group::🔧 Generating spec file"
+          case $dist in
+            el8) image="almalinux:8" ;;
+            el9) image="almalinux:9" ;;
+            el10) image="quay.io/centos/centos:stream10" ;;
+            *) image="almalinux:9" ;;
+          esac
+
+          build_dir="build/$exporter-$arch-$dist"
+          python3 -m core.engine.builder \
+            --manifest "exporters/$exporter/manifest.yaml" \
+            --output-dir "$build_dir" \
+            --arch "$arch"
+          echo "::endgroup::"
+
+          spec_file="$build_dir/$exporter.spec"
+          if [ -f "$spec_file" ]; then
+            echo "::group::🐳 Building RPM in container"
+            chmod +x core/scripts/build_rpm.sh core/scripts/rpm_entrypoint.sh
+            ./core/scripts/build_rpm.sh "$spec_file" "$build_dir/rpms" "$arch" "$image"
+            echo "::endgroup::"
+          fi
+
+      - name: 🔐 Sign RPM
+        if: steps.check-rpm.outputs.enabled == 'true'
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+          GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
+        run: |
+          exporter="${{ matrix.exporter }}"
+          build_dir="build/$exporter-${{ matrix.arch }}-${{ matrix.dist }}"
+          rpm_file=$(find "$build_dir/rpms" -name "*.rpm" | head -1)
+
+          if [ -z "$rpm_file" ]; then
+            echo "⚠️  No RPM file found, skipping signing"
+            exit 0
+          fi
+
+          echo "::group::🔐 Signing RPM"
+          chmod +x core/scripts/sign_rpm_container.sh
+          ./core/scripts/sign_rpm_container.sh "$rpm_file" "$GPG_PRIVATE_KEY" "$GPG_PASSPHRASE" "$GPG_KEY_ID"
+          echo "::endgroup::"
+
+      - name: ⬆️  Upload to GitHub Releases
+        if: steps.check-rpm.outputs.enabled == 'true'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          exporter="${{ matrix.exporter }}"
+          build_dir="build/$exporter-${{ matrix.arch }}-${{ matrix.dist }}"
+          version=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(m['version'].lstrip('v'))")
+
+          rpm_files=$(find "$build_dir/rpms" -name "*.rpm")
+          if [ -z "$rpm_files" ]; then
+            echo "⚠️  No RPM files to upload"
+            exit 0
+          fi
+
+          echo "::group::⬆️  Uploading to GitHub Releases"
+          python3 core/scripts/upload_to_release.py \
+            --repo ${{ github.repository }} \
+            --exporter "$exporter" \
+            --version "$version" \
+            --files $rpm_files \
+            --output "$build_dir/release_urls.json"
+          echo "::endgroup::"
+
+      - name: 📅 Create Build Info
+        if: steps.check-rpm.outputs.enabled == 'true'
+        run: |
+          exporter="${{ matrix.exporter }}"
+          build_dir="build/$exporter-${{ matrix.arch }}-${{ matrix.dist }}"
+          version=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(m['version'].lstrip('v'))")
+
+          cat > "$build_dir/build-info.json" <<EOF
+          {
+            "exporter": "$exporter",
+            "version": "$version",
+            "arch": "${{ matrix.arch }}",
+            "dist": "${{ matrix.dist }}",
+            "build_date": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")",
+            "artifact_type": "rpm"
+          }
+          EOF
+
+      - name: Upload Artifacts
+        if: steps.check-rpm.outputs.enabled == 'true'
+        uses: actions/upload-artifact@v6
+        with:
+          name: rpm-${{ matrix.exporter }}-${{ matrix.arch }}-${{ matrix.dist }}
+          path: |
+            build/**/release_urls.json
+            build/**/build-info.json
+          if-no-files-found: ignore
+          retention-days: 7
+
+  # Build DEB packages (parallel per exporter, arch, dist)
+  build-deb:
+    name: DEB - ${{ matrix.exporter }} (${{ matrix.dist }}/${{ matrix.arch }})
+    needs: discover
+    if: needs.discover.outputs.build_needed == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        exporter: ${{ fromJson(needs.discover.outputs.exporters) }}
+        arch: [amd64, arm64]
+        dist: [ubuntu-22.04, ubuntu-24.04, debian-12, debian-13]
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Check if DEB build is enabled
+        id: check-deb
+        run: |
+          exporter="${{ matrix.exporter }}"
+          arch="${{ matrix.arch }}"
+          dist="${{ matrix.dist }}"
+
+          is_target=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print('$dist' in m.get('artifacts', {}).get('deb', {}).get('targets', []))")
+          is_enabled=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(m.get('artifacts', {}).get('deb', {}).get('enabled', False))")
+          is_arch_supported=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print('$arch' in m.get('build', {}).get('archs', ['amd64', 'arm64']))")
+
+          if [ "$is_enabled" = "True" ] && [ "$is_target" = "True" ] && [ "$is_arch_supported" = "True" ]; then
+            echo "enabled=true" >> $GITHUB_OUTPUT
+          else
+            echo "enabled=false" >> $GITHUB_OUTPUT
+            echo "DEB build not enabled for $exporter ($dist/$arch)"
+          fi
+
+      - name: Set up QEMU
+        if: steps.check-deb.outputs.enabled == 'true' && matrix.arch == 'arm64'
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Python
+        if: steps.check-deb.outputs.enabled == 'true'
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        if: steps.check-deb.outputs.enabled == 'true'
+        run: pip install -r core/requirements.txt
+
+      - name: 📦 Build DEB
+        if: steps.check-deb.outputs.enabled == 'true'
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          exporter="${{ matrix.exporter }}"
+          arch="${{ matrix.arch }}"
+          dist="${{ matrix.dist }}"
+
+          echo "::group::🔧 Generating build files"
+          build_dir="build/$exporter-$arch-$dist"
+          python3 -m core.engine.builder \
+            --manifest "exporters/$exporter/manifest.yaml" \
+            --output-dir "$build_dir" \
+            --arch "$arch"
+          echo "::endgroup::"
+
+          if [ -d "$build_dir/debian" ]; then
+            echo "::group::🐳 Building DEB package"
+            chmod +x core/scripts/build_deb.sh
+            ./core/scripts/build_deb.sh "$build_dir" "$build_dir/debs" "$arch" "$dist"
+            echo "::endgroup::"
+          fi
+
+      - name: 🔐 Sign DEB
+        if: steps.check-deb.outputs.enabled == 'true'
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        run: |
+          exporter="${{ matrix.exporter }}"
+          build_dir="build/$exporter-${{ matrix.arch }}-${{ matrix.dist }}"
+
+          deb_file=$(find "$build_dir/debs" -name "*.deb" | head -1)
+          if [ -z "$deb_file" ]; then
+            echo "⚠️  No DEB file found, skipping signing"
+            exit 0
+          fi
+
+          echo "::group::🔐 Signing DEB"
+          chmod +x core/scripts/sign_deb.sh
+          ./core/scripts/sign_deb.sh "$deb_file" "$GPG_PRIVATE_KEY" "$GPG_PASSPHRASE"
+          echo "::endgroup::"
+
+      - name: ⬆️  Upload to GitHub Releases
+        if: steps.check-deb.outputs.enabled == 'true'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          exporter="${{ matrix.exporter }}"
+          build_dir="build/$exporter-${{ matrix.arch }}-${{ matrix.dist }}"
+          version=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(m['version'].lstrip('v'))")
+
+          deb_files=$(find "$build_dir/debs" -name "*.deb")
+          if [ -z "$deb_files" ]; then
+            echo "⚠️  No DEB files to upload"
+            exit 0
+          fi
+
+          echo "::group::⬆️  Uploading to GitHub Releases"
+          python3 core/scripts/upload_to_release.py \
+            --repo ${{ github.repository }} \
+            --exporter "$exporter" \
+            --version "$version" \
+            --files $deb_files \
+            --output "$build_dir/release_urls.json"
+          echo "::endgroup::"
+
+      - name: 📅 Create Build Info
+        if: steps.check-deb.outputs.enabled == 'true'
+        run: |
+          exporter="${{ matrix.exporter }}"
+          build_dir="build/$exporter-${{ matrix.arch }}-${{ matrix.dist }}"
+          version=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(m['version'].lstrip('v'))")
+
+          cat > "$build_dir/build-info.json" <<EOF
+          {
+            "exporter": "$exporter",
+            "version": "$version",
+            "arch": "${{ matrix.arch }}",
+            "dist": "${{ matrix.dist }}",
+            "build_date": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")",
+            "artifact_type": "deb"
+          }
+          EOF
+
+      - name: Upload Artifacts
+        if: steps.check-deb.outputs.enabled == 'true'
+        uses: actions/upload-artifact@v6
+        with:
+          name: deb-${{ matrix.exporter }}-${{ matrix.arch }}-${{ matrix.dist }}
+          path: |
+            build/**/release_urls.json
+            build/**/build-info.json
+          if-no-files-found: ignore
+          retention-days: 7
+
+  # Aggregate security scan results
+  aggregate-security:
+    name: 📊 Aggregate Security Stats
+    needs: [build-docker, build-rpm, build-deb]
+    if: always() && !cancelled() && needs.discover.outputs.build_needed == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r core/requirements.txt
+
+      - name: Download Trivy Results
+        uses: actions/download-artifact@v7
+        with:
+          pattern: 'trivy-*'
+          path: trivy-results
+        continue-on-error: true
+
+      - name: 📊 Aggregate Security Statistics
+        run: |
+          if [ -d "trivy-results" ] && [ "$(ls -A trivy-results 2>/dev/null)" ]; then
+            python3 core/scripts/aggregate_security_stats.py \
+              --sarif-dir trivy-results \
+              --output security-stats.json
+          else
+            echo "No Trivy results found, creating empty stats"
+            echo '{"total_vulnerabilities": 0, "by_severity": {"CRITICAL": 0, "HIGH": 0, "MEDIUM": 0, "LOW": 0}, "top_exporters": [], "scan_date": null, "total_exporters_scanned": 0}' > security-stats.json
+          fi
+
+      - name: Upload Security Stats
+        uses: actions/upload-artifact@v6
+        with:
+          name: security-stats
+          path: security-stats.json
+          retention-days: 7
+
+  # Single publish job - collect all artifacts and update gh-pages once
+  publish-metadata:
+    name: 📤 Publish Metadata & Portal
+    needs: [build-docker, build-rpm, build-deb, aggregate-security]
+    if: always() && !cancelled() && needs.discover.outputs.build_needed == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Download All Artifacts
+        uses: actions/download-artifact@v7
+        with:
+          path: artifacts
+        continue-on-error: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r core/requirements.txt
+
+      - name: 📊 Update Portal and Metadata
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: |
+          echo "::group::📥 Preparing artifacts"
+
+          # Organize artifacts
+          mkdir -p release-urls build-info
+
+          if [ -d "artifacts" ]; then
+            find artifacts -name "release_urls.json" -exec cp {} release-urls/ \;
+            find artifacts -name "build-info.json" -exec cp {} build-info/ \;
+
+            # Copy security stats if available
+            if [ -f "artifacts/security-stats/security-stats.json" ]; then
+              cp artifacts/security-stats/security-stats.json .
+            fi
+          fi
+
+          echo "::endgroup::"
+
+          echo "::group::🌐 Generating portal"
+          python3 -m core.engine.site_generator \
+            --output index.html \
+            --repo-dir . \
+            --release-urls-dir release-urls
+          echo "::endgroup::"
+
+          echo "::group::📤 Publishing to gh-pages"
+          git fetch origin gh-pages
+          git worktree add -B gh-pages gh-pages-dist origin/gh-pages
+
+          # Copy generated files
+          cp index.html gh-pages-dist/
+          cp catalog.json gh-pages-dist/ 2>/dev/null || true
+
+          # Copy security stats if exists
+          if [ -f "security-stats.json" ]; then
+            cp security-stats.json gh-pages-dist/
+          fi
+
+          cd gh-pages-dist
+          git config user.name "Monitoring Hub Bot"
+          git config user.email "bot@monitoring-hub.local"
+          git add index.html catalog.json security-stats.json 2>/dev/null || git add index.html catalog.json
+
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "chore: update portal and metadata [skip ci]"
+            git pull --rebase origin gh-pages
+            git push origin gh-pages
+            echo "✓ Published to gh-pages"
+          fi
+
+          echo "::endgroup::"
+
+      - name: 📊 Generate Final Summary
+        run: |
+          echo "## ✅ Full Build Completed" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Portal:** https://sckyzo.github.io/monitoring-hub/" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ -f "catalog.json" ]; then
+            count=$(jq '.exporters | length' catalog.json)
+            echo "**Total exporters:** $count" >> $GITHUB_STEP_SUMMARY
+          fi
