@@ -38,6 +38,7 @@ jobs:
 
   # 1. Build RPM and upload to GitHub Releases
   build-rpm:
+    name: RPM - ${{ inputs.exporter }} (${{ matrix.dist }}/${{ matrix.arch }})
     runs-on: ubuntu-latest
     timeout-minutes: 60
     needs: get-version
@@ -195,6 +196,7 @@ jobs:
 
   # 2. Build DEB and upload to GitHub Releases
   build-deb:
+    name: DEB - ${{ inputs.exporter }} (${{ matrix.dist }}/${{ matrix.arch }})
     runs-on: ubuntu-latest
     timeout-minutes: 60
     needs: get-version
@@ -350,6 +352,7 @@ jobs:
 
   # 3. Build Docker Image
   build-docker:
+    name: Docker - ${{ inputs.exporter }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     needs: get-version
