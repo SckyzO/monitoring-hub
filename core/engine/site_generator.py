@@ -52,7 +52,13 @@ def load_release_urls(release_urls_dir):
     help="Directory containing release_urls.json artifacts from builds",
     default=None,
 )
-def generate(output, repo_dir, release_urls_dir):
+@click.option(
+    "--skip-catalog",
+    is_flag=True,
+    help="Skip catalog.json generation (only update portal HTML)",
+    default=False,
+)
+def generate(output, repo_dir, release_urls_dir, skip_catalog):
     """
     Generate the portal with reality check and build status.
     """
@@ -269,13 +275,16 @@ def generate(output, repo_dir, release_urls_dir):
         f.write(rendered)
     click.echo(f"Portal generated at {output}")
 
-    # Generate Machine Readable Catalog
-    import json
+    # Generate Machine Readable Catalog (unless skipped)
+    if not skip_catalog:
+        import json
 
-    json_output = os.path.join(os.path.dirname(output), "catalog.json")
-    with open(json_output, "w") as f:
-        json.dump({"exporters": exporters_data}, f, indent=2)
-    click.echo(f"Catalog generated at {json_output}")
+        json_output = os.path.join(os.path.dirname(output), "catalog.json")
+        with open(json_output, "w") as f:
+            json.dump({"exporters": exporters_data}, f, indent=2)
+        click.echo(f"Catalog generated at {json_output}")
+    else:
+        click.echo("Catalog generation skipped (--skip-catalog)")
 
 
 if __name__ == "__main__":

@@ -50,10 +50,14 @@ jobs:
 
       - name: 🎨 Regenerate Portal
         run: |
-          echo "::group::🎨 Generating portal HTML and catalog"
+          echo "::group::🎨 Generating portal HTML (without catalog)"
           export PYTHONPATH=$GITHUB_WORKSPACE
-          python3 -m core.engine.site_generator --output gh-pages-dist/index.html --repo-dir gh-pages-dist
+          python3 -m core.engine.site_generator \
+            --output gh-pages-dist/index.html \
+            --repo-dir gh-pages-dist \
+            --skip-catalog
           echo "✓ Portal generated successfully"
+          echo "ℹ️  Catalog not updated (only release.yml updates catalog.json)"
           echo "::endgroup::"
 
       - name: ✅ Validate Site
@@ -70,7 +74,7 @@ jobs:
           git config user.name "Monitoring Hub Bot"
           git config user.email "bot@monitoring-hub.local"
 
-          git add index.html catalog.json
+          git add index.html
 
           if git diff --staged --quiet; then
             echo "ℹ️  No changes to the portal. Skipping push."
