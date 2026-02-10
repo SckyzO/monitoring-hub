@@ -141,30 +141,50 @@ jobs:
           echo "Release workflows will be triggered for each exporter." >> $GITHUB_STEP_SUMMARY
 
   trigger-releases:
-    name: Release - ${{ matrix.exporter }}
+    name: 🎯 Route Build Strategy
     needs: detect-changes
     if: needs.detect-changes.outputs.exporters != '[]'
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    strategy:
-      fail-fast: false
-      max-parallel: 5
-      matrix: ${{ fromJson(needs.detect-changes.outputs.matrix) }}
     steps:
-      - name: 🚀 Trigger Release for ${{ matrix.exporter }}
+      - uses: actions/checkout@v6
+
+      - name: 📊 Count Exporters
+        id: count
+        env:
+          EXPORTERS: ${{ needs.detect-changes.outputs.exporters }}
+        run: |
+          count=$(echo "$EXPORTERS" | jq '. | length')
+          echo "count=$count" >> $GITHUB_OUTPUT
+          echo "Found $count exporter(s) to build"
+
+          # Log exporters list
+          echo "$EXPORTERS" | jq -r '.[]' | while read exp; do
+            echo "  → $exp"
+          done
+
+      - name: 🚀 Trigger Single Build
+        if: steps.count.outputs.count == '1'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          EXPORTERS: ${{ needs.detect-changes.outputs.exporters }}
         run: |
-          echo "::group::🚀 Triggering release for ${{ matrix.exporter }}"
+          exporter=$(echo "$EXPORTERS" | jq -r '.[0]')
 
-          # Retry up to 3 times with 10s delay (GitHub may need time to sync workflow changes)
+          echo "::group::🚀 Triggering single build for $exporter"
+          echo "Strategy: Using release.yml (single exporter workflow)"
+
+          # Retry up to 3 times with 10s delay
           max_retries=3
           for i in $(seq 1 $max_retries); do
             if gh workflow run release.yml \
               --repo ${{ github.repository }} \
               --ref main \
-              --field exporter="${{ matrix.exporter }}"; then
-              echo "✓ Release workflow triggered for ${{ matrix.exporter }}"
+              --field exporter="$exporter"; then
+              echo "✓ Release workflow triggered for $exporter"
+              echo "## ✅ Single Build Triggered" >> $GITHUB_STEP_SUMMARY
+              echo "**Exporter:** $exporter" >> $GITHUB_STEP_SUMMARY
+              echo "**Workflow:** release.yml" >> $GITHUB_STEP_SUMMARY
               break
             else
               if [ $i -lt $max_retries ]; then
@@ -179,6 +199,47 @@ jobs:
 
           echo "::endgroup::"
 
-      - name: 📋 Log Triggered Release
+      - name: 🏗️  Trigger Batch Build
+        if: steps.count.outputs.count > '1'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          EXPORTERS: ${{ needs.detect-changes.outputs.exporters }}
+          COUNT: ${{ steps.count.outputs.count }}
         run: |
-          echo "Triggered release workflow for ${{ matrix.exporter }}" >> $GITHUB_STEP_SUMMARY
+          echo "::group::🏗️  Triggering batch build for $COUNT exporters"
+          echo "Strategy: Using full-build.yml (batch workflow with single publish)"
+
+          # Format exporters list for display
+          echo "Exporters:"
+          echo "$EXPORTERS" | jq -r '.[]' | while read exp; do
+            echo "  → $exp"
+          done
+
+          # Retry up to 3 times with 10s delay
+          max_retries=3
+          for i in $(seq 1 $max_retries); do
+            if gh workflow run full-build.yml \
+              --repo ${{ github.repository }} \
+              --ref main \
+              --raw-field exporters="$EXPORTERS"; then
+              echo "✓ Full build workflow triggered for $COUNT exporters"
+
+              echo "## ✅ Batch Build Triggered" >> $GITHUB_STEP_SUMMARY
+              echo "**Exporters:** $COUNT" >> $GITHUB_STEP_SUMMARY
+              echo "**Workflow:** full-build.yml" >> $GITHUB_STEP_SUMMARY
+              echo "" >> $GITHUB_STEP_SUMMARY
+              echo "**List:**" >> $GITHUB_STEP_SUMMARY
+              echo "$EXPORTERS" | jq -r '.[] | "- " + .' >> $GITHUB_STEP_SUMMARY
+              break
+            else
+              if [ $i -lt $max_retries ]; then
+                echo "⚠️  Attempt $i failed, retrying in 10s..."
+                sleep 10
+              else
+                echo "❌ Failed to trigger workflow after $max_retries attempts"
+                exit 1
+              fi
+            fi
+          done
+
+          echo "::endgroup::"
