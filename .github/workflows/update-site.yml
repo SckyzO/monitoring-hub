@@ -21,6 +21,7 @@ concurrency:
 jobs:
   refresh-portal:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Checkout Source Code (Main)
         uses: actions/checkout@v6
@@ -30,6 +31,7 @@ jobs:
         with:
           python-version: '3.12'
           cache: 'pip'
+          cache-dependency-path: 'requirements/base.txt'
 
       - name: 📦 Install dependencies
         run: |
