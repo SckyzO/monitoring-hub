@@ -35,10 +35,34 @@
   <img src="https://img.shields.io/badge/Containers-UBI9%20Minimal-ec4899?style=flat-square&labelColor=18181b&logo=redhat&logoColor=white" alt="UBI9 Minimal">
 </p>
 
-<br>
 
-| <a href="https://sckyzo.github.io/monitoring-hub/"><img src=".github/icons/globe-blue.svg" width="24" height="24"><br><b>Explore Portal</b></a> | <a href="https://sckyzo.github.io/monitoring-hub/docs/"><img src=".github/icons/book-emerald.svg" width="24" height="24"><br><b>Documentation</b></a> | <a href="https://github.com/SckyzO/monitoring-hub/packages"><img src=".github/icons/container-amber.svg" width="24" height="24"><br><b>OCI Registry</b></a> | <a href="https://github.com/SckyzO/monitoring-hub/issues/new"><img src=".github/icons/bug-rose.svg" width="24" height="24"><br><b>Report Bug</b></a> | <a href="CHANGELOG.md"><img src=".github/icons/history-purple.svg" width="24" height="24"><br><b>Changelog</b></a> |
-| :---: | :---: | :---: | :---: | :---: |
+---
+
+<h3 align="center">🚀 Quick Links</h3>
+
+<p align="center">
+  <a href="https://sckyzo.github.io/monitoring-hub/">
+    <img src="https://img.shields.io/badge/🌐_Explore_Portal-View_All_Exporters-3b82f6?style=for-the-badge&labelColor=1e293b" alt="Explore Portal">
+  </a>
+  <a href="https://sckyzo.github.io/monitoring-hub/docs/">
+    <img src="https://img.shields.io/badge/📚_Documentation-User_Guides-10b981?style=for-the-badge&labelColor=1e293b" alt="Documentation">
+  </a>
+  <a href="https://github.com/SckyzO/monitoring-hub/packages">
+    <img src="https://img.shields.io/badge/📦_OCI_Registry-Container_Images-f59e0b?style=for-the-badge&labelColor=1e293b" alt="OCI Registry">
+  </a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/SckyzO/monitoring-hub/issues/new">
+    <img src="https://img.shields.io/badge/🐛_Report_Bug-Open_Issue-ef4444?style=for-the-badge&labelColor=1e293b" alt="Report Bug">
+  </a>
+  <a href="CHANGELOG.md">
+    <img src="https://img.shields.io/badge/📝_Changelog-Release_Notes-8b5cf6?style=for-the-badge&labelColor=1e293b" alt="Changelog">
+  </a>
+  <a href="https://github.com/SckyzO/monitoring-hub/blob/main/CONTRIBUTING.md">
+    <img src="https://img.shields.io/badge/💡_Contributing-Get_Involved-ec4899?style=for-the-badge&labelColor=1e293b" alt="Contributing">
+  </a>
+</p>
 
 </div>
 
@@ -46,16 +70,18 @@
 
 ## <img src=".github/icons/target-emerald.svg" width="24" height="24" style="vertical-align: bottom;"> Project Goal
 
-**Monitoring Hub** is an automated Factory that transforms simple YAML manifests into production-ready monitoring tools. It focuses on **Enterprise Standards**, **Multi-Architecture support**, and **Full Automation**.
+**Monitoring Hub** is an automated Software Factory that transforms simple YAML manifests into production-ready monitoring tools. It focuses on **Enterprise Standards**, **Multi-Architecture support**, **GPG Security**, and **Full Automation**.
 
 ## <img src=".github/icons/rocket-amber.svg" width="24" height="24" style="vertical-align: bottom;"> Key Features
 
-*   **Native Multi-Arch:** Every tool is built for `x86_64` and `aarch64` (ARM64).
-*   **Multi-Format Packages:** RPM (RHEL/CentOS/Rocky/Alma), DEB (Ubuntu/Debian), and OCI containers.
-*   **Hardened Security:** All Docker images use **Red Hat UBI 9 Minimal**.
-*   **Linux Standard (FHS):** Packages include system users, standard paths (`/etc`, `/var/lib`), and systemd integration.
-*   **Zero-Click Updates:** An automated Watcher opens PRs, triggers CI validation, and merges automatically when tests pass.
-*   **Always Up-to-Date:** Never worry about upstream releases again.
+*   **🏗️ Native Multi-Arch:** Every tool is built for `x86_64` and `aarch64` (ARM64).
+*   **📦 Multi-Format Packages:** RPM (RHEL/CentOS/Rocky/Alma), DEB (Ubuntu/Debian), and OCI containers.
+*   **🔐 GPG-Signed Packages:** All RPM and DEB packages are cryptographically signed for integrity verification.
+*   **🛡️ Security-First:** Container images scanned with Trivy, Python code with Bandit, dependencies with pip-audit.
+*   **🐳 Hardened Containers:** All Docker images use **Red Hat UBI 9 Minimal** base.
+*   **📏 Linux Standards (FHS):** Packages include system users, standard paths (`/etc`, `/var/lib`), and systemd integration.
+*   **🤖 Zero-Touch Automation:** Version watcher opens PRs, triggers CI validation, and auto-merges when tests pass.
+*   **🔄 Always Up-to-Date:** Never worry about upstream releases again.
 
 ---
 
