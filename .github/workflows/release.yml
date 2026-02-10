@@ -546,6 +546,14 @@ jobs:
           sarif_file: 'trivy-results.sarif'
           category: trivy-container-${{ inputs.exporter }}
 
+      - name: Upload Trivy SARIF Artifact
+        uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: trivy-sarif-${{ inputs.exporter }}
+          path: trivy-results.sarif
+          retention-days: 7
+
       - name: 🐳 Build and Push Multi-Platform Image
         env:
           PYTHONPATH: ${{ github.workspace }}
@@ -667,6 +675,14 @@ jobs:
           path: build-info/
           merge-multiple: true
 
+      - name: 📥 Download Trivy SARIF Results
+        uses: actions/download-artifact@v6
+        continue-on-error: true
+        with:
+          pattern: trivy-sarif-*
+          path: trivy-results/
+          merge-multiple: true
+
       - name: 📥 Checkout gh-pages
         run: |
           echo "::group::📥 Setting up gh-pages worktree"
@@ -767,6 +783,25 @@ jobs:
             echo "${{ secrets.GPG_PUBLIC_KEY }}" | base64 -d > gh-pages-dist/apt/monitoring-hub.asc
             echo "✓ GPG key published"
           fi
+
+      - name: 📊 Aggregate Security Statistics
+        run: |
+          echo "::group::📊 Aggregating security statistics"
+
+          # Check if SARIF files exist
+          if [ -d "trivy-results" ] && [ "$(ls -A trivy-results/*.sarif 2>/dev/null)" ]; then
+            echo "Found Trivy SARIF results, aggregating..."
+
+            python3 core/scripts/aggregate_security_stats.py \
+              --sarif-dir trivy-results/ \
+              --output gh-pages-dist/security-stats.json
+
+            echo "✓ Security stats generated"
+          else
+            echo "ℹ️  No Trivy results found, skipping security stats"
+          fi
+
+          echo "::endgroup::"
 
       - name: 🌐 Generate Portal
         run: |
