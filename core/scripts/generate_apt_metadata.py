@@ -34,7 +34,9 @@ def get_deb_metadata(url: str, local_cache: Path) -> Dict:
     Cache locally to avoid repeated downloads.
     """
     # MD5 used only for cache filename generation, not for security
-    cache_file = local_cache / hashlib.md5(url.encode(), usedforsecurity=False).hexdigest()  # nosec B324
+    cache_file = (
+        local_cache / hashlib.md5(url.encode(), usedforsecurity=False).hexdigest()
+    )  # nosec B324
 
     if cache_file.exists():
         print(f"Using cached DEB: {cache_file.name}")

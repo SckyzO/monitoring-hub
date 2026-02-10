@@ -65,7 +65,10 @@ def load_build_info(build_info_dir):
                         build_date = data.get("build_date")
                         if exporter and build_date:
                             # Keep the latest date if multiple builds for same exporter
-                            if exporter not in build_dates or build_date > build_dates[exporter]:
+                            if (
+                                exporter not in build_dates
+                                or build_date > build_dates[exporter]
+                            ):
                                 build_dates[exporter] = build_date
                 except Exception as e:
                     print(f"Warning: Failed to load {file}: {e}")
