@@ -1,4 +1,4 @@
-name: Update Site Only 🌐
+name: 🌐 Update Site
 
 on:
   workflow_dispatch: # Allows manual trigger
