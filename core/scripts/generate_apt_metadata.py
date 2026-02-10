@@ -13,6 +13,7 @@ import hashlib
 import json
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 from typing import Dict, List
 
@@ -32,7 +33,8 @@ def get_deb_metadata(url: str, local_cache: Path) -> Dict:
     Download DEB and extract metadata.
     Cache locally to avoid repeated downloads.
     """
-    cache_file = local_cache / hashlib.md5(url.encode()).hexdigest()
+    # MD5 used only for cache filename generation, not for security
+    cache_file = local_cache / hashlib.md5(url.encode(), usedforsecurity=False).hexdigest()  # nosec B324
 
     if cache_file.exists():
         print(f"Using cached DEB: {cache_file.name}")
@@ -76,7 +78,8 @@ def get_deb_metadata(url: str, local_cache: Path) -> Dict:
         "Size": str(len(deb_content)),
         "Filename": url,
         "SHA256": hashlib.sha256(deb_content).hexdigest(),
-        "MD5sum": hashlib.md5(deb_content).hexdigest(),
+        # MD5sum required by Debian package format specification
+        "MD5sum": hashlib.md5(deb_content, usedforsecurity=False).hexdigest(),  # nosec B324
     }
 
 
@@ -122,11 +125,12 @@ Description: Monitoring Hub APT Repository
 """
 
     # Calculate checksums for Packages files
+    # MD5Sum required by APT repository format specification
     release_content += "MD5Sum:\n"
     for file in [packages_file, packages_gz]:
         if file.exists():
             content = file.read_bytes()
-            md5 = hashlib.md5(content).hexdigest()
+            md5 = hashlib.md5(content, usedforsecurity=False).hexdigest()  # nosec B324
             size = len(content)
             rel_path = file.relative_to(packages_dir.parent.parent)
             release_content += f" {md5} {size} {rel_path}\n"
@@ -165,7 +169,7 @@ def main():
     parser.add_argument("--arch", required=True, help="Architecture (amd64, arm64)")
     parser.add_argument(
         "--cache-dir",
-        default="/tmp/deb-metadata-cache",
+        default=f"{tempfile.gettempdir()}/deb-metadata-cache",
         help="Cache directory for downloaded DEBs",
     )
 
