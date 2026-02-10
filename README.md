@@ -37,9 +37,9 @@
 
 
 
-<table align="center">
+<table align="center" width="90%">
 <tr>
-<td align="center" width="20%" style="vertical-align: top;">
+<td align="center" style="vertical-align: top;">
 <a href="https://sckyzo.github.io/monitoring-hub/">
 <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/chrome/chrome-original.svg" width="64" height="64">
 <br><br>
@@ -48,7 +48,7 @@
 <sub>Browse all exporters</sub>
 </a>
 </td>
-<td align="center" width="20%" style="vertical-align: top;">
+<td align="center" style="vertical-align: top;">
 <a href="https://sckyzo.github.io/monitoring-hub/docs/">
 <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/materialui/materialui-original.svg" width="64" height="64">
 <br><br>
@@ -57,7 +57,7 @@
 <sub>User guides & API</sub>
 </a>
 </td>
-<td align="center" width="20%" style="vertical-align: top;">
+<td align="center" style="vertical-align: top;">
 <a href="https://github.com/SckyzO/monitoring-hub/packages">
 <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/docker/docker-original.svg" width="64" height="64">
 <br><br>
@@ -66,7 +66,7 @@
 <sub>Container images</sub>
 </a>
 </td>
-<td align="center" width="20%" style="vertical-align: top;">
+<td align="center" style="vertical-align: top;">
 <a href="https://github.com/SckyzO/monitoring-hub/issues/new">
 <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/github/github-original.svg" width="64" height="64">
 <br><br>
@@ -75,7 +75,7 @@
 <sub>Report bugs</sub>
 </a>
 </td>
-<td align="center" width="20%" style="vertical-align: top;">
+<td align="center" style="vertical-align: top;">
 <a href="CHANGELOG.md">
 <img src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/git/git-original.svg" width="64" height="64">
 <br><br>
