@@ -66,10 +66,10 @@ jobs:
         id: version
         run: |
           exporter="${{ inputs.exporter }}"
-          version=$(python3 - <<'PY'
+          version=$(python3 - <<PY
           import yaml
 
-          with open(f"exporters/{exporter}/manifest.yaml") as handle:
+          with open(f"exporters/$exporter/manifest.yaml") as handle:
               manifest = yaml.safe_load(handle)
           print(manifest["version"].lstrip("v"))
           PY
@@ -446,10 +446,10 @@ jobs:
           version="${{ needs.get-version.outputs.version }}"
 
           echo "::group::🔍 Checking Docker configuration"
-          is_enabled=$(python3 - <<'PY'
+          is_enabled=$(python3 - <<PY
           import yaml
 
-          with open(f"exporters/{exporter}/manifest.yaml") as handle:
+          with open(f"exporters/$exporter/manifest.yaml") as handle:
               manifest = yaml.safe_load(handle)
           print(manifest.get("artifacts", {}).get("docker", {}).get("enabled", False))
           PY
@@ -530,10 +530,10 @@ jobs:
           image_id="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/$exporter"
           image_id=$(echo $image_id | tr '[:upper:]' '[:lower:]')
 
-          description=$(python3 - <<'PY'
+          description=$(python3 - <<PY
           import yaml
 
-          with open(f"exporters/{exporter}/manifest.yaml") as handle:
+          with open(f"exporters/$exporter/manifest.yaml") as handle:
               manifest = yaml.safe_load(handle)
           print(manifest.get("description", ""))
           PY
@@ -561,10 +561,10 @@ jobs:
           exporter="${{ inputs.exporter }}"
 
           echo "::group::🔍 Checking validation configuration"
-          v_enabled=$(python3 - <<'PY'
+          v_enabled=$(python3 - <<PY
           import yaml
 
-          with open(f"exporters/{exporter}/manifest.yaml") as handle:
+          with open(f"exporters/$exporter/manifest.yaml") as handle:
               manifest = yaml.safe_load(handle)
           print(manifest.get("artifacts", {}).get("docker", {}).get("validation", {}).get("enabled", True))
           PY
@@ -575,18 +575,18 @@ jobs:
             exit 0
           fi
 
-          v_port=$(python3 - <<'PY'
+          v_port=$(python3 - <<PY
           import yaml
 
-          with open(f"exporters/{exporter}/manifest.yaml") as handle:
+          with open(f"exporters/$exporter/manifest.yaml") as handle:
               manifest = yaml.safe_load(handle)
           print(manifest.get("artifacts", {}).get("docker", {}).get("validation", {}).get("port", "None"))
           PY
           )
-          v_cmd=$(python3 - <<'PY'
+          v_cmd=$(python3 - <<PY
           import yaml
 
-          with open(f"exporters/{exporter}/manifest.yaml") as handle:
+          with open(f"exporters/$exporter/manifest.yaml") as handle:
               manifest = yaml.safe_load(handle)
           print(manifest.get("artifacts", {}).get("docker", {}).get("validation", {}).get("command", "None"))
           PY
@@ -612,10 +612,10 @@ jobs:
           # Port-based validation
           if [ "$v_port" != "None" ]; then
             echo "::group::🧪 Testing HTTP endpoint on port $v_port"
-            v_args=$(python3 - <<'PY'
+            v_args=$(python3 - <<PY
             import yaml
 
-            with open(f"exporters/{exporter}/manifest.yaml") as handle:
+            with open(f"exporters/$exporter/manifest.yaml") as handle:
                 manifest = yaml.safe_load(handle)
             print(manifest.get("artifacts", {}).get("docker", {}).get("validation", {}).get("args", ""))
             PY
