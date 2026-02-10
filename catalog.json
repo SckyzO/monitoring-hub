@@ -53,6 +53,43 @@
             }
           ]
         },
+        "deb": {
+          "enabled": true,
+          "targets": [
+            "ubuntu-22.04",
+            "ubuntu-24.04",
+            "debian-12",
+            "debian-13"
+          ],
+          "summary": "Handle alerts and notifications for the Prometheus ecosystem",
+          "systemd": {
+            "enabled": true
+          },
+          "section": "net",
+          "priority": "optional",
+          "system_user": "alertmanager",
+          "extra_files": [
+            {
+              "source": "assets/alertmanager.yml",
+              "dest": "/etc/alertmanager/alertmanager.yml",
+              "config": true
+            }
+          ],
+          "directories": [
+            {
+              "path": "/etc/alertmanager",
+              "mode": "0755",
+              "owner": "root",
+              "group": "root"
+            },
+            {
+              "path": "/var/lib/alertmanager",
+              "mode": "0755",
+              "owner": "alertmanager",
+              "group": "alertmanager"
+            }
+          ]
+        },
         "docker": {
           "enabled": true,
           "entrypoint": [
@@ -62,7 +99,8 @@
             "--config.file=/etc/alertmanager/alertmanager.yml"
           ],
           "validation": {
-            "port": 9093
+            "port": 9093,
+            "enabled": true
           }
         }
       },
@@ -102,47 +140,47 @@
       "deb_availability": {
         "ubuntu-22.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.31.0/alertmanager_0.31.0-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.31.0/alertmanager_0.31.0-1_arm64.deb"
           }
         },
         "ubuntu-24.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.31.0/alertmanager_0.31.0-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.31.0/alertmanager_0.31.0-1_arm64.deb"
           }
         },
         "debian-12": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.31.0/alertmanager_0.31.0-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.31.0/alertmanager_0.31.0-1_arm64.deb"
           }
         },
         "debian-13": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.31.0/alertmanager_0.31.0-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.31.0/alertmanager_0.31.0-1_arm64.deb"
           }
         }
       },
       "rpm_status": "success",
-      "deb_status": "na",
+      "deb_status": "success",
       "docker_status": "success"
     },
     {
@@ -172,7 +210,30 @@
           "systemd": {
             "enabled": true
           },
-          "extra_files": [],
+          "directories": [
+            {
+              "path": "/var/lib/apache_exporter",
+              "owner": "apache_exporter",
+              "group": "apache_exporter",
+              "mode": "0755"
+            }
+          ]
+        },
+        "deb": {
+          "enabled": true,
+          "targets": [
+            "ubuntu-22.04",
+            "ubuntu-24.04",
+            "debian-12",
+            "debian-13"
+          ],
+          "summary": "Prometheus exporter for Apache HTTP Server",
+          "systemd": {
+            "enabled": true
+          },
+          "section": "net",
+          "priority": "optional",
+          "system_user": "apache_exporter",
           "directories": [
             {
               "path": "/var/lib/apache_exporter",
@@ -188,7 +249,8 @@
             "/usr/bin/apache_exporter"
           ],
           "validation": {
-            "port": 9117
+            "port": 9117,
+            "enabled": true
           }
         }
       },
@@ -228,53 +290,53 @@
       "deb_availability": {
         "ubuntu-22.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.0.12/apache-exporter_1.0.12-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.0.12/apache-exporter_1.0.12-1_arm64.deb"
           }
         },
         "ubuntu-24.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.0.12/apache-exporter_1.0.12-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.0.12/apache-exporter_1.0.12-1_arm64.deb"
           }
         },
         "debian-12": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.0.12/apache-exporter_1.0.12-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.0.12/apache-exporter_1.0.12-1_arm64.deb"
           }
         },
         "debian-13": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.0.12/apache-exporter_1.0.12-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.0.12/apache-exporter_1.0.12-1_arm64.deb"
           }
         }
       },
       "rpm_status": "success",
-      "deb_status": "na",
+      "deb_status": "success",
       "docker_status": "success"
     },
     {
       "name": "artifactory_exporter",
       "description": "Prometheus exporter for JFrog Artifactory stats.",
-      "category": "DevOps",
+      "category": "Infrastructure",
       "version": "1.16.1",
       "new": true,
       "updated": false,
@@ -304,6 +366,22 @@
           "systemd": {
             "enabled": true
           }
+        },
+        "deb": {
+          "enabled": true,
+          "targets": [
+            "ubuntu-22.04",
+            "ubuntu-24.04",
+            "debian-12",
+            "debian-13"
+          ],
+          "summary": "Prometheus exporter for JFrog Artifactory stats.",
+          "systemd": {
+            "enabled": true
+          },
+          "section": "net",
+          "priority": "optional",
+          "system_user": "artifactory_exporter"
         },
         "docker": {
           "enabled": true,
@@ -352,47 +430,47 @@
       "deb_availability": {
         "ubuntu-22.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.16.1/artifactory-exporter_1.16.1-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.16.1/artifactory-exporter_1.16.1-1_arm64.deb"
           }
         },
         "ubuntu-24.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.16.1/artifactory-exporter_1.16.1-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.16.1/artifactory-exporter_1.16.1-1_arm64.deb"
           }
         },
         "debian-12": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.16.1/artifactory-exporter_1.16.1-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.16.1/artifactory-exporter_1.16.1-1_arm64.deb"
           }
         },
         "debian-13": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.16.1/artifactory-exporter_1.16.1-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.16.1/artifactory-exporter_1.16.1-1_arm64.deb"
           }
         }
       },
       "rpm_status": "success",
-      "deb_status": "na",
+      "deb_status": "success",
       "docker_status": "success"
     },
     {
@@ -422,7 +500,30 @@
           "systemd": {
             "enabled": true
           },
-          "extra_files": [],
+          "directories": [
+            {
+              "path": "/var/lib/bind_exporter",
+              "owner": "bind_exporter",
+              "group": "bind_exporter",
+              "mode": "0755"
+            }
+          ]
+        },
+        "deb": {
+          "enabled": true,
+          "targets": [
+            "ubuntu-22.04",
+            "ubuntu-24.04",
+            "debian-12",
+            "debian-13"
+          ],
+          "summary": "Prometheus exporter for Bind (DNS) statistics",
+          "systemd": {
+            "enabled": true
+          },
+          "section": "net",
+          "priority": "optional",
+          "system_user": "bind_exporter",
           "directories": [
             {
               "path": "/var/lib/bind_exporter",
@@ -438,7 +539,8 @@
             "/usr/bin/bind_exporter"
           ],
           "validation": {
-            "port": 9119
+            "port": 9119,
+            "enabled": true
           }
         }
       },
@@ -478,47 +580,47 @@
       "deb_availability": {
         "ubuntu-22.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.8.0/bind-exporter_0.8.0-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.8.0/bind-exporter_0.8.0-1_arm64.deb"
           }
         },
         "ubuntu-24.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.8.0/bind-exporter_0.8.0-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.8.0/bind-exporter_0.8.0-1_arm64.deb"
           }
         },
         "debian-12": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.8.0/bind-exporter_0.8.0-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.8.0/bind-exporter_0.8.0-1_arm64.deb"
           }
         },
         "debian-13": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.8.0/bind-exporter_0.8.0-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.8.0/bind-exporter_0.8.0-1_arm64.deb"
           }
         }
       },
       "rpm_status": "success",
-      "deb_status": "na",
+      "deb_status": "success",
       "docker_status": "success"
     },
     {
@@ -570,6 +672,43 @@
             }
           ]
         },
+        "deb": {
+          "enabled": true,
+          "targets": [
+            "ubuntu-22.04",
+            "ubuntu-24.04",
+            "debian-12",
+            "debian-13"
+          ],
+          "summary": "Prometheus blackbox exporter for network probing (HTTP, DNS, TCP, ICMP)",
+          "systemd": {
+            "enabled": true
+          },
+          "section": "net",
+          "priority": "optional",
+          "system_user": "blackbox_exporter",
+          "extra_files": [
+            {
+              "source": "assets/blackbox.yml",
+              "dest": "/etc/blackbox_exporter/blackbox.yml",
+              "config": true
+            }
+          ],
+          "directories": [
+            {
+              "path": "/etc/blackbox_exporter",
+              "owner": "root",
+              "group": "root",
+              "mode": "0755"
+            },
+            {
+              "path": "/var/lib/blackbox_exporter",
+              "owner": "blackbox_exporter",
+              "group": "blackbox_exporter",
+              "mode": "0755"
+            }
+          ]
+        },
         "docker": {
           "enabled": true,
           "entrypoint": [
@@ -579,7 +718,8 @@
             "--config.file=/etc/blackbox_exporter/blackbox.yml"
           ],
           "validation": {
-            "port": 9115
+            "port": 9115,
+            "enabled": true
           }
         }
       },
@@ -619,47 +759,47 @@
       "deb_availability": {
         "ubuntu-22.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.28.0/blackbox-exporter_0.28.0-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.28.0/blackbox-exporter_0.28.0-1_arm64.deb"
           }
         },
         "ubuntu-24.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.28.0/blackbox-exporter_0.28.0-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.28.0/blackbox-exporter_0.28.0-1_arm64.deb"
           }
         },
         "debian-12": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.28.0/blackbox-exporter_0.28.0-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.28.0/blackbox-exporter_0.28.0-1_arm64.deb"
           }
         },
         "debian-13": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.28.0/blackbox-exporter_0.28.0-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.28.0/blackbox-exporter_0.28.0-1_arm64.deb"
           }
         }
       },
       "rpm_status": "success",
-      "deb_status": "na",
+      "deb_status": "success",
       "docker_status": "success"
     },
     {
@@ -695,6 +835,22 @@
           "systemd": {
             "enabled": true
           }
+        },
+        "deb": {
+          "enabled": true,
+          "targets": [
+            "ubuntu-22.04",
+            "ubuntu-24.04",
+            "debian-12",
+            "debian-13"
+          ],
+          "summary": "Relay metrics from collectd to Prometheus.",
+          "systemd": {
+            "enabled": true
+          },
+          "section": "net",
+          "priority": "optional",
+          "system_user": "collectd_exporter"
         },
         "docker": {
           "enabled": true,
@@ -743,47 +899,47 @@
       "deb_availability": {
         "ubuntu-22.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.7.0/collectd-exporter_0.7.0-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.7.0/collectd-exporter_0.7.0-1_arm64.deb"
           }
         },
         "ubuntu-24.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.7.0/collectd-exporter_0.7.0-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.7.0/collectd-exporter_0.7.0-1_arm64.deb"
           }
         },
         "debian-12": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.7.0/collectd-exporter_0.7.0-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.7.0/collectd-exporter_0.7.0-1_arm64.deb"
           }
         },
         "debian-13": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.7.0/collectd-exporter_0.7.0-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.7.0/collectd-exporter_0.7.0-1_arm64.deb"
           }
         }
       },
       "rpm_status": "success",
-      "deb_status": "na",
+      "deb_status": "success",
       "docker_status": "success"
     },
     {
@@ -818,6 +974,22 @@
           "systemd": {
             "enabled": true
           }
+        },
+        "deb": {
+          "enabled": true,
+          "targets": [
+            "ubuntu-22.04",
+            "ubuntu-24.04",
+            "debian-12",
+            "debian-13"
+          ],
+          "summary": "Prometheus exporter for Dell Hardware components using OMSA.",
+          "systemd": {
+            "enabled": true
+          },
+          "section": "net",
+          "priority": "optional",
+          "system_user": "dellhw_exporter"
         },
         "docker": {
           "enabled": true,
@@ -866,47 +1038,47 @@
       "deb_availability": {
         "ubuntu-22.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.13.13/dellhw-exporter_1.13.13-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.13.13/dellhw-exporter_1.13.13-1_arm64.deb"
           }
         },
         "ubuntu-24.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.13.13/dellhw-exporter_1.13.13-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.13.13/dellhw-exporter_1.13.13-1_arm64.deb"
           }
         },
         "debian-12": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.13.13/dellhw-exporter_1.13.13-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.13.13/dellhw-exporter_1.13.13-1_arm64.deb"
           }
         },
         "debian-13": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.13.13/dellhw-exporter_1.13.13-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.13.13/dellhw-exporter_1.13.13-1_arm64.deb"
           }
         }
       },
       "rpm_status": "success",
-      "deb_status": "na",
+      "deb_status": "success",
       "docker_status": "success"
     },
     {
@@ -943,6 +1115,22 @@
           "systemd": {
             "enabled": true
           }
+        },
+        "deb": {
+          "enabled": true,
+          "targets": [
+            "ubuntu-22.04",
+            "ubuntu-24.04",
+            "debian-12",
+            "debian-13"
+          ],
+          "summary": "Exports the expiration time of your domains as Prometheus metrics.",
+          "systemd": {
+            "enabled": true
+          },
+          "section": "net",
+          "priority": "optional",
+          "system_user": "domain_exporter"
         },
         "docker": {
           "enabled": true,
@@ -991,47 +1179,47 @@
       "deb_availability": {
         "ubuntu-22.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.24.1/domain-exporter_1.24.1-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.24.1/domain-exporter_1.24.1-1_arm64.deb"
           }
         },
         "ubuntu-24.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.24.1/domain-exporter_1.24.1-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.24.1/domain-exporter_1.24.1-1_arm64.deb"
           }
         },
         "debian-12": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.24.1/domain-exporter_1.24.1-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.24.1/domain-exporter_1.24.1-1_arm64.deb"
           }
         },
         "debian-13": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.24.1/domain-exporter_1.24.1-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.24.1/domain-exporter_1.24.1-1_arm64.deb"
           }
         }
       },
       "rpm_status": "success",
-      "deb_status": "na",
+      "deb_status": "success",
       "docker_status": "success"
     },
     {
@@ -1070,6 +1258,25 @@
           "systemd": {
             "enabled": true
           }
+        },
+        "deb": {
+          "enabled": true,
+          "targets": [
+            "ubuntu-22.04",
+            "ubuntu-24.04",
+            "debian-12",
+            "debian-13"
+          ],
+          "summary": "Prometheus exporter for custom eBPF metrics.",
+          "systemd": {
+            "enabled": true
+          },
+          "section": "net",
+          "priority": "optional",
+          "dependencies": [
+            "libelf1",
+            "hwdata"
+          ]
         },
         "docker": {
           "enabled": true,
@@ -1118,47 +1325,47 @@
       "deb_availability": {
         "ubuntu-22.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v2.5.1/ebpf-exporter_2.5.1-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v2.5.1/ebpf-exporter_2.5.1-1_arm64.deb"
           }
         },
         "ubuntu-24.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v2.5.1/ebpf-exporter_2.5.1-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v2.5.1/ebpf-exporter_2.5.1-1_arm64.deb"
           }
         },
         "debian-12": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v2.5.1/ebpf-exporter_2.5.1-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v2.5.1/ebpf-exporter_2.5.1-1_arm64.deb"
           }
         },
         "debian-13": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v2.5.1/ebpf-exporter_2.5.1-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v2.5.1/ebpf-exporter_2.5.1-1_arm64.deb"
           }
         }
       },
       "rpm_status": "success",
-      "deb_status": "na",
+      "deb_status": "success",
       "docker_status": "success"
     },
     {
@@ -1192,6 +1399,21 @@
           "systemd": {
             "enabled": true
           }
+        },
+        "deb": {
+          "enabled": true,
+          "targets": [
+            "ubuntu-22.04",
+            "ubuntu-24.04",
+            "debian-12",
+            "debian-13"
+          ],
+          "summary": "Prometheus exporter for various metrics about Elasticsearch.",
+          "systemd": {
+            "enabled": true
+          },
+          "section": "net",
+          "priority": "optional"
         },
         "docker": {
           "enabled": true,
@@ -1240,47 +1462,47 @@
       "deb_availability": {
         "ubuntu-22.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.10.0/elasticsearch-exporter_1.10.0-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.10.0/elasticsearch-exporter_1.10.0-1_arm64.deb"
           }
         },
         "ubuntu-24.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.10.0/elasticsearch-exporter_1.10.0-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.10.0/elasticsearch-exporter_1.10.0-1_arm64.deb"
           }
         },
         "debian-12": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.10.0/elasticsearch-exporter_1.10.0-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.10.0/elasticsearch-exporter_1.10.0-1_arm64.deb"
           }
         },
         "debian-13": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.10.0/elasticsearch-exporter_1.10.0-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.10.0/elasticsearch-exporter_1.10.0-1_arm64.deb"
           }
         }
       },
       "rpm_status": "success",
-      "deb_status": "na",
+      "deb_status": "success",
       "docker_status": "success"
     },
     {
@@ -1328,6 +1550,37 @@
             }
           ]
         },
+        "deb": {
+          "enabled": true,
+          "targets": [
+            "ubuntu-22.04",
+            "ubuntu-24.04",
+            "debian-12",
+            "debian-13"
+          ],
+          "summary": "Prometheus exporter for NetApp/Lenovo E-Series storage systems",
+          "systemd": {
+            "enabled": true
+          },
+          "section": "net",
+          "priority": "optional",
+          "system_user": "prometheus",
+          "extra_files": [
+            {
+              "source": "assets/eseries_exporter.yml",
+              "dest": "/etc/eseries_exporter/eseries_exporter.yml",
+              "config": true
+            }
+          ],
+          "directories": [
+            {
+              "path": "/etc/eseries_exporter",
+              "mode": "0755",
+              "owner": "root",
+              "group": "root"
+            }
+          ]
+        },
         "docker": {
           "enabled": true,
           "base_image": "registry.access.redhat.com/ubi9/ubi-minimal",
@@ -1338,7 +1591,8 @@
             "--config.file=/etc/eseries_exporter/eseries_exporter.yml"
           ],
           "validation": {
-            "port": 9313
+            "port": 9313,
+            "enabled": true
           }
         }
       },
@@ -1378,47 +1632,47 @@
       "deb_availability": {
         "ubuntu-22.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v2.0.0/eseries-exporter_2.0.0-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v2.0.0/eseries-exporter_2.0.0-1_arm64.deb"
           }
         },
         "ubuntu-24.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v2.0.0/eseries-exporter_2.0.0-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v2.0.0/eseries-exporter_2.0.0-1_arm64.deb"
           }
         },
         "debian-12": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v2.0.0/eseries-exporter_2.0.0-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v2.0.0/eseries-exporter_2.0.0-1_arm64.deb"
           }
         },
         "debian-13": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v2.0.0/eseries-exporter_2.0.0-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v2.0.0/eseries-exporter_2.0.0-1_arm64.deb"
           }
         }
       },
       "rpm_status": "success",
-      "deb_status": "na",
+      "deb_status": "success",
       "docker_status": "success"
     },
     {
@@ -1455,10 +1709,23 @@
           "systemd": {
             "enabled": true
           },
-          "system_user": "exim_exporter",
-          "dependencies": [],
-          "extra_files": [],
-          "directories": []
+          "system_user": "exim_exporter"
+        },
+        "deb": {
+          "enabled": true,
+          "targets": [
+            "ubuntu-22.04",
+            "ubuntu-24.04",
+            "debian-12",
+            "debian-13"
+          ],
+          "summary": "Prometheus exporter for Exim mail server metrics.",
+          "systemd": {
+            "enabled": true
+          },
+          "section": "net",
+          "priority": "optional",
+          "system_user": "exim_exporter"
         },
         "docker": {
           "enabled": true,
@@ -1508,47 +1775,47 @@
       "deb_availability": {
         "ubuntu-22.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.6.2/exim-exporter_1.6.2-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.6.2/exim-exporter_1.6.2-1_arm64.deb"
           }
         },
         "ubuntu-24.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.6.2/exim-exporter_1.6.2-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.6.2/exim-exporter_1.6.2-1_arm64.deb"
           }
         },
         "debian-12": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.6.2/exim-exporter_1.6.2-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.6.2/exim-exporter_1.6.2-1_arm64.deb"
           }
         },
         "debian-13": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.6.2/exim-exporter_1.6.2-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.6.2/exim-exporter_1.6.2-1_arm64.deb"
           }
         }
       },
       "rpm_status": "success",
-      "deb_status": "na",
+      "deb_status": "success",
       "docker_status": "success"
     },
     {
@@ -1560,8 +1827,7 @@
       "updated": false,
       "upstream": {
         "type": "github",
-        "repo": "tynany/frr_exporter",
-        "archive_name": null
+        "repo": "tynany/frr_exporter"
       },
       "build": {
         "method": "binary_repack",
@@ -1585,6 +1851,25 @@
           "systemd": {
             "enabled": true
           },
+          "system_user": "frr_exporter",
+          "dependencies": [
+            "frr"
+          ]
+        },
+        "deb": {
+          "enabled": true,
+          "targets": [
+            "ubuntu-22.04",
+            "ubuntu-24.04",
+            "debian-12",
+            "debian-13"
+          ],
+          "summary": "Prometheus exporter for FRR metrics.",
+          "systemd": {
+            "enabled": true
+          },
+          "section": "net",
+          "priority": "optional",
           "system_user": "frr_exporter",
           "dependencies": [
             "frr"
@@ -1639,47 +1924,47 @@
       "deb_availability": {
         "ubuntu-22.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.10.0/frr-exporter_1.10.0-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.10.0/frr-exporter_1.10.0-1_arm64.deb"
           }
         },
         "ubuntu-24.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.10.0/frr-exporter_1.10.0-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.10.0/frr-exporter_1.10.0-1_arm64.deb"
           }
         },
         "debian-12": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.10.0/frr-exporter_1.10.0-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.10.0/frr-exporter_1.10.0-1_arm64.deb"
           }
         },
         "debian-13": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.10.0/frr-exporter_1.10.0-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.10.0/frr-exporter_1.10.0-1_arm64.deb"
           }
         }
       },
       "rpm_status": "success",
-      "deb_status": "na",
+      "deb_status": "success",
       "docker_status": "success"
     },
     {
@@ -1712,6 +1997,22 @@
           "systemd": {
             "enabled": true
           },
+          "system_user": "prometheus"
+        },
+        "deb": {
+          "enabled": true,
+          "targets": [
+            "ubuntu-22.04",
+            "ubuntu-24.04",
+            "debian-12",
+            "debian-13"
+          ],
+          "summary": "Prometheus exporter for IBM GPFS (Spectrum Scale) metrics",
+          "systemd": {
+            "enabled": true
+          },
+          "section": "net",
+          "priority": "optional",
           "system_user": "prometheus"
         },
         "docker": {
@@ -1761,47 +2062,47 @@
       "deb_availability": {
         "ubuntu-22.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v3.2.1/gpfs-exporter_3.2.1-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v3.2.1/gpfs-exporter_3.2.1-1_arm64.deb"
           }
         },
         "ubuntu-24.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v3.2.1/gpfs-exporter_3.2.1-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v3.2.1/gpfs-exporter_3.2.1-1_arm64.deb"
           }
         },
         "debian-12": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v3.2.1/gpfs-exporter_3.2.1-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v3.2.1/gpfs-exporter_3.2.1-1_arm64.deb"
           }
         },
         "debian-13": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v3.2.1/gpfs-exporter_3.2.1-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v3.2.1/gpfs-exporter_3.2.1-1_arm64.deb"
           }
         }
       },
       "rpm_status": "success",
-      "deb_status": "na",
+      "deb_status": "success",
       "docker_status": "success"
     },
     {
@@ -1834,6 +2135,22 @@
           },
           "system_user": "prometheus"
         },
+        "deb": {
+          "enabled": true,
+          "targets": [
+            "ubuntu-22.04",
+            "ubuntu-24.04",
+            "debian-12",
+            "debian-13"
+          ],
+          "summary": "Prometheus exporter for High Availability clusters (Pacemaker, Corosync)",
+          "systemd": {
+            "enabled": true
+          },
+          "section": "net",
+          "priority": "optional",
+          "system_user": "prometheus"
+        },
         "docker": {
           "enabled": true,
           "base_image": "registry.access.redhat.com/ubi9/ubi-minimal",
@@ -1841,7 +2158,8 @@
             "/usr/bin/ha_cluster_exporter"
           ],
           "validation": {
-            "command": "--version"
+            "command": "--version",
+            "enabled": true
           }
         }
       },
@@ -1881,47 +2199,47 @@
       "deb_availability": {
         "ubuntu-22.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.4.0/ha-cluster-exporter_1.4.0-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.4.0/ha-cluster-exporter_1.4.0-1_arm64.deb"
           }
         },
         "ubuntu-24.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.4.0/ha-cluster-exporter_1.4.0-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.4.0/ha-cluster-exporter_1.4.0-1_arm64.deb"
           }
         },
         "debian-12": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.4.0/ha-cluster-exporter_1.4.0-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.4.0/ha-cluster-exporter_1.4.0-1_arm64.deb"
           }
         },
         "debian-13": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.4.0/ha-cluster-exporter_1.4.0-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.4.0/ha-cluster-exporter_1.4.0-1_arm64.deb"
           }
         }
       },
       "rpm_status": "success",
-      "deb_status": "na",
+      "deb_status": "success",
       "docker_status": "success"
     },
     {
@@ -1959,6 +2277,24 @@
           "systemd": {
             "enabled": true
           },
+          "dependencies": [
+            "iperf3"
+          ]
+        },
+        "deb": {
+          "enabled": true,
+          "targets": [
+            "ubuntu-22.04",
+            "ubuntu-24.04",
+            "debian-12",
+            "debian-13"
+          ],
+          "summary": "Prometheus exporter for iPerf3 metrics.",
+          "systemd": {
+            "enabled": true
+          },
+          "section": "net",
+          "priority": "optional",
           "dependencies": [
             "iperf3"
           ]
@@ -2011,47 +2347,47 @@
       "deb_availability": {
         "ubuntu-22.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.3.1/iperf3-exporter_1.3.1-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.3.1/iperf3-exporter_1.3.1-1_arm64.deb"
           }
         },
         "ubuntu-24.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.3.1/iperf3-exporter_1.3.1-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.3.1/iperf3-exporter_1.3.1-1_arm64.deb"
           }
         },
         "debian-12": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.3.1/iperf3-exporter_1.3.1-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.3.1/iperf3-exporter_1.3.1-1_arm64.deb"
           }
         },
         "debian-13": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.3.1/iperf3-exporter_1.3.1-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.3.1/iperf3-exporter_1.3.1-1_arm64.deb"
           }
         }
       },
       "rpm_status": "success",
-      "deb_status": "na",
+      "deb_status": "success",
       "docker_status": "success"
     },
     {
@@ -2106,6 +2442,46 @@
             }
           ]
         },
+        "deb": {
+          "enabled": true,
+          "targets": [
+            "ubuntu-22.04",
+            "ubuntu-24.04",
+            "debian-12",
+            "debian-13"
+          ],
+          "summary": "Prometheus exporter for IPMI devices",
+          "systemd": {
+            "enabled": true
+          },
+          "section": "net",
+          "priority": "optional",
+          "system_user": "ipmi_exporter",
+          "extra_files": [
+            {
+              "source": "assets/ipmi_remote.yml",
+              "dest": "/etc/ipmi_exporter/ipmi_remote.yml",
+              "config": true
+            }
+          ],
+          "directories": [
+            {
+              "path": "/var/lib/ipmi_exporter",
+              "owner": "ipmi_exporter",
+              "group": "ipmi_exporter",
+              "mode": "0755"
+            },
+            {
+              "path": "/etc/ipmi_exporter",
+              "owner": "root",
+              "group": "root",
+              "mode": "0755"
+            }
+          ],
+          "dependencies": [
+            "freeipmi-tools"
+          ]
+        },
         "docker": {
           "enabled": true,
           "entrypoint": [
@@ -2115,7 +2491,8 @@
             "--config.file=/etc/ipmi_exporter/ipmi_remote.yml"
           ],
           "validation": {
-            "port": 9290
+            "port": 9290,
+            "enabled": true
           }
         }
       },
@@ -2155,47 +2532,47 @@
       "deb_availability": {
         "ubuntu-22.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.10.1/ipmi-exporter_1.10.1-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.10.1/ipmi-exporter_1.10.1-1_arm64.deb"
           }
         },
         "ubuntu-24.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.10.1/ipmi-exporter_1.10.1-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.10.1/ipmi-exporter_1.10.1-1_arm64.deb"
           }
         },
         "debian-12": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.10.1/ipmi-exporter_1.10.1-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.10.1/ipmi-exporter_1.10.1-1_arm64.deb"
           }
         },
         "debian-13": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.10.1/ipmi-exporter_1.10.1-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.10.1/ipmi-exporter_1.10.1-1_arm64.deb"
           }
         }
       },
       "rpm_status": "success",
-      "deb_status": "na",
+      "deb_status": "success",
       "docker_status": "success"
     },
     {
@@ -2207,8 +2584,7 @@
       "updated": false,
       "upstream": {
         "type": "github",
-        "repo": "prometheus-community/json_exporter",
-        "archive_name": null
+        "repo": "prometheus-community/json_exporter"
       },
       "build": {
         "method": "binary_repack",
@@ -2232,7 +2608,34 @@
           "systemd": {
             "enabled": true
           },
-          "dependencies": [],
+          "extra_files": [
+            {
+              "source": "assets/config.yml",
+              "dest": "/etc/json_exporter/config.yml",
+              "mode": "0644"
+            }
+          ],
+          "directories": [
+            {
+              "path": "/etc/json_exporter",
+              "mode": "0755"
+            }
+          ]
+        },
+        "deb": {
+          "enabled": true,
+          "targets": [
+            "ubuntu-22.04",
+            "ubuntu-24.04",
+            "debian-12",
+            "debian-13"
+          ],
+          "summary": "A prometheus exporter which scrapes remote JSON by JSONPath.",
+          "systemd": {
+            "enabled": true
+          },
+          "section": "net",
+          "priority": "optional",
           "extra_files": [
             {
               "source": "assets/config.yml",
@@ -2295,47 +2698,47 @@
       "deb_availability": {
         "ubuntu-22.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.7.0/json-exporter_0.7.0-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.7.0/json-exporter_0.7.0-1_arm64.deb"
           }
         },
         "ubuntu-24.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.7.0/json-exporter_0.7.0-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.7.0/json-exporter_0.7.0-1_arm64.deb"
           }
         },
         "debian-12": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.7.0/json-exporter_0.7.0-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.7.0/json-exporter_0.7.0-1_arm64.deb"
           }
         },
         "debian-13": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.7.0/json-exporter_0.7.0-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.7.0/json-exporter_0.7.0-1_arm64.deb"
           }
         }
       },
       "rpm_status": "success",
-      "deb_status": "na",
+      "deb_status": "success",
       "docker_status": "success"
     },
     {
@@ -2372,10 +2775,22 @@
           "summary": "Prometheus exporter for Keepalived metrics.",
           "systemd": {
             "enabled": true
+          }
+        },
+        "deb": {
+          "enabled": true,
+          "targets": [
+            "ubuntu-22.04",
+            "ubuntu-24.04",
+            "debian-12",
+            "debian-13"
+          ],
+          "summary": "Prometheus exporter for Keepalived metrics.",
+          "systemd": {
+            "enabled": true
           },
-          "dependencies": [],
-          "extra_files": [],
-          "directories": []
+          "section": "net",
+          "priority": "optional"
         },
         "docker": {
           "enabled": true,
@@ -2424,47 +2839,47 @@
       "deb_availability": {
         "ubuntu-22.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.7.0/keepalived-exporter_1.7.0-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.7.0/keepalived-exporter_1.7.0-1_arm64.deb"
           }
         },
         "ubuntu-24.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.7.0/keepalived-exporter_1.7.0-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.7.0/keepalived-exporter_1.7.0-1_arm64.deb"
           }
         },
         "debian-12": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.7.0/keepalived-exporter_1.7.0-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.7.0/keepalived-exporter_1.7.0-1_arm64.deb"
           }
         },
         "debian-13": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.7.0/keepalived-exporter_1.7.0-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.7.0/keepalived-exporter_1.7.0-1_arm64.deb"
           }
         }
       },
       "rpm_status": "success",
-      "deb_status": "na",
+      "deb_status": "success",
       "docker_status": "success"
     },
     {
@@ -2476,8 +2891,7 @@
       "updated": false,
       "upstream": {
         "type": "github",
-        "repo": "prometheus/memcached_exporter",
-        "archive_name": null
+        "repo": "prometheus/memcached_exporter"
       },
       "build": {
         "method": "binary_repack",
@@ -2500,10 +2914,22 @@
           "summary": "Prometheus exporter for Memcached metrics.",
           "systemd": {
             "enabled": true
+          }
+        },
+        "deb": {
+          "enabled": true,
+          "targets": [
+            "ubuntu-22.04",
+            "ubuntu-24.04",
+            "debian-12",
+            "debian-13"
+          ],
+          "summary": "Prometheus exporter for Memcached metrics.",
+          "systemd": {
+            "enabled": true
           },
-          "dependencies": [],
-          "extra_files": [],
-          "directories": []
+          "section": "net",
+          "priority": "optional"
         },
         "docker": {
           "enabled": true,
@@ -2553,47 +2979,47 @@
       "deb_availability": {
         "ubuntu-22.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.15.5/memcached-exporter_0.15.5-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.15.5/memcached-exporter_0.15.5-1_arm64.deb"
           }
         },
         "ubuntu-24.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.15.5/memcached-exporter_0.15.5-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.15.5/memcached-exporter_0.15.5-1_arm64.deb"
           }
         },
         "debian-12": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.15.5/memcached-exporter_0.15.5-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.15.5/memcached-exporter_0.15.5-1_arm64.deb"
           }
         },
         "debian-13": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.15.5/memcached-exporter_0.15.5-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.15.5/memcached-exporter_0.15.5-1_arm64.deb"
           }
         }
       },
       "rpm_status": "success",
-      "deb_status": "na",
+      "deb_status": "success",
       "docker_status": "success"
     },
     {
@@ -2605,8 +3031,7 @@
       "updated": false,
       "upstream": {
         "type": "github",
-        "repo": "percona/mongodb_exporter",
-        "archive_name": null
+        "repo": "percona/mongodb_exporter"
       },
       "build": {
         "method": "binary_repack",
@@ -2629,10 +3054,22 @@
           "summary": "MongoDB exporter for Prometheus.",
           "systemd": {
             "enabled": true
+          }
+        },
+        "deb": {
+          "enabled": true,
+          "targets": [
+            "ubuntu-22.04",
+            "ubuntu-24.04",
+            "debian-12",
+            "debian-13"
+          ],
+          "summary": "MongoDB exporter for Prometheus.",
+          "systemd": {
+            "enabled": true
           },
-          "dependencies": [],
-          "extra_files": [],
-          "directories": []
+          "section": "net",
+          "priority": "optional"
         },
         "docker": {
           "enabled": true,
@@ -2682,47 +3119,47 @@
       "deb_availability": {
         "ubuntu-22.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.47.2/mongodb-exporter_0.47.2-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.47.2/mongodb-exporter_0.47.2-1_arm64.deb"
           }
         },
         "ubuntu-24.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.47.2/mongodb-exporter_0.47.2-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.47.2/mongodb-exporter_0.47.2-1_arm64.deb"
           }
         },
         "debian-12": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.47.2/mongodb-exporter_0.47.2-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.47.2/mongodb-exporter_0.47.2-1_arm64.deb"
           }
         },
         "debian-13": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.47.2/mongodb-exporter_0.47.2-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.47.2/mongodb-exporter_0.47.2-1_arm64.deb"
           }
         }
       },
       "rpm_status": "success",
-      "deb_status": "na",
+      "deb_status": "success",
       "docker_status": "success"
     },
     {
@@ -2769,6 +3206,38 @@
             }
           ]
         },
+        "deb": {
+          "enabled": true,
+          "targets": [
+            "ubuntu-22.04",
+            "ubuntu-24.04",
+            "debian-12",
+            "debian-13"
+          ],
+          "summary": "Prometheus exporter for MySQL server metrics",
+          "systemd": {
+            "enabled": true
+          },
+          "section": "net",
+          "priority": "optional",
+          "system_user": "mysqld_exporter",
+          "extra_files": [
+            {
+              "source": "assets/my.cnf",
+              "dest": "/var/lib/mysqld_exporter/.my.cnf",
+              "config": true,
+              "mode": "0600"
+            }
+          ],
+          "directories": [
+            {
+              "path": "/var/lib/mysqld_exporter",
+              "owner": "mysqld_exporter",
+              "group": "mysqld_exporter",
+              "mode": "0700"
+            }
+          ]
+        },
         "docker": {
           "enabled": true,
           "entrypoint": [
@@ -2778,7 +3247,8 @@
             "--config.my-cnf=/var/lib/mysqld_exporter/.my.cnf"
           ],
           "validation": {
-            "port": 9104
+            "port": 9104,
+            "enabled": true
           }
         }
       },
@@ -2818,47 +3288,47 @@
       "deb_availability": {
         "ubuntu-22.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.18.0/mysqld-exporter_0.18.0-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.18.0/mysqld-exporter_0.18.0-1_arm64.deb"
           }
         },
         "ubuntu-24.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.18.0/mysqld-exporter_0.18.0-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.18.0/mysqld-exporter_0.18.0-1_arm64.deb"
           }
         },
         "debian-12": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.18.0/mysqld-exporter_0.18.0-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.18.0/mysqld-exporter_0.18.0-1_arm64.deb"
           }
         },
         "debian-13": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.18.0/mysqld-exporter_0.18.0-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.18.0/mysqld-exporter_0.18.0-1_arm64.deb"
           }
         }
       },
       "rpm_status": "success",
-      "deb_status": "na",
+      "deb_status": "success",
       "docker_status": "success"
     },
     {
@@ -2895,10 +3365,22 @@
           "summary": "NATS metrics exporter for Prometheus.",
           "systemd": {
             "enabled": true
+          }
+        },
+        "deb": {
+          "enabled": true,
+          "targets": [
+            "ubuntu-22.04",
+            "ubuntu-24.04",
+            "debian-12",
+            "debian-13"
+          ],
+          "summary": "NATS metrics exporter for Prometheus.",
+          "systemd": {
+            "enabled": true
           },
-          "dependencies": [],
-          "extra_files": [],
-          "directories": []
+          "section": "net",
+          "priority": "optional"
         },
         "docker": {
           "enabled": true,
@@ -2948,47 +3430,47 @@
       "deb_availability": {
         "ubuntu-22.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.19.1/nats-exporter_0.19.1-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.19.1/nats-exporter_0.19.1-1_arm64.deb"
           }
         },
         "ubuntu-24.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.19.1/nats-exporter_0.19.1-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.19.1/nats-exporter_0.19.1-1_arm64.deb"
           }
         },
         "debian-12": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.19.1/nats-exporter_0.19.1-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.19.1/nats-exporter_0.19.1-1_arm64.deb"
           }
         },
         "debian-13": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.19.1/nats-exporter_0.19.1-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.19.1/nats-exporter_0.19.1-1_arm64.deb"
           }
         }
       },
       "rpm_status": "success",
-      "deb_status": "na",
+      "deb_status": "success",
       "docker_status": "success"
     },
     {
@@ -3019,7 +3501,30 @@
           "systemd": {
             "enabled": true
           },
-          "extra_files": [],
+          "directories": [
+            {
+              "path": "/var/lib/nginx_exporter",
+              "owner": "nginx_exporter",
+              "group": "nginx_exporter",
+              "mode": "0755"
+            }
+          ]
+        },
+        "deb": {
+          "enabled": true,
+          "targets": [
+            "ubuntu-22.04",
+            "ubuntu-24.04",
+            "debian-12",
+            "debian-13"
+          ],
+          "summary": "Prometheus exporter for NGINX metrics",
+          "systemd": {
+            "enabled": true
+          },
+          "section": "net",
+          "priority": "optional",
+          "system_user": "nginx_exporter",
           "directories": [
             {
               "path": "/var/lib/nginx_exporter",
@@ -3035,7 +3540,8 @@
             "/usr/bin/nginx_exporter"
           ],
           "validation": {
-            "port": 9113
+            "port": 9113,
+            "enabled": true
           }
         }
       },
@@ -3075,47 +3581,47 @@
       "deb_availability": {
         "ubuntu-22.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.5.1/nginx-exporter_1.5.1-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.5.1/nginx-exporter_1.5.1-1_arm64.deb"
           }
         },
         "ubuntu-24.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.5.1/nginx-exporter_1.5.1-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.5.1/nginx-exporter_1.5.1-1_arm64.deb"
           }
         },
         "debian-12": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.5.1/nginx-exporter_1.5.1-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.5.1/nginx-exporter_1.5.1-1_arm64.deb"
           }
         },
         "debian-13": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.5.1/nginx-exporter_1.5.1-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.5.1/nginx-exporter_1.5.1-1_arm64.deb"
           }
         }
       },
       "rpm_status": "success",
-      "deb_status": "na",
+      "deb_status": "success",
       "docker_status": "success"
     },
     {
@@ -3168,7 +3674,8 @@
           ],
           "cmd": [],
           "validation": {
-            "port": 9100
+            "port": 9100,
+            "enabled": true
           }
         }
       },
@@ -3296,6 +3803,37 @@
             }
           ]
         },
+        "deb": {
+          "enabled": true,
+          "targets": [
+            "ubuntu-22.04",
+            "ubuntu-24.04",
+            "debian-12",
+            "debian-13"
+          ],
+          "summary": "Prometheus exporter for ICMP ping metrics",
+          "systemd": {
+            "enabled": true
+          },
+          "section": "net",
+          "priority": "optional",
+          "system_user": "prometheus",
+          "extra_files": [
+            {
+              "source": "assets/ping.yml",
+              "dest": "/etc/ping_exporter/ping.yml",
+              "config": true
+            }
+          ],
+          "directories": [
+            {
+              "path": "/etc/ping_exporter",
+              "mode": "0755",
+              "owner": "root",
+              "group": "root"
+            }
+          ]
+        },
         "docker": {
           "enabled": true,
           "base_image": "registry.access.redhat.com/ubi9/ubi-minimal",
@@ -3306,7 +3844,8 @@
             "--config.path=/etc/ping_exporter/ping.yml"
           ],
           "validation": {
-            "port": 9427
+            "port": 9427,
+            "enabled": true
           }
         }
       },
@@ -3346,47 +3885,47 @@
       "deb_availability": {
         "ubuntu-22.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.1.5/ping-exporter_1.1.5-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.1.5/ping-exporter_1.1.5-1_arm64.deb"
           }
         },
         "ubuntu-24.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.1.5/ping-exporter_1.1.5-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.1.5/ping-exporter_1.1.5-1_arm64.deb"
           }
         },
         "debian-12": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.1.5/ping-exporter_1.1.5-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.1.5/ping-exporter_1.1.5-1_arm64.deb"
           }
         },
         "debian-13": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.1.5/ping-exporter_1.1.5-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.1.5/ping-exporter_1.1.5-1_arm64.deb"
           }
         }
       },
       "rpm_status": "success",
-      "deb_status": "na",
+      "deb_status": "success",
       "docker_status": "success"
     },
     {
@@ -3414,7 +3953,30 @@
             "el10"
           ],
           "system_user": "prometheus",
-          "extra_files": [],
+          "directories": [
+            {
+              "path": "/var/lib/prometheus",
+              "owner": "prometheus",
+              "group": "prometheus",
+              "mode": "0755"
+            }
+          ]
+        },
+        "deb": {
+          "enabled": true,
+          "targets": [
+            "ubuntu-22.04",
+            "ubuntu-24.04",
+            "debian-12",
+            "debian-13"
+          ],
+          "summary": "Prometheus exporter for Podman containers",
+          "systemd": {
+            "enabled": true
+          },
+          "section": "net",
+          "priority": "optional",
+          "system_user": "prometheus",
           "directories": [
             {
               "path": "/var/lib/prometheus",
@@ -3433,7 +3995,8 @@
             "--collector.enable-all"
           ],
           "validation": {
-            "command": "--help"
+            "command": "--help",
+            "enabled": true
           }
         }
       },
@@ -3473,47 +4036,47 @@
       "deb_availability": {
         "ubuntu-22.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.20.0/podman-exporter_1.20.0-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.20.0/podman-exporter_1.20.0-1_arm64.deb"
           }
         },
         "ubuntu-24.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.20.0/podman-exporter_1.20.0-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.20.0/podman-exporter_1.20.0-1_arm64.deb"
           }
         },
         "debian-12": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.20.0/podman-exporter_1.20.0-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.20.0/podman-exporter_1.20.0-1_arm64.deb"
           }
         },
         "debian-13": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.20.0/podman-exporter_1.20.0-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.20.0/podman-exporter_1.20.0-1_arm64.deb"
           }
         }
       },
       "rpm_status": "success",
-      "deb_status": "na",
+      "deb_status": "success",
       "docker_status": "success"
     },
     {
@@ -3545,13 +4108,30 @@
           },
           "system_user": "prometheus"
         },
+        "deb": {
+          "enabled": true,
+          "targets": [
+            "ubuntu-22.04",
+            "ubuntu-24.04",
+            "debian-12",
+            "debian-13"
+          ],
+          "summary": "Prometheus exporter for process metrics",
+          "systemd": {
+            "enabled": true
+          },
+          "section": "net",
+          "priority": "optional",
+          "system_user": "prometheus"
+        },
         "docker": {
           "enabled": true,
           "entrypoint": [
             "/usr/bin/process_exporter"
           ],
           "validation": {
-            "port": 9256
+            "port": 9256,
+            "enabled": true
           }
         }
       },
@@ -3591,47 +4171,47 @@
       "deb_availability": {
         "ubuntu-22.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.8.7/process-exporter_0.8.7-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.8.7/process-exporter_0.8.7-1_arm64.deb"
           }
         },
         "ubuntu-24.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.8.7/process-exporter_0.8.7-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.8.7/process-exporter_0.8.7-1_arm64.deb"
           }
         },
         "debian-12": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.8.7/process-exporter_0.8.7-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.8.7/process-exporter_0.8.7-1_arm64.deb"
           }
         },
         "debian-13": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.8.7/process-exporter_0.8.7-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.8.7/process-exporter_0.8.7-1_arm64.deb"
           }
         }
       },
       "rpm_status": "success",
-      "deb_status": "na",
+      "deb_status": "success",
       "docker_status": "success"
     },
     {
@@ -3687,6 +4267,43 @@
             }
           ]
         },
+        "deb": {
+          "enabled": true,
+          "targets": [
+            "ubuntu-22.04",
+            "ubuntu-24.04",
+            "debian-12",
+            "debian-13"
+          ],
+          "summary": "The Prometheus monitoring system and time series database.",
+          "systemd": {
+            "enabled": true
+          },
+          "section": "net",
+          "priority": "optional",
+          "system_user": "prometheus",
+          "extra_files": [
+            {
+              "source": "assets/prometheus.yml",
+              "dest": "/etc/prometheus/prometheus.yml",
+              "config": true
+            }
+          ],
+          "directories": [
+            {
+              "path": "/etc/prometheus",
+              "mode": "0755",
+              "owner": "root",
+              "group": "root"
+            },
+            {
+              "path": "/var/lib/prometheus",
+              "mode": "0755",
+              "owner": "prometheus",
+              "group": "prometheus"
+            }
+          ]
+        },
         "docker": {
           "enabled": true,
           "entrypoint": [
@@ -3696,7 +4313,8 @@
             "--config.file=/etc/prometheus/prometheus.yml"
           ],
           "validation": {
-            "port": 9090
+            "port": 9090,
+            "enabled": true
           }
         }
       },
@@ -3736,47 +4354,47 @@
       "deb_availability": {
         "ubuntu-22.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v3.9.1/prometheus_3.9.1-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v3.9.1/prometheus_3.9.1-1_arm64.deb"
           }
         },
         "ubuntu-24.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v3.9.1/prometheus_3.9.1-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v3.9.1/prometheus_3.9.1-1_arm64.deb"
           }
         },
         "debian-12": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v3.9.1/prometheus_3.9.1-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v3.9.1/prometheus_3.9.1-1_arm64.deb"
           }
         },
         "debian-13": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v3.9.1/prometheus_3.9.1-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v3.9.1/prometheus_3.9.1-1_arm64.deb"
           }
         }
       },
       "rpm_status": "success",
-      "deb_status": "na",
+      "deb_status": "success",
       "docker_status": "success"
     },
     {
@@ -3807,7 +4425,30 @@
           "systemd": {
             "enabled": true
           },
-          "extra_files": [],
+          "directories": [
+            {
+              "path": "/var/lib/redis_exporter",
+              "owner": "redis_exporter",
+              "group": "redis_exporter",
+              "mode": "0755"
+            }
+          ]
+        },
+        "deb": {
+          "enabled": true,
+          "targets": [
+            "ubuntu-22.04",
+            "ubuntu-24.04",
+            "debian-12",
+            "debian-13"
+          ],
+          "summary": "Prometheus exporter for Redis metrics",
+          "systemd": {
+            "enabled": true
+          },
+          "section": "net",
+          "priority": "optional",
+          "system_user": "redis_exporter",
           "directories": [
             {
               "path": "/var/lib/redis_exporter",
@@ -3823,7 +4464,8 @@
             "/usr/bin/redis_exporter"
           ],
           "validation": {
-            "port": 9121
+            "port": 9121,
+            "enabled": true
           }
         }
       },
@@ -3863,47 +4505,47 @@
       "deb_availability": {
         "ubuntu-22.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.80.2/redis-exporter_1.80.2-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.80.2/redis-exporter_1.80.2-1_arm64.deb"
           }
         },
         "ubuntu-24.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.80.2/redis-exporter_1.80.2-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.80.2/redis-exporter_1.80.2-1_arm64.deb"
           }
         },
         "debian-12": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.80.2/redis-exporter_1.80.2-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.80.2/redis-exporter_1.80.2-1_arm64.deb"
           }
         },
         "debian-13": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.80.2/redis-exporter_1.80.2-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.80.2/redis-exporter_1.80.2-1_arm64.deb"
           }
         }
       },
       "rpm_status": "success",
-      "deb_status": "na",
+      "deb_status": "success",
       "docker_status": "success"
     },
     {
@@ -3937,6 +4579,22 @@
           },
           "system_user": "prometheus"
         },
+        "deb": {
+          "enabled": true,
+          "targets": [
+            "ubuntu-22.04",
+            "ubuntu-24.04",
+            "debian-12",
+            "debian-13"
+          ],
+          "summary": "Prometheus exporter for Slurm workload manager metrics",
+          "systemd": {
+            "enabled": true
+          },
+          "section": "net",
+          "priority": "optional",
+          "system_user": "prometheus"
+        },
         "docker": {
           "enabled": true,
           "base_image": "registry.access.redhat.com/ubi9/ubi-minimal",
@@ -3944,7 +4602,8 @@
             "/usr/bin/slurm_exporter"
           ],
           "validation": {
-            "port": 9341
+            "port": 9341,
+            "enabled": true
           }
         }
       },
@@ -3984,47 +4643,47 @@
       "deb_availability": {
         "ubuntu-22.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.2.0/slurm-exporter_1.2.0-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.2.0/slurm-exporter_1.2.0-1_arm64.deb"
           }
         },
         "ubuntu-24.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.2.0/slurm-exporter_1.2.0-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.2.0/slurm-exporter_1.2.0-1_arm64.deb"
           }
         },
         "debian-12": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.2.0/slurm-exporter_1.2.0-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.2.0/slurm-exporter_1.2.0-1_arm64.deb"
           }
         },
         "debian-13": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.2.0/slurm-exporter_1.2.0-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v1.2.0/slurm-exporter_1.2.0-1_arm64.deb"
           }
         }
       },
       "rpm_status": "success",
-      "deb_status": "na",
+      "deb_status": "success",
       "docker_status": "success"
     },
     {
@@ -4056,6 +4715,22 @@
           },
           "system_user": "root"
         },
+        "deb": {
+          "enabled": true,
+          "targets": [
+            "ubuntu-22.04",
+            "ubuntu-24.04",
+            "debian-12",
+            "debian-13"
+          ],
+          "summary": "Prometheus exporter for S.M.A.R.T. storage devices metrics",
+          "systemd": {
+            "enabled": true
+          },
+          "section": "net",
+          "priority": "optional",
+          "system_user": "root"
+        },
         "docker": {
           "enabled": true,
           "base_image": "registry.access.redhat.com/ubi9/ubi-minimal",
@@ -4063,7 +4738,8 @@
             "/usr/bin/smartctl_exporter"
           ],
           "validation": {
-            "port": 9633
+            "port": 9633,
+            "enabled": true
           }
         }
       },
@@ -4103,47 +4779,47 @@
       "deb_availability": {
         "ubuntu-22.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.14.0/smartctl-exporter_0.14.0-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.14.0/smartctl-exporter_0.14.0-1_arm64.deb"
           }
         },
         "ubuntu-24.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.14.0/smartctl-exporter_0.14.0-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.14.0/smartctl-exporter_0.14.0-1_arm64.deb"
           }
         },
         "debian-12": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.14.0/smartctl-exporter_0.14.0-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.14.0/smartctl-exporter_0.14.0-1_arm64.deb"
           }
         },
         "debian-13": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.14.0/smartctl-exporter_0.14.0-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.14.0/smartctl-exporter_0.14.0-1_arm64.deb"
           }
         }
       },
       "rpm_status": "success",
-      "deb_status": "na",
+      "deb_status": "success",
       "docker_status": "success"
     },
     {
@@ -4196,6 +4872,37 @@
             }
           ]
         },
+        "deb": {
+          "enabled": true,
+          "targets": [
+            "ubuntu-22.04",
+            "ubuntu-24.04",
+            "debian-12",
+            "debian-13"
+          ],
+          "summary": "Prometheus exporter for SNMP-enabled devices",
+          "systemd": {
+            "enabled": true
+          },
+          "section": "net",
+          "priority": "optional",
+          "system_user": "prometheus",
+          "extra_files": [
+            {
+              "source": "snmp.yml",
+              "dest": "/etc/snmp_exporter/snmp.yml",
+              "config": true
+            }
+          ],
+          "directories": [
+            {
+              "path": "/etc/snmp_exporter",
+              "mode": "0755",
+              "owner": "root",
+              "group": "root"
+            }
+          ]
+        },
         "docker": {
           "enabled": true,
           "base_image": "registry.access.redhat.com/ubi9/ubi-minimal",
@@ -4206,7 +4913,8 @@
             "--config.file=/etc/snmp_exporter/snmp.yml"
           ],
           "validation": {
-            "port": 9116
+            "port": 9116,
+            "enabled": true
           }
         }
       },
@@ -4246,47 +4954,47 @@
       "deb_availability": {
         "ubuntu-22.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.30.1/snmp-exporter_0.30.1-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.30.1/snmp-exporter_0.30.1-1_arm64.deb"
           }
         },
         "ubuntu-24.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.30.1/snmp-exporter_0.30.1-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.30.1/snmp-exporter_0.30.1-1_arm64.deb"
           }
         },
         "debian-12": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.30.1/snmp-exporter_0.30.1-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.30.1/snmp-exporter_0.30.1-1_arm64.deb"
           }
         },
         "debian-13": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.30.1/snmp-exporter_0.30.1-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.30.1/snmp-exporter_0.30.1-1_arm64.deb"
           }
         }
       },
       "rpm_status": "success",
-      "deb_status": "na",
+      "deb_status": "success",
       "docker_status": "success"
     },
     {
@@ -4317,7 +5025,30 @@
           "systemd": {
             "enabled": true
           },
-          "extra_files": [],
+          "directories": [
+            {
+              "path": "/var/lib/textfile_exporter",
+              "owner": "textfile_exporter",
+              "group": "textfile_exporter",
+              "mode": "0755"
+            }
+          ]
+        },
+        "deb": {
+          "enabled": true,
+          "targets": [
+            "ubuntu-22.04",
+            "ubuntu-24.04",
+            "debian-12",
+            "debian-13"
+          ],
+          "summary": "Prometheus exporter for local text files metrics",
+          "systemd": {
+            "enabled": true
+          },
+          "section": "net",
+          "priority": "optional",
+          "system_user": "textfile_exporter",
           "directories": [
             {
               "path": "/var/lib/textfile_exporter",
@@ -4336,7 +5067,8 @@
             "--textfile.directory=/var/lib/textfile_exporter"
           ],
           "validation": {
-            "port": 9014
+            "port": 9014,
+            "enabled": true
           }
         }
       },
@@ -4376,47 +5108,47 @@
       "deb_availability": {
         "ubuntu-22.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.1.4/textfile-exporter_0.1.4-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.1.4/textfile-exporter_0.1.4-1_arm64.deb"
           }
         },
         "ubuntu-24.04": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.1.4/textfile-exporter_0.1.4-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.1.4/textfile-exporter_0.1.4-1_arm64.deb"
           }
         },
         "debian-12": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.1.4/textfile-exporter_0.1.4-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.1.4/textfile-exporter_0.1.4-1_arm64.deb"
           }
         },
         "debian-13": {
           "amd64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.1.4/textfile-exporter_0.1.4-1_amd64.deb"
           },
           "arm64": {
-            "status": "na",
-            "path": null
+            "status": "success",
+            "path": "https://github.com/SckyzO/monitoring-hub/releases/download/v0.1.4/textfile-exporter_0.1.4-1_arm64.deb"
           }
         }
       },
       "rpm_status": "success",
-      "deb_status": "na",
+      "deb_status": "success",
       "docker_status": "success"
     }
   ]
