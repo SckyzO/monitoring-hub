@@ -1,27 +1,43 @@
 name: ha_cluster_exporter
-description: "Prometheus exporter for High Availability clusters (Pacemaker, Corosync)"
+description: Prometheus exporter for High Availability clusters (Pacemaker, Corosync)
 category: Infrastructure
-version: "1.4.0"
+version: 1.4.0
 updated: true
 upstream:
   type: github
   repo: ClusterLabs/ha_cluster_exporter
   strategy: latest_release
-  archive_name: "{name}-{arch}.gz"
+  archive_name: '{name}-{arch}.gz'
 build:
   method: binary_repack
   binary_name: ha_cluster_exporter
 artifacts:
   rpm:
     enabled: true
-    targets: [el8, el9, el10]
+    targets:
+    - el8
+    - el9
+    - el10
     summary: Prometheus HA Cluster Exporter
     systemd:
       enabled: true
     system_user: prometheus
+  deb:
+    enabled: true
+    targets:
+    - ubuntu-22.04
+    - ubuntu-24.04
+    - debian-12
+    - debian-13
+    summary: Prometheus exporter for High Availability clusters (Pacemaker, Corosync)
+    systemd:
+      enabled: true
+    section: net
+    priority: optional
   docker:
     enabled: true
     base_image: registry.access.redhat.com/ubi9/ubi-minimal
-    entrypoint: [/usr/bin/ha_cluster_exporter]
+    entrypoint:
+    - /usr/bin/ha_cluster_exporter
     validation:
-      command: "--version"
+      command: --version

@@ -16,13 +16,25 @@ build:
 artifacts:
   rpm:
     enabled: true
-    summary: "Prometheus exporter for various metrics about Elasticsearch"
+    summary: Prometheus exporter for various metrics about Elasticsearch
     targets:
     - el8
     - el9
     - el10
     systemd:
       enabled: true
+  deb:
+    enabled: true
+    targets:
+    - ubuntu-22.04
+    - ubuntu-24.04
+    - debian-12
+    - debian-13
+    summary: Prometheus exporter for various metrics about Elasticsearch.
+    systemd:
+      enabled: true
+    section: net
+    priority: optional
   docker:
     enabled: true
     entrypoint:

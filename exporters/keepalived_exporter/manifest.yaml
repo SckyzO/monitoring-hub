@@ -8,7 +8,7 @@ upstream:
   type: github
   repo: mehdy/keepalived-exporter
   strategy: latest_release
-  archive_name: 'keepalived-exporter_{clean_version}_linux_{arch}.tar.gz'
+  archive_name: keepalived-exporter_{clean_version}_linux_{arch}.tar.gz
 build:
   method: binary_repack
   binary_name: keepalived-exporter
@@ -30,10 +30,22 @@ artifacts:
     dependencies: []
     extra_files: []
     directories: []
+  deb:
+    enabled: true
+    targets:
+    - ubuntu-22.04
+    - ubuntu-24.04
+    - debian-12
+    - debian-13
+    summary: Prometheus exporter for Keepalived metrics.
+    systemd:
+      enabled: true
+    section: net
+    priority: optional
   docker:
     enabled: true
     entrypoint:
     - /usr/bin/keepalived-exporter
     validation:
       enabled: true
-      command: "--version"
+      command: --version

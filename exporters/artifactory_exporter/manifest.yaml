@@ -25,6 +25,18 @@ artifacts:
     system_user: artifactory_exporter
     systemd:
       enabled: true
+  deb:
+    enabled: true
+    targets:
+    - ubuntu-22.04
+    - ubuntu-24.04
+    - debian-12
+    - debian-13
+    summary: Prometheus exporter for JFrog Artifactory stats.
+    systemd:
+      enabled: true
+    section: net
+    priority: optional
   docker:
     enabled: true
     entrypoint:

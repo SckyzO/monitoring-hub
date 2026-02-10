@@ -36,6 +36,18 @@ artifacts:
       mode: '0755'
       owner: alertmanager
       group: alertmanager
+  deb:
+    enabled: true
+    targets:
+    - ubuntu-22.04
+    - ubuntu-24.04
+    - debian-12
+    - debian-13
+    summary: Handle alerts and notifications for the Prometheus ecosystem
+    systemd:
+      enabled: true
+    section: net
+    priority: optional
   docker:
     enabled: true
     entrypoint:

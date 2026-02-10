@@ -1,17 +1,15 @@
 name: process_exporter
-description: "Prometheus exporter for process metrics"
+description: Prometheus exporter for process metrics
 category: System
 version: v0.8.7
 updated: true
 upstream:
   type: github
   repo: ncabatoff/process-exporter
-  archive_name: "process-exporter-{clean_version}.linux-{arch}.tar.gz"
-
+  archive_name: process-exporter-{clean_version}.linux-{arch}.tar.gz
 build:
   method: binary_repack
   binary_name: process-exporter
-
 artifacts:
   rpm:
     enabled: true
@@ -23,8 +21,21 @@ artifacts:
     systemd:
       enabled: true
     system_user: prometheus
+  deb:
+    enabled: true
+    targets:
+    - ubuntu-22.04
+    - ubuntu-24.04
+    - debian-12
+    - debian-13
+    summary: Prometheus exporter for process metrics
+    systemd:
+      enabled: true
+    section: net
+    priority: optional
   docker:
     enabled: true
-    entrypoint: ["/usr/bin/process_exporter"]
+    entrypoint:
+    - /usr/bin/process_exporter
     validation:
       port: 9256
