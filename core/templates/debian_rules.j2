@@ -19,7 +19,7 @@ override_dh_auto_install:
 {% if artifacts.deb.get('extra_files') %}
 	# Install extra files
 {% for file_item in artifacts.deb.extra_files %}
-	install -D -m {{ file_item.mode or '0644' }} {{ file_item.source }} debian/{{ name | replace('_', '-') }}{{ file_item.dest }}
+	install -D -m {{ file_item.mode or '0644' }} {{ file_item.build_source }} debian/{{ name | replace('_', '-') }}{{ file_item.dest }}
 {% endfor %}
 {% endif %}
 
