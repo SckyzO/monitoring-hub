@@ -404,19 +404,31 @@
                                 </div>
                                 <h3 class="text-2xl font-black mb-3 tracking-tight uppercase italic group-hover:translate-x-1 transition-transform" :class="theme === 'light' ? 'text-zinc-900' : 'text-white'" x-text="item.name"></h3>
                                 <p class="text-sm line-clamp-2 mb-12 font-medium leading-relaxed flex-1 text-left opacity-70" x-text="item.description"></p>
-                                <div class="mt-auto border-t pt-8 flex justify-between items-center text-left" :class="theme === 'light' ? 'border-zinc-100' : 'border-white/5'">
-                                    <div class="flex gap-2 text-left">
+                                <div class="mt-auto border-t pt-6 flex justify-between items-start text-left" :class="theme === 'light' ? 'border-zinc-100' : 'border-white/5'">
+                                    <div class="flex flex-wrap gap-1.5 text-left flex-1 pr-3">
                                         <template x-if="item.rpm_status !== 'na'">
-                                            <div class="px-2.5 py-1.5 rounded-lg border transition-all flex items-center gap-2" :class="item.rpm_status === 'success' ? 'border-emerald-500/20 bg-emerald-500/5 text-emerald-500/80' : 'border-rose-500/20 bg-rose-500/5 text-rose-500'"><i data-lucide="box" class="w-3 h-3"></i><span class="text-[9px] font-black uppercase tracking-widest" x-text="`RPM ${item.rpm_status}`"></span></div>
+                                            <div class="px-2 py-1 rounded-md border transition-all flex items-center gap-1.5" :class="item.rpm_status === 'success' ? 'border-emerald-500/20 bg-emerald-500/5 text-emerald-500/80' : 'border-rose-500/20 bg-rose-500/5 text-rose-500'">
+                                                <i data-lucide="box" class="w-3 h-3"></i>
+                                                <span class="text-[8px] font-black uppercase tracking-wider" x-text="`RPM`"></span>
+                                                <span class="text-[7px] font-bold opacity-60" x-text="item.rpm_status"></span>
+                                            </div>
                                         </template>
                                         <template x-if="item.deb_status !== 'na'">
-                                            <div class="px-2.5 py-1.5 rounded-lg border transition-all flex items-center gap-2" :class="item.deb_status === 'success' ? 'border-purple-500/20 bg-purple-500/5 text-purple-500/80' : 'border-rose-500/20 bg-rose-500/5 text-rose-500'"><i data-lucide="package" class="w-3 h-3"></i><span class="text-[9px] font-black uppercase tracking-widest" x-text="`DEB ${item.deb_status}`"></span></div>
+                                            <div class="px-2 py-1 rounded-md border transition-all flex items-center gap-1.5" :class="item.deb_status === 'success' ? 'border-emerald-500/20 bg-emerald-500/5 text-emerald-500/80' : 'border-rose-500/20 bg-rose-500/5 text-rose-500'">
+                                                <i data-lucide="package" class="w-3 h-3"></i>
+                                                <span class="text-[8px] font-black uppercase tracking-wider" x-text="`DEB`"></span>
+                                                <span class="text-[7px] font-bold opacity-60" x-text="item.deb_status"></span>
+                                            </div>
                                         </template>
                                         <template x-if="item.docker_status !== 'na'">
-                                            <div class="px-2.5 py-1.5 rounded-lg border transition-all flex items-center gap-2" :class="item.docker_status === 'success' ? 'border-emerald-500/20 bg-emerald-500/5 text-emerald-500/80' : 'border-rose-500/20 bg-rose-500/5 text-rose-500'"><i data-lucide="container" class="w-3 h-3"></i><span class="text-[9px] font-black uppercase tracking-widest" x-text="`OCI ${item.docker_status}`"></span></div>
+                                            <div class="px-2 py-1 rounded-md border transition-all flex items-center gap-1.5" :class="item.docker_status === 'success' ? 'border-emerald-500/20 bg-emerald-500/5 text-emerald-500/80' : 'border-rose-500/20 bg-rose-500/5 text-rose-500'">
+                                                <i data-lucide="container" class="w-3 h-3"></i>
+                                                <span class="text-[8px] font-black uppercase tracking-wider" x-text="`OCI`"></span>
+                                                <span class="text-[7px] font-bold opacity-60" x-text="item.docker_status"></span>
+                                            </div>
                                         </template>
                                     </div>
-                                    <i data-lucide="arrow-right" class="w-5 h-5 text-zinc-400 group-hover:text-primary-500 group-hover:translate-x-1 transition-all"></i>
+                                    <i data-lucide="arrow-right" class="w-5 h-5 text-zinc-400 group-hover:text-primary-500 group-hover:translate-x-1 transition-all flex-shrink-0"></i>
                                 </div>
                             </div>
                         </template>
@@ -437,15 +449,27 @@
                                     </div>
                                     <p class="text-xs opacity-50 truncate" x-text="item.description"></p>
                                 </div>
-                                <div class="hidden sm:flex gap-2">
+                                <div class="hidden sm:flex flex-wrap gap-1.5">
                                     <template x-if="item.rpm_status !== 'na'">
-                                        <div class="px-2.5 py-1.5 rounded-lg border transition-all flex items-center gap-2" :class="item.rpm_status === 'success' ? 'border-emerald-500/20 bg-emerald-500/5 text-emerald-500/80' : 'border-rose-500/20 bg-rose-500/5 text-rose-500'"><i data-lucide="box" class="w-3.5 h-3.5"></i><span class="text-[9px] font-black uppercase tracking-widest" x-text="`RPM ${item.rpm_status}`"></span></div>
+                                        <div class="px-2 py-1 rounded-md border transition-all flex items-center gap-1.5" :class="item.rpm_status === 'success' ? 'border-emerald-500/20 bg-emerald-500/5 text-emerald-500/80' : 'border-rose-500/20 bg-rose-500/5 text-rose-500'">
+                                            <i data-lucide="box" class="w-3 h-3"></i>
+                                            <span class="text-[8px] font-black uppercase tracking-wider" x-text="`RPM`"></span>
+                                            <span class="text-[7px] font-bold opacity-60" x-text="item.rpm_status"></span>
+                                        </div>
                                     </template>
                                     <template x-if="item.deb_status !== 'na'">
-                                        <div class="px-2.5 py-1.5 rounded-lg border transition-all flex items-center gap-2" :class="item.deb_status === 'success' ? 'border-purple-500/20 bg-purple-500/5 text-purple-500/80' : 'border-rose-500/20 bg-rose-500/5 text-rose-500'"><i data-lucide="package" class="w-3.5 h-3.5"></i><span class="text-[9px] font-black uppercase tracking-widest" x-text="`DEB ${item.deb_status}`"></span></div>
+                                        <div class="px-2 py-1 rounded-md border transition-all flex items-center gap-1.5" :class="item.deb_status === 'success' ? 'border-emerald-500/20 bg-emerald-500/5 text-emerald-500/80' : 'border-rose-500/20 bg-rose-500/5 text-rose-500'">
+                                            <i data-lucide="package" class="w-3 h-3"></i>
+                                            <span class="text-[8px] font-black uppercase tracking-wider" x-text="`DEB`"></span>
+                                            <span class="text-[7px] font-bold opacity-60" x-text="item.deb_status"></span>
+                                        </div>
                                     </template>
                                     <template x-if="item.docker_status !== 'na'">
-                                        <div class="px-2.5 py-1.5 rounded-lg border transition-all flex items-center gap-2" :class="item.docker_status === 'success' ? 'border-emerald-500/20 bg-emerald-500/5 text-emerald-500/80' : 'border-rose-500/20 bg-rose-500/5 text-rose-500'"><i data-lucide="container" class="w-3.5 h-3.5"></i><span class="text-[9px] font-black uppercase tracking-widest" x-text="`OCI ${item.docker_status}`"></span></div>
+                                        <div class="px-2 py-1 rounded-md border transition-all flex items-center gap-1.5" :class="item.docker_status === 'success' ? 'border-emerald-500/20 bg-emerald-500/5 text-emerald-500/80' : 'border-rose-500/20 bg-rose-500/5 text-rose-500'">
+                                            <i data-lucide="container" class="w-3 h-3"></i>
+                                            <span class="text-[8px] font-black uppercase tracking-wider" x-text="`OCI`"></span>
+                                            <span class="text-[7px] font-bold opacity-60" x-text="item.docker_status"></span>
+                                        </div>
                                     </template>
                                 </div>
                                 <i data-lucide="chevron-right" class="w-5 h-5 text-zinc-400 group-hover:text-primary-500 group-hover:translate-x-1 transition-all"></i>
@@ -625,8 +649,7 @@
                                             <button @click="debTab = dist.code"
                                                     :class="debTab === dist.code ? 'text-primary-500 bg-primary-500/10' : 'text-zinc-500 hover:text-zinc-300'"
                                                     class="px-3 py-2 rounded-xl text-[10px] font-black uppercase transition-all border-none"
-                                                    @mouseenter="showTip($event, dist.name)" @mouseleave="hideTip()"
-                                                    x-text="dist.code"></button>
+                                                    x-text="dist.name"></button>
                                         </template>
                                     </div>
                                     <button @click="copyToClipboard(`echo 'deb [signed-by=/usr/share/keyrings/monitoring-hub.gpg] https://sckyzo.github.io/monitoring-hub/apt ${debTab} main' | sudo tee /etc/apt/sources.list.d/monitoring-hub.list`); copiedRepo = true; setTimeout(() => copiedRepo = false, 2000)"
