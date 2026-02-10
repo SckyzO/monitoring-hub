@@ -38,7 +38,7 @@
 <tr>
 <td align="center" style="vertical-align: top;">
 <a href="https://sckyzo.github.io/monitoring-hub/">
-<img src=".github/icons/globe-blue.svg" width="64" height="64">
+<img src=".github/icons/rocket-amber.svg" width="64" height="64">
 <br><br>
 <b>Portal</b>
 <br><br>
