@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 Discussions
+    url: https://github.com/SckyzO/monitoring-hub/discussions
+    about: Ask questions and discuss ideas with the community
+  - name: 📖 Documentation
+    url: https://sckyzo.github.io/monitoring-hub/docs/
+    about: Read the documentation for guides and references
+  - name: 🌐 Web Portal
+    url: https://sckyzo.github.io/monitoring-hub/
+    about: Browse available exporters and packages

@@ -1,0 +1,146 @@
+name: 🐛 Bug Report
+description: Report a bug or unexpected behavior
+title: "[Bug]: "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report this bug! Please fill out the information below to help us investigate.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: A clear and concise description of what the bug is.
+      placeholder: Describe the issue you're experiencing...
+    validations:
+      required: true
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      description: Which component is affected?
+      options:
+        - Core Engine (builder, state_manager, etc.)
+        - Specific Exporter
+        - RPM Packages
+        - DEB Packages
+        - Docker Images
+        - Web Portal
+        - Documentation
+        - CI/CD Workflows
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: exporter
+    attributes:
+      label: Exporter Name (if applicable)
+      description: Which exporter is affected?
+      placeholder: "e.g., node_exporter, prometheus, alertmanager"
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      description: How can we reproduce this issue?
+      placeholder: |
+        1. Run command '...'
+        2. Observe output '...'
+        3. See error
+      value: |
+        1.
+        2.
+        3.
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What did you expect to happen?
+      placeholder: Describe what should happen...
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      description: What actually happened?
+      placeholder: Describe what actually happened...
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / Error Messages
+      description: Please paste any relevant logs or error messages.
+      render: shell
+      placeholder: |
+        Paste error messages, logs, or command output here...
+
+  - type: dropdown
+    id: distribution
+    attributes:
+      label: Distribution (if applicable)
+      description: Which distribution are you using?
+      options:
+        - AlmaLinux 8 (el8)
+        - AlmaLinux 9 (el9)
+        - AlmaLinux 10 (el10)
+        - Ubuntu 22.04
+        - Ubuntu 24.04
+        - Debian 12
+        - Debian 13
+        - Docker
+        - Other
+
+  - type: dropdown
+    id: architecture
+    attributes:
+      label: Architecture
+      description: Which architecture are you using?
+      options:
+        - x86_64 (amd64)
+        - aarch64 (arm64)
+        - Other
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment Details
+      description: Provide relevant environment information
+      placeholder: |
+        - OS: [e.g., AlmaLinux 9]
+        - Docker version: [e.g., 24.0.5]
+        - Python version (if building locally): [e.g., 3.11.2]
+      value: |
+        - OS:
+        - Docker version:
+        - Python version:
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Any other context about the problem
+      placeholder: Add any other information that might help...
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      description: Please confirm the following
+      options:
+        - label: I have searched existing issues to ensure this isn't a duplicate
+          required: true
+        - label: I have provided all requested information
+          required: true
+        - label: I am using the latest version
+          required: false
