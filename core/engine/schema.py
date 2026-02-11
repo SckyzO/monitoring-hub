@@ -81,9 +81,9 @@ class UpstreamSchema(Schema):
     type = fields.Str(required=True, validate=validate.OneOf(["github", "local"]))
     repo = fields.Str(allow_none=True)
     strategy = fields.Str(load_default="latest_release")
-    archive_name = fields.Str(
+    archive_name = fields.Raw(
         allow_none=True
-    )  # Pattern like "{name}_{version}_linux_{arch}.tar.gz"
+    )  # String pattern OR dict mapping arch to filename pattern
 
     # Local source support
     local_binary = fields.Str(allow_none=True)  # Path to raw binary
@@ -95,6 +95,25 @@ class UpstreamSchema(Schema):
         if data.get("type") == "github":
             if not data.get("repo"):
                 raise ValidationError("'repo' is required for upstream type 'github'")
+
+            # Validate archive_name format if provided
+            archive_name = data.get("archive_name")
+            if archive_name is not None:
+                if isinstance(archive_name, dict):
+                    # Dict format: must have keys for all architectures
+                    if not archive_name:
+                        raise ValidationError("archive_name dict cannot be empty")
+                    # Validate that all values are strings
+                    for arch, pattern in archive_name.items():
+                        if not isinstance(pattern, str):
+                            raise ValidationError(
+                                f"archive_name[{arch}] must be a string, got {type(pattern)}"
+                            )
+                elif not isinstance(archive_name, str):
+                    raise ValidationError(
+                        "archive_name must be either a string pattern or a dict mapping architectures to patterns"
+                    )
+
         elif data.get("type") == "local":
             if not data.get("local_binary") and not data.get("local_archive"):
                 raise ValidationError(
