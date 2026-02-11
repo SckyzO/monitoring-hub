@@ -1,0 +1,122 @@
+name: ✨ Feature Request
+description: Suggest a new feature or enhancement
+title: "[Feature]: "
+labels: ["enhancement", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a new feature! Please provide details about your idea below.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem Statement
+      description: Is your feature request related to a problem? Please describe.
+      placeholder: "I'm frustrated when..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: Describe the solution you'd like to see.
+      placeholder: "I would like to have..."
+    validations:
+      required: true
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Feature Category
+      description: What type of feature is this?
+      options:
+        - New Exporter
+        - Core Engine Enhancement
+        - Package Format (RPM/DEB)
+        - Docker/Container
+        - Web Portal
+        - Documentation
+        - CI/CD Workflow
+        - Testing/Quality
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: exporter
+    attributes:
+      label: Exporter Name (if applicable)
+      description: For new exporter requests, provide the name
+      placeholder: "e.g., mysql_exporter, nginx_exporter"
+
+  - type: input
+    id: upstream
+    attributes:
+      label: Upstream Repository (if applicable)
+      description: For new exporters, provide the GitHub repository
+      placeholder: "e.g., https://github.com/prometheus/node_exporter"
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: Have you considered any alternative solutions or features?
+      placeholder: Describe any alternatives you've thought about...
+
+  - type: textarea
+    id: benefits
+    attributes:
+      label: Benefits
+      description: Who would benefit from this feature and how?
+      placeholder: |
+        - Users can...
+        - Operators will be able to...
+        - This improves...
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: How important is this feature to you?
+      options:
+        - Low - Nice to have
+        - Medium - Would be useful
+        - High - Needed for my use case
+        - Critical - Blocking my usage
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Add any other context, screenshots, or examples about the feature request.
+      placeholder: Any additional information that might help...
+
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: Contribution
+      description: Are you willing to help implement this feature?
+      options:
+        - label: I would like to implement this feature
+          required: false
+        - label: I can help with testing
+          required: false
+        - label: I can provide documentation
+          required: false
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      description: Please confirm the following
+      options:
+        - label: I have searched existing issues to ensure this isn't a duplicate
+          required: true
+        - label: I have provided all requested information
+          required: true
