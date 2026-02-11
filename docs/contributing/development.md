@@ -65,11 +65,13 @@ All development tasks are available through `./devctl`:
 ./devctl test              # Run tests
 ./devctl test-cov          # Run tests with coverage
 ./devctl lint              # Check Python linting
-./devctl lint-css          # Check CSS linting
 ./devctl lint-fix          # Auto-fix linting issues
+./devctl lint-css          # Check CSS linting
+./devctl lint-yaml         # Check YAML linting
 ./devctl format            # Format code
+./devctl format-check      # Check formatting without changes
 ./devctl type-check        # Run type checker
-./devctl ci                # Run all CI checks
+./devctl ci                # Run all CI checks (lint + format + type + tests)
 
 # Working with exporters
 ./devctl create-exporter           # Create new exporter
