@@ -27,7 +27,7 @@ ARCH_MAP = {"amd64": "x86_64", "arm64": "aarch64"}
 DEFAULT_BASE_IMAGE = "registry.access.redhat.com/ubi9/ubi-minimal"
 
 # Site & Catalog
-DEFAULT_CATALOG_URL = "https://sckyzo.github.io/monitoring-hub/catalog.json"
+DEFAULT_CATALOG_URL = "https://sckyzo.github.io/monitoring-hub/catalog/index.json"
 REPO_ROOT_URL = "https://sckyzo.github.io/monitoring-hub"
 
 # Paths (relative to project root)
