@@ -67,8 +67,43 @@ upstream:
   type: github
   repo: owner/my_exporter
   strategy: latest_release
-  # Optional: custom archive naming pattern
-  archive_name: "{name}-{clean_version}-linux-{arch}.tar.gz"
+```
+
+#### Custom Archive Naming
+
+If the upstream release artifacts don't follow standard naming conventions, you can define custom patterns:
+
+**Option 1: String Pattern (Most Common)**
+```yaml
+upstream:
+  archive_name: "{name}-{clean_version}-linux-{upstream_linux_arch}.tar.gz"
+```
+
+Available variables:
+- `{name}`, `{version}`, `{clean_version}`: Project identifiers
+- `{arch}`: Standard (amd64, arm64)
+- `{rpm_arch}`: RPM convention (x86_64, aarch64)
+- `{deb_arch}`: DEB convention (amd64, arm64)
+- `{upstream_linux_arch}`: Mixed convention (x86_64, arm64)
+
+**Option 2: Dict Format (Per-Architecture Patterns)**
+```yaml
+upstream:
+  archive_name:
+    amd64: "my_exporter-v{clean_version}-x86_64-special.tar.gz"
+    arm64: "my_exporter-v{clean_version}-arm64-custom.tar.gz"
+```
+
+Use the dict format when upstream uses completely different naming per architecture.
+
+**Real-World Example: NATS Exporter**
+```yaml
+# NATS uses mixed convention: x86_64 for amd64, arm64 for arm64
+upstream:
+  archive_name: "prometheus-nats-exporter-v{clean_version}-linux-{upstream_linux_arch}.tar.gz"
+  # Resolves to:
+  # - amd64: prometheus-nats-exporter-v0.19.1-linux-x86_64.tar.gz
+  # - arm64: prometheus-nats-exporter-v0.19.1-linux-arm64.tar.gz
 ```
 
 ### Build Configuration

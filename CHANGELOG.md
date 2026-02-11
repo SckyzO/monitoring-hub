@@ -33,6 +33,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 *   **Enhanced Cards:** Build dates displayed below "Updated" badges with short date format.
 *   **Build Status:** Real-time availability tracking with "success", "pending", and "failed" states.
 
+### ✨ Enhanced Features
+
+*   **Flexible Archive Naming:** Added dict format support for `archive_name` field to handle per-architecture patterns.
+    *   **String Pattern:** Original template variable format (e.g., `{name}-{clean_version}-{arch}.tar.gz`).
+    *   **Dict Format:** New per-architecture mapping for inconsistent upstream naming.
+    *   **New Variables:** Added `{upstream_linux_arch}` variable for mixed conventions (x86_64, arm64).
+    *   **Schema Validation:** Marshmallow validation ensures correct format usage.
+    *   **Use Case:** Handles upstreams with completely different naming per architecture (e.g., NATS Exporter).
+
 ### 🐛 Bug Fixes
 
 *   **DEB Template Issues:** Fixed `debian/rules` template to use correct `build_source` field for extra files.
