@@ -70,6 +70,8 @@ def download_and_extract(data, output_dir, arch):
             clean_version=clean_version,
             arch=arch,
             rpm_arch="x86_64" if arch == "amd64" else "aarch64",
+            deb_arch=arch,  # DEB uses standard names (amd64, arm64)
+            upstream_linux_arch="x86_64" if arch == "amd64" else "arm64",  # Mixed convention (x86_64, arm64)
         )
     else:
         # Default standard Prometheus naming convention
