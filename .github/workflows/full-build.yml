@@ -507,6 +507,15 @@ jobs:
           arch="${{ matrix.arch }}"
           dist="${{ matrix.dist }}"
 
+          # Map distribution name to Docker image
+          case $dist in
+            ubuntu-22.04) image="ubuntu:22.04" ;;
+            ubuntu-24.04) image="ubuntu:24.04" ;;
+            debian-12) image="debian:12" ;;
+            debian-13) image="debian:trixie" ;;
+            *) echo "Error: Unknown distribution: $dist"; exit 1 ;;
+          esac
+
           echo "::group::🔧 Generating build files"
           build_dir="build/$exporter-$arch-$dist"
           python3 -m core.engine.builder \
@@ -516,9 +525,9 @@ jobs:
           echo "::endgroup::"
 
           if [ -d "$build_dir/debian" ]; then
-            echo "::group::🐳 Building DEB package"
+            echo "::group::🐳 Building DEB package ($image)"
             chmod +x core/scripts/build_deb.sh
-            ./core/scripts/build_deb.sh "$build_dir" "$build_dir/debs" "$arch" "$dist"
+            ./core/scripts/build_deb.sh "$build_dir" "$build_dir/debs" "$arch" "$image"
             echo "::endgroup::"
           fi
 
