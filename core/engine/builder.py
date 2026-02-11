@@ -63,8 +63,24 @@ def download_and_extract(data, output_dir, arch):
 
     # Construct the download URL
     if archive_pattern:
-        # User provided a specific pattern (e.g. for slurm_exporter using dashes)
-        filename = archive_pattern.format(
+        # Support two formats:
+        # 1. String pattern: "project-{version}-{arch}.tar.gz"
+        # 2. Dict per arch: { amd64: "project-x86.tar.gz", arm64: "project-arm.tar.gz" }
+        if isinstance(archive_pattern, dict):
+            # Dict format: lookup the pattern for this specific architecture
+            if arch not in archive_pattern:
+                click.echo(
+                    f"Error: No archive_name defined for architecture '{arch}' in manifest",
+                    err=True,
+                )
+                raise click.Abort()
+            pattern = archive_pattern[arch]
+        else:
+            # String format: use the pattern with variable substitution
+            pattern = archive_pattern
+
+        # Apply variable substitution
+        filename = pattern.format(
             name=name,
             version=version,
             clean_version=clean_version,
