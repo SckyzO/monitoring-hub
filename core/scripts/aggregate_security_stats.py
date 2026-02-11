@@ -12,7 +12,7 @@ import sys
 from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, cast
 
 
 def parse_sarif_file(sarif_path: Path) -> Dict[str, Any]:
@@ -95,12 +95,12 @@ def aggregate_stats(sarif_dir: Path) -> Dict[str, Any]:
             by_severity[severity] += 1
 
     # Sort exporters by vulnerability count
+    exporter_counts = [
+        {"name": name, "count": len(vulns)} for name, vulns in by_exporter.items()
+    ]
     top_exporters = sorted(
-        [
-            {"name": name, "count": len(vulns)}
-            for name, vulns in by_exporter.items()
-        ],
-        key=lambda x: x["count"],
+        exporter_counts,
+        key=lambda x: cast(int, x["count"]),
         reverse=True,
     )[:10]
 
