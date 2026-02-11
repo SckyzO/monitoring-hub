@@ -156,6 +156,11 @@ def generate(output, repo_dir, release_urls_dir, skip_catalog):
                 rpm_targets = (
                     data.get("artifacts", {}).get("rpm", {}).get("targets", [])
                 )
+                # Get supported architectures from manifest
+                supported_archs = data.get("build", {}).get("archs", ["amd64", "arm64"])
+                # Map to RPM arch names
+                arch_map = {"amd64": "x86_64", "arm64": "aarch64"}
+                rpm_archs = [arch_map[a] for a in supported_archs if a in arch_map]
 
                 for dist in SUPPORTED_DISTROS:
                     data["availability"][dist] = {}
@@ -163,6 +168,14 @@ def generate(output, repo_dir, release_urls_dir, skip_catalog):
                         version = data["version"]
                         rpm_name = data["name"]
                         filename = f"{rpm_name}-{version}-1.{dist}.{arch}.rpm"
+
+                        # Check if architecture is supported
+                        if arch not in rpm_archs:
+                            data["availability"][dist][arch] = {
+                                "status": "na",
+                                "path": None,
+                            }
+                            continue
 
                         # Check if package was actually uploaded (using release_urls artifacts)
                         real_url = release_url_map.get((rpm_name, filename))
@@ -194,6 +207,8 @@ def generate(output, repo_dir, release_urls_dir, skip_catalog):
                     data.get("artifacts", {}).get("deb", {}).get("targets", [])
                 )
                 data["deb_availability"] = {}
+                # DEB uses same arch names as manifest (amd64, arm64)
+                deb_archs = supported_archs  # Already computed above
 
                 for dist in SUPPORTED_DEB_DISTROS:
                     data["deb_availability"][dist] = {}
@@ -202,6 +217,14 @@ def generate(output, repo_dir, release_urls_dir, skip_catalog):
                         deb_name = data["name"].replace("_", "-")
                         version = data["version"]
                         filename = f"{deb_name}_{version}-1_{arch}.deb"
+
+                        # Check if architecture is supported
+                        if arch not in deb_archs:
+                            data["deb_availability"][dist][arch] = {
+                                "status": "na",
+                                "path": None,
+                            }
+                            continue
 
                         # Check if package was actually uploaded (using release_urls artifacts)
                         real_url = release_url_map.get((data["name"], filename))
