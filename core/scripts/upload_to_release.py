@@ -120,6 +120,18 @@ def get_or_create_release(repo: str, tag: str, token: str, exporter_name: str) -
     return response.json()
 
 
+def get_release_by_id(repo: str, release_id: int, token: str) -> Dict:
+    """Fetch fresh release data by ID to get updated assets list."""
+    headers = {
+        "Authorization": f"token {token}",
+        "Accept": "application/vnd.github.v3+json",
+    }
+    url = f"https://api.github.com/repos/{repo}/releases/{release_id}"
+    response = requests.get(url, headers=headers, timeout=30)
+    response.raise_for_status()
+    return response.json()
+
+
 def upload_asset(release: Dict, file_path: Path, token: str, repo: str) -> Dict:
     """Upload asset to release and return download URL."""
     # Random delay (2-5s) to avoid hammering GitHub API and spread load
@@ -135,23 +147,52 @@ def upload_asset(release: Dict, file_path: Path, token: str, repo: str) -> Dict:
         raise ValueError(f"Release missing upload_url: {release.get('id', 'unknown')}")
 
     upload_url = release["upload_url"].replace("{?name,label}", "")
-    print(f"Using upload URL: {upload_url}")
     file_name = file_path.name
 
-    # Check if asset already exists
-    for asset in release.get("assets", []):
+    # Refresh release data to get current assets list
+    # This is critical for handling parallel uploads correctly
+    print(f"Refreshing release data to check for existing assets...")
+    fresh_release = get_release_by_id(repo, release["id"], token)
+    print(f"Using upload URL: {upload_url}")
+
+    # Check if asset already exists (using fresh data)
+    existing_asset = None
+    for asset in fresh_release.get("assets", []):
         if asset["name"] == file_name:
-            print(f"Asset {file_name} already exists, deleting...")
-            delete_url = (
-                f"https://api.github.com/repos/{repo}/releases/assets/{asset['id']}"
+            existing_asset = asset
+            break
+
+    if existing_asset:
+        file_size = file_path.stat().st_size
+        existing_size = existing_asset["size"]
+
+        # Compare sizes to detect if file is identical
+        if file_size == existing_size:
+            print(
+                f"✓ Asset {file_name} already exists with matching size ({file_size} bytes), skipping upload"
             )
-            requests.delete(
+            return existing_asset
+        else:
+            print(
+                f"⚠ Asset {file_name} exists but size differs "
+                f"(local: {file_size}, remote: {existing_size}), replacing..."
+            )
+            delete_url = f"https://api.github.com/repos/{repo}/releases/assets/{existing_asset['id']}"
+            delete_response = requests.delete(
                 delete_url,
                 headers={"Authorization": f"token {token}"},
                 timeout=30,
             )
+            if delete_response.status_code == 204:
+                print(f"✓ Deleted existing asset {file_name}")
+            else:
+                print(
+                    f"⚠ Delete returned {delete_response.status_code}, continuing anyway..."
+                )
 
     # Upload asset with retry and longer timeout
+    print(f"📤 Uploading {file_name}...")
+
     def do_upload():
         with open(file_path, "rb") as f:
             params = {"name": file_name}
@@ -163,7 +204,7 @@ def upload_asset(release: Dict, file_path: Path, token: str, repo: str) -> Dict:
             return response.json()
 
     asset_data = retry_with_backoff(do_upload)  # Uses defaults: 5 retries, 15s initial
-    print(f"Uploaded {file_name} -> {asset_data['browser_download_url']}")
+    print(f"✓ Uploaded {file_name} -> {asset_data['browser_download_url']}")
     return asset_data
 
 
@@ -197,13 +238,15 @@ def main():
     release = get_or_create_release(args.repo, tag, args.token, args.exporter)
 
     # Upload all files
+    print(f"\n⬆️  Uploading {len(args.files)} file(s) to release {tag}...")
     urls: List[Dict[str, str]] = []
-    for file_path_str in args.files:
+    for idx, file_path_str in enumerate(args.files, 1):
         file_path = Path(file_path_str)
         if not file_path.exists():
-            print(f"Warning: {file_path} does not exist, skipping")
+            print(f"⚠ Warning: {file_path} does not exist, skipping")
             continue
 
+        print(f"\n[{idx}/{len(args.files)}] Processing {file_path.name}...")
         asset = upload_asset(release, file_path, args.token, args.repo)
         urls.append(
             {
