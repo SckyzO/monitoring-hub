@@ -94,7 +94,9 @@ jobs:
           deb_combinations = []
 
           rpm_dists = ['el8', 'el9', 'el10']
-          deb_dists = ['ubuntu-22.04', 'ubuntu-24.04', 'debian-12', 'debian-13']
+          # Limit DEB distributions to stay under GitHub's 256 matrix job limit
+          # With ~34 exporters × 2 distros × 2 archs = ~136 jobs (safe margin)
+          deb_dists = ['ubuntu-22.04', 'ubuntu-24.04']
 
           for exporter in exporters:
               manifest_path = f'exporters/{exporter}/manifest.yaml'
@@ -259,13 +261,23 @@ jobs:
           severity: 'CRITICAL,HIGH,MEDIUM'
         continue-on-error: true
 
-      - name: Upload Trivy Results
+      - name: Check SARIF File
+        id: check-sarif
         if: steps.check.outputs.enabled == 'true'
+        run: |
+          if [ -f "trivy-${{ matrix.exporter }}.sarif" ]; then
+            echo "exists=true" >> $GITHUB_OUTPUT
+          else
+            echo "⚠️  SARIF file not found, skipping upload"
+            echo "exists=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Upload Trivy Results
+        if: steps.check.outputs.enabled == 'true' && steps.check-sarif.outputs.exists == 'true'
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: 'trivy-${{ matrix.exporter }}.sarif'
           category: 'trivy-${{ matrix.exporter }}'
-        continue-on-error: true
 
       - name: 🧪 Container Smoke Test
         if: steps.check.outputs.enabled == 'true'
