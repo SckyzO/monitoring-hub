@@ -39,13 +39,26 @@ upstream:
 
   # [OPTIONAL] Custom Archive Naming Pattern
   # If the upstream release artifacts don't follow standard naming conventions, define the pattern here.
-  # Available variables:
+  # Two formats supported:
+  #
+  # 1. String pattern (most common):
+  # archive_name: "{name}-{clean_version}.linux-{arch}.tar.gz"
+  #
+  # 2. Dict format (per-architecture patterns):
+  # archive_name:
+  #   amd64: "project-v{clean_version}-x86_64-special.tar.gz"
+  #   arm64: "project-v{clean_version}-arm64-custom.tar.gz"
+  #
+  # Available variables for string format or dict values:
   # - {name}: The exporter name defined above
   # - {version}: The raw version string (e.g., v1.0.0)
   # - {clean_version}: The version without 'v' prefix (e.g., 1.0.0)
-  # - {arch}: The architecture (amd64, arm64)
-  # - {rpm_arch}: The RPM architecture (x86_64, aarch64)
-  # Example: "{name}-{version}.linux-{arch}.tar.gz"
+  # - {arch}: Standard arch (amd64, arm64)
+  # - {rpm_arch}: RPM convention (x86_64, aarch64)
+  # - {deb_arch}: DEB convention (amd64, arm64) - same as {arch}
+  # - {upstream_linux_arch}: Mixed convention (x86_64, arm64)
+  #
+  # Use dict format when upstream has completely different naming per arch.
   archive_name: null
 
 # --- Alternative: Local Custom Binaries ---------------------------------------
