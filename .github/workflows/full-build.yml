@@ -697,6 +697,7 @@ jobs:
           # Copy generated files
           cp index.html gh-pages-dist/
           cp catalog.json gh-pages-dist/ 2>/dev/null || true
+          cp -r catalog gh-pages-dist/ 2>/dev/null || true
 
           # Copy security stats if exists
           if [ -f "security-stats.json" ]; then
@@ -706,7 +707,7 @@ jobs:
           cd gh-pages-dist
           git config user.name "Monitoring Hub Bot"
           git config user.email "bot@monitoring-hub.local"
-          git add index.html catalog.json security-stats.json 2>/dev/null || git add index.html catalog.json
+          git add index.html catalog.json catalog/ security-stats.json 2>/dev/null || git add index.html catalog.json catalog/
 
           if git diff --staged --quiet; then
             echo "No changes to commit"
@@ -726,7 +727,10 @@ jobs:
           echo "**Portal:** https://sckyzo.github.io/monitoring-hub/" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 
-          if [ -f "catalog.json" ]; then
+          if [ -f "catalog/index.json" ]; then
+            count=$(jq '.exporters | length' catalog/index.json)
+            echo "**Total exporters:** $count" >> $GITHUB_STEP_SUMMARY
+          elif [ -f "catalog.json" ]; then
             count=$(jq '.exporters | length' catalog.json)
             echo "**Total exporters:** $count" >> $GITHUB_STEP_SUMMARY
           fi
