@@ -142,18 +142,18 @@ def upload_asset(release: Dict, file_path: Path, token: str, repo: str) -> Dict:
         "Content-Type": "application/octet-stream",
     }
 
-    # Get upload URL
-    if "upload_url" not in release:
-        raise ValueError(f"Release missing upload_url: {release.get('id', 'unknown')}")
-
-    upload_url = release["upload_url"].replace("{?name,label}", "")
     file_name = file_path.name
 
     # Refresh release data to get current assets list
     # This is critical for handling parallel uploads correctly
     print(f"Refreshing release data to check for existing assets...")
     fresh_release = get_release_by_id(repo, release["id"], token)
-    print(f"Using upload URL: {upload_url}")
+
+    # Verify upload_url is available
+    if "upload_url" not in fresh_release:
+        raise ValueError(
+            f"Release missing upload_url: {fresh_release.get('id', 'unknown')}"
+        )
 
     # Check if asset already exists (using fresh data)
     existing_asset = None
@@ -185,10 +185,17 @@ def upload_asset(release: Dict, file_path: Path, token: str, repo: str) -> Dict:
             )
             if delete_response.status_code == 204:
                 print(f"✓ Deleted existing asset {file_name}")
+                # After deletion, refresh again to get updated upload_url
+                print(f"Refreshing release data after deletion...")
+                fresh_release = get_release_by_id(repo, release["id"], token)
             else:
                 print(
                     f"⚠ Delete returned {delete_response.status_code}, continuing anyway..."
                 )
+
+    # Use upload_url from fresh release data (critical after deletion)
+    upload_url = fresh_release["upload_url"].replace("{?name,label}", "")
+    print(f"Using upload URL: {upload_url}")
 
     # Upload asset with retry and longer timeout
     print(f"📤 Uploading {file_name}...")
