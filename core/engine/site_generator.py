@@ -414,10 +414,50 @@ def generate(output, repo_dir, release_urls_dir, skip_catalog):
     if not skip_catalog:
         import json
 
-        json_output = os.path.join(os.path.dirname(output), "catalog.json")
-        with open(json_output, "w") as f:
-            json.dump({"exporters": exporters_data}, f, indent=2)
-        click.echo(f"Catalog generated at {json_output}")
+        output_dir = os.path.dirname(output)
+
+        # Create catalog directory
+        catalog_dir = os.path.join(output_dir, "catalog")
+        os.makedirs(catalog_dir, exist_ok=True)
+
+        # 1. Generate lightweight index
+        index_data = {
+            "version": "2.0",
+            "exporters": [
+                {
+                    "name": e["name"],
+                    "version": e["version"],
+                    "category": e.get("category", "System"),
+                    "last_updated": e.get("build_date"),
+                }
+                for e in exporters_data
+            ],
+        }
+
+        index_output = os.path.join(catalog_dir, "index.json")
+        with open(index_output, "w") as f:
+            json.dump(index_data, f, indent=2)
+        click.echo(f"✓ Catalog index generated at {index_output}")
+
+        # 2. Generate per-exporter files
+        for exporter in exporters_data:
+            exporter_file = os.path.join(catalog_dir, f"{exporter['name']}.json")
+            with open(exporter_file, "w") as f:
+                json.dump(exporter, f, indent=2)
+        click.echo(f"✓ Generated {len(exporters_data)} exporter catalog files")
+
+        # 3. Generate legacy catalog.json (for compatibility)
+        legacy_output = os.path.join(output_dir, "catalog.json")
+        with open(legacy_output, "w") as f:
+            json.dump(
+                {
+                    "exporters": exporters_data,
+                    "_note": "This format is deprecated. Use /catalog/index.json for new integrations.",
+                },
+                f,
+                indent=2,
+            )
+        click.echo(f"✓ Legacy catalog generated at {legacy_output}")
     else:
         click.echo("Catalog generation skipped (--skip-catalog)")
 

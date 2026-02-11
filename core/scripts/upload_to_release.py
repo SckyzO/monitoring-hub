@@ -146,7 +146,7 @@ def upload_asset(release: Dict, file_path: Path, token: str, repo: str) -> Dict:
 
     # Refresh release data to get current assets list
     # This is critical for handling parallel uploads correctly
-    print(f"Refreshing release data to check for existing assets...")
+    print("Refreshing release data to check for existing assets...")
     fresh_release = get_release_by_id(repo, release["id"], token)
 
     # Verify upload_url is available
@@ -186,7 +186,7 @@ def upload_asset(release: Dict, file_path: Path, token: str, repo: str) -> Dict:
             if delete_response.status_code == 204:
                 print(f"✓ Deleted existing asset {file_name}")
                 # After deletion, refresh again to get updated upload_url
-                print(f"Refreshing release data after deletion...")
+                print("Refreshing release data after deletion...")
                 fresh_release = get_release_by_id(repo, release["id"], token)
             else:
                 print(
