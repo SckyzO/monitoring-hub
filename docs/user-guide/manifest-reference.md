@@ -52,6 +52,42 @@ For the full manifest schema with all available options, see the [manifest.refer
 - `strategy`: `latest_release` (default) or `pinned`
 - `archive_name`: Custom archive name pattern (optional)
 
+#### Archive Name Patterns
+
+The `archive_name` field supports two formats for handling non-standard upstream naming:
+
+**1. String Pattern (Most Common)**
+
+Use template variables for simple patterns:
+
+```yaml
+archive_name: "{name}-{clean_version}.linux-{arch}.tar.gz"
+```
+
+Available variables:
+- `{name}`: Exporter name
+- `{version}`: Raw version (e.g., v1.0.0)
+- `{clean_version}`: Version without 'v' prefix (e.g., 1.0.0)
+- `{arch}`: Standard arch (amd64, arm64)
+- `{rpm_arch}`: RPM convention (x86_64, aarch64)
+- `{deb_arch}`: DEB convention (amd64, arm64)
+- `{upstream_linux_arch}`: Mixed convention (x86_64, arm64)
+
+**2. Dict Format (Per-Architecture Patterns)**
+
+Use when upstream has completely different naming per architecture:
+
+```yaml
+archive_name:
+  amd64: "project-v{clean_version}-x86_64-special.tar.gz"
+  arm64: "project-v{clean_version}-arm64-custom.tar.gz"
+```
+
+This is useful when:
+- Upstream uses inconsistent naming across architectures
+- Each architecture has a unique file structure
+- Standard variables don't provide enough flexibility
+
 ### Build
 
 - `method`: `binary_repack` or `source_build`
