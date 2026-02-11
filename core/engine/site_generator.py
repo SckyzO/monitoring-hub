@@ -47,12 +47,15 @@ def load_release_urls(release_urls_dir):
 def load_build_info(build_info_dir):
     """
     Load all build-info.json artifacts from the build.
-    Returns a dict mapping exporter -> latest build_date.
+    Returns two dicts:
+    - build_dates: mapping exporter -> latest build_date
+    - build_attempts: set of (exporter, arch, dist, artifact_type) tuples for attempted builds
     """
     if not build_info_dir or not os.path.exists(build_info_dir):
-        return {}
+        return {}, set()
 
     build_dates = {}
+    build_attempts = set()
     import json
 
     for root, dirs, files in os.walk(build_info_dir):
@@ -63,6 +66,10 @@ def load_build_info(build_info_dir):
                         data = json.load(f)
                         exporter = data.get("exporter")
                         build_date = data.get("build_date")
+                        arch = data.get("arch")
+                        dist = data.get("dist")
+                        artifact_type = data.get("artifact_type")
+
                         if exporter and build_date:
                             # Keep the latest date if multiple builds for same exporter
                             if (
@@ -70,10 +77,14 @@ def load_build_info(build_info_dir):
                                 or build_date > build_dates[exporter]
                             ):
                                 build_dates[exporter] = build_date
+
+                        # Track attempted builds
+                        if exporter and arch and dist and artifact_type:
+                            build_attempts.add((exporter, arch, dist, artifact_type))
                 except Exception as e:
                     print(f"Warning: Failed to load {file}: {e}")
 
-    return build_dates
+    return build_dates, build_attempts
 
 
 def load_security_stats(repo_dir):
@@ -130,8 +141,8 @@ def generate(output, repo_dir, release_urls_dir, skip_catalog):
     # Load real availability from release_urls artifacts
     release_url_map = load_release_urls(release_urls_dir)
 
-    # Load build dates from artifacts
-    build_dates = load_build_info(release_urls_dir)
+    # Load build dates and attempts from artifacts
+    build_dates, build_attempts = load_build_info(release_urls_dir)
 
     manifests = glob.glob(f"{EXPORTERS_DIR}/*/manifest.yaml")
     exporters_data = []
@@ -180,15 +191,28 @@ def generate(output, repo_dir, release_urls_dir, skip_catalog):
                         # Check if package was actually uploaded (using release_urls artifacts)
                         real_url = release_url_map.get((rpm_name, filename))
 
+                        # Map RPM arch back to manifest arch for build_attempts lookup
+                        arch_reverse_map = {"x86_64": "amd64", "aarch64": "arm64"}
+                        manifest_arch = arch_reverse_map.get(arch, arch)
+                        build_key = (rpm_name, manifest_arch, dist, "rpm")
+                        build_attempted = build_key in build_attempts
+
                         if real_url:
                             # Package was uploaded successfully
                             data["availability"][dist][arch] = {
                                 "status": "success",
                                 "path": real_url,
                             }
+                        elif build_attempted:
+                            # Build was attempted but no artifact uploaded = failed
+                            tag = f"{rpm_name}-v{version}"
+                            github_url = f"https://github.com/SckyzO/monitoring-hub/releases/download/{tag}/{filename}"
+                            data["availability"][dist][arch] = {
+                                "status": "failed",
+                                "path": github_url,
+                            }
                         elif dist in rpm_targets:
-                            # Targeted but not uploaded yet (build may be in progress or failed)
-                            # Generate expected URL as fallback (tag format: exporter-vVersion)
+                            # Targeted but not yet attempted = pending
                             tag = f"{rpm_name}-v{version}"
                             github_url = f"https://github.com/SckyzO/monitoring-hub/releases/download/{tag}/{filename}"
                             data["availability"][dist][arch] = {
@@ -229,15 +253,26 @@ def generate(output, repo_dir, release_urls_dir, skip_catalog):
                         # Check if package was actually uploaded (using release_urls artifacts)
                         real_url = release_url_map.get((data["name"], filename))
 
+                        # DEB uses same arch names as manifest (amd64, arm64)
+                        build_key = (data["name"], arch, dist, "deb")
+                        build_attempted = build_key in build_attempts
+
                         if real_url:
                             # Package was uploaded successfully
                             data["deb_availability"][dist][arch] = {
                                 "status": "success",
                                 "path": real_url,
                             }
+                        elif build_attempted:
+                            # Build was attempted but no artifact uploaded = failed
+                            tag = f"{data['name']}-v{version}"
+                            github_url = f"https://github.com/SckyzO/monitoring-hub/releases/download/{tag}/{filename}"
+                            data["deb_availability"][dist][arch] = {
+                                "status": "failed",
+                                "path": github_url,
+                            }
                         elif dist in deb_targets:
-                            # Targeted but not uploaded yet (build may be in progress or failed)
-                            # Generate expected URL as fallback (tag format: exporter-vVersion)
+                            # Targeted but not yet attempted = pending
                             tag = f"{data['name']}-v{version}"
                             github_url = f"https://github.com/SckyzO/monitoring-hub/releases/download/{tag}/{filename}"
                             data["deb_availability"][dist][arch] = {
