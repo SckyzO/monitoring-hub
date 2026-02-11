@@ -29,6 +29,8 @@ jobs:
   discover:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    permissions:
+      contents: read
     outputs:
       exporters: ${{ steps.detect.outputs.exporters }}
       build_needed: ${{ steps.detect.outputs.build_needed }}
@@ -584,6 +586,8 @@ jobs:
     if: always() && !cancelled() && needs.discover.outputs.build_needed == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v6
 
