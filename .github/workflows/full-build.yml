@@ -680,18 +680,33 @@ jobs:
         run: |
           echo "::group::📥 Preparing artifacts"
 
-          # Organize artifacts
+          # Organize artifacts (preserve directory structure to avoid overwrites)
           mkdir -p release-urls build-info
 
           if [ -d "artifacts" ]; then
-            find artifacts -name "release_urls.json" -exec cp {} release-urls/ \;
-            find artifacts -name "build-info.json" -exec cp {} build-info/ \;
+            # Copy with unique names to avoid overwrites
+            find artifacts -name "release_urls.json" | while read file; do
+              # Extract parent directory name for unique filename
+              dir=$(basename $(dirname "$file"))
+              cp "$file" "release-urls/${dir}_release_urls.json"
+            done
+
+            find artifacts -name "build-info.json" | while read file; do
+              dir=$(basename $(dirname "$file"))
+              cp "$file" "build-info/${dir}_build-info.json"
+            done
 
             # Copy security stats if available
             if [ -f "artifacts/security-stats/security-stats.json" ]; then
               cp artifacts/security-stats/security-stats.json .
             fi
           fi
+
+          # Debug: Show what we collected
+          echo "Release URLs collected:"
+          ls -la release-urls/ || echo "  (none)"
+          echo "Build info collected:"
+          ls -la build-info/ || echo "  (none)"
 
           echo "::endgroup::"
 
