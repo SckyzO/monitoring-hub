@@ -46,8 +46,18 @@ jobs:
           output=$(python3 -m core.engine.watcher 2>&1)
           echo "$output"
 
-          # Parse output to extract updates
-          updates=$(echo "$output" | grep "New version available" | sed -E 's/.*Checking ([^ ]+) .* New version available: ([^ ]+).*/{"name":"\1","version":"\2"}/' | jq -s '.')
+          # Parse output to extract updates (handle multi-line format)
+          updates=$(echo "$output" | awk '
+            /Checking [^ ]+ \(/ {
+              match($0, /Checking ([^ ]+) /, arr);
+              exporter = arr[1];
+            }
+            /New version available:/ {
+              match($0, /New version available: ([^ ]+)/, arr);
+              version = arr[1];
+              printf "{\"name\":\"%s\",\"version\":\"%s\"}\n", exporter, version;
+            }
+          ' | jq -s '.')
 
           if [ "$(echo "$updates" | jq 'length')" -gt 0 ]; then
             echo "has_updates=true" >> $GITHUB_OUTPUT
