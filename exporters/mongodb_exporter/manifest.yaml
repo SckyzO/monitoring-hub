@@ -1,65 +1,47 @@
 name: mongodb_exporter
 description: MongoDB exporter for Prometheus.
+version: v0.47.2
 category: Database
 new: true
 updated: false
-version: v0.48.0
 upstream:
   type: github
   repo: percona/mongodb_exporter
-  strategy: latest_release
 build:
   method: binary_repack
   binary_name: mongodb_exporter
+  archs:
+    - amd64
+    - arm64
   extra_binaries: []
   extra_sources: []
-  archs:
-  - amd64
-  - arm64
 artifacts:
   rpm:
     enabled: true
     targets:
-    - el8
-    - el9
-    - el10
+      - el8
+      - el9
+      - el10
     summary: MongoDB exporter for Prometheus.
-    dependencies: []
     systemd:
       enabled: true
-      arguments: []
-      after:
-      - network.target
-      restart: on-failure
-      type: simple
-    extra_files: []
-    directories: []
   deb:
     enabled: true
     targets:
-    - ubuntu-22.04
-    - ubuntu-24.04
-    - debian-12
-    - debian-13
+      - ubuntu-22.04
+      - ubuntu-24.04
+      - debian-12
+      - debian-13
     summary: MongoDB exporter for Prometheus.
     systemd:
       enabled: true
-      arguments: []
-      after:
-      - network.target
-      restart: on-failure
-      type: simple
-    dependencies: []
-    extra_files: []
-    directories: []
     section: net
     priority: optional
   docker:
     enabled: true
-    base_image: registry.access.redhat.com/ubi9/ubi-minimal
     entrypoint:
-    - /usr/bin/mongodb_exporter
-    cmd: []
+      - /usr/bin/mongodb_exporter
     validation:
       enabled: true
       command: --version
+    cmd: []
