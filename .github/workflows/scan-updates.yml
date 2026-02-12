@@ -61,7 +61,8 @@ jobs:
 
           if [ "$(echo "$updates" | jq 'length')" -gt 0 ]; then
             echo "has_updates=true" >> $GITHUB_OUTPUT
-            echo "updates=$updates" >> $GITHUB_OUTPUT
+            # Compact JSON to single line for GitHub Actions output
+            echo "updates=$(echo "$updates" | jq -c '.')" >> $GITHUB_OUTPUT
 
             echo ""
             echo "📦 Updates detected:"
