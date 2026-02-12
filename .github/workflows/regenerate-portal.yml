@@ -1,0 +1,151 @@
+name: 🔄 Regenerate Portal
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: regenerate-portal
+  cancel-in-progress: false
+
+jobs:
+  regenerate:
+    name: 🌐 Regenerate Portal from Existing Releases
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install -r requirements/base.txt
+
+      - name: 📥 Download All Release Artifacts
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+        run: |
+          echo "::group::📥 Fetching releases from GitHub"
+
+          # Create directories
+          mkdir -p release-urls build-info
+
+          # Get all releases (not draft)
+          echo "Fetching releases from $REPO..."
+          gh api "repos/$REPO/releases" --paginate \
+            --jq '.[] | select(.draft == false) | {tag_name, id, assets}' \
+            > releases.json
+
+          # Count releases
+          count=$(jq -s 'length' releases.json)
+          echo "Found $count releases"
+
+          # For each release, reconstruct release_urls.json
+          jq -c '.' releases.json | while read -r release; do
+            tag=$(echo "$release" | jq -r '.tag_name')
+
+            # Extract exporter name from tag (e.g., node_exporter-v1.10.2 -> node_exporter)
+            exporter=$(echo "$tag" | sed 's/-v[0-9].*//')
+
+            echo "Processing: $tag (exporter: $exporter)"
+
+            # Build release_urls.json
+            {
+              echo "{"
+              echo "  \"exporter\": \"$exporter\","
+              echo "  \"tag\": \"$tag\","
+              echo "  \"assets\": ["
+
+              # Get assets
+              echo "$release" | jq -c '.assets[]' | while IFS= read -r asset; do
+                filename=$(echo "$asset" | jq -r '.name')
+                url=$(echo "$asset" | jq -r '.browser_download_url')
+
+                echo "    {"
+                echo "      \"file\": \"$filename\","
+                echo "      \"url\": \"$url\""
+                echo "    },"
+              done | sed '$ s/,$//'  # Remove trailing comma from last item
+
+              echo "  ]"
+              echo "}"
+            } > "release-urls/${exporter}_${tag}_release_urls.json"
+
+            echo "  ✓ Created release_urls.json"
+          done
+
+          # Show what we collected
+          echo ""
+          echo "Release URLs collected:"
+          ls -lh release-urls/ | head -20
+
+          echo "::endgroup::"
+
+      - name: 📥 Checkout gh-pages
+        run: |
+          echo "::group::📥 Setting up gh-pages worktree"
+          git config user.name "Monitoring Hub Bot"
+          git config user.email "bot@monitoring-hub.local"
+
+          git fetch origin gh-pages
+          git worktree add -B gh-pages gh-pages-dist origin/gh-pages
+
+          echo "✓ gh-pages worktree ready"
+          echo "::endgroup::"
+
+      - name: 🌐 Generate Portal
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: |
+          echo "::group::🌐 Generating portal with existing releases"
+
+          # Copy existing security stats if available
+          if [ -f "gh-pages-dist/security-stats.json" ]; then
+            cp gh-pages-dist/security-stats.json .
+            echo "✓ Using existing security stats"
+          fi
+
+          # Generate portal
+          python3 -m core.engine.site_generator \
+            --output gh-pages-dist/index.html \
+            --repo-dir gh-pages-dist \
+            --release-urls-dir release-urls/
+
+          echo "✓ Portal regenerated"
+          echo "::endgroup::"
+
+      - name: 📤 Publish to gh-pages
+        run: |
+          echo "::group::📤 Publishing to gh-pages"
+
+          cd gh-pages-dist
+
+          # Check if there are changes
+          if git diff --quiet index.html catalog.json catalog/; then
+            echo "ℹ️  No changes detected"
+            exit 0
+          fi
+
+          # Commit and push
+          git add index.html catalog.json catalog/
+          git commit -m "chore: regenerate portal with fixed artifact collection [skip ci]"
+          git pull --rebase origin gh-pages
+          git push origin gh-pages
+
+          echo "✓ Published to gh-pages"
+          echo "::endgroup::"
+
+      - name: 📊 Generate Summary
+        run: |
+          echo "## ✅ Portal Regenerated" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Portal:** https://sckyzo.github.io/monitoring-hub/" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "The web portal has been regenerated using existing GitHub releases." >> $GITHUB_STEP_SUMMARY
+          echo "All download links should now be functional." >> $GITHUB_STEP_SUMMARY
