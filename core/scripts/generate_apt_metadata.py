@@ -224,8 +224,8 @@ def main():
                     continue
 
     if not packages:
-        print(f"No DEB packages found for {args.dist}/{args.arch}")
-        sys.exit(1)
+        print(f"⚠️  No DEB packages found for {args.dist}/{args.arch}, skipping metadata generation")
+        sys.exit(0)
 
     print(f"\nGenerating metadata for {len(packages)} packages...")
 
