@@ -1,7 +1,7 @@
 name: redis_exporter
 description: Prometheus exporter for Redis metrics
 category: Database
-version: v1.80.2
+version: "v1.81.0"
 updated: true
 upstream:
   type: github
