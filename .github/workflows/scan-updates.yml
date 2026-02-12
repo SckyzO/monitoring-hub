@@ -83,6 +83,7 @@ jobs:
     timeout-minutes: 10
     strategy:
       fail-fast: false
+      max-parallel: 1
       matrix:
         exporter: ${{ fromJson(needs.detect-updates.outputs.updates) }}
     steps:
