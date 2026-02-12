@@ -162,6 +162,7 @@ jobs:
           fi
 
       - name: 🔐 Sign RPM
+        if: steps.check-arch.outputs.supported == 'true'
         env:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
@@ -187,6 +188,7 @@ jobs:
           echo "::endgroup::"
 
       - name: ⬆️  Upload to GitHub Releases
+        if: steps.check-arch.outputs.supported == 'true'
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
@@ -220,6 +222,7 @@ jobs:
           echo "::endgroup::"
 
       - name: 📅 Create Build Info
+        if: steps.check-arch.outputs.supported == 'true'
         run: |
           exporter="${{ inputs.exporter }}"
           version="${{ needs.get-version.outputs.version }}"
@@ -238,6 +241,7 @@ jobs:
           EOF
 
       - name: Upload Release URLs Artifact
+        if: steps.check-arch.outputs.supported == 'true'
         uses: actions/upload-artifact@v6
         with:
           name: release-urls-rpm-${{ inputs.exporter }}-${{ matrix.arch }}-${{ matrix.dist }}
@@ -246,6 +250,7 @@ jobs:
           retention-days: 7
 
       - name: Upload Build Info Artifact
+        if: steps.check-arch.outputs.supported == 'true'
         uses: actions/upload-artifact@v6
         with:
           name: build-info-rpm-${{ inputs.exporter }}-${{ matrix.arch }}-${{ matrix.dist }}
@@ -343,6 +348,7 @@ jobs:
           echo "::endgroup::"
 
       - name: 🔐 Sign DEB
+        if: steps.check-arch.outputs.supported == 'true'
         env:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
           GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
@@ -368,6 +374,7 @@ jobs:
           echo "::endgroup::"
 
       - name: ⬆️  Upload to GitHub Releases
+        if: steps.check-arch.outputs.supported == 'true'
         env:
           GITHUB_TOKEN: ${{ github.token }}
         run: |
@@ -401,6 +408,7 @@ jobs:
           echo "::endgroup::"
 
       - name: 📅 Create Build Info
+        if: steps.check-arch.outputs.supported == 'true'
         run: |
           exporter="${{ inputs.exporter }}"
           version="${{ needs.get-version.outputs.version }}"
@@ -419,6 +427,7 @@ jobs:
           EOF
 
       - name: Upload Release URLs Artifact
+        if: steps.check-arch.outputs.supported == 'true'
         uses: actions/upload-artifact@v6
         with:
           name: release-urls-deb-${{ inputs.exporter }}-${{ matrix.arch }}-${{ matrix.dist }}
@@ -427,6 +436,7 @@ jobs:
           retention-days: 7
 
       - name: Upload Build Info Artifact
+        if: steps.check-arch.outputs.supported == 'true'
         uses: actions/upload-artifact@v6
         with:
           name: build-info-deb-${{ inputs.exporter }}-${{ matrix.arch }}-${{ matrix.dist }}
