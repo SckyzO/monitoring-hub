@@ -1,53 +1,75 @@
 name: redis_exporter
 description: Prometheus exporter for Redis metrics
 category: Database
-version: v1.80.2
 updated: true
+version: v1.81.0
 upstream:
   type: github
   repo: oliver006/redis_exporter
+  strategy: latest_release
   archive_name: redis_exporter-v{clean_version}.linux-{arch}.tar.gz
 build:
   method: binary_repack
   binary_name: redis_exporter
+  extra_binaries: []
+  extra_sources: []
+  archs:
+  - amd64
+  - arm64
 artifacts:
   rpm:
     enabled: true
-    summary: Prometheus Redis Exporter
     targets:
-      - el8
-      - el9
-      - el10
-    system_user: redis_exporter
+    - el8
+    - el9
+    - el10
+    summary: Prometheus Redis Exporter
+    dependencies: []
     systemd:
       enabled: true
+      arguments: []
+      after:
+      - network.target
+      restart: on-failure
+      type: simple
+    system_user: redis_exporter
+    extra_files: []
     directories:
-      - path: /var/lib/redis_exporter
-        owner: redis_exporter
-        group: redis_exporter
-        mode: '0755'
+    - path: /var/lib/redis_exporter
+      mode: '0755'
+      owner: redis_exporter
+      group: redis_exporter
   deb:
     enabled: true
     targets:
-      - ubuntu-22.04
-      - ubuntu-24.04
-      - debian-12
-      - debian-13
+    - ubuntu-22.04
+    - ubuntu-24.04
+    - debian-12
+    - debian-13
     summary: Prometheus exporter for Redis metrics
     systemd:
       enabled: true
+      arguments: []
+      after:
+      - network.target
+      restart: on-failure
+      type: simple
+    system_user: redis_exporter
+    dependencies: []
+    extra_files: []
+    directories:
+    - path: /var/lib/redis_exporter
+      mode: '0755'
+      owner: redis_exporter
+      group: redis_exporter
     section: net
     priority: optional
-    system_user: redis_exporter
-    directories:
-      - path: /var/lib/redis_exporter
-        owner: redis_exporter
-        group: redis_exporter
-        mode: '0755'
   docker:
     enabled: true
+    base_image: registry.access.redhat.com/ubi9/ubi-minimal
     entrypoint:
-      - /usr/bin/redis_exporter
+    - /usr/bin/redis_exporter
+    cmd: []
     validation:
-      port: 9121
       enabled: true
+      port: 9121
