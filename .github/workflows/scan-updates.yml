@@ -14,9 +14,13 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  check-updates:
+  detect-updates:
+    name: 🔍 Detect Available Updates
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
+    outputs:
+      updates: ${{ steps.watcher.outputs.updates }}
+      has_updates: ${{ steps.watcher.outputs.has_updates }}
     steps:
       - uses: actions/checkout@v6
 
@@ -30,29 +34,109 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements/base.txt
 
-      - name: Run Watcher
+      - name: 🔍 Scan for Updates
         id: watcher
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PYTHONPATH: ${{ github.workspace }}
-        run: python3 -m core.engine.watcher --update
+        run: |
+          echo "::group::🔍 Checking for upstream updates"
 
-      - name: Create Pull Request
+          # Run watcher without --update to just detect
+          output=$(python3 -m core.engine.watcher 2>&1)
+          echo "$output"
+
+          # Parse output to extract updates
+          updates=$(echo "$output" | grep "New version available" | sed -E 's/.*Checking ([^ ]+) .* New version available: ([^ ]+).*/{"name":"\1","version":"\2"}/' | jq -s '.')
+
+          if [ "$(echo "$updates" | jq 'length')" -gt 0 ]; then
+            echo "has_updates=true" >> $GITHUB_OUTPUT
+            echo "updates=$updates" >> $GITHUB_OUTPUT
+
+            echo ""
+            echo "📦 Updates detected:"
+            echo "$updates" | jq -r '.[] | "  - \(.name): \(.version)"'
+          else
+            echo "has_updates=false" >> $GITHUB_OUTPUT
+            echo "updates=[]" >> $GITHUB_OUTPUT
+            echo "✓ All exporters are up to date"
+          fi
+
+          echo "::endgroup::"
+
+  create-prs:
+    name: 📝 Create PR for ${{ matrix.exporter.name }}
+    needs: detect-updates
+    if: needs.detect-updates.outputs.has_updates == 'true'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        exporter: ${{ fromJson(needs.detect-updates.outputs.updates) }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          token: ${{ secrets.GH_PAT }}
+
+      - name: 📝 Update Manifest for ${{ matrix.exporter.name }}
+        env:
+          EXPORTER_NAME: ${{ matrix.exporter.name }}
+          NEW_VERSION: ${{ matrix.exporter.version }}
+        run: |
+          echo "::group::📝 Updating $EXPORTER_NAME to $NEW_VERSION"
+
+          manifest="exporters/$EXPORTER_NAME/manifest.yaml"
+
+          if [ ! -f "$manifest" ]; then
+            echo "Error: Manifest not found: $manifest"
+            exit 1
+          fi
+
+          # Update version in manifest using sed
+          sed -i "s/^version:.*/version: \"$NEW_VERSION\"/" "$manifest"
+
+          echo "✓ Updated $manifest"
+          cat "$manifest" | grep "^version:"
+          echo "::endgroup::"
+
+      - name: 📤 Create Pull Request
         id: cpr
         uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ secrets.GH_PAT }}
-          commit-message: "chore: update exporters versions - ${{ steps.watcher.outputs.updated_names }}"
-          title: "chore: update exporters versions - ${{ steps.watcher.outputs.updated_names }}"
+          commit-message: "chore(deps): update ${{ matrix.exporter.name }} to ${{ matrix.exporter.version }}"
+          title: "chore(deps): update ${{ matrix.exporter.name }} to ${{ matrix.exporter.version }}"
           body: |
-            This PR updates exporter versions detected by the Watcher.
-            - Automated update via `core/watcher.py`
-          branch: auto/update-exporters
+            ## 🔄 Automated Version Update
+
+            **Exporter:** `${{ matrix.exporter.name }}`
+            **New Version:** `${{ matrix.exporter.version }}`
+
+            This PR was automatically created by the version watcher.
+
+            ### Changes
+            - Update `${{ matrix.exporter.name }}` manifest version
+
+            ### Validation
+            - [ ] CI checks pass
+            - [ ] Build succeeds for all targets
+            - [ ] Packages published successfully
+
+            ---
+            🤖 *Automated by version watcher - will auto-merge if checks pass*
+          branch: auto/update-${{ matrix.exporter.name }}
           delete-branch: true
+          labels: |
+            dependencies
+            automated
           author: SckyzO <683678+SckyzO@users.noreply.github.com>
 
-      - name: Enable Pull Request Automerge
+      - name: ✅ Enable Auto-merge
         if: steps.cpr.outputs.pull-request-operation == 'created'
         env:
           GH_TOKEN: ${{ secrets.GH_PAT }}
-        run: gh pr merge "${{ steps.cpr.outputs.pull-request-number }}" --auto --squash
+          PR_NUMBER: ${{ steps.cpr.outputs.pull-request-number }}
+        run: |
+          echo "Enabling auto-merge for PR #$PR_NUMBER"
+          gh pr merge "$PR_NUMBER" --auto --squash --repo ${{ github.repository }}
