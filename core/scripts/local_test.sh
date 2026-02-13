@@ -147,6 +147,8 @@ generate_build_files() {
             --user $(id -u):$(id -g) \
             -v \"$PROJECT_ROOT:/workspace:rw\" \
             -w /workspace \
+            -e HOME=/workspace \
+            -e PYTHONUSERBASE=/workspace/.local-build \
             python:3.11-slim \
             bash -c \"
                 pip install -q --user -r requirements/base.txt && \
