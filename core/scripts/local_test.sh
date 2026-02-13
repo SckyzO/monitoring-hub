@@ -24,6 +24,7 @@ DO_DOCKER=false
 DO_VALIDATE=false
 VERBOSE=false
 DEFAULT_MODE=true
+USE_PYTHON=false
 
 declare -A RESULTS
 
@@ -40,9 +41,11 @@ usage() {
     echo "  --validate   Run port/command validation tests"
     echo "  --arch       Target architecture (default: amd64)"
     echo "  --port       Host port for validation (default: 9999)"
+    echo "  --python     Use local Python instead of Docker (requires venv)"
     echo "  --verbose    Show verbose output for builds"
     echo ""
     echo "Default behavior (if no build flags): Builds EL9 RPM + Docker"
+    echo "Default mode: Uses Docker container (no local Python needed)"
 }
 
 log_info() { echo -e "${BLUE}$1${RESET}"; }
@@ -69,6 +72,7 @@ parse_args() {
             --validate|--check|--smoke) DO_VALIDATE=true; shift ;;
             --arch)     ARCH="$2"; shift; shift ;;
             --port)     HOST_PORT="$2"; shift; shift ;;
+            --python|--venv) USE_PYTHON=true; shift ;;
             --verbose)  VERBOSE=true; shift ;;
             -h|--help)  usage; exit 0 ;;
             *)
@@ -97,23 +101,66 @@ parse_args() {
 
 setup_env() {
     cd "$PROJECT_ROOT"
-    if [ -f .venv/bin/activate ]; then
-        if [ "$VERBOSE" = true ]; then
-            log_info ">> Activating virtual environment..."
+
+    # Only activate venv if using local Python
+    if [ "$USE_PYTHON" = true ]; then
+        if [ -f .venv/bin/activate ]; then
+            if [ "$VERBOSE" = true ]; then
+                log_info ">> Activating virtual environment..."
+            fi
+            source .venv/bin/activate
+        else
+            if [ "$VERBOSE" = true ]; then
+                log_warn ">> No venv found, using system Python"
+            fi
         fi
-        source .venv/bin/activate
+    else
+        if [ "$VERBOSE" = true ]; then
+            log_info ">> Using Docker containers (no local Python needed)"
+        fi
     fi
 }
 
 generate_build_files() {
     echo "------------------------------------------------"
     log_info "🔨 [1/X] Generating build files for ${BOLD}$EXPORTER${RESET}${BLUE} ($ARCH)..."
-    export PYTHONPATH="$PROJECT_ROOT"
 
-    if [ "$VERBOSE" = true ]; then
-        python3 -m core.engine.builder --manifest "exporters/$EXPORTER/manifest.yaml" --arch "$ARCH" --output-dir "build/$EXPORTER"
+    if [ "$USE_PYTHON" = true ]; then
+        # Use local Python (requires venv or system Python with packages installed)
+        export PYTHONPATH="$PROJECT_ROOT"
+
+        if [ "$VERBOSE" = true ]; then
+            python3 -m core.engine.builder \
+                --manifest "exporters/$EXPORTER/manifest.yaml" \
+                --arch "$ARCH" \
+                --output-dir "build/$EXPORTER"
+        else
+            python3 -m core.engine.builder \
+                --manifest "exporters/$EXPORTER/manifest.yaml" \
+                --arch "$ARCH" \
+                --output-dir "build/$EXPORTER" > /dev/null 2>&1
+        fi
     else
-        python3 -m core.engine.builder --manifest "exporters/$EXPORTER/manifest.yaml" --arch "$ARCH" --output-dir "build/$EXPORTER" > /dev/null 2>&1
+        # Use Docker container (default - no local Python needed)
+        # Run as current user to avoid permission issues
+        local docker_cmd="docker run --rm \
+            --user $(id -u):$(id -g) \
+            -v \"$PROJECT_ROOT:/workspace:rw\" \
+            -w /workspace \
+            python:3.11-slim \
+            bash -c \"
+                pip install -q --user -r requirements/base.txt && \
+                python3 -m core.engine.builder \
+                    --manifest exporters/$EXPORTER/manifest.yaml \
+                    --arch $ARCH \
+                    --output-dir build/$EXPORTER
+            \""
+
+        if [ "$VERBOSE" = true ]; then
+            eval "$docker_cmd"
+        else
+            eval "$docker_cmd" > /dev/null 2>&1
+        fi
     fi
 
     if [ $? -eq 0 ]; then
