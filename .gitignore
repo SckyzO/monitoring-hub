@@ -37,6 +37,8 @@ archives/
 tmp/
 site/
 *.egg-info/
+.cache/
+.local-build/
 
 # --- Secrets & Environment Variables ---
 secrets/
