@@ -153,14 +153,108 @@ Description: Monitoring Hub APT Repository
     return release_file
 
 
+def scan_existing_packages_from_github(
+    repo: str, dist: str, arch: str, cache_dir: Path
+) -> List[Dict]:
+    """
+    Scan all existing DEB packages from GitHub Releases.
+    Returns metadata for all packages across all releases.
+    """
+    packages = []
+
+    print(f"\n🔍 Scanning existing packages from GitHub Releases for {dist}/{arch}...")
+
+    try:
+        # Get all releases from GitHub API
+        import subprocess
+        result = subprocess.run(
+            ["gh", "api", f"repos/{repo}/releases", "--paginate", "--jq", ".[]"],
+            capture_output=True,
+            text=True,
+            check=True,
+            timeout=120,
+        )
+
+        releases_data = []
+        for line in result.stdout.strip().split("\n"):
+            if line:
+                try:
+                    releases_data.append(json.loads(line))
+                except json.JSONDecodeError:
+                    continue
+
+        print(f"Found {len(releases_data)} releases on GitHub")
+
+        # Process each release
+        for release in releases_data:
+            tag = release.get("tag_name", "")
+            assets = release.get("assets", [])
+
+            for asset in assets:
+                filename = asset.get("name", "")
+                url = asset.get("browser_download_url", "")
+
+                # Filter by arch (DEB naming: package_version_arch.deb)
+                if filename.endswith(".deb") and f"_{arch}.deb" in filename:
+                    print(f"  Found: {filename}")
+                    try:
+                        metadata = get_deb_metadata(url, cache_dir)
+                        packages.append(metadata)
+                    except Exception as e:
+                        print(f"  ⚠️  Error processing {filename}: {e}")
+                        continue
+
+        print(f"✓ Loaded {len(packages)} existing packages from GitHub")
+
+    except subprocess.CalledProcessError as e:
+        print(f"⚠️  Failed to fetch releases from GitHub: {e}")
+        print("Continuing with only new packages...")
+    except Exception as e:
+        print(f"⚠️  Unexpected error scanning GitHub releases: {e}")
+        print("Continuing with only new packages...")
+
+    return packages
+
+
+def deduplicate_packages(packages: List[Dict]) -> List[Dict]:
+    """
+    Remove duplicate packages, keeping the newest version.
+    Packages are identified by (Package, Architecture) tuple.
+    """
+    from packaging import version
+
+    # Group by (Package, Architecture)
+    package_map = {}
+
+    for pkg in packages:
+        key = (pkg["Package"], pkg["Architecture"])
+
+        if key not in package_map:
+            package_map[key] = pkg
+        else:
+            # Compare versions
+            try:
+                existing_ver = version.parse(package_map[key]["Version"])
+                new_ver = version.parse(pkg["Version"])
+
+                if new_ver > existing_ver:
+                    package_map[key] = pkg
+                    print(f"  Replacing {key[0]} {existing_ver} with {new_ver}")
+            except Exception as e:
+                print(f"  ⚠️  Version comparison failed for {key[0]}: {e}")
+                # Keep existing on error
+
+    return list(package_map.values())
+
+
 def main():
     parser = argparse.ArgumentParser(
-        description="Generate APT metadata for GitHub Releases"
+        description="Generate APT metadata for GitHub Releases (cumulative mode)"
     )
     parser.add_argument(
         "--release-urls-dir",
-        required=True,
-        help="Directory containing release_urls.json files",
+        required=False,
+        help="Directory containing release_urls.json files from current build",
     )
     parser.add_argument("--output-dir", required=True, help="Output directory for apt/")
     parser.add_argument(
@@ -169,6 +263,11 @@ def main():
         help="Distribution (ubuntu-22.04, ubuntu-24.04, debian-12, debian-13)",
     )
     parser.add_argument("--arch", required=True, help="Architecture (amd64, arm64)")
+    parser.add_argument(
+        "--repo",
+        default="SckyzO/monitoring-hub",
+        help="GitHub repository (owner/name)",
+    )
     parser.add_argument(
         "--cache-dir",
         default=f"{tempfile.gettempdir()}/deb-metadata-cache",
@@ -183,7 +282,6 @@ def main():
 
     codename = CODENAME_MAP[args.dist]
 
-    release_urls_dir = Path(args.release_urls_dir)
     output_dir = Path(args.output_dir)
     cache_dir = Path(args.cache_dir)
 
@@ -192,42 +290,68 @@ def main():
     packages_dir.mkdir(parents=True, exist_ok=True)
     cache_dir.mkdir(parents=True, exist_ok=True)
 
-    # Find all release_urls.json files
-    json_files = glob.glob(
-        str(release_urls_dir / "**" / "release_urls.json"), recursive=True
+    print("=" * 80)
+    print(f"APT Metadata Generator (Cumulative Mode)")
+    print(f"Distribution: {args.dist} ({codename}) | Architecture: {args.arch}")
+    print("=" * 80)
+
+    # STEP 1: Scan ALL existing packages from GitHub Releases (cumulative)
+    all_packages = scan_existing_packages_from_github(
+        args.repo, args.dist, args.arch, cache_dir
     )
 
-    if not json_files:
-        print("No release_urls.json files found")
-        sys.exit(1)
+    # STEP 2: Add new packages from current build (if release_urls_dir provided)
+    new_packages_count = 0
+    if args.release_urls_dir:
+        release_urls_dir = Path(args.release_urls_dir)
 
-    print(f"Found {len(json_files)} release URL files")
+        if release_urls_dir.exists():
+            json_files = glob.glob(
+                str(release_urls_dir / "**" / "release_urls.json"), recursive=True
+            )
 
-    # Collect all DEB URLs matching dist/arch
-    packages = []
-    for json_file in json_files:
-        with open(json_file, "r") as f:
-            data = json.load(f)
+            if json_files:
+                print(f"\n📦 Processing {len(json_files)} new build artifacts...")
 
-        for asset in data.get("assets", []):
-            filename = asset["file"]
+                for json_file in json_files:
+                    with open(json_file, "r") as f:
+                        data = json.load(f)
 
-            # Filter by dist and arch (DEB naming: package_version_arch.deb)
-            if filename.endswith(".deb") and f"_{args.arch}.deb" in filename:
-                print(f"Processing: {filename}")
+                    for asset in data.get("assets", []):
+                        filename = asset["file"]
 
-                try:
-                    metadata = get_deb_metadata(asset["url"], cache_dir)
-                    packages.append(metadata)
-                except Exception as e:
-                    print(f"Error processing {filename}: {e}")
-                    continue
+                        # Filter by dist and arch (DEB naming: package_version_arch.deb)
+                        if filename.endswith(".deb") and f"_{args.arch}.deb" in filename:
+                            print(f"  Processing: {filename}")
+
+                            try:
+                                metadata = get_deb_metadata(asset["url"], cache_dir)
+                                all_packages.append(metadata)
+                                new_packages_count += 1
+                            except Exception as e:
+                                print(f"  ⚠️  Error processing {filename}: {e}")
+                                continue
+
+                print(f"✓ Added {new_packages_count} new packages from current build")
+            else:
+                print("ℹ️  No release_urls.json files found in current build")
+        else:
+            print("ℹ️  Release URLs directory not found, using only GitHub releases")
+    else:
+        print("ℹ️  No release_urls_dir provided, using only existing GitHub releases")
+
+    # STEP 3: Deduplicate packages (keep newest versions)
+    print(f"\n🔄 Deduplicating packages...")
+    print(f"Before deduplication: {len(all_packages)} packages")
+    packages = deduplicate_packages(all_packages)
+    print(f"After deduplication: {len(packages)} packages")
 
     if not packages:
-        print(f"⚠️  No DEB packages found for {args.dist}/{args.arch}, skipping metadata generation")
+        print(f"\n⚠️  No DEB packages found for {args.dist}/{args.arch}")
+        print("Skipping metadata generation")
         sys.exit(0)
 
-    print(f"\nGenerating metadata for {len(packages)} packages...")
+    print(f"\n📝 Generating metadata for {len(packages)} packages...")
 
     # Create Packages and Packages.gz
     create_packages_file(packages, packages_dir)
