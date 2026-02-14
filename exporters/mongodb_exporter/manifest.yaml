@@ -1,6 +1,6 @@
 name: mongodb_exporter
 description: MongoDB exporter for Prometheus.
-version: "v0.47.2"
+version: "v0.48.0"
 category: Database
 new: true
 updated: false
