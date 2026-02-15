@@ -254,7 +254,7 @@ def create(name, repo, category, description, show_created_files):
     # Generate README
     readme_content = f"""# {name.replace("_", " ").title()}
 
-![Build Status](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/release.yml?label=Build)
+![Build Status](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/build.yml?label=Build)
 ![Version](https://img.shields.io/github/v/release/{repo}?label=Upstream)
 
 > {description}

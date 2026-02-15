@@ -158,19 +158,19 @@ jobs:
           exporter=$(echo "$EXPORTERS" | jq -r '.[0]')
 
           echo "::group::🚀 Triggering single build for $exporter"
-          echo "Strategy: Using release.yml (single exporter workflow)"
+          echo "Strategy: Using build.yml (single exporter workflow)"
 
           # Retry up to 3 times with 10s delay
           max_retries=3
           for i in $(seq 1 $max_retries); do
-            if gh workflow run release.yml \
+            if gh workflow run build.yml \
               --repo ${{ github.repository }} \
               --ref main \
               --field exporter="$exporter"; then
-              echo "✓ Release workflow triggered for $exporter"
+              echo "✓ Build workflow triggered for $exporter"
               echo "## ✅ Single Build Triggered" >> $GITHUB_STEP_SUMMARY
               echo "**Exporter:** $exporter" >> $GITHUB_STEP_SUMMARY
-              echo "**Workflow:** release.yml" >> $GITHUB_STEP_SUMMARY
+              echo "**Workflow:** build.yml" >> $GITHUB_STEP_SUMMARY
               break
             else
               if [ $i -lt $max_retries ]; then
