@@ -198,6 +198,24 @@ def generate_docker_metadata(args: argparse.Namespace) -> Dict[str, Any]:
     }
 
 
+def validate_exporter_name(name: str) -> bool:
+    """
+    Validate exporter name to prevent path traversal attacks.
+
+    Returns True if the name is safe, False otherwise.
+    """
+    # Exporter names should only contain alphanumeric, underscore, hyphen
+    import re
+    if not re.match(r'^[a-zA-Z0-9_-]+$', name):
+        return False
+
+    # Explicitly reject path traversal patterns
+    if '..' in name or '/' in name or '\\' in name:
+        return False
+
+    return True
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Generate artifact metadata JSON for catalog"
@@ -253,6 +271,15 @@ def main():
     )
 
     args = parser.parse_args()
+
+    # Validate exporter name to prevent path traversal
+    if not validate_exporter_name(args.exporter):
+        print(
+            f"Error: Invalid exporter name '{args.exporter}'. "
+            "Exporter names must contain only alphanumeric characters, underscores, and hyphens.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
 
     # Validate required fields per type
     if args.type in ["rpm", "deb"]:

@@ -212,6 +212,24 @@ def aggregate_metadata(
     }
 
 
+def validate_exporter_name(name: str) -> bool:
+    """
+    Validate exporter name to prevent path traversal attacks.
+
+    Returns True if the name is safe, False otherwise.
+    """
+    # Exporter names should only contain alphanumeric, underscore, hyphen
+    import re
+    if not re.match(r'^[a-zA-Z0-9_-]+$', name):
+        return False
+
+    # Explicitly reject path traversal patterns
+    if '..' in name or '/' in name or '\\' in name:
+        return False
+
+    return True
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Aggregate artifact metadata into exporter metadata.json"
@@ -231,10 +249,30 @@ def main():
 
     args = parser.parse_args()
 
+    # Validate exporter name to prevent path traversal
+    if not validate_exporter_name(args.exporter):
+        print(
+            f"Error: Invalid exporter name '{args.exporter}'. "
+            "Exporter names must contain only alphanumeric characters, underscores, and hyphens.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
     # Paths
-    catalog_dir = Path(args.catalog_dir)
+    catalog_dir = Path(args.catalog_dir).resolve()  # Resolve to absolute path
     exporter_dir = catalog_dir / args.exporter
-    manifest_path = Path(args.manifest_path)
+    manifest_path = Path(args.manifest_path).resolve()  # Resolve to absolute path
+
+    # Additional safety check: ensure exporter_dir is within catalog_dir
+    try:
+        exporter_dir.resolve().relative_to(catalog_dir)
+    except ValueError:
+        print(
+            "Error: Exporter directory escapes catalog directory. "
+            "This is not allowed for security reasons.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
 
     # Load manifest
     manifest = load_manifest(manifest_path)
