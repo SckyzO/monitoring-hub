@@ -1,0 +1,209 @@
+{
+  "version": "3.0",
+  "exporters": [
+    {
+      "name": "alertmanager",
+      "version": "0.31.1",
+      "category": "Infrastructure",
+      "last_updated": null
+    },
+    {
+      "name": "apache_exporter",
+      "version": "1.0.12",
+      "category": "Web",
+      "last_updated": null
+    },
+    {
+      "name": "artifactory_exporter",
+      "version": "1.16.1",
+      "category": "Infrastructure",
+      "last_updated": null
+    },
+    {
+      "name": "bind_exporter",
+      "version": "0.8.0",
+      "category": "Network",
+      "last_updated": null
+    },
+    {
+      "name": "blackbox_exporter",
+      "version": "0.28.0",
+      "category": "Network",
+      "last_updated": null
+    },
+    {
+      "name": "collectd_exporter",
+      "version": "0.7.0",
+      "category": "System",
+      "last_updated": null
+    },
+    {
+      "name": "dellhw_exporter",
+      "version": "1.13.13",
+      "category": "Infrastructure",
+      "last_updated": null
+    },
+    {
+      "name": "domain_exporter",
+      "version": "1.24.1",
+      "category": "Web",
+      "last_updated": null
+    },
+    {
+      "name": "ebpf_exporter",
+      "version": "2.5.1",
+      "category": "System",
+      "last_updated": null
+    },
+    {
+      "name": "elasticsearch_exporter",
+      "version": "1.10.0",
+      "category": "Database",
+      "last_updated": null
+    },
+    {
+      "name": "eseries_exporter",
+      "version": "2.0.0",
+      "category": "Storage",
+      "last_updated": null
+    },
+    {
+      "name": "exim_exporter",
+      "version": "1.6.2",
+      "category": "Messaging",
+      "last_updated": null
+    },
+    {
+      "name": "frr_exporter",
+      "version": "1.10.0",
+      "category": "Network",
+      "last_updated": null
+    },
+    {
+      "name": "gpfs_exporter",
+      "version": "3.3.0",
+      "category": "Storage",
+      "last_updated": null
+    },
+    {
+      "name": "ha_cluster_exporter",
+      "version": "1.4.0",
+      "category": "Infrastructure",
+      "last_updated": null
+    },
+    {
+      "name": "iperf3_exporter",
+      "version": "1.3.1",
+      "category": "Network",
+      "last_updated": null
+    },
+    {
+      "name": "ipmi_exporter",
+      "version": "1.10.1",
+      "category": "Infrastructure",
+      "last_updated": null
+    },
+    {
+      "name": "json_exporter",
+      "version": "0.7.0",
+      "category": "Messaging",
+      "last_updated": null
+    },
+    {
+      "name": "keepalived_exporter",
+      "version": "1.7.0",
+      "category": "Network",
+      "last_updated": null
+    },
+    {
+      "name": "memcached_exporter",
+      "version": "0.15.5",
+      "category": "Database",
+      "last_updated": null
+    },
+    {
+      "name": "mongodb_exporter",
+      "version": "0.48.0",
+      "category": "Database",
+      "last_updated": null
+    },
+    {
+      "name": "mysqld_exporter",
+      "version": "0.18.0",
+      "category": "Database",
+      "last_updated": null
+    },
+    {
+      "name": "nats_exporter",
+      "version": "0.19.1",
+      "category": "Messaging",
+      "last_updated": null
+    },
+    {
+      "name": "nginx_exporter",
+      "version": "1.5.1",
+      "category": "Web",
+      "last_updated": null
+    },
+    {
+      "name": "node_exporter",
+      "version": "1.10.2",
+      "category": "System",
+      "last_updated": "2026-02-15T13:09:09.885766+00:00"
+    },
+    {
+      "name": "ping_exporter",
+      "version": "1.1.5",
+      "category": "Network",
+      "last_updated": null
+    },
+    {
+      "name": "podman_exporter",
+      "version": "1.20.0",
+      "category": "System",
+      "last_updated": null
+    },
+    {
+      "name": "process_exporter",
+      "version": "0.8.7",
+      "category": "System",
+      "last_updated": null
+    },
+    {
+      "name": "prometheus",
+      "version": "3.9.1",
+      "category": "Infrastructure",
+      "last_updated": null
+    },
+    {
+      "name": "redis_exporter",
+      "version": "1.81.0",
+      "category": "Database",
+      "last_updated": null
+    },
+    {
+      "name": "slurm_exporter",
+      "version": "1.2.0",
+      "category": "Infrastructure",
+      "last_updated": null
+    },
+    {
+      "name": "smartctl_exporter",
+      "version": "0.14.0",
+      "category": "Storage",
+      "last_updated": null
+    },
+    {
+      "name": "snmp_exporter",
+      "version": "0.30.1",
+      "category": "Network",
+      "last_updated": null
+    },
+    {
+      "name": "textfile_exporter",
+      "version": "0.1.4",
+      "category": "System",
+      "last_updated": null
+    }
+  ]
+}
