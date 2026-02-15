@@ -98,7 +98,7 @@ jobs:
             for attempt in $(seq 1 $max_retries); do
               echo "  Attempt $attempt/$max_retries: Uploading $(basename "$file")..."
 
-              if gh release upload "v$VERSION" "$file" --clobber 2>&1; then
+              if gh release upload "$EXPORTER-v$VERSION" "$file" --clobber 2>&1; then
                 echo "  ✅ Upload successful"
                 return 0
               else
@@ -122,14 +122,40 @@ jobs:
             echo ""
             echo "Processing: $(basename "$rpm_artifact")"
 
+            # Extract dist and arch from artifact name: build-rpm-{exporter}-{dist}-{arch}
+            artifact_name=$(basename "$rpm_artifact")
+            dist=$(echo "$artifact_name" | cut -d'-' -f4)
+            arch=$(echo "$artifact_name" | cut -d'-' -f5)
+
             # Find RPM files in this artifact
             for rpm_file in "$rpm_artifact"/*.rpm; do
               if [ ! -f "$rpm_file" ]; then
                 continue
               fi
 
+              filename=$(basename "$rpm_file")
+
               if upload_with_retry "$rpm_file"; then
                 ((uploaded++))
+
+                # Get the download URL from GitHub Release
+                echo "  Fetching download URL from release..."
+                download_url=$(gh release view "$EXPORTER-v$VERSION" --json assets --jq ".assets[] | select(.name==\"$filename\") | .url")
+
+                if [ -n "$download_url" ]; then
+                  # Update metadata with URL
+                  metadata_file="artifacts/metadata-rpm-${EXPORTER}-${dist}-${arch}/rpm_${arch}_${dist}.json"
+                  if [ -f "$metadata_file" ]; then
+                    echo "  Updating metadata with URL: $download_url"
+                    python3 core/scripts/update_metadata_urls.py \
+                      --metadata-file "$metadata_file" \
+                      --url "$download_url"
+                  else
+                    echo "  ⚠️  Metadata file not found: $metadata_file"
+                  fi
+                else
+                  echo "  ⚠️  Could not fetch download URL for $filename"
+                fi
               else
                 ((failed++))
               fi
@@ -168,7 +194,7 @@ jobs:
             for attempt in $(seq 1 $max_retries); do
               echo "  Attempt $attempt/$max_retries: Uploading $(basename "$file")..."
 
-              if gh release upload "v$VERSION" "$file" --clobber 2>&1; then
+              if gh release upload "$EXPORTER-v$VERSION" "$file" --clobber 2>&1; then
                 echo "  ✅ Upload successful"
                 return 0
               else
@@ -192,14 +218,40 @@ jobs:
             echo ""
             echo "Processing: $(basename "$deb_artifact")"
 
+            # Extract dist and arch from artifact name: build-deb-{exporter}-{dist}-{arch}
+            artifact_name=$(basename "$deb_artifact")
+            dist=$(echo "$artifact_name" | cut -d'-' -f4)
+            arch=$(echo "$artifact_name" | cut -d'-' -f5)
+
             # Find DEB files in this artifact
             for deb_file in "$deb_artifact"/*.deb; do
               if [ ! -f "$deb_file" ]; then
                 continue
               fi
 
+              filename=$(basename "$deb_file")
+
               if upload_with_retry "$deb_file"; then
                 ((uploaded++))
+
+                # Get the download URL from GitHub Release
+                echo "  Fetching download URL from release..."
+                download_url=$(gh release view "$EXPORTER-v$VERSION" --json assets --jq ".assets[] | select(.name==\"$filename\") | .url")
+
+                if [ -n "$download_url" ]; then
+                  # Update metadata with URL
+                  metadata_file="artifacts/metadata-deb-${EXPORTER}-${dist}-${arch}/deb_${arch}_${dist}.json"
+                  if [ -f "$metadata_file" ]; then
+                    echo "  Updating metadata with URL: $download_url"
+                    python3 core/scripts/update_metadata_urls.py \
+                      --metadata-file "$metadata_file" \
+                      --url "$download_url"
+                  else
+                    echo "  ⚠️  Metadata file not found: $metadata_file"
+                  fi
+                else
+                  echo "  ⚠️  Could not fetch download URL for $filename"
+                fi
               else
                 ((failed++))
               fi
@@ -307,3 +359,12 @@ jobs:
           echo "rpm_uploaded=${RPM_UPLOADED:-0}" >> $GITHUB_OUTPUT
           echo "deb_uploaded=${DEB_UPLOADED:-0}" >> $GITHUB_OUTPUT
           echo "docker_uploaded=${DOCKER_UPLOADED:-0}" >> $GITHUB_OUTPUT
+
+      - name: 📤 Upload Updated Metadata Artifacts
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: updated-metadata-all
+          path: artifacts/metadata-*
+          retention-days: 7
+          if-no-files-found: warn

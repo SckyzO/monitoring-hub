@@ -295,11 +295,14 @@ def main():
 
     # Validate required fields per type
     if args.type in ["rpm", "deb"]:
-        required = ["arch", "dist", "filename", "url", "sha256", "size"]
+        required = ["arch", "dist", "filename", "sha256", "size"]
         missing = [f for f in required if getattr(args, f) is None]
         if missing:
             print(f"Error: Missing required fields for {args.type}: {missing}")
             sys.exit(1)
+        # URL is optional - will be added after upload
+        if not args.url:
+            args.url = ""  # Use empty string as placeholder
     elif args.type == "docker":
         if not args.docker_images:
             print("Error: --docker-images required for docker type")

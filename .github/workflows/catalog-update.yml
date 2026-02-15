@@ -3,13 +3,13 @@ run-name: 📦 Catalog Update - ${{ github.event.workflow_run.id || inputs.workf
 
 on:
   workflow_run:
-    workflows: ["🚀 Build"]
+    workflows: ["⬆️ Upload Releases"]
     types: [completed]
     branches: [main]
   workflow_dispatch:
     inputs:
       workflow_run_id:
-        description: 'Build workflow run ID to fetch artifacts from'
+        description: 'Upload Releases workflow run ID to fetch artifacts from'
         required: true
         type: string
 

@@ -192,41 +192,16 @@ jobs:
           echo "✓ RPM signed successfully"
           echo "::endgroup::"
 
-      - name: ⬆️  Upload to GitHub Releases
+      - name: 📦 Store RPM Package as Artifact
         if: steps.check-arch.outputs.supported == 'true'
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        run: |
-          exporter="${{ inputs.exporter }}"
-          arch="${{ matrix.arch }}"
-          dist="${{ matrix.dist }}"
-          version="${{ needs.get-version.outputs.version }}"
-          build_dir="build/$exporter-$arch-$dist"
+        uses: actions/upload-artifact@v7
+        with:
+          name: build-rpm-${{ inputs.exporter }}-${{ matrix.dist }}-${{ matrix.arch }}
+          path: build/${{ inputs.exporter }}-${{ matrix.arch }}-${{ matrix.dist }}/rpms/*.rpm
+          retention-days: 7
+          if-no-files-found: warn
 
-          rpm_files=$(find "$build_dir/rpms" -name "*.rpm")
-          if [ -z "$rpm_files" ]; then
-            echo "⚠️  No RPM files to upload"
-            exit 0
-          fi
-
-          echo "::group::⬆️  Uploading to GitHub Releases"
-          echo "🏷️  Release: v$version"
-          echo "📦 Files:"
-          for file in $rpm_files; do
-            echo "  → $(basename "$file")"
-          done
-
-          python3 core/scripts/upload_to_release.py \
-            --repo ${{ github.repository }} \
-            --exporter "$exporter" \
-            --version "$version" \
-            --files $rpm_files \
-            --output "$build_dir/release_urls.json"
-
-          echo "✓ Upload completed"
-          echo "::endgroup::"
-
-      - name: 📝 Publish Artifact Metadata to Catalog
+      - name: 📝 Generate Artifact Metadata
         if: steps.check-arch.outputs.supported == 'true'
         env:
           EXPORTER: ${{ inputs.exporter }}
@@ -236,26 +211,27 @@ jobs:
         run: |
           build_dir="build/$EXPORTER-$ARCH-$DIST"
 
-          echo "::group::📝 Generating artifact metadata"
+          echo "::group::📝 Generating artifact metadata from local file"
 
-          # Parse release_urls.json to extract package info
-          ASSET=$(jq -c '.assets[0]' "$build_dir/release_urls.json")
-          FILENAME=$(echo "$ASSET" | jq -r '.file')
-          URL=$(echo "$ASSET" | jq -r '.url')
+          # Find RPM file
+          rpm_file=$(find "$build_dir/rpms" -name "*.rpm" | head -1)
 
-          # Download temporarily to get checksum and size
-          echo "Downloading $FILENAME to extract metadata..."
-          TEMP_FILE=$(mktemp)
-          curl -sL "$URL" -o "$TEMP_FILE"
+          if [ -z "$rpm_file" ] || [ ! -f "$rpm_file" ]; then
+            echo "❌ No RPM file found in $build_dir/rpms"
+            exit 1
+          fi
 
-          SHA256=$(sha256sum "$TEMP_FILE" | awk '{print $1}')
-          SIZE=$(stat -c%s "$TEMP_FILE")
-          rm -f "$TEMP_FILE"
+          FILENAME=$(basename "$rpm_file")
 
+          # Calculate checksum and size from local file
+          SHA256=$(sha256sum "$rpm_file" | awk '{print $1}')
+          SIZE=$(stat -c%s "$rpm_file")
+
+          echo "  File: $FILENAME"
           echo "  SHA256: $SHA256"
           echo "  Size: $SIZE bytes"
 
-          # Generate artifact metadata JSON
+          # Generate artifact metadata JSON with empty URL (will be filled after upload)
           python3 core/scripts/generate_artifact_metadata.py \
             --type rpm \
             --exporter "$EXPORTER" \
@@ -263,7 +239,6 @@ jobs:
             --arch "$ARCH" \
             --dist "$DIST" \
             --filename "$FILENAME" \
-            --url "$URL" \
             --sha256 "$SHA256" \
             --size "$SIZE" \
             --status "success" \
@@ -395,40 +370,6 @@ jobs:
           echo "✓ DEB signed successfully"
           echo "::endgroup::"
 
-      - name: ⬆️  Upload to GitHub Releases
-        if: steps.check-arch.outputs.supported == 'true'
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        run: |
-          exporter="${{ inputs.exporter }}"
-          arch="${{ matrix.arch }}"
-          dist="${{ matrix.dist }}"
-          version="${{ needs.get-version.outputs.version }}"
-          build_dir="build/$exporter-$arch-$dist"
-
-          deb_files=$(find "$build_dir/debs" -name "*.deb")
-          if [ -z "$deb_files" ]; then
-            echo "⚠️  No DEB files to upload"
-            exit 0
-          fi
-
-          echo "::group::⬆️  Uploading to GitHub Releases"
-          echo "🏷️  Release: v$version"
-          echo "📦 Files:"
-          for file in $deb_files; do
-            echo "  → $(basename "$file")"
-          done
-
-          python3 core/scripts/upload_to_release.py \
-            --repo ${{ github.repository }} \
-            --exporter "$exporter" \
-            --version "$version" \
-            --files $deb_files \
-            --output "$build_dir/release_urls.json"
-
-          echo "✓ Upload completed"
-          echo "::endgroup::"
-
       - name: 📝 Generate Artifact Metadata
         if: steps.check-arch.outputs.supported == 'true'
         env:
@@ -439,26 +380,27 @@ jobs:
         run: |
           build_dir="build/$EXPORTER-$ARCH-$DIST"
 
-          echo "::group::📝 Generating artifact metadata"
+          echo "::group::📝 Generating artifact metadata from local file"
 
-          # Parse release_urls.json to extract package info
-          ASSET=$(jq -c '.assets[0]' "$build_dir/release_urls.json")
-          FILENAME=$(echo "$ASSET" | jq -r '.file')
-          URL=$(echo "$ASSET" | jq -r '.url')
+          # Find DEB file
+          deb_file=$(find "$build_dir/debs" -name "*.deb" | head -1)
 
-          # Download temporarily to get checksum and size
-          echo "Downloading $FILENAME to extract metadata..."
-          TEMP_FILE=$(mktemp)
-          curl -sL "$URL" -o "$TEMP_FILE"
+          if [ -z "$deb_file" ] || [ ! -f "$deb_file" ]; then
+            echo "❌ No DEB file found in $build_dir/debs"
+            exit 1
+          fi
 
-          SHA256=$(sha256sum "$TEMP_FILE" | awk '{print $1}')
-          SIZE=$(stat -c%s "$TEMP_FILE")
-          rm -f "$TEMP_FILE"
+          FILENAME=$(basename "$deb_file")
 
+          # Calculate checksum and size from local file
+          SHA256=$(sha256sum "$deb_file" | awk '{print $1}')
+          SIZE=$(stat -c%s "$deb_file")
+
+          echo "  File: $FILENAME"
           echo "  SHA256: $SHA256"
           echo "  Size: $SIZE bytes"
 
-          # Generate artifact metadata JSON
+          # Generate artifact metadata JSON with empty URL (will be filled after upload)
           python3 core/scripts/generate_artifact_metadata.py \
             --type deb \
             --exporter "$EXPORTER" \
@@ -466,7 +408,6 @@ jobs:
             --arch "$ARCH" \
             --dist "$DIST" \
             --filename "$FILENAME" \
-            --url "$URL" \
             --sha256 "$SHA256" \
             --size "$SIZE" \
             --status "success" \
