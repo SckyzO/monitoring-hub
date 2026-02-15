@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "rpm",
+  "exporter": "node_exporter",
+  "version": "1.10.2",
+  "arch": "amd64",
+  "dist": "el8",
+  "build_date": "2026-02-15T13:01:08.364472+00:00",
+  "status": "success",
+  "package": {
+    "filename": "node_exporter-1.10.2-1.el8.x86_64.rpm",
+    "url": "https://github.com/SckyzO/monitoring-hub/releases/download/node_exporter-v1.10.2/node_exporter-1.10.2-1.el8.x86_64.rpm",
+    "sha256": "2602608d747c423bb7a47cc7678b02f2477134be5b1d44aada92ab92773326b9",
+    "size_bytes": 5383736
+  },
+  "rpm_metadata": {}
+}
