@@ -166,7 +166,10 @@ jobs:
             if gh workflow run build.yml \
               --repo ${{ github.repository }} \
               --ref main \
-              --field exporter="$exporter"; then
+              --field exporter="$exporter" \
+              --field arch="all" \
+              --field dist="all" \
+              --field package_type="all"; then
               echo "✓ Build workflow triggered for $exporter"
               echo "## ✅ Single Build Triggered" >> $GITHUB_STEP_SUMMARY
               echo "**Exporter:** $exporter" >> $GITHUB_STEP_SUMMARY
