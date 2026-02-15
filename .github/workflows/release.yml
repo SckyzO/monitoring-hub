@@ -669,6 +669,7 @@ jobs:
   # 4. Generate YUM/APT Metadata and Portal (single commit to gh-pages)
   publish-metadata:
     needs: [build-rpm, build-deb, build-docker]
+    if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 30
     # Serialize all gh-pages pushes to prevent conflicts
