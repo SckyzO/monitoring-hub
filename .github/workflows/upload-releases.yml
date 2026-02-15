@@ -65,8 +65,16 @@ jobs:
           echo "Downloaded artifacts:"
           find artifacts -type f | sort
 
-          # Extract exporter name from first artifact directory
-          exporter=$(find artifacts -type d -mindepth 1 -maxdepth 1 -name "build-*" | head -1 | xargs basename | cut -d'-' -f2)
+          # Extract exporter name from Docker metadata artifact (most reliable format)
+          # Format: metadata-docker-{exporter}
+          exporter=$(find artifacts -type d -mindepth 1 -maxdepth 1 -name "metadata-docker-*" | head -1 | xargs basename | cut -d'-' -f3)
+
+          # Fallback: Extract from build artifact if docker metadata not found
+          # Format: build-{type}-{exporter}-{dist}-{arch}
+          if [ -z "$exporter" ]; then
+            exporter=$(find artifacts -type d -mindepth 1 -maxdepth 1 -name "build-*" | head -1 | xargs basename | cut -d'-' -f3)
+          fi
+
           echo "exporter=$exporter" >> $GITHUB_OUTPUT
           echo "Found exporter: $exporter"
 
