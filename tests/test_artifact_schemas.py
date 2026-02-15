@@ -5,6 +5,7 @@ Validates that generated artifacts conform to the V3 format specification.
 """
 
 from datetime import datetime
+from urllib.parse import urlparse
 
 import pytest
 
@@ -397,8 +398,9 @@ class TestSchemaValidation:
         ]
 
         for url in valid_urls:
-            assert url.startswith("https://")
-            assert "github.com" in url
+            parsed = urlparse(url)
+            assert parsed.scheme == "https"
+            assert parsed.netloc == "github.com"
 
     def test_sha256_format(self):
         """SHA256 checksums must be valid hex strings."""
