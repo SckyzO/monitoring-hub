@@ -85,6 +85,31 @@ jobs:
 
           echo "::endgroup::"
 
+      - name: 🏷️  Create or Verify GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          EXPORTER: ${{ steps.download.outputs.exporter }}
+          VERSION: ${{ steps.download.outputs.version }}
+        run: |
+          release_tag="$EXPORTER-v$VERSION"
+
+          echo "::group::🏷️  Checking release: $release_tag"
+
+          # Check if release already exists
+          if gh release view "$release_tag" > /dev/null 2>&1; then
+            echo "✓ Release $release_tag already exists"
+          else
+            echo "Creating release $release_tag..."
+            gh release create "$release_tag" \
+              --title "$EXPORTER v$VERSION" \
+              --notes "Automated release for $EXPORTER v$VERSION" \
+              --draft=false \
+              --prerelease=false
+            echo "✓ Release created successfully"
+          fi
+
+          echo "::endgroup::"
+
       - name: ⬆️ Upload RPM Packages (Sequential)
         id: upload-rpm
         env:
