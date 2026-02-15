@@ -43,6 +43,11 @@ on:
           - docker
         default: 'all'
 
+permissions:
+  contents: write    # Push to gh-pages
+  packages: write    # Publish Docker images
+  actions: read      # Read workflow artifacts
+
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
