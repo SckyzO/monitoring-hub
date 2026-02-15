@@ -50,6 +50,7 @@ jobs:
         env:
           INPUT_EXPORTERS: ${{ inputs.exporters }}
           CATALOG_URL: https://sckyzo.github.io/monitoring-hub/catalog/index.json
+          PYTHONPATH: ${{ github.workspace }}
         run: |
           echo "::group::🔍 Detecting exporters to build"
 

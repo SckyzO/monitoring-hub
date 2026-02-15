@@ -88,25 +88,29 @@ jobs:
             fi
 
             echo "Validating $exporter..."
-            python3 -c "
-from core.engine.schema import ExporterManifestSchema
+            python3 << 'PYTHON_EOF'
 import yaml
+import sys
+from core.engine.schema import ExporterManifestSchema
 
-with open('$manifest') as f:
+manifest_path = sys.argv[1]
+exporter_name = sys.argv[2]
+
+with open(manifest_path) as f:
     data = yaml.safe_load(f)
 
 schema = ExporterManifestSchema()
 errors = schema.validate(data)
 
 if errors:
-    print('❌ Validation failed for $exporter:')
+    print(f'❌ Validation failed for {exporter_name}:')
     for field, msgs in errors.items():
         for msg in msgs if isinstance(msgs, list) else [msgs]:
             print(f'  - {field}: {msg}')
-    exit(1)
+    sys.exit(1)
 else:
     print('✓ Valid')
-"
+PYTHON_EOF "$manifest" "$exporter"
           done
 
           echo "::endgroup::"
