@@ -622,36 +622,43 @@ jobs:
           image_id="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/$exporter"
           image_id=$(echo $image_id | tr '[:upper:]' '[:lower:]')
 
-          # Get supported platforms
-          supported_archs=$(python3 -c "import yaml; manifest = yaml.safe_load(open('exporters/$exporter/manifest.yaml')); archs = manifest.get('build', {}).get('archs', ['amd64', 'arm64']); print(','.join([f'linux/{arch}' for arch in archs]))")
+          # Get supported platforms as JSON array
+          platforms=$(python3 -c "import yaml, json; manifest = yaml.safe_load(open('exporters/$exporter/manifest.yaml')); archs = manifest.get('build', {}).get('archs', ['amd64', 'arm64']); print(json.dumps([f'linux/{arch}' for arch in archs]))")
 
           # Get image digest (from latest push)
           digest=$(docker buildx imagetools inspect "$image_id:$version" --format '{{.Manifest.Digest}}' 2>/dev/null || echo "unknown")
 
-          # Create docker_images.json
-          cat > "build/$exporter/docker_images.json" <<EOF
-          {
-            "tag": "$exporter-v$version",
-            "images": [
-              {
-                "registry": "${{ env.REGISTRY }}",
-                "repository": "${{ env.IMAGE_NAME }}/$exporter",
-                "tag": "$version",
-                "digest": "$digest",
-                "platforms": ["${supported_archs//,/\",\"}"],
-                "url": "$image_id:$version"
-              },
-              {
-                "registry": "${{ env.REGISTRY }}",
-                "repository": "${{ env.IMAGE_NAME }}/$exporter",
-                "tag": "latest",
-                "digest": "$digest",
-                "platforms": ["${supported_archs//,/\",\"}"],
-                "url": "$image_id:latest"
-              }
-            ]
-          }
-          EOF
+          # Create docker_images.json using jq (prevents control character issues)
+          jq -n \
+            --arg tag "$exporter-v$version" \
+            --arg registry "${{ env.REGISTRY }}" \
+            --arg repository "${{ env.IMAGE_NAME }}/$exporter" \
+            --arg version "$version" \
+            --arg digest "$digest" \
+            --argjson platforms "$platforms" \
+            --arg url_version "$image_id:$version" \
+            --arg url_latest "$image_id:latest" \
+            '{
+              tag: $tag,
+              images: [
+                {
+                  registry: $registry,
+                  repository: $repository,
+                  tag: $version,
+                  digest: $digest,
+                  platforms: $platforms,
+                  url: $url_version
+                },
+                {
+                  registry: $registry,
+                  repository: $repository,
+                  tag: "latest",
+                  digest: $digest,
+                  platforms: $platforms,
+                  url: $url_latest
+                }
+              ]
+            }' > "build/$exporter/docker_images.json"
 
           echo "::group::📝 Generating and publishing Docker metadata"
 
