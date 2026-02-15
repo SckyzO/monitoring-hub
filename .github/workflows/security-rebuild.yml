@@ -172,7 +172,7 @@ jobs:
           # Retry up to 3 times with 10s delay
           max_retries=3
           for i in $(seq 1 $max_retries); do
-            if gh workflow run release.yml \
+            if gh workflow run build.yml \
               --repo "$REPO" \
               --ref main \
               --field exporter="$EXPORTER" \
@@ -218,4 +218,4 @@ jobs:
           echo "- ✅ Latest system packages (glibc, openssl, etc.)" >> $GITHUB_STEP_SUMMARY
           echo "- ✅ Fresh Trivy security scan" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "Monitor progress in the [Release workflow runs](https://github.com/$REPO/actions/workflows/release.yml)" >> $GITHUB_STEP_SUMMARY
+          echo "Monitor progress in the [Release workflow runs](https://github.com/$REPO/actions/workflows/build.yml)" >> $GITHUB_STEP_SUMMARY
