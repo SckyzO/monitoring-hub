@@ -281,6 +281,18 @@ def main():
         )
         sys.exit(1)
 
+    # Validate output path to prevent path traversal
+    output_path = Path(args.output).resolve()
+    try:
+        output_path.relative_to(Path.cwd().resolve())
+    except ValueError:
+        print(
+            f"Error: Output path '{args.output}' escapes the current working directory. "
+            "This is not allowed for security reasons.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
     # Validate required fields per type
     if args.type in ["rpm", "deb"]:
         required = ["arch", "dist", "filename", "url", "sha256", "size"]
@@ -311,7 +323,6 @@ def main():
         sys.exit(1)
 
     # Write output
-    output_path = Path(args.output)
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
     with open(output_path, "w") as f:

@@ -274,6 +274,21 @@ def main():
         )
         sys.exit(1)
 
+    # Validate output path if provided
+    if args.output:
+        output_path = Path(args.output).resolve()
+        try:
+            output_path.relative_to(Path.cwd().resolve())
+        except ValueError:
+            print(
+                f"Error: Output path '{args.output}' escapes the current working directory. "
+                "This is not allowed for security reasons.",
+                file=sys.stderr,
+            )
+            sys.exit(1)
+    else:
+        output_path = exporter_dir / "metadata.json"
+
     # Load manifest
     manifest = load_manifest(manifest_path)
 
@@ -292,9 +307,6 @@ def main():
     metadata = aggregate_metadata(args.exporter, artifacts, manifest)
 
     # Write output
-    output_path = (
-        Path(args.output) if args.output else exporter_dir / "metadata.json"
-    )
     output_path.parent.mkdir(parents=True, exist_ok=True)
 
     with open(output_path, "w") as f:
