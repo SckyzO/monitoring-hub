@@ -13,9 +13,9 @@ on:
 permissions:
   contents: write
 
-# Ensure only one workflow can update gh-pages at a time
+# Ensure only one docs deployment runs at a time
 concurrency:
-  group: gh-pages-deployment
+  group: docs-deployment
   cancel-in-progress: false
 
 jobs:
