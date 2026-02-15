@@ -42,9 +42,9 @@ dnf builddep -y ~/rpmbuild/SPECS/$(basename "$SPEC_FILE")
 echo "Building RPM for target: $TARGET_ARCH..."
 rpmbuild -bb --target "$TARGET_ARCH" ~/rpmbuild/SPECS/$(basename "$SPEC_FILE")
 
-# Copy artifacts to output
+# Copy artifacts to output (flatten directory structure)
 echo "Copying artifacts..."
-cp -r ~/rpmbuild/RPMS/* "$OUTPUT_DIR/"
+find ~/rpmbuild/RPMS -type f -name "*.rpm" -exec cp {} "$OUTPUT_DIR/" \;
 
 echo "Build complete."
-ls -R "$OUTPUT_DIR"
+ls -lh "$OUTPUT_DIR"
