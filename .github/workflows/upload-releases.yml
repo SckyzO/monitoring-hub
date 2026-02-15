@@ -1,0 +1,309 @@
+name: ⬆️ Upload Releases
+run-name: ⬆️ Upload Releases - ${{ github.event.workflow_run.id || inputs.workflow_run_id }}
+
+on:
+  workflow_run:
+    workflows: ["🚀 Build"]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      workflow_run_id:
+        description: 'Build workflow run ID to fetch artifacts from'
+        required: true
+        type: string
+
+permissions:
+  contents: write    # Create/update GitHub Releases
+  packages: write    # Push to GHCR
+  actions: read      # Download artifacts
+
+concurrency:
+  group: upload-releases
+  cancel-in-progress: false
+
+jobs:
+  upload-packages:
+    name: 📦 Upload Packages Sequentially
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    # Only run if build workflow succeeded
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
+    outputs:
+      rpm_uploaded: ${{ steps.upload-summary.outputs.rpm_uploaded }}
+      deb_uploaded: ${{ steps.upload-summary.outputs.deb_uploaded }}
+      docker_uploaded: ${{ steps.upload-summary.outputs.docker_uploaded }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+          cache-dependency-path: 'requirements/base.txt'
+
+      - name: Install dependencies
+        run: pip install -r requirements/base.txt
+
+      - name: 📥 Download Build Artifacts
+        id: download
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RUN_ID: ${{ github.event.workflow_run.id || inputs.workflow_run_id }}
+        run: |
+          echo "::group::📥 Downloading build artifacts"
+
+          mkdir -p artifacts
+
+          # Download all artifacts from the build run
+          gh run download "$RUN_ID" --dir artifacts || {
+            echo "❌ Failed to download artifacts from run $RUN_ID"
+            exit 1
+          }
+
+          echo "Downloaded artifacts:"
+          find artifacts -type f | sort
+
+          # Extract exporter name from first artifact directory
+          exporter=$(find artifacts -type d -mindepth 1 -maxdepth 1 -name "build-*" | head -1 | xargs basename | cut -d'-' -f2)
+          echo "exporter=$exporter" >> $GITHUB_OUTPUT
+          echo "Found exporter: $exporter"
+
+          # Extract version
+          version=$(python3 -c "import yaml; manifest = yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(manifest['version'].lstrip('v'))")
+          echo "version=$version" >> $GITHUB_OUTPUT
+          echo "Version: v$version"
+
+          echo "::endgroup::"
+
+      - name: ⬆️ Upload RPM Packages (Sequential)
+        id: upload-rpm
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          EXPORTER: ${{ steps.download.outputs.exporter }}
+          VERSION: ${{ steps.download.outputs.version }}
+        run: |
+          echo "::group::⬆️ Uploading RPM packages sequentially"
+
+          uploaded=0
+          failed=0
+
+          # Function to upload with retry
+          upload_with_retry() {
+            local file="$1"
+            local max_retries=5
+            local wait_time=10
+
+            for attempt in $(seq 1 $max_retries); do
+              echo "  Attempt $attempt/$max_retries: Uploading $(basename "$file")..."
+
+              if gh release upload "v$VERSION" "$file" --clobber 2>&1; then
+                echo "  ✅ Upload successful"
+                return 0
+              else
+                if [ $attempt -lt $max_retries ]; then
+                  echo "  ⚠️  Upload failed, retrying in ${wait_time}s..."
+                  sleep $wait_time
+                else
+                  echo "  ❌ Upload failed after $max_retries attempts"
+                  return 1
+                fi
+              fi
+            done
+          }
+
+          # Find all RPM artifacts
+          for rpm_artifact in artifacts/build-rpm-*; do
+            if [ ! -d "$rpm_artifact" ]; then
+              continue
+            fi
+
+            echo ""
+            echo "Processing: $(basename "$rpm_artifact")"
+
+            # Find RPM files in this artifact
+            for rpm_file in "$rpm_artifact"/*.rpm; do
+              if [ ! -f "$rpm_file" ]; then
+                continue
+              fi
+
+              if upload_with_retry "$rpm_file"; then
+                ((uploaded++))
+              else
+                ((failed++))
+              fi
+            done
+          done
+
+          echo ""
+          echo "════════════════════════════════════════"
+          echo "RPM Upload Summary:"
+          echo "  ✅ Uploaded: $uploaded"
+          echo "  ❌ Failed: $failed"
+          echo "════════════════════════════════════════"
+
+          echo "uploaded=$uploaded" >> $GITHUB_OUTPUT
+          echo "failed=$failed" >> $GITHUB_OUTPUT
+
+          echo "::endgroup::"
+
+      - name: ⬆️ Upload DEB Packages (Sequential)
+        id: upload-deb
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VERSION: ${{ steps.download.outputs.version }}
+        run: |
+          echo "::group::⬆️ Uploading DEB packages sequentially"
+
+          uploaded=0
+          failed=0
+
+          # Function to upload with retry
+          upload_with_retry() {
+            local file="$1"
+            local max_retries=5
+            local wait_time=10
+
+            for attempt in $(seq 1 $max_retries); do
+              echo "  Attempt $attempt/$max_retries: Uploading $(basename "$file")..."
+
+              if gh release upload "v$VERSION" "$file" --clobber 2>&1; then
+                echo "  ✅ Upload successful"
+                return 0
+              else
+                if [ $attempt -lt $max_retries ]; then
+                  echo "  ⚠️  Upload failed, retrying in ${wait_time}s..."
+                  sleep $wait_time
+                else
+                  echo "  ❌ Upload failed after $max_retries attempts"
+                  return 1
+                fi
+              fi
+            done
+          }
+
+          # Find all DEB artifacts
+          for deb_artifact in artifacts/build-deb-*; do
+            if [ ! -d "$deb_artifact" ]; then
+              continue
+            fi
+
+            echo ""
+            echo "Processing: $(basename "$deb_artifact")"
+
+            # Find DEB files in this artifact
+            for deb_file in "$deb_artifact"/*.deb; do
+              if [ ! -f "$deb_file" ]; then
+                continue
+              fi
+
+              if upload_with_retry "$deb_file"; then
+                ((uploaded++))
+              else
+                ((failed++))
+              fi
+            done
+          done
+
+          echo ""
+          echo "════════════════════════════════════════"
+          echo "DEB Upload Summary:"
+          echo "  ✅ Uploaded: $uploaded"
+          echo "  ❌ Failed: $failed"
+          echo "════════════════════════════════════════"
+
+          echo "uploaded=$uploaded" >> $GITHUB_OUTPUT
+          echo "failed=$failed" >> $GITHUB_OUTPUT
+
+          echo "::endgroup::"
+
+      - name: 🐳 Push Docker Image (with retry)
+        id: push-docker
+        env:
+          EXPORTER: ${{ steps.download.outputs.exporter }}
+          VERSION: ${{ steps.download.outputs.version }}
+          REGISTRY: ghcr.io
+          IMAGE_NAME: ${{ github.repository }}
+        continue-on-error: true
+        run: |
+          echo "::group::🐳 Pushing Docker image to GHCR"
+
+          # Check if Docker artifact exists
+          docker_artifact="artifacts/build-docker-$EXPORTER"
+          if [ ! -d "$docker_artifact" ]; then
+            echo "ℹ️  No Docker artifact found, skipping"
+            echo "uploaded=0" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          # Load Docker image from tarball (if saved as artifact)
+          # For now, we'll rebuild from Dockerfile as artifacts don't preserve images well
+
+          echo "Building Docker image for upload..."
+
+          # Generate Dockerfile from template
+          python3 -m core.engine.builder \
+            --exporter "$EXPORTER" \
+            --output-dir "build/$EXPORTER" \
+            --skip-rpm \
+            --skip-deb
+
+          image_id="$REGISTRY/$IMAGE_NAME/$EXPORTER"
+          image_id=$(echo $image_id | tr '[:upper:]' '[:lower:]')
+
+          # Build and push with retry
+          max_retries=5
+          wait_time=10
+
+          for attempt in $(seq 1 $max_retries); do
+            echo "Attempt $attempt/$max_retries: Pushing $image_id:$VERSION..."
+
+            if docker build -t "$image_id:$VERSION" -t "$image_id:latest" "build/$EXPORTER" && \
+               docker push "$image_id:$VERSION" && \
+               docker push "$image_id:latest"; then
+              echo "✅ Docker push successful"
+              echo "uploaded=1" >> $GITHUB_OUTPUT
+              echo "::endgroup::"
+              exit 0
+            else
+              if [ $attempt -lt $max_retries ]; then
+                echo "⚠️  Push failed, retrying in ${wait_time}s..."
+                sleep $wait_time
+              else
+                echo "❌ Docker push failed after $max_retries attempts"
+                echo "uploaded=0" >> $GITHUB_OUTPUT
+                echo "::endgroup::"
+                exit 1
+              fi
+            fi
+          done
+
+      - name: 📊 Upload Summary
+        id: upload-summary
+        if: always()
+        env:
+          RPM_UPLOADED: ${{ steps.upload-rpm.outputs.uploaded }}
+          RPM_FAILED: ${{ steps.upload-rpm.outputs.failed }}
+          DEB_UPLOADED: ${{ steps.upload-deb.outputs.uploaded }}
+          DEB_FAILED: ${{ steps.upload-deb.outputs.failed }}
+          DOCKER_UPLOADED: ${{ steps.push-docker.outputs.uploaded }}
+          EXPORTER: ${{ steps.download.outputs.exporter }}
+          VERSION: ${{ steps.download.outputs.version }}
+        run: |
+          echo "## ⬆️ Upload Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Exporter:** $EXPORTER v$VERSION" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Type | Uploaded | Failed |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|----------|--------|" >> $GITHUB_STEP_SUMMARY
+          echo "| RPM  | ${RPM_UPLOADED:-0} | ${RPM_FAILED:-0} |" >> $GITHUB_STEP_SUMMARY
+          echo "| DEB  | ${DEB_UPLOADED:-0} | ${DEB_FAILED:-0} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Docker | ${DOCKER_UPLOADED:-0} | - |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Status:** ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
+
+          # Set outputs for next workflow
+          echo "rpm_uploaded=${RPM_UPLOADED:-0}" >> $GITHUB_OUTPUT
+          echo "deb_uploaded=${DEB_UPLOADED:-0}" >> $GITHUB_OUTPUT
+          echo "docker_uploaded=${DOCKER_UPLOADED:-0}" >> $GITHUB_OUTPUT
