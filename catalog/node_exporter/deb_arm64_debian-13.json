@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "deb",
+  "exporter": "node_exporter",
+  "version": "1.10.2",
+  "arch": "arm64",
+  "dist": "debian-13",
+  "build_date": "2026-02-15T13:09:09.885766+00:00",
+  "status": "success",
+  "package": {
+    "filename": "node-exporter_1.10.2-1_arm64.deb",
+    "url": "https://github.com/SckyzO/monitoring-hub/releases/download/node_exporter-v1.10.2/node-exporter_1.10.2-1_arm64.deb",
+    "sha256": "667221e9f04ea77ffc77cdc64524e2efbbb91af14b70b5d2af6cdc58ab8f8ac4",
+    "size_bytes": 10656458
+  },
+  "deb_metadata": {}
+}
