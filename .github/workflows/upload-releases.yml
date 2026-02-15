@@ -211,6 +211,7 @@ jobs:
         id: upload-deb
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          EXPORTER: ${{ steps.download.outputs.exporter }}
           VERSION: ${{ steps.download.outputs.version }}
         run: |
           echo "::group::⬆️ Uploading DEB packages sequentially"
