@@ -116,7 +116,7 @@ def watch(update, token):
             github_output = os.environ.get("GITHUB_OUTPUT")
             if github_output:
                 with open(github_output, "a") as f:
-                    f.write(f"updated_names={names_str}\\n")
+                    f.write(f"updated_names={names_str}\n")
     elif updates_found:
         click.echo("Updates available. Run with --update to apply.")
     else:
