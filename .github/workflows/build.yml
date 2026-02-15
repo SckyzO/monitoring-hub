@@ -1,0 +1,747 @@
+name: 🚀 Build
+run-name: 🚀 Build - ${{ inputs.exporter }}
+
+on:
+  workflow_dispatch:
+    inputs:
+      exporter:
+        description: 'Exporter to build'
+        required: true
+        default: 'node_exporter'
+        type: string
+      arch:
+        description: 'Architecture filter (default: all)'
+        required: false
+        type: choice
+        options:
+          - all
+          - amd64
+          - arm64
+        default: 'all'
+      dist:
+        description: 'Distribution filter (default: all)'
+        required: false
+        type: choice
+        options:
+          - all
+          - el8
+          - el9
+          - el10
+          - ubuntu-22.04
+          - ubuntu-24.04
+          - debian-12
+          - debian-13
+        default: 'all'
+      package_type:
+        description: 'Package type filter (default: all)'
+        required: false
+        type: choice
+        options:
+          - all
+          - rpm
+          - deb
+          - docker
+        default: 'all'
+
+permissions:
+  contents: write    # Create GitHub Releases
+  packages: write    # Publish Docker images
+  actions: write     # Upload artifacts
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+# Ensure only one build per exporter at a time (allow parallel builds for different exporters)
+concurrency:
+  group: build-${{ inputs.exporter }}
+  cancel-in-progress: false
+
+jobs:
+  # Get version once and reuse across all jobs
+  get-version:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      version: ${{ steps.version.outputs.version }}
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: 📋 Extract Version
+        id: version
+        run: |
+          exporter="${{ inputs.exporter }}"
+          version=$(python3 -c "import yaml, sys; manifest = yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(manifest['version'].lstrip('v'))")
+          echo "version=$version" >> $GITHUB_OUTPUT
+          echo "📌 Version: v$version"
+
+  # 1. Build RPM and upload to GitHub Releases
+  build-rpm:
+    name: RPM - ${{ inputs.exporter }} (${{ matrix.dist }}/${{ matrix.arch }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    needs: get-version
+    if: inputs.package_type == 'all' || inputs.package_type == 'rpm'
+    permissions:
+      contents: write  # Required for creating releases
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [amd64, arm64]
+        dist: [el8, el9, el10]
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Check if architecture is supported
+        id: check-arch
+        run: |
+          exporter="${{ inputs.exporter }}"
+          arch="${{ matrix.arch }}"
+          supported_archs=$(python3 -c "import yaml; manifest = yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(' '.join(manifest.get('build', {}).get('archs', ['amd64', 'arm64'])))")
+          echo "Supported archs for $exporter: $supported_archs"
+          if echo "$supported_archs" | grep -qw "$arch"; then
+            echo "supported=true" >> $GITHUB_OUTPUT
+            echo "✓ Architecture $arch is supported"
+          else
+            echo "supported=false" >> $GITHUB_OUTPUT
+            echo "⊘ Architecture $arch not supported, skipping"
+          fi
+
+      - name: Set up QEMU
+        if: steps.check-arch.outputs.supported == 'true' && (inputs.arch == 'all' || inputs.arch == matrix.arch) && (inputs.dist == 'all' || inputs.dist == matrix.dist)
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        if: steps.check-arch.outputs.supported == 'true'
+        uses: docker/setup-buildx-action@v3
+
+      - name: Set up Python
+        if: steps.check-arch.outputs.supported == 'true'
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+          cache-dependency-path: 'requirements/base.txt'
+
+      - run: pip install -r requirements/base.txt
+        if: steps.check-arch.outputs.supported == 'true'
+
+      - name: 🔨 Build RPM
+        if: steps.check-arch.outputs.supported == 'true' && (inputs.arch == 'all' || inputs.arch == matrix.arch) && (inputs.dist == 'all' || inputs.dist == matrix.dist)
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: |
+          exporter="${{ inputs.exporter }}"
+          arch="${{ matrix.arch }}"
+          dist="${{ matrix.dist }}"
+
+          echo "::group::🔨 Building RPM Package"
+          echo "📦 Package: $exporter"
+          echo "🏗️  Architecture: $arch"
+          echo "🐧 Distribution: $dist"
+          echo "::endgroup::"
+
+          case $dist in
+            el8) image="almalinux:8" ;;
+            el9) image="almalinux:9" ;;
+            el10) image="quay.io/centos/centos:stream10" ;;
+          esac
+
+          build_dir="build/$exporter-$arch-$dist"
+
+          echo "::group::🔧 Generating RPM spec file"
+          python3 -m core.engine.builder \
+            --manifest "exporters/$exporter/manifest.yaml" \
+            --output-dir "$build_dir" \
+            --arch "$arch"
+          echo "✓ Spec file generated"
+          echo "::endgroup::"
+
+          spec_file="$build_dir/$exporter.spec"
+          if [ -f "$spec_file" ]; then
+            echo "::group::🐳 Building RPM in container ($image)"
+            chmod +x core/scripts/build_rpm.sh core/scripts/rpm_entrypoint.sh
+            ./core/scripts/build_rpm.sh "$spec_file" "$build_dir/rpms" "$arch" "$image"
+            echo "✓ RPM build completed"
+            echo "::endgroup::"
+          fi
+
+      - name: 🔐 Sign RPM
+        if: steps.check-arch.outputs.supported == 'true'
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+          GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
+        run: |
+          exporter="${{ inputs.exporter }}"
+          arch="${{ matrix.arch }}"
+          dist="${{ matrix.dist }}"
+
+          build_dir="build/$exporter-$arch-$dist"
+          rpm_file=$(find "$build_dir/rpms" -name "*.rpm" | head -1)
+
+          if [ -z "$rpm_file" ]; then
+            echo "⚠️  No RPM file found, skipping signing"
+            exit 0
+          fi
+
+          echo "::group::🔐 Signing RPM with GPG"
+          echo "📄 File: $(basename "$rpm_file")"
+          chmod +x core/scripts/sign_rpm_container.sh
+          ./core/scripts/sign_rpm_container.sh "$rpm_file" "$GPG_PRIVATE_KEY" "$GPG_PASSPHRASE" "$GPG_KEY_ID"
+          echo "✓ RPM signed successfully"
+          echo "::endgroup::"
+
+      - name: ⬆️  Upload to GitHub Releases
+        if: steps.check-arch.outputs.supported == 'true'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          exporter="${{ inputs.exporter }}"
+          arch="${{ matrix.arch }}"
+          dist="${{ matrix.dist }}"
+          version="${{ needs.get-version.outputs.version }}"
+          build_dir="build/$exporter-$arch-$dist"
+
+          rpm_files=$(find "$build_dir/rpms" -name "*.rpm")
+          if [ -z "$rpm_files" ]; then
+            echo "⚠️  No RPM files to upload"
+            exit 0
+          fi
+
+          echo "::group::⬆️  Uploading to GitHub Releases"
+          echo "🏷️  Release: v$version"
+          echo "📦 Files:"
+          for file in $rpm_files; do
+            echo "  → $(basename "$file")"
+          done
+
+          python3 core/scripts/upload_to_release.py \
+            --repo ${{ github.repository }} \
+            --exporter "$exporter" \
+            --version "$version" \
+            --files $rpm_files \
+            --output "$build_dir/release_urls.json"
+
+          echo "✓ Upload completed"
+          echo "::endgroup::"
+
+      - name: 📝 Publish Artifact Metadata to Catalog
+        if: steps.check-arch.outputs.supported == 'true'
+        env:
+          EXPORTER: ${{ inputs.exporter }}
+          ARCH: ${{ matrix.arch }}
+          DIST: ${{ matrix.dist }}
+          VERSION: ${{ needs.get-version.outputs.version }}
+        run: |
+          build_dir="build/$EXPORTER-$ARCH-$DIST"
+
+          echo "::group::📝 Generating artifact metadata"
+
+          # Parse release_urls.json to extract package info
+          ASSET=$(jq -c '.assets[0]' "$build_dir/release_urls.json")
+          FILENAME=$(echo "$ASSET" | jq -r '.file')
+          URL=$(echo "$ASSET" | jq -r '.url')
+
+          # Download temporarily to get checksum and size
+          echo "Downloading $FILENAME to extract metadata..."
+          TEMP_FILE=$(mktemp)
+          curl -sL "$URL" -o "$TEMP_FILE"
+
+          SHA256=$(sha256sum "$TEMP_FILE" | awk '{print $1}')
+          SIZE=$(stat -c%s "$TEMP_FILE")
+          rm -f "$TEMP_FILE"
+
+          echo "  SHA256: $SHA256"
+          echo "  Size: $SIZE bytes"
+
+          # Generate artifact metadata JSON
+          python3 core/scripts/generate_artifact_metadata.py \
+            --type rpm \
+            --exporter "$EXPORTER" \
+            --version "$VERSION" \
+            --arch "$ARCH" \
+            --dist "$DIST" \
+            --filename "$FILENAME" \
+            --url "$URL" \
+            --sha256 "$SHA256" \
+            --size "$SIZE" \
+            --status "success" \
+            --output "$build_dir/rpm_${ARCH}_${DIST}.json"
+
+          echo "✓ Artifact metadata generated: $build_dir/rpm_${ARCH}_${DIST}.json"
+          echo "::endgroup::"
+
+      - name: 📤 Upload Metadata Artifact
+        if: steps.check-arch.outputs.supported == 'true'
+        uses: actions/upload-artifact@v7
+        with:
+          name: metadata-rpm-${{ inputs.exporter }}-${{ matrix.dist }}-${{ matrix.arch }}
+          path: build/${{ inputs.exporter }}-${{ matrix.arch }}-${{ matrix.dist }}/rpm_*.json
+          retention-days: 7
+
+  # 2. Build DEB and upload to GitHub Releases
+  build-deb:
+    name: DEB - ${{ inputs.exporter }} (${{ matrix.dist }}/${{ matrix.arch }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    needs: get-version
+    if: inputs.package_type == 'all' || inputs.package_type == 'deb'
+    permissions:
+      contents: write  # Required for creating releases
+    strategy:
+      fail-fast: false
+      matrix:
+        arch: [amd64, arm64]
+        dist: [ubuntu-22.04, ubuntu-24.04, debian-12, debian-13]
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Check if architecture is supported
+        id: check-arch
+        run: |
+          exporter="${{ inputs.exporter }}"
+          arch="${{ matrix.arch }}"
+          supported_archs=$(python3 -c "import yaml; manifest = yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(' '.join(manifest.get('build', {}).get('archs', ['amd64', 'arm64'])))")
+          echo "Supported archs for $exporter: $supported_archs"
+          if echo "$supported_archs" | grep -qw "$arch"; then
+            echo "supported=true" >> $GITHUB_OUTPUT
+            echo "✓ Architecture $arch is supported"
+          else
+            echo "supported=false" >> $GITHUB_OUTPUT
+            echo "⊘ Architecture $arch not supported, skipping"
+          fi
+
+      - name: Set up QEMU
+        if: steps.check-arch.outputs.supported == 'true' && (inputs.arch == 'all' || inputs.arch == matrix.arch) && (inputs.dist == 'all' || inputs.dist == matrix.dist)
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        if: steps.check-arch.outputs.supported == 'true'
+        uses: docker/setup-buildx-action@v3
+
+      - name: Set up Python
+        if: steps.check-arch.outputs.supported == 'true'
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+          cache-dependency-path: 'requirements/base.txt'
+
+      - run: pip install -r requirements/base.txt
+        if: steps.check-arch.outputs.supported == 'true'
+
+      - name: 🔨 Build DEB
+        if: steps.check-arch.outputs.supported == 'true' && (inputs.arch == 'all' || inputs.arch == matrix.arch) && (inputs.dist == 'all' || inputs.dist == matrix.dist)
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: |
+          exporter="${{ inputs.exporter }}"
+          arch="${{ matrix.arch }}"
+          dist="${{ matrix.dist }}"
+
+          echo "::group::🔨 Building DEB Package"
+          echo "📦 Package: $exporter"
+          echo "🏗️  Architecture: $arch"
+          echo "🐧 Distribution: $dist"
+          echo "::endgroup::"
+
+          case $dist in
+            ubuntu-22.04) image="ubuntu:22.04" ;;
+            ubuntu-24.04) image="ubuntu:24.04" ;;
+            debian-12) image="debian:12" ;;
+            debian-13) image="debian:trixie" ;;
+          esac
+
+          build_dir="build/$exporter-$arch-$dist"
+
+          echo "::group::🔧 Generating DEB control files"
+          python3 -m core.engine.builder \
+            --manifest "exporters/$exporter/manifest.yaml" \
+            --output-dir "$build_dir" \
+            --arch "$arch"
+          echo "✓ Control files generated"
+          echo "::endgroup::"
+
+          echo "::group::🐳 Building DEB in container ($image)"
+          chmod +x core/scripts/build_deb.sh core/scripts/deb_entrypoint.sh
+          ./core/scripts/build_deb.sh "$build_dir" "$build_dir/debs" "$arch" "$image"
+          echo "✓ DEB build completed"
+          echo "::endgroup::"
+
+      - name: 🔐 Sign DEB
+        if: steps.check-arch.outputs.supported == 'true'
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+          GPG_KEY_ID: ${{ secrets.GPG_KEY_ID }}
+        run: |
+          exporter="${{ inputs.exporter }}"
+          arch="${{ matrix.arch }}"
+          dist="${{ matrix.dist }}"
+
+          build_dir="build/$exporter-$dist-$arch"
+          deb_file=$(find "$build_dir/debs" -name "*.deb" | head -1)
+
+          if [ -z "$deb_file" ]; then
+            echo "⚠️  No DEB file found, skipping signing"
+            exit 0
+          fi
+
+          echo "::group::🔐 Signing DEB with GPG"
+          echo "📄 File: $(basename "$deb_file")"
+          chmod +x core/scripts/sign_deb_container.sh
+          ./core/scripts/sign_deb_container.sh "$deb_file" "$GPG_PRIVATE_KEY" "$GPG_PASSPHRASE" "$GPG_KEY_ID" "$dist"
+          echo "✓ DEB signed successfully"
+          echo "::endgroup::"
+
+      - name: ⬆️  Upload to GitHub Releases
+        if: steps.check-arch.outputs.supported == 'true'
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          exporter="${{ inputs.exporter }}"
+          arch="${{ matrix.arch }}"
+          dist="${{ matrix.dist }}"
+          version="${{ needs.get-version.outputs.version }}"
+          build_dir="build/$exporter-$arch-$dist"
+
+          deb_files=$(find "$build_dir/debs" -name "*.deb")
+          if [ -z "$deb_files" ]; then
+            echo "⚠️  No DEB files to upload"
+            exit 0
+          fi
+
+          echo "::group::⬆️  Uploading to GitHub Releases"
+          echo "🏷️  Release: v$version"
+          echo "📦 Files:"
+          for file in $deb_files; do
+            echo "  → $(basename "$file")"
+          done
+
+          python3 core/scripts/upload_to_release.py \
+            --repo ${{ github.repository }} \
+            --exporter "$exporter" \
+            --version "$version" \
+            --files $deb_files \
+            --output "$build_dir/release_urls.json"
+
+          echo "✓ Upload completed"
+          echo "::endgroup::"
+
+      - name: 📝 Generate Artifact Metadata
+        if: steps.check-arch.outputs.supported == 'true'
+        env:
+          EXPORTER: ${{ inputs.exporter }}
+          ARCH: ${{ matrix.arch }}
+          DIST: ${{ matrix.dist }}
+          VERSION: ${{ needs.get-version.outputs.version }}
+        run: |
+          build_dir="build/$EXPORTER-$ARCH-$DIST"
+
+          echo "::group::📝 Generating artifact metadata"
+
+          # Parse release_urls.json to extract package info
+          ASSET=$(jq -c '.assets[0]' "$build_dir/release_urls.json")
+          FILENAME=$(echo "$ASSET" | jq -r '.file')
+          URL=$(echo "$ASSET" | jq -r '.url')
+
+          # Download temporarily to get checksum and size
+          echo "Downloading $FILENAME to extract metadata..."
+          TEMP_FILE=$(mktemp)
+          curl -sL "$URL" -o "$TEMP_FILE"
+
+          SHA256=$(sha256sum "$TEMP_FILE" | awk '{print $1}')
+          SIZE=$(stat -c%s "$TEMP_FILE")
+          rm -f "$TEMP_FILE"
+
+          echo "  SHA256: $SHA256"
+          echo "  Size: $SIZE bytes"
+
+          # Generate artifact metadata JSON
+          python3 core/scripts/generate_artifact_metadata.py \
+            --type deb \
+            --exporter "$EXPORTER" \
+            --version "$VERSION" \
+            --arch "$ARCH" \
+            --dist "$DIST" \
+            --filename "$FILENAME" \
+            --url "$URL" \
+            --sha256 "$SHA256" \
+            --size "$SIZE" \
+            --status "success" \
+            --output "$build_dir/deb_${ARCH}_${DIST}.json"
+
+          echo "✓ Artifact metadata generated: $build_dir/deb_${ARCH}_${DIST}.json"
+          echo "::endgroup::"
+
+      - name: 📤 Upload Metadata Artifact
+        if: steps.check-arch.outputs.supported == 'true'
+        uses: actions/upload-artifact@v7
+        with:
+          name: metadata-deb-${{ inputs.exporter }}-${{ matrix.dist }}-${{ matrix.arch }}
+          path: build/${{ inputs.exporter }}-${{ matrix.arch }}-${{ matrix.dist }}/deb_*.json
+          retention-days: 7
+
+  # 3. Build Docker Image
+  build-docker:
+    name: Docker - ${{ inputs.exporter }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: get-version
+    if: inputs.package_type == 'all' || inputs.package_type == 'docker'
+    permissions:
+      contents: read
+      packages: write
+      security-events: write
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+          cache-dependency-path: 'requirements/base.txt'
+      - run: pip install -r requirements/base.txt
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: 🐳 Build and Push Docker Image
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: |
+          exporter="${{ inputs.exporter }}"
+          version="${{ needs.get-version.outputs.version }}"
+
+          echo "::group::🔍 Checking Docker configuration"
+          is_enabled=$(python3 -c "import yaml; manifest = yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(manifest.get('artifacts', {}).get('docker', {}).get('enabled', False))")
+
+          if [ "$is_enabled" != "True" ]; then
+            echo "Docker build disabled for $exporter. Skipping."
+            exit 0
+          fi
+          echo "✓ Docker build enabled"
+          echo "::endgroup::"
+
+          echo "::group::🔧 Generating Dockerfile"
+          python3 -m core.engine.builder \
+            --manifest "exporters/$exporter/manifest.yaml" \
+            --output-dir "build/$exporter" \
+            --arch amd64
+          echo "✓ Dockerfile generated"
+          echo "::endgroup::"
+
+          if [ ! -f "build/$exporter/Dockerfile" ]; then
+            echo "Error: Dockerfile not found"
+            exit 1
+          fi
+
+          echo "::group::🐳 Building test image for security scan"
+          image_id="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/$exporter"
+          image_id=$(echo $image_id | tr '[:upper:]' '[:lower:]')
+
+          # Build amd64 image locally for Trivy scan
+          docker buildx build \
+            --file "build/$exporter/Dockerfile" \
+            --load \
+            --platform linux/amd64 \
+            --tag "$image_id:scan-$version" \
+            "build/$exporter"
+          echo "✓ Test image built for scanning"
+          echo "::endgroup::"
+
+      - name: 🔒 Run Trivy Security Scan
+        env:
+          EXPORTER: ${{ inputs.exporter }}
+          VERSION: ${{ needs.get-version.outputs.version }}
+        run: |
+          exporter=$(echo "$EXPORTER" | tr '[:upper:]' '[:lower:]')
+          image_ref="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/$exporter:scan-$VERSION"
+          image_ref=$(echo "$image_ref" | tr '[:upper:]' '[:lower:]')
+
+          echo "::group::🔒 Scanning image for vulnerabilities"
+          echo "Image: $image_ref"
+
+          docker run --rm \
+            -v /var/run/docker.sock:/var/run/docker.sock \
+            -v $(pwd):/output \
+            aquasec/trivy:latest image \
+            --format sarif \
+            --output /output/trivy-results.sarif \
+            --severity CRITICAL,HIGH \
+            "$image_ref"
+
+          echo "✓ Security scan completed"
+          echo "::endgroup::"
+
+      - name: Upload Trivy Results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v4
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
+          category: trivy-container-${{ inputs.exporter }}
+
+      - name: Upload Trivy SARIF Artifact
+        uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: trivy-sarif-${{ inputs.exporter }}
+          path: trivy-results.sarif
+          retention-days: 7
+
+      - name: 🐳 Build and Push Multi-Platform Image
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+        run: |
+          exporter="${{ inputs.exporter }}"
+          version="${{ needs.get-version.outputs.version }}"
+
+          echo "::group::🐳 Building and pushing multi-platform image"
+          image_id="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/$exporter"
+          image_id=$(echo $image_id | tr '[:upper:]' '[:lower:]')
+
+          description=$(python3 -c "import yaml; manifest = yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(manifest.get('description', ''))")
+
+          # Read supported architectures from manifest (default to both if not specified)
+          supported_archs=$(python3 -c "import yaml; manifest = yaml.safe_load(open('exporters/$exporter/manifest.yaml')); archs = manifest.get('build', {}).get('archs', ['amd64', 'arm64']); print(','.join([f'linux/{arch}' for arch in archs]))")
+          echo "Building for platforms: $supported_archs"
+
+          source_url="${{ github.server_url }}/${{ github.repository }}/tree/main/exporters/$exporter"
+
+          docker buildx build \
+            --file "build/$exporter/Dockerfile" \
+            --push \
+            --label "org.opencontainers.image.source=$source_url" \
+            --label "org.opencontainers.image.documentation=https://sckyzo.github.io/monitoring-hub/" \
+            --label "org.opencontainers.image.description=$description" \
+            --label "org.opencontainers.image.version=$version" \
+            --tag "$image_id:$version" \
+            --tag "$image_id:latest" \
+            --platform $supported_archs \
+            "build/$exporter"
+
+          echo "✓ Image pushed: $image_id:$version"
+          echo "::endgroup::"
+
+      - name: 🧪 Container Smoke Test
+        run: |
+          exporter="${{ inputs.exporter }}"
+
+          echo "::group::🔍 Checking validation configuration"
+          v_enabled=$(python3 -c "import yaml; manifest = yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(manifest.get('artifacts', {}).get('docker', {}).get('validation', {}).get('enabled', True))")
+
+          if [ "$v_enabled" != "True" ]; then
+            echo "Smoke test disabled for $exporter."
+            exit 0
+          fi
+
+          v_port=$(python3 -c "import yaml; manifest = yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(manifest.get('artifacts', {}).get('docker', {}).get('validation', {}).get('port', 'None'))")
+          v_cmd=$(python3 -c "import yaml; manifest = yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(manifest.get('artifacts', {}).get('docker', {}).get('validation', {}).get('command', 'None'))")
+
+          if [ "$v_port" == "None" ] && [ "$v_cmd" == "None" ]; then
+            echo "No validation configured. Skipping."
+            exit 0
+          fi
+          echo "::endgroup::"
+
+          image_id="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/$exporter:latest"
+          image_id=$(echo $image_id | tr '[:upper:]' '[:lower:]')
+
+          # Command-based validation
+          if [ "$v_cmd" != "None" ]; then
+            echo "::group::🧪 Testing with command: $v_cmd"
+            docker run --rm "$image_id" $v_cmd
+            echo "✓ Command test passed"
+            echo "::endgroup::"
+          fi
+
+          # Port-based validation
+          if [ "$v_port" != "None" ]; then
+            echo "::group::🧪 Testing HTTP endpoint on port $v_port"
+            v_args=$(python3 -c "import yaml; manifest = yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(manifest.get('artifacts', {}).get('docker', {}).get('validation', {}).get('args', ''))")
+
+            container_id=$(docker run -d -p "$v_port:$v_port" "$image_id" $v_args)
+            sleep 5
+
+            if curl -sf "http://localhost:$v_port/metrics" > /dev/null || \
+               curl -sf "http://localhost:$v_port/health" > /dev/null || \
+               curl -sf "http://localhost:$v_port/" > /dev/null; then
+              echo "✓ HTTP endpoint test passed"
+            else
+              echo "❌ HTTP endpoint test failed"
+              docker logs "$container_id"
+              docker stop "$container_id"
+              exit 1
+            fi
+
+            docker stop "$container_id"
+            echo "::endgroup::"
+          fi
+
+      - name: 📝 Publish Docker Metadata to Catalog
+        run: |
+          exporter="${{ inputs.exporter }}"
+          version="${{ needs.get-version.outputs.version }}"
+          image_id="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/$exporter"
+          image_id=$(echo $image_id | tr '[:upper:]' '[:lower:]')
+
+          # Get supported platforms as JSON array
+          platforms=$(python3 -c "import yaml, json; manifest = yaml.safe_load(open('exporters/$exporter/manifest.yaml')); archs = manifest.get('build', {}).get('archs', ['amd64', 'arm64']); print(json.dumps([f'linux/{arch}' for arch in archs]))")
+
+          # Get image digest (from latest push)
+          digest=$(docker buildx imagetools inspect "$image_id:$version" --format '{{.Manifest.Digest}}' 2>/dev/null || echo "unknown")
+
+          # Create docker_images.json using jq (prevents control character issues)
+          jq -n \
+            --arg tag "$exporter-v$version" \
+            --arg registry "${{ env.REGISTRY }}" \
+            --arg repository "${{ env.IMAGE_NAME }}/$exporter" \
+            --arg version "$version" \
+            --arg digest "$digest" \
+            --argjson platforms "$platforms" \
+            --arg url_version "$image_id:$version" \
+            --arg url_latest "$image_id:latest" \
+            '{
+              tag: $tag,
+              images: [
+                {
+                  registry: $registry,
+                  repository: $repository,
+                  tag: $version,
+                  digest: $digest,
+                  platforms: $platforms,
+                  url: $url_version
+                },
+                {
+                  registry: $registry,
+                  repository: $repository,
+                  tag: "latest",
+                  digest: $digest,
+                  platforms: $platforms,
+                  url: $url_latest
+                }
+              ]
+            }' > "build/$exporter/docker_images.json"
+
+          echo "✓ Docker metadata generated: build/$exporter/docker_images.json"
+
+      - name: 📤 Upload Docker Metadata Artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: metadata-docker-${{ inputs.exporter }}
+          path: build/${{ inputs.exporter }}/docker_images.json
+          retention-days: 7
+
+  # 4. Generate YUM/APT Metadata and Portal (single commit to gh-pages)
