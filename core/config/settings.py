@@ -20,6 +20,9 @@ DEB_BUILD_IMAGES = {
     "debian-13": "debian:trixie",
 }
 
+# Supported Architectures
+SUPPORTED_ARCHITECTURES = ["amd64", "arm64"]
+
 # Architecture Mapping (Docker/Go -> RPM)
 ARCH_MAP = {"amd64": "x86_64", "arm64": "aarch64"}
 

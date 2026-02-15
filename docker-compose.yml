@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  # Development environment with all tools
+  dev:
+    build:
+      context: .
+      dockerfile: config/docker/Dockerfile.dev
+    image: monitoring-hub-dev:latest
+    volumes:
+      - .:/workspace:cached
+    working_dir: /workspace
+    environment:
+      - PYTHONPATH=/workspace
+    command: /bin/bash
+
+  # Test runner with isolated environment
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    image: monitoring-hub-test:latest
+    volumes:
+      - .:/app:ro  # Read-only to prevent test pollution
+    working_dir: /app
+    environment:
+      - PYTHONPATH=/app
+    command: pytest -v --tb=short
+
+  # Test runner with coverage
+  test-cov:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    image: monitoring-hub-test:latest
+    volumes:
+      - .:/app:cached  # Need write access for coverage files
+    working_dir: /app
+    environment:
+      - PYTHONPATH=/app
+    command: pytest -v --tb=short --cov=core --cov-report=term-missing --cov-report=html

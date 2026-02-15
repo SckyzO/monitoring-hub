@@ -221,42 +221,24 @@ jobs:
           echo "✓ Upload completed"
           echo "::endgroup::"
 
-      - name: 📅 Create Build Info
+      - name: 📝 Publish Artifact Metadata to Catalog
         if: steps.check-arch.outputs.supported == 'true'
         run: |
           exporter="${{ inputs.exporter }}"
-          version="${{ needs.get-version.outputs.version }}"
           build_dir="build/$exporter-${{ matrix.arch }}-${{ matrix.dist }}"
 
-          # Create build info with timestamp
-          cat > "$build_dir/build-info.json" <<EOF
-          {
-            "exporter": "$exporter",
-            "version": "$version",
-            "arch": "${{ matrix.arch }}",
-            "dist": "${{ matrix.dist }}",
-            "build_date": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")",
-            "artifact_type": "rpm"
-          }
-          EOF
+          echo "::group::📝 Generating and publishing artifact metadata"
 
-      - name: Upload Release URLs Artifact
-        if: steps.check-arch.outputs.supported == 'true'
-        uses: actions/upload-artifact@v6
-        with:
-          name: release-urls-rpm-${{ inputs.exporter }}-${{ matrix.arch }}-${{ matrix.dist }}
-          path: build/**/release_urls.json
-          if-no-files-found: ignore
-          retention-days: 7
+          # Publish atomic artifact metadata to gh-pages catalog
+          bash core/scripts/publish_artifact_metadata.sh \
+            rpm \
+            "$exporter" \
+            "${{ matrix.arch }}" \
+            "${{ matrix.dist }}" \
+            "$build_dir/release_urls.json"
 
-      - name: Upload Build Info Artifact
-        if: steps.check-arch.outputs.supported == 'true'
-        uses: actions/upload-artifact@v6
-        with:
-          name: build-info-rpm-${{ inputs.exporter }}-${{ matrix.arch }}-${{ matrix.dist }}
-          path: build/**/build-info.json
-          if-no-files-found: ignore
-          retention-days: 7
+          echo "✓ Artifact metadata published"
+          echo "::endgroup::"
 
   # 2. Build DEB and upload to GitHub Releases
   build-deb:
@@ -407,42 +389,24 @@ jobs:
           echo "✓ Upload completed"
           echo "::endgroup::"
 
-      - name: 📅 Create Build Info
+      - name: 📝 Publish Artifact Metadata to Catalog
         if: steps.check-arch.outputs.supported == 'true'
         run: |
           exporter="${{ inputs.exporter }}"
-          version="${{ needs.get-version.outputs.version }}"
           build_dir="build/$exporter-${{ matrix.arch }}-${{ matrix.dist }}"
 
-          # Create build info with timestamp
-          cat > "$build_dir/build-info.json" <<EOF
-          {
-            "exporter": "$exporter",
-            "version": "$version",
-            "arch": "${{ matrix.arch }}",
-            "dist": "${{ matrix.dist }}",
-            "build_date": "$(date -u +"%Y-%m-%dT%H:%M:%SZ")",
-            "artifact_type": "deb"
-          }
-          EOF
+          echo "::group::📝 Generating and publishing artifact metadata"
 
-      - name: Upload Release URLs Artifact
-        if: steps.check-arch.outputs.supported == 'true'
-        uses: actions/upload-artifact@v6
-        with:
-          name: release-urls-deb-${{ inputs.exporter }}-${{ matrix.arch }}-${{ matrix.dist }}
-          path: build/**/release_urls.json
-          if-no-files-found: ignore
-          retention-days: 7
+          # Publish atomic artifact metadata to gh-pages catalog
+          bash core/scripts/publish_artifact_metadata.sh \
+            deb \
+            "$exporter" \
+            "${{ matrix.arch }}" \
+            "${{ matrix.dist }}" \
+            "$build_dir/release_urls.json"
 
-      - name: Upload Build Info Artifact
-        if: steps.check-arch.outputs.supported == 'true'
-        uses: actions/upload-artifact@v6
-        with:
-          name: build-info-deb-${{ inputs.exporter }}-${{ matrix.arch }}-${{ matrix.dist }}
-          path: build/**/build-info.json
-          if-no-files-found: ignore
-          retention-days: 7
+          echo "✓ Artifact metadata published"
+          echo "::endgroup::"
 
   # 3. Build Docker Image
   build-docker:
@@ -651,9 +615,61 @@ jobs:
             echo "::endgroup::"
           fi
 
+      - name: 📝 Publish Docker Metadata to Catalog
+        run: |
+          exporter="${{ inputs.exporter }}"
+          version="${{ needs.get-version.outputs.version }}"
+          image_id="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/$exporter"
+          image_id=$(echo $image_id | tr '[:upper:]' '[:lower:]')
+
+          # Get supported platforms
+          supported_archs=$(python3 -c "import yaml; manifest = yaml.safe_load(open('exporters/$exporter/manifest.yaml')); archs = manifest.get('build', {}).get('archs', ['amd64', 'arm64']); print(','.join([f'linux/{arch}' for arch in archs]))")
+
+          # Get image digest (from latest push)
+          digest=$(docker buildx imagetools inspect "$image_id:$version" --format '{{.Manifest.Digest}}' 2>/dev/null || echo "unknown")
+
+          # Create docker_images.json
+          cat > "build/$exporter/docker_images.json" <<EOF
+          {
+            "tag": "$exporter-v$version",
+            "images": [
+              {
+                "registry": "${{ env.REGISTRY }}",
+                "repository": "${{ env.IMAGE_NAME }}/$exporter",
+                "tag": "$version",
+                "digest": "$digest",
+                "platforms": ["${supported_archs//,/\",\"}"],
+                "url": "$image_id:$version"
+              },
+              {
+                "registry": "${{ env.REGISTRY }}",
+                "repository": "${{ env.IMAGE_NAME }}/$exporter",
+                "tag": "latest",
+                "digest": "$digest",
+                "platforms": ["${supported_archs//,/\",\"}"],
+                "url": "$image_id:latest"
+              }
+            ]
+          }
+          EOF
+
+          echo "::group::📝 Generating and publishing Docker metadata"
+
+          # Publish atomic Docker metadata to gh-pages catalog
+          bash core/scripts/publish_artifact_metadata.sh \
+            docker \
+            "$exporter" \
+            "" \
+            "" \
+            "build/$exporter/docker_images.json"
+
+          echo "✓ Docker metadata published"
+          echo "::endgroup::"
+
   # 4. Generate YUM/APT Metadata and Portal (single commit to gh-pages)
   publish-metadata:
     needs: [build-rpm, build-deb, build-docker]
+    if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 30
     # Serialize all gh-pages pushes to prevent conflicts
@@ -672,20 +688,6 @@ jobs:
           cache: 'pip'
           cache-dependency-path: 'requirements/base.txt'
       - run: pip install -r requirements/base.txt
-
-      - name: Download Release URLs (RPM + DEB)
-        uses: actions/download-artifact@v7
-        with:
-          pattern: release-urls-*
-          path: release-urls/
-          # Don't merge to avoid file overwrites (load_release_urls walks subdirs)
-
-      - name: Download Build Info
-        uses: actions/download-artifact@v7
-        with:
-          pattern: build-info-*
-          path: build-info/
-          # Don't merge to avoid file overwrites (load_build_info walks subdirs)
 
       - name: 📥 Download Trivy SARIF Results
         uses: actions/download-artifact@v7
@@ -719,7 +721,6 @@ jobs:
               echo "::group::📦 Generating YUM metadata for $dist/$arch"
 
               python3 core/scripts/generate_yum_metadata.py \
-                --release-urls-dir release-urls/ \
                 --output-dir gh-pages-dist \
                 --dist "$dist" \
                 --arch "$arch" \
@@ -759,7 +760,6 @@ jobs:
               echo "::group::📦 Generating APT metadata for $dist/$arch"
 
               python3 core/scripts/generate_apt_metadata.py \
-                --release-urls-dir release-urls/ \
                 --output-dir gh-pages-dist/apt \
                 --dist "$dist" \
                 --arch "$arch" \
@@ -821,12 +821,12 @@ jobs:
         run: |
           echo "::group::🌐 Generating web portal"
 
-          python3 -m core.engine.site_generator \
+          python3 -m core.engine.site_generator_v2 \
             --output gh-pages-dist/index.html \
             --repo-dir gh-pages-dist \
-            --release-urls-dir release-urls/
+            --catalog-dir gh-pages-dist/catalog
 
-          echo "✓ Portal generated (index.html + catalog.json)"
+          echo "✓ Portal generated (index.html + catalog/)"
           echo "::endgroup::"
 
       - name: 🚀 Deploy to gh-pages

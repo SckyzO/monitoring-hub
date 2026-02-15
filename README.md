@@ -262,6 +262,40 @@ The "Magic" happens in the `core/` engine:
 3.  **Templater:** Uses **Jinja2** (with auto-escape enabled) to render `.spec` files and `Dockerfiles`.
 4.  **Publisher:** A parallelized Matrix CI builds all targets and updates the YUM repository.
 
+### V3 Catalog Architecture
+
+Monitoring Hub uses a **granular catalog structure** with **atomic writes** to eliminate race conditions in parallel builds:
+
+```
+catalog/
+├── node_exporter/
+│   ├── rpm_amd64_el9.json           # Atomic: 1 job = 1 file
+│   ├── rpm_amd64_el10.json
+│   ├── rpm_arm64_el9.json
+│   ├── deb_amd64_ubuntu-22.04.json
+│   ├── deb_amd64_debian-12.json
+│   ├── docker.json
+│   └── metadata.json                # Aggregated (generated on-demand)
+└── catalog.json                     # Global index (backward compatible)
+```
+
+**Key Benefits:**
+
+*   **No Race Conditions:** Each GitHub Actions job writes exactly 1 file - no concurrent writes to the same file
+*   **Format Versioning:** All files have `"format_version": "3.0"` for future compatibility
+*   **On-Demand Aggregation:** Granular files are aggregated into `metadata.json` at read-time by the portal
+*   **Atomic Publishing:** Individual artifact failures don't corrupt the entire catalog
+*   **Faster Rebuilds:** Only changed artifacts are regenerated
+
+**V3 Scripts:**
+
+*   `generate_artifact_metadata.py` - Generate atomic artifact JSON files (RPM/DEB/Docker)
+*   `aggregate_catalog_metadata.py` - Aggregate granular files into metadata.json
+*   `publish_artifact_metadata.sh` - Publish atomic files to gh-pages
+*   `site_generator_v2.py` - Portal generation with V3 catalog support
+
+See [docs/architecture/refactoring-v2-plan.md](docs/architecture/refactoring-v2-plan.md) for complete V3 implementation details.
+
 ## <img src=".github/icons/package-cyan.svg" width="24" height="24" style="vertical-align: bottom;"> Distribution
 
 ### YUM Repository (RPM)
