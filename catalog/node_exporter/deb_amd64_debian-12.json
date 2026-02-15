@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "deb",
+  "exporter": "node_exporter",
+  "version": "1.10.2",
+  "arch": "amd64",
+  "dist": "debian-12",
+  "build_date": "2026-02-15T13:01:19.704792+00:00",
+  "status": "success",
+  "package": {
+    "filename": "node-exporter_1.10.2-1_amd64.deb",
+    "url": "https://github.com/SckyzO/monitoring-hub/releases/download/node_exporter-v1.10.2/node-exporter_1.10.2-1_amd64.deb",
+    "sha256": "4a179b3cb342760b82c9d333cb2b04ce8832a7d6ecfa198566cb3b0abb995b59",
+    "size_bytes": 11634364
+  },
+  "deb_metadata": {}
+}
