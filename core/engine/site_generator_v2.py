@@ -315,20 +315,6 @@ def generate(output, repo_dir, catalog_dir, skip_catalog):
                 copied += 1
 
         click.echo(f"✓ Copied {copied} exporter metadata files")
-
-        # 3. Generate legacy catalog.json (for compatibility)
-        legacy_output = os.path.join(output_dir, "catalog.json")
-        with open(legacy_output, "w") as f:
-            json.dump(
-                {
-                    "exporters": exporters_data,
-                    "_note": "This format is deprecated. Use /catalog/index.json for new integrations.",
-                },
-                f,
-                indent=2,
-            )
-
-        click.echo(f"✓ Legacy catalog generated at {legacy_output}")
     else:
         click.echo("Catalog generation skipped (--skip-catalog)")
 
