@@ -5,13 +5,13 @@
   "version": "1.10.2",
   "arch": "amd64",
   "dist": "debian-13",
-  "build_date": "2026-02-15T13:01:23.160556+00:00",
+  "build_date": "2026-02-15T13:11:39.863180+00:00",
   "status": "success",
   "package": {
     "filename": "node-exporter_1.10.2-1_amd64.deb",
     "url": "https://github.com/SckyzO/monitoring-hub/releases/download/node_exporter-v1.10.2/node-exporter_1.10.2-1_amd64.deb",
-    "sha256": "34f29cfcba25fb69495f4334f2cb95a9018d85476b27aad1c15bcab0810f6f50",
-    "size_bytes": 11634076
+    "sha256": "87c2ed78190833c23219c69fdeedefbb8be235afca299e7b6051fa049651cbab",
+    "size_bytes": 11634072
   },
   "deb_metadata": {}
 }
