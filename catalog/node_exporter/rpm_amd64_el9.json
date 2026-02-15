@@ -5,7 +5,7 @@
   "version": "1.10.2",
   "arch": "amd64",
   "dist": "el9",
-  "build_date": "2026-02-15T13:00:58.099322+00:00",
+  "build_date": "2026-02-15T13:11:21.781125+00:00",
   "status": "success",
   "package": {
     "filename": "node_exporter-1.10.2-1.el9.x86_64.rpm",
