@@ -253,7 +253,7 @@ jobs:
 
       - name: 🔒 Security Scan with Trivy
         if: steps.check.outputs.enabled == 'true'
-        uses: aquasecurity/trivy-action@0.33.1
+        uses: aquasecurity/trivy-action@0.34.0
         with:
           image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/${{ matrix.exporter }}:latest
           format: 'sarif'
