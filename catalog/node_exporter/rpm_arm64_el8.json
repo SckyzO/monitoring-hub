@@ -5,7 +5,7 @@
   "version": "1.10.2",
   "arch": "arm64",
   "dist": "el8",
-  "build_date": "2026-02-15T13:06:01.435237+00:00",
+  "build_date": "2026-02-15T13:16:16.492587+00:00",
   "status": "success",
   "package": {
     "filename": "node_exporter-1.10.2-1.el8.aarch64.rpm",
