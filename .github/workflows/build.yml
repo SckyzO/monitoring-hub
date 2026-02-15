@@ -194,7 +194,7 @@ jobs:
 
       - name: 📦 Store RPM Package as Artifact
         if: steps.check-arch.outputs.supported == 'true'
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v4
         with:
           name: build-rpm-${{ inputs.exporter }}-${{ matrix.dist }}-${{ matrix.arch }}
           path: build/${{ inputs.exporter }}-${{ matrix.arch }}-${{ matrix.dist }}/rpms/*.rpm
@@ -249,7 +249,7 @@ jobs:
 
       - name: 📤 Upload Metadata Artifact
         if: steps.check-arch.outputs.supported == 'true'
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v4
         with:
           name: metadata-rpm-${{ inputs.exporter }}-${{ matrix.dist }}-${{ matrix.arch }}
           path: build/${{ inputs.exporter }}-${{ matrix.arch }}-${{ matrix.dist }}/rpm_*.json
@@ -418,7 +418,7 @@ jobs:
 
       - name: 📤 Upload Metadata Artifact
         if: steps.check-arch.outputs.supported == 'true'
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v4
         with:
           name: metadata-deb-${{ inputs.exporter }}-${{ matrix.dist }}-${{ matrix.arch }}
           path: build/${{ inputs.exporter }}-${{ matrix.arch }}-${{ matrix.dist }}/deb_*.json
@@ -679,7 +679,7 @@ jobs:
           echo "✓ Docker metadata generated: build/$exporter/docker_images.json"
 
       - name: 📤 Upload Docker Metadata Artifact
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v4
         with:
           name: metadata-docker-${{ inputs.exporter }}
           path: build/${{ inputs.exporter }}/docker_images.json
