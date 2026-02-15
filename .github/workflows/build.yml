@@ -164,6 +164,14 @@ jobs:
             ./core/scripts/build_rpm.sh "$spec_file" "$build_dir/rpms" "$arch" "$image"
             echo "✓ RPM build completed"
             echo "::endgroup::"
+
+            echo "::group::🔍 Checking build output"
+            echo "Build directory contents:"
+            ls -lah "$build_dir"
+            echo ""
+            echo "RPMs directory contents:"
+            ls -lah "$build_dir/rpms" || echo "⚠️  $build_dir/rpms does not exist"
+            echo "::endgroup::"
           fi
 
       - name: 🔐 Sign RPM
@@ -342,6 +350,14 @@ jobs:
           chmod +x core/scripts/build_deb.sh core/scripts/deb_entrypoint.sh
           ./core/scripts/build_deb.sh "$build_dir" "$build_dir/debs" "$arch" "$image"
           echo "✓ DEB build completed"
+          echo "::endgroup::"
+
+          echo "::group::🔍 Checking build output"
+          echo "Build directory contents:"
+          ls -lah "$build_dir"
+          echo ""
+          echo "DEBs directory contents:"
+          ls -lah "$build_dir/debs" || echo "⚠️  $build_dir/debs does not exist"
           echo "::endgroup::"
 
       - name: 🔐 Sign DEB
