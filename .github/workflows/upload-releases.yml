@@ -169,7 +169,7 @@ jobs:
               filename=$(basename "$rpm_file")
 
               if upload_with_retry "$rpm_file"; then
-                ((uploaded++))
+                uploaded=$((uploaded + 1))
 
                 # Get the download URL from GitHub Release
                 echo "  Fetching download URL from release..."
@@ -190,7 +190,7 @@ jobs:
                   echo "  ⚠️  Could not fetch download URL for $filename"
                 fi
               else
-                ((failed++))
+                failed=$((failed + 1))
               fi
             done
           done
@@ -265,7 +265,7 @@ jobs:
               filename=$(basename "$deb_file")
 
               if upload_with_retry "$deb_file"; then
-                ((uploaded++))
+                uploaded=$((uploaded + 1))
 
                 # Get the download URL from GitHub Release
                 echo "  Fetching download URL from release..."
@@ -286,7 +286,7 @@ jobs:
                   echo "  ⚠️  Could not fetch download URL for $filename"
                 fi
               else
-                ((failed++))
+                failed=$((failed + 1))
               fi
             done
           done
