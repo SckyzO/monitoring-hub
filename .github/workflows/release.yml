@@ -674,21 +674,21 @@ jobs:
       - run: pip install -r requirements/base.txt
 
       - name: Download Release URLs (RPM + DEB)
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           pattern: release-urls-*
           path: release-urls/
           # Don't merge to avoid file overwrites (load_release_urls walks subdirs)
 
       - name: Download Build Info
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         with:
           pattern: build-info-*
           path: build-info/
           # Don't merge to avoid file overwrites (load_build_info walks subdirs)
 
       - name: 📥 Download Trivy SARIF Results
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v7
         continue-on-error: true
         with:
           pattern: trivy-sarif-*
