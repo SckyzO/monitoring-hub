@@ -191,7 +191,6 @@ def scan_existing_packages_from_github(
 
         # Process each release
         for release in releases_data:
-            tag = release.get("tag_name", "")
             assets = release.get("assets", [])
 
             for asset in assets:
@@ -291,7 +290,7 @@ def main():
     cache_dir.mkdir(parents=True, exist_ok=True)
 
     print("=" * 80)
-    print(f"YUM Metadata Generator (Cumulative Mode)")
+    print("YUM Metadata Generator (Cumulative Mode)")
     print(f"Distribution: {args.dist} | Architecture: {args.arch}")
     print("=" * 80)
 
@@ -341,7 +340,7 @@ def main():
         print("ℹ️  No release_urls_dir provided, using only existing GitHub releases")
 
     # STEP 3: Deduplicate packages (keep newest versions)
-    print(f"\n🔄 Deduplicating packages...")
+    print("\n🔄 Deduplicating packages...")
     print(f"Before deduplication: {len(all_packages)} packages")
     packages = deduplicate_packages(all_packages)
     print(f"After deduplication: {len(packages)} packages")
