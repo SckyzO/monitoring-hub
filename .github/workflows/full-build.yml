@@ -711,9 +711,10 @@ jobs:
           echo "::endgroup::"
 
           echo "::group::🌐 Generating portal"
-          python3 -m core.engine.site_generator \
+          python3 -m core.engine.site_generator_v2 \
             --output index.html \
             --repo-dir . \
+            --catalog-dir catalog \
             --release-urls-dir release-urls
           echo "::endgroup::"
 
@@ -723,7 +724,6 @@ jobs:
 
           # Copy generated files
           cp index.html gh-pages-dist/
-          cp catalog.json gh-pages-dist/ 2>/dev/null || true
           cp -r catalog gh-pages-dist/ 2>/dev/null || true
 
           # Copy security stats if exists
@@ -734,7 +734,7 @@ jobs:
           cd gh-pages-dist
           git config user.name "Monitoring Hub Bot"
           git config user.email "bot@monitoring-hub.local"
-          git add index.html catalog.json catalog/ security-stats.json 2>/dev/null || git add index.html catalog.json catalog/
+          git add index.html catalog/ security-stats.json 2>/dev/null || git add index.html catalog/
 
           if git diff --staged --quiet; then
             echo "No changes to commit"
@@ -756,8 +756,5 @@ jobs:
 
           if [ -f "catalog/index.json" ]; then
             count=$(jq '.exporters | length' catalog/index.json)
-            echo "**Total exporters:** $count" >> $GITHUB_STEP_SUMMARY
-          elif [ -f "catalog.json" ]; then
-            count=$(jq '.exporters | length' catalog.json)
             echo "**Total exporters:** $count" >> $GITHUB_STEP_SUMMARY
           fi

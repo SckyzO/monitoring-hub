@@ -13,9 +13,52 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  generate-artifacts:
+  detect-changes:
+    name: 🔍 Detect Modified Exporters
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 5
+    outputs:
+      exporters: ${{ steps.detect.outputs.exporters }}
+      has_changes: ${{ steps.detect.outputs.has_changes }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: 🔍 Detect Changed Exporters
+        id: detect
+        run: |
+          echo "::group::🔍 Detecting modified exporters in PR"
+
+          # Get changed files in this PR
+          git fetch origin ${{ github.base_ref }}
+          CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD | grep '^exporters/' || true)
+
+          if [ -z "$CHANGED_FILES" ]; then
+            echo "ℹ️  No changes in exporters/"
+            echo "exporters=[]" >> $GITHUB_OUTPUT
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "::endgroup::"
+            exit 0
+          fi
+
+          # Extract unique exporter names
+          EXPORTERS=$(echo "$CHANGED_FILES" | cut -d'/' -f2 | sort -u | jq -R -s -c 'split("\n") | map(select(length > 0))')
+
+          echo "exporters=$EXPORTERS" >> $GITHUB_OUTPUT
+          echo "has_changes=true" >> $GITHUB_OUTPUT
+
+          COUNT=$(echo "$EXPORTERS" | jq '. | length')
+          echo "✓ Found $COUNT modified exporter(s): $(echo "$EXPORTERS" | jq -r 'join(", ")')"
+
+          echo "::endgroup::"
+
+  validate-manifests:
+    name: ✅ Validate Manifests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: detect-changes
+    if: needs.detect-changes.outputs.has_changes == 'true'
     steps:
       - uses: actions/checkout@v6
 
@@ -29,59 +72,93 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements/base.txt
 
-      - name: Build Exporters
+      - name: Validate Modified Exporters
+        env:
+          EXPORTERS: ${{ needs.detect-changes.outputs.exporters }}
         run: |
+          echo "::group::✅ Validating manifests"
           export PYTHONPATH=$GITHUB_WORKSPACE
-          for exporter in exporters/*/; do
-            if [ -f "${exporter}manifest.yaml" ]; then
-              name=$(basename "$exporter")
-              echo "Building $name..."
-              python3 -m core.engine.builder --manifest "${exporter}manifest.yaml" --output-dir "build/$name"
+
+          echo "$EXPORTERS" | jq -r '.[]' | while read exporter; do
+            manifest="exporters/$exporter/manifest.yaml"
+
+            if [ ! -f "$manifest" ]; then
+              echo "⚠️  Skipping $exporter (no manifest)"
+              continue
             fi
+
+            echo "Validating $exporter..."
+            python3 -c "
+from core.engine.schema import ExporterManifestSchema
+import yaml
+
+with open('$manifest') as f:
+    data = yaml.safe_load(f)
+
+schema = ExporterManifestSchema()
+errors = schema.validate(data)
+
+if errors:
+    print('❌ Validation failed for $exporter:')
+    for field, msgs in errors.items():
+        for msg in msgs if isinstance(msgs, list) else [msgs]:
+            print(f'  - {field}: {msg}')
+    exit(1)
+else:
+    print('✓ Valid')
+"
           done
+
+          echo "::endgroup::"
+
+      - name: Validate URLs
+        env:
+          EXPORTERS: ${{ needs.detect-changes.outputs.exporters }}
+        run: |
+          echo "::group::🔗 Validating download URLs"
+
+          echo "$EXPORTERS" | jq -r '.[]' | while read exporter; do
+            echo "Checking $exporter..."
+            python3 core/scripts/validate_urls.py "$exporter" || echo "⚠️  URL validation failed for $exporter (non-blocking)"
+          done
+
+          echo "::endgroup::"
+
+  canary-build:
+    name: 🧪 Canary Build (node_exporter)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: detect-changes
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+          cache-dependency-path: 'requirements/base.txt'
+
+      - name: Install dependencies
+        run: pip install -r requirements/base.txt
+
+      - name: Test Full Pipeline
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v6
-        with:
-          name: generated-build-files
-          path: build/
-          retention-days: 7
-
-  # Ceinture et Bretelles : Test d'intégration complet sur un exporter témoin
-  integration-test:
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    needs: generate-artifacts
-    steps:
-      - uses: actions/checkout@v6
-
-      - name: Set up Python
-        uses: actions/setup-python@v6
-        with:
-          python-version: '3.12'
-          cache: 'pip'
-          cache-dependency-path: 'requirements/base.txt'
-
-      - name: Install dependencies
-        run: pip install -r requirements/base.txt
-
-      - name: Full Pipeline Test (Node Exporter)
         run: |
           chmod +x core/scripts/*.sh
-          # On utilise node_exporter comme "Canary" pour valider la chaîne
+          echo "Testing full pipeline with node_exporter as canary..."
           ./core/scripts/local_test.sh node_exporter --validate
 
-  # Test DEB Build and Installation
-  deb-canary-test:
+  deb-canary:
+    name: 🧪 DEB Build Test (${{ matrix.dist }})
     runs-on: ubuntu-latest
     timeout-minutes: 20
-    needs: generate-artifacts
+    needs: detect-changes
     strategy:
+      fail-fast: false
       matrix:
         dist: [ubuntu-22.04, debian-12]
-        arch: [amd64]
     steps:
       - uses: actions/checkout@v6
 
@@ -99,22 +176,52 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DIST: ${{ matrix.dist }}
-          ARCH: ${{ matrix.arch }}
         run: |
           chmod +x core/scripts/*.sh
-          echo "Testing DEB build for node_exporter on $DIST ($ARCH)..."
-          ./core/scripts/test_deb_build.sh node_exporter "$DIST" "$ARCH"
+          echo "Testing DEB build for node_exporter on $DIST..."
+          ./core/scripts/test_deb_build.sh node_exporter "$DIST" amd64
 
-      - name: Validate DEB Package
+      - name: Validate Package
         run: |
-          deb_file=$(find build -name "*.deb" | grep node-exporter | head -1)
+          deb_file=$(find build -name "*.deb" | head -1)
 
           if [ -z "$deb_file" ]; then
-            echo "ERROR: No DEB file found"
+            echo "❌ No DEB file found"
             exit 1
           fi
 
-          echo "Validating DEB: $deb_file"
+          echo "Validating: $deb_file"
           dpkg-deb --info "$deb_file"
           dpkg-deb --contents "$deb_file" | grep -E "(usr/bin|systemd)"
-          echo "✓ DEB validation passed!"
+          echo "✓ DEB validation passed"
+
+  summary:
+    name: 📊 Summary
+    runs-on: ubuntu-latest
+    needs: [detect-changes, validate-manifests, canary-build, deb-canary]
+    if: always()
+    steps:
+      - name: Generate Summary
+        env:
+          EXPORTERS: ${{ needs.detect-changes.outputs.exporters }}
+          HAS_CHANGES: ${{ needs.detect-changes.outputs.has_changes }}
+          VALIDATE_STATUS: ${{ needs.validate-manifests.result }}
+          CANARY_STATUS: ${{ needs.canary-build.result }}
+          DEB_STATUS: ${{ needs.deb-canary.result }}
+        run: |
+          echo "## 🔨 PR Build Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ "$HAS_CHANGES" = "true" ]; then
+            echo "**Modified exporters:**" >> $GITHUB_STEP_SUMMARY
+            echo "$EXPORTERS" | jq -r '.[] | "- " + .' >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "ℹ️  No exporters modified in this PR" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          echo "**Validation Results:**" >> $GITHUB_STEP_SUMMARY
+          echo "- Manifest validation: $VALIDATE_STATUS" >> $GITHUB_STEP_SUMMARY
+          echo "- Canary build (RPM+Docker): $CANARY_STATUS" >> $GITHUB_STEP_SUMMARY
+          echo "- DEB build test: $DEB_STATUS" >> $GITHUB_STEP_SUMMARY

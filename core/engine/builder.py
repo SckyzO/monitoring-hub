@@ -15,7 +15,7 @@ from tenacity import (
     wait_exponential,
 )
 
-from core.config.settings import ARCH_MAP, TEMPLATES_DIR
+from core.config.settings import ARCH_MAP, SUPPORTED_ARCHITECTURES, TEMPLATES_DIR
 from core.engine.schema import ManifestSchema
 
 
@@ -165,7 +165,14 @@ def download_and_extract(data, output_dir, arch):
                     shutil.rmtree(dir_to_remove, ignore_errors=True)
 
         if not found_binaries:
-            click.echo("Error: No binaries found in archive.", err=True)
+            click.echo(
+                f"Error: No binaries found in archive. Expected binaries: {', '.join(binaries_to_find)}",
+                err=True,
+            )
+            click.echo(
+                "Hint: Check that the 'binary_name' in your manifest matches the actual binary name in the upstream release.",
+                err=True,
+            )
             raise click.Abort()
 
     except Exception as e:
@@ -222,11 +229,23 @@ def copy_local_binary(data, output_dir, manifest_dir):
         source_path = os.path.join(manifest_dir, local_binary)
 
         if not os.path.exists(source_path):
-            click.echo(f"Error: Local binary not found: {source_path}", err=True)
+            abs_path = os.path.abspath(source_path)
+            click.echo(
+                f"Error: Local binary not found: {source_path}",
+                err=True,
+            )
+            click.echo(f"Absolute path checked: {abs_path}", err=True)
+            click.echo(
+                "Hint: Verify the 'upstream.local_binary' path in your manifest.yaml is relative to the exporter directory.",
+                err=True,
+            )
             raise click.Abort()
 
         if not os.path.isfile(source_path):
-            click.echo(f"Error: Path is not a file: {source_path}", err=True)
+            click.echo(
+                f"Error: Path is not a file: {source_path} (is it a directory?)",
+                err=True,
+            )
             raise click.Abort()
 
         click.echo(f"Copying local binary: {source_path}")
@@ -270,7 +289,7 @@ def copy_local_binary(data, output_dir, manifest_dir):
                             break
 
                     if member_to_extract:
-                        tar.extract(member_to_extract, path=output_dir)
+                        tar.extract(member_to_extract, path=output_dir, filter="data")
                         extracted_path = os.path.join(
                             output_dir, member_to_extract.name
                         )
@@ -420,6 +439,15 @@ def render_deb_templates(data, output_dir, arch, env, manifest_dir):
 def build(manifest, output_dir, arch):
     click.echo(f"Processing {manifest} ({arch})")
 
+    # Validate architecture
+    if arch not in SUPPORTED_ARCHITECTURES:
+        click.echo(
+            f"Error: Unsupported architecture '{arch}'. "
+            f"Supported architectures: {', '.join(SUPPORTED_ARCHITECTURES)}",
+            err=True,
+        )
+        raise click.Abort()
+
     try:
         data = load_manifest(manifest)
         data["arch"] = arch
@@ -460,7 +488,15 @@ def build(manifest, output_dir, arch):
         elif upstream_type == "local":
             copy_local_binary(data, output_dir, manifest_dir)
         else:
-            click.echo(f"Error: Unknown upstream type: {upstream_type}", err=True)
+            click.echo(
+                f"Error: Unknown upstream type '{upstream_type}'. "
+                "Supported types: 'github', 'local'",
+                err=True,
+            )
+            click.echo(
+                "Hint: Check 'upstream.type' in your manifest.yaml",
+                err=True,
+            )
             raise click.Abort()
 
         download_extra_sources(data, output_dir)

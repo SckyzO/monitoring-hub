@@ -8,6 +8,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     nodejs \
     npm \
+    rpm \
+    dpkg-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Install global JS tools
@@ -17,12 +19,14 @@ RUN npm install -g stylelint stylelint-config-standard postcss-html
 COPY requirements/base.txt /tmp/requirements-base.txt
 COPY requirements/dev.txt /tmp/requirements-dev.txt
 COPY requirements/docs.txt /tmp/requirements-docs.txt
+COPY requirements/test.txt /tmp/requirements-test.txt
 
 # Install all dependencies
 RUN pip install --no-cache-dir \
     -r /tmp/requirements-base.txt \
     -r /tmp/requirements-dev.txt \
-    -r /tmp/requirements-docs.txt
+    -r /tmp/requirements-docs.txt \
+    -r /tmp/requirements-test.txt
 
 # Set PYTHONPATH to include the workspace root
 ENV PYTHONPATH=/workspace

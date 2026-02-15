@@ -34,27 +34,34 @@ jobs:
       matrix: ${{ steps.detect.outputs.matrix }}
     steps:
       - uses: actions/checkout@v6
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
         with:
-          fetch-depth: 2  # Need at least 2 commits to diff
+          python-version: '3.12'
+          cache: 'pip'
+          cache-dependency-path: 'requirements/base.txt'
+
+      - name: Install dependencies
+        run: pip install -r requirements/base.txt
 
       - name: 🔍 Detect Changed Exporters
         id: detect
         env:
           INPUT_EXPORTERS: ${{ inputs.exporters }}
+          CATALOG_URL: https://sckyzo.github.io/monitoring-hub/catalog/index.json
         run: |
-          echo "::group::🔍 Detecting modified exporters"
+          echo "::group::🔍 Detecting exporters to build"
 
           # Check if workflow was manually triggered
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             echo "Manual trigger detected"
-            echo "Input length: ${#INPUT_EXPORTERS}"
-            echo "Input value: '$INPUT_EXPORTERS'"
 
-            # Check if specific exporters were provided (non-empty input)
-            if [ "${#INPUT_EXPORTERS}" -gt 0 ]; then
+            # Check if specific exporters were provided
+            if [ -n "$INPUT_EXPORTERS" ]; then
               echo "Building specific exporters: $INPUT_EXPORTERS"
 
-              # Convert comma-separated list to JSON array (trim spaces and filter empty)
+              # Convert comma-separated list to JSON array
               EXPORTERS_JSON=$(echo "$INPUT_EXPORTERS" | jq -R -c \
                 'split(",") | map(gsub("^\\s+|\\s+$"; "")) | map(select(length > 0))')
 
@@ -66,57 +73,35 @@ jobs:
               echo "::endgroup::"
               exit 0
             else
-              # No specific exporters - build ALL
-              echo "Building ALL exporters"
-
-              # List all exporters (directories in exporters/)
-              ALL_EXPORTERS=$(ls -1 exporters/ | jq -R -s -c 'split("\n") | map(select(length > 0))')
-
-              echo "exporters=$ALL_EXPORTERS" >> $GITHUB_OUTPUT
-              echo "matrix={\"exporter\":$ALL_EXPORTERS}" >> $GITHUB_OUTPUT
-
-              COUNT=$(echo "$ALL_EXPORTERS" | jq '. | length')
-              echo "✓ Building ALL exporters (total: $COUNT)"
-              echo "::endgroup::"
-              exit 0
+              # No specific exporters - force rebuild ALL
+              echo "Force rebuild ALL exporters"
+              export FORCE_REBUILD=true
             fi
           fi
 
-          # Auto-detect changes from git diff (normal push workflow)
-          CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD | grep '^exporters/' || true)
+          # Use state_manager for smart detection
+          echo "Using state_manager for change detection..."
+          python3 core/engine/state_manager.py
 
-          if [ -z "$CHANGED_FILES" ]; then
-            echo "No changes detected in exporters/"
-            echo "exporters=[]" >> $GITHUB_OUTPUT
+          # Read outputs from state_manager
+          EXPORTERS_JSON=$(grep "^exporters=" $GITHUB_OUTPUT | cut -d= -f2)
+          BUILD_NEEDED=$(grep "^build_needed=" $GITHUB_OUTPUT | cut -d= -f2)
+
+          if [ "$BUILD_NEEDED" = "false" ]; then
+            echo "ℹ️  No exporters need building (all up to date)"
             echo "matrix={\"exporter\":[]}" >> $GITHUB_OUTPUT
             echo "::endgroup::"
             exit 0
           fi
 
-          # Extract unique exporter names from changed paths
-          CHANGED_EXPORTERS=$(echo "$CHANGED_FILES" | cut -d'/' -f2 | sort -u)
-
-          # Convert to JSON array
-          EXPORTERS_JSON=$(echo "$CHANGED_EXPORTERS" | jq -R -s -c 'split("\n") | map(select(length > 0))')
-
-          echo "Changed exporters: $EXPORTERS_JSON"
-
-          # Count exporters
-          COUNT=$(echo "$EXPORTERS_JSON" | jq '. | length')
-          echo "Found $COUNT modified exporter(s)"
-
-          # Set outputs
-          echo "exporters=$EXPORTERS_JSON" >> $GITHUB_OUTPUT
+          # Generate matrix
           echo "matrix={\"exporter\":$EXPORTERS_JSON}" >> $GITHUB_OUTPUT
 
-          # Display summary
-          if [ "$COUNT" -gt 0 ]; then
-            echo "✓ Will trigger release for: $(echo "$EXPORTERS_JSON" | jq -r 'join(", ")')"
-          else
-            echo "ℹ️  No exporters detected"
-          fi
+          COUNT=$(echo "$EXPORTERS_JSON" | jq '. | length')
+          echo "✓ Detected $COUNT exporter(s) to build: $(echo "$EXPORTERS_JSON" | jq -r 'join(", ")')"
 
           echo "::endgroup::"
+
 
       - name: 📊 Generate Summary
         if: steps.detect.outputs.exporters != '[]'
