@@ -149,7 +149,7 @@
       "name": "node_exporter",
       "version": "1.10.2",
       "category": "System",
-      "last_updated": null
+      "last_updated": "2026-02-16T12:32:06.965143+00:00"
     },
     {
       "name": "ping_exporter",

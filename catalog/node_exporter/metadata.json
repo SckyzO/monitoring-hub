@@ -1,0 +1,101 @@
+{
+  "format_version": "3.0",
+  "exporter": "node_exporter",
+  "version": "1.10.2",
+  "category": "System",
+  "description": "Hardware and OS metrics exporter for Prometheus",
+  "last_updated": "2026-02-16T12:32:06.965143+00:00",
+  "artifacts": {
+    "rpm": {
+      "el8": {
+        "amd64": {
+          "status": "success",
+          "url": "",
+          "size_bytes": 5383736,
+          "sha256": "1ca643792ce419d60b36921837b3e32881d4cc674be3efa6c79d8f66e02d87e5",
+          "build_date": "2026-02-16T12:25:18.104086+00:00"
+        },
+        "arm64": {
+          "status": "success",
+          "url": "",
+          "size_bytes": 4610116,
+          "sha256": "5bb8c6fd3b1a08552c0547587b4b59292c2b9c7c08cb4f87aada6fdc99a9c033",
+          "build_date": "2026-02-16T12:30:25.682846+00:00"
+        }
+      },
+      "el10": {
+        "arm64": {
+          "status": "success",
+          "url": "",
+          "size_bytes": 4653013,
+          "sha256": "74c41e24fb4fc5fb014f508e8d6fdd8eeaf8df8f6154c5681ebc31ad22e1b330",
+          "build_date": "2026-02-16T12:27:09.074929+00:00"
+        },
+        "amd64": {
+          "status": "success",
+          "url": "",
+          "size_bytes": 5237867,
+          "sha256": "667a4a9d863958160e425ddc96a8408620d923cac0d903a47a0c39ddd82b26f2",
+          "build_date": "2026-02-16T12:25:06.147846+00:00"
+        }
+      },
+      "el9": {
+        "arm64": {
+          "status": "success",
+          "url": "",
+          "size_bytes": 4652937,
+          "sha256": "fb0a41eb1376bc44ccc9bd5edd93b0d56278667a0c48886ab1048c1217875e85",
+          "build_date": "2026-02-16T12:28:50.689375+00:00"
+        },
+        "amd64": {
+          "status": "success",
+          "url": "",
+          "size_bytes": 5240979,
+          "sha256": "fb42bb3a25377df2f76286f0f48d650ac8b3bade92c9bf00221dc90c6aa8e033",
+          "build_date": "2026-02-16T12:25:19.250100+00:00"
+        }
+      }
+    },
+    "deb": {
+      "debian-12": {
+        "amd64": {
+          "status": "success",
+          "url": "",
+          "size_bytes": 11634362,
+          "sha256": "ae14ccab334f6b40d766a844414a00290b77c7ac5ff65e0e0efa894ff4e3f645",
+          "build_date": "2026-02-16T12:25:31.408164+00:00"
+        },
+        "arm64": {
+          "status": "success",
+          "url": "",
+          "size_bytes": 10656612,
+          "sha256": "db350087d79fffaa58e97ef101db62b88e20523b62cd93eeab5b7f0298e5d6ae",
+          "build_date": "2026-02-16T12:32:06.965143+00:00"
+        }
+      }
+    },
+    "docker": {
+      "status": "success",
+      "images": [
+        {
+          "registry": "ghcr.io",
+          "repository": "SckyzO/monitoring-hub/node_exporter",
+          "tags": [
+            "1.10.2",
+            "latest"
+          ],
+          "architectures": [
+            "linux/amd64"
+          ],
+          "created": "2026-02-16T12:25:03Z"
+        }
+      ],
+      "build_date": "2026-02-16T12:25:03.329617+00:00"
+    }
+  },
+  "status": {
+    "rpm": "success",
+    "deb": "success",
+    "docker": "success"
+  }
+}

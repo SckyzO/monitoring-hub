@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "rpm",
+  "exporter": "node_exporter",
+  "version": "1.10.2",
+  "arch": "amd64",
+  "dist": "el8",
+  "build_date": "2026-02-16T12:25:18.104086+00:00",
+  "status": "success",
+  "package": {
+    "filename": "node_exporter-1.10.2-1.el8.x86_64.rpm",
+    "url": "",
+    "sha256": "1ca643792ce419d60b36921837b3e32881d4cc674be3efa6c79d8f66e02d87e5",
+    "size_bytes": 5383736
+  },
+  "rpm_metadata": {}
+}
