@@ -1,13 +1,13 @@
 # CI/CD Workflows
 
-GitHub Actions workflows that power the factory with V3 granular catalog architecture.
+GitHub Actions workflows that power the factory with unified build architecture and V3 granular catalog.
 
-## Automated Workflow Chain (V3)
+## Unified Workflow Architecture
 
-The V3 architecture introduces **atomic writes** and **state-based change detection**:
+The V3 architecture uses a **single unified build workflow** with **atomic writes** and **state-based change detection**:
 
 ```
-1. scan-updates.yml (CRON daily 6:00 UTC)
+1. scan-updates.yml (CRON daily 8:00 UTC)
    ↓ Detects new versions
    ↓ Creates PRs
 
@@ -19,55 +19,91 @@ The V3 architecture introduces **atomic writes** and **state-based change detect
    ↓
    auto-release.yml (on push/manual)
    ↓ Uses state_manager for change detection
-   ↓ Triggers release.yml
+   ↓ Triggers build.yml
 
-4. release.yml (matrix build)
-   ↓ Builds all changed artifacts
+4. build.yml (unified workflow)
+   ↓ Builds ALL artifacts (RPM + DEB + Docker)
+   ↓ Uploads to GitHub Releases
    ↓ Atomic writes: 1 job = 1 file
-   ↓ Publishes to gh-pages
+   ↓ Publishes metadata to gh-pages
+   ↓ Generates portal
 
-5. update-portal.yml
-   ↓ Aggregates metadata
-   ↓ Regenerates portal
+OR
+
+security-rebuild.yml (CRON Monday 2:00 UTC)
+   ↓ Detects new UBI9 base image
+   ↓ Triggers build.yml with force_rebuild=true
+   ↓ Rebuilds ALL exporters
 ```
 
 ## Main Workflows
 
-### release.yml
+### build.yml (Unified Build Workflow)
 
-**Purpose:** Main build pipeline with V3 atomic writes
+**Purpose:** Main build pipeline that handles everything (RPM, DEB, Docker, metadata, portal)
 
 **Triggers:**
-- Manual workflow_call from auto-release.yml
+- workflow_call from auto-release.yml (changed exporters only)
+- workflow_call from security-rebuild.yml (all exporters)
 - Manual workflow_dispatch
 
-**Key V3 Changes:**
+**Input:**
+- `exporters`: JSON array of exporter names (e.g., `["node_exporter", "redis_exporter"]`)
+- Empty array `[]` = build ALL exporters
+- Empty string `""` (default) = auto-detect changed exporters with state_manager
+
+**Key Features:**
+- **Unified workflow:** Single workflow handles all build scenarios (1 exporter, N exporters, ALL exporters)
 - **Atomic metadata publishing:** Each job writes exactly 1 JSON file
 - **No race conditions:** Parallel jobs safe (rpm_amd64_el9 + rpm_arm64_el9 write different files)
 - **Granular artifacts:** `catalog/<exporter>/rpm_<arch>_<dist>.json`
 - **Matrix strategy:** Builds all arch/dist combinations in parallel
+- **Integrated portal generation:** Portal updated after all builds complete
 
 **Jobs:**
-1. **build-rpm:** Build RPM for specific arch/dist combination
+
+1. **discover:** Generate build matrix from input
+   - Parses `exporters` input parameter
+   - Auto-detects changed exporters if input is empty (using state_manager)
+   - Generates matrix for RPM, DEB, and Docker jobs
+   - Outputs: `rpm_matrix`, `deb_matrix`, `docker_matrix`
+
+2. **build-rpm:** Build RPM for specific arch/dist combination (parallel)
    - Downloads binary from upstream
    - Renders spec file from Jinja2 template
-   - Builds RPM in Docker (almalinux:9)
+   - Builds RPM in Docker (almalinux:9 for el8/el9/el10)
    - Signs with GPG
-   - Uploads to gh-pages
+   - Uploads to GitHub Releases
    - **Publishes atomic metadata:** `generate_artifact_metadata.py` + `publish_artifact_metadata.sh`
+   - **Output:** `catalog/<exporter>/rpm_<arch>_<dist>.json`
 
-2. **build-deb:** Build DEB for specific arch/dist combination
+3. **build-deb:** Build DEB for specific arch/dist combination (parallel)
    - Downloads binary from upstream
    - Renders control files from Jinja2 templates
-   - Builds DEB in Docker (ubuntu:22.04/debian:12)
+   - Builds DEB in Docker (debian:12 for universal package)
    - Signs with GPG
-   - Uploads to gh-pages
+   - Uploads to GitHub Releases
    - **Publishes atomic metadata:** `generate_artifact_metadata.py` + `publish_artifact_metadata.sh`
+   - **Output:** `catalog/<exporter>/deb_<arch>_<dist>.json`
 
-3. **build-docker:** Build multi-arch Docker image
-   - Uses buildx for multi-platform builds
+4. **build-docker:** Build multi-arch Docker image (parallel)
+   - Uses buildx for multi-platform builds (linux/amd64, linux/arm64)
    - Pushes to ghcr.io
+   - Scans with Trivy (security)
    - **Publishes atomic metadata:** `generate_artifact_metadata.py` + `publish_artifact_metadata.sh`
+   - **Output:** `catalog/<exporter>/docker.json`
+
+5. **aggregate-security:** Aggregate Trivy scan results (sequential)
+   - Collects all security scan results
+   - Generates security-stats.json
+   - Uploads to gh-pages
+
+6. **publish-metadata-portal:** Generate portal (sequential, after all builds)
+   - Downloads ALL metadata artifacts
+   - Organizes into `catalog/<exporter>/*.json` structure
+   - Aggregates metadata using `aggregate_catalog_metadata.py`
+   - Generates portal with `site_generator_v2.py`
+   - Pushes to gh-pages (catalog/ + index.html)
 
 **Example Atomic Write:**
 ```yaml
@@ -77,195 +113,259 @@ The V3 architecture introduces **atomic writes** and **state-based change detect
       --type rpm --arch amd64 --dist el9 \
       --exporter node_exporter --version 1.10.2 \
       --filename node_exporter-1.10.2-1.el9.x86_64.rpm \
-      --url https://sckyzo.github.io/monitoring-hub/el9/x86_64/... \
-      --sha256 abc123 --size 12345678 --status success \
-      --output catalog/node_exporter/rpm_amd64_el9.json
+      --sha256 $SHA256 --size $SIZE \
+      --output artifacts/rpm-node_exporter-amd64-el9/node_exporter/rpm_amd64_el9.json
 
     bash core/scripts/publish_artifact_metadata.sh \
-      catalog/node_exporter/rpm_amd64_el9.json
+      artifacts/rpm-node_exporter-amd64-el9
 ```
 
-### scan-updates.yml
-
-**Purpose:** Automated version watcher (CRON daily)
-
-**Triggers:**
-- Scheduled: Daily at 6:00 UTC
-- Manual workflow_dispatch
-
-**Process:**
-1. Runs `watcher.py` to scan all manifests
-2. Compares with GitHub API latest releases
-3. Creates PRs for outdated exporters
-4. PRs trigger build-pr.yml validation
-
-**No V3 changes** (version detection unchanged)
-
-### build-pr.yml
-
-**Purpose:** PR validation with V3 change detection
-
-**Triggers:**
-- Pull requests to main branch
-- Manual workflow_dispatch
-
-**Key V3 Changes:**
-- **detect-changes job:** Identifies modified exporters using git diff
-- **Comprehensive summary:** Shows validation results for all exporters
-- **Canary build:** Tests reference exporter (node_exporter)
-
-**Jobs:**
-1. **detect-changes:** Find modified manifest.yaml files
-2. **validate-manifests:** Schema + URL validation for changed exporters
-3. **canary-build:** Build node_exporter as smoke test
-4. **summary:** Aggregate results and display status
-
-**Example Output:**
+**Matrix Strategy:**
+```yaml
+strategy:
+  matrix:
+    exporter: ["node_exporter", "redis_exporter", ...]
+    arch: ["amd64", "arm64"]
+    dist: ["el8", "el9", "el10"]  # For RPM
+    # OR
+    dist: ["debian-12"]            # For DEB (universal package)
 ```
-📋 PR Validation Summary
 
-Modified Exporters:
-✅ node_exporter (v1.10.1 → v1.10.2)
-✅ postgres_exporter (v0.15.0 → v0.16.0)
+**Why Unified?**
+- ✅ Simpler mental model (1 main workflow vs 5 chained workflows)
+- ✅ Faster debugging (everything in one workflow run)
+- ✅ No concurrency bottlenecks
+- ✅ No race conditions
+- ✅ Atomic operation (all or nothing)
+- ✅ Consistent behavior across all scenarios
 
-Validation Results:
-✅ Schema validation: PASSED
-✅ URL validation: PASSED
-✅ Canary build: SUCCESS
-```
+---
 
 ### auto-release.yml
 
-**Purpose:** Detects changes and triggers release (V3 state-based)
+**Purpose:** Detect changed exporters and trigger build.yml
 
 **Triggers:**
-- Push to main branch
-- Manual workflow_dispatch (with optional exporter filter)
+- push to main (exporters/*)
+- Manual workflow_dispatch
 
-**Key V3 Changes:**
-- **Uses state_manager:** Compares manifest versions vs deployed catalog.json
-- **Replaces git diff:** More reliable change detection
-- **Smart filtering:** Only builds changed exporters
-
-**Process:**
-```bash
-# V2 (old): git diff + file parsing
-git diff --name-only HEAD~1 exporters/
-
-# V3 (new): state_manager comparison
-python3 core/engine/state_manager.py
-# Compares:
-#   - exporters/node_exporter/manifest.yaml (version: v1.10.2)
-#   - https://sckyzo.github.io/monitoring-hub/catalog.json (version: v1.10.1)
-# Output: EXPORTERS=node_exporter
-```
-
-**Environment Variables:**
-- `INPUT_EXPORTERS`: Comma-separated list (manual override)
-- `CATALOG_URL`: Override catalog URL (for forks/testing)
-
-### update-portal.yml
-
-**Purpose:** V3 catalog aggregation + portal regeneration
-
-**Triggers:**
-- Workflow completion of release.yml
-- Manual workflow_dispatch (with --skip-catalog flag)
-
-**Key V3 Changes:**
-- **Consolidated workflow:** Replaces update-site.yml + regenerate-portal.yml
-- **Uses site_generator_v2.py:** Reads V3 granular catalog structure
-- **On-demand aggregation:** Generates metadata.json from granular artifacts
+**Key Features:**
+- **State-based detection:** Uses state_manager to compare manifests with deployed catalog
+- **Smart filtering:** Only builds exporters that actually changed
+- **Force rebuild:** Manual trigger with empty input builds ALL exporters
 
 **Jobs:**
-1. **aggregate-catalog (optional):**
-   - Runs `aggregate_catalog_metadata.py` for each exporter
-   - Generates `metadata.json` from granular artifacts
-   - Skipped if --skip-catalog flag set
 
-2. **generate-portal:**
-   - Runs `site_generator_v2.py` with --catalog-dir parameter
-   - Reads V3 catalog structure
-   - Converts to legacy format for backward compatibility
-   - Generates index.html + catalog.json
+1. **detect-changes:** Detect changed exporters
+   - If manual trigger with specific exporters: Use provided list
+   - If manual trigger with empty input: Set FORCE_REBUILD=true
+   - If automatic (push): Use state_manager for change detection
+   - Output: JSON array of exporter names
+
+2. **trigger-releases:** Trigger build.yml
+   - Calls build.yml with `exporters` parameter
+   - Passes force_rebuild flag if applicable
 
 **Example:**
 ```bash
-# Full regeneration (with aggregation)
-python3 core/scripts/aggregate_catalog_metadata.py \
-  --exporter node_exporter \
-  --catalog-dir catalog \
-  --manifest-path exporters/node_exporter/manifest.yaml \
-  --output catalog/node_exporter/metadata.json
+# User edits exporters/node_exporter/manifest.yaml
+git commit -m "feat: update node_exporter to v1.11.0"
+git push origin main
 
-# Portal generation
-python3 core/engine/site_generator_v2.py \
-  --catalog-dir catalog \
-  --output-dir portal
+# auto-release.yml detects 1 changed exporter
+# Triggers: build.yml --raw-field exporters='["node_exporter"]'
 ```
 
-### full-build.yml
-
-**Purpose:** Force rebuild all exporters (ignores state_manager)
-
-**Triggers:**
-- Manual workflow_dispatch only
-
-**Key V3 Changes:**
-- **Uses site_generator_v2.py:** V3 catalog support
-- **Force rebuild flag:** Sets FORCE_REBUILD=true
-- **Ignores state_manager:** Builds everything regardless of changes
-
-**Use Cases:**
-- Emergency rebuilds (security patches)
-- Catalog corruption recovery
-- Testing full pipeline
-
-### security.yml
-
-**Purpose:** Security scanning (no V3 changes)
-
-**Triggers:**
-- Pull requests
-- Push to main
-- Scheduled: Daily
-
-**Scanners:**
-- **Bandit**: Python code security issues (SQL injection, hardcoded secrets, insecure functions)
-- **pip-audit**: Dependency vulnerability scanning (CVE database)
-- **Trivy**: Container image vulnerability scanning with SARIF upload
-
-**Integration:**
-- Uploads SARIF reports to GitHub Security tab
-- Requires `security-events: write` permission
-- Integrates with GitHub Advanced Security
-- Fails CI on critical vulnerabilities
-
-**View Results:**
-Navigate to **Security** → **Code scanning alerts** in GitHub to view Trivy vulnerability reports.
+---
 
 ### security-rebuild.yml
 
-**Purpose:** Emergency rebuild on critical CVE (manual)
+**Purpose:** Rebuild all exporters when security updates are available
 
 **Triggers:**
-- Manual workflow_dispatch only
+- CRON: Monday at 2:00 UTC
+- Manual workflow_dispatch
 
-**Process:**
-1. Triggers full-build.yml (force rebuild all)
-2. Runs security.yml to verify fixes
-3. Notifies via GitHub Issues/Discussions
+**Key Features:**
+- **UBI9 detection:** Checks if new ubi9-minimal base image is available
+- **Force rebuild:** Rebuilds ALL exporters regardless of state_manager
+- **Security-first:** Ensures all containers use latest secure base image
 
-## V3 Workflow Features
+**Jobs:**
 
-- ✅ **Atomic writes:** 1 job = 1 file (no race conditions)
-- ✅ **State-based detection:** state_manager replaces git diff
-- ✅ **Granular artifacts:** catalog/<exporter>/rpm_<arch>_<dist>.json
-- ✅ **On-demand aggregation:** metadata.json generated at read-time
-- ✅ **Consolidated workflows:** update-portal.yml replaces 2 workflows
-- ✅ **Parallel matrix builds:** Safe concurrent writes
-- ✅ **Incremental builds:** Only changed exporters
-- ✅ **Automatic deployment:** gh-pages updates
-- ✅ **Validation tests:** Schema + URL + canary
-- ✅ **Security scanning:** Trivy + Bandit + pip-audit with SARIF
-- ✅ **Multi-architecture:** amd64 + arm64 for all artifacts
+1. **check-ubi9-update:** Check for new UBI9 base image
+   - Pulls latest ubi9-minimal digest
+   - Compares with previous build
+   - Outputs: `rebuild_needed=true/false`
+
+2. **trigger-rebuild:** Trigger build.yml with force_rebuild
+   - Calls build.yml with empty exporters array (= ALL)
+   - Sets force_rebuild=true to ignore state_manager
+
+---
+
+### build-pr.yml
+
+**Purpose:** Validate PRs before merge
+
+**Triggers:**
+- pull_request (exporters/*)
+
+**Key Features:**
+- **Fast validation:** Only validates changed exporters
+- **Canary build:** Builds node_exporter as smoke test
+- **Comprehensive checks:** Linting + schema validation + build test
+
+**Jobs:**
+
+1. **detect-changes:** Detect which exporters changed in PR
+   - Uses git diff to identify modified manifests
+   - Output: JSON array of changed exporters
+
+2. **validate-manifests:** Validate YAML syntax and schema
+   - Runs yamllint on all manifests
+   - Validates with marshmallow schema
+
+3. **lint-python:** Run ruff linter on Python code
+
+4. **lint-css:** Run stylelint on portal templates
+
+5. **canary-build:** Build node_exporter as smoke test
+   - Tests that build pipeline is functional
+   - Catches breaking changes early
+
+---
+
+### scan-updates.yml
+
+**Purpose:** Automated version watcher
+
+**Triggers:**
+- CRON: Daily at 8:00 UTC
+- Manual workflow_dispatch
+
+**Key Features:**
+- **GitHub API integration:** Checks latest releases for all exporters
+- **Version comparison:** Uses `packaging.version` for semantic versioning
+- **Automated PRs:** Creates PR when new version detected
+
+**Jobs:**
+
+1. **scan-versions:** Scan all exporters for updates
+   - Reads all manifests
+   - Queries GitHub API for latest releases
+   - Compares versions
+   - Creates PR if update available
+
+---
+
+## Legacy Workflows (Disabled)
+
+The following workflows have been **disabled** (renamed to `.disabled`) as they are now integrated into `build.yml`:
+
+- `build-legacy.yml.disabled` - Old single-exporter build
+- `full-build.yml.disabled` - Batch build (logic merged into build.yml)
+- `upload-releases.yml.disabled` - Upload step (now integrated)
+- `catalog-update.yml.disabled` - Catalog update (now integrated)
+- `update-portal.yml.disabled` - Portal update (now integrated)
+
+**Why they were removed:**
+- Fragile workflow chains (build → upload → catalog → portal)
+- Concurrency bottlenecks (upload-releases had concurrency:1)
+- Race conditions (catalog-update could be triggered 34× in parallel)
+- Architecture confusion (build.yml for 1, full-build.yml for N)
+
+**Solution:** One unified build.yml that does everything atomically.
+
+---
+
+## Workflow Comparison
+
+### Before (Fragmented)
+
+```
+security-rebuild.yml
+  └─> Triggers 34× build.yml in parallel
+        └─> Each triggers upload-releases.yml (concurrency:1)
+              └─> 33 triggers lost/cancelled ❌
+                    └─> Packages built but catalog never updated
+```
+
+### After (Unified)
+
+```
+security-rebuild.yml
+  └─> Triggers 1× build.yml with exporters=[]
+        └─> Builds ALL 34 exporters in one workflow run
+              └─> Uploads in parallel (no concurrency limit)
+                    └─> Catalog + portal updated atomically ✅
+```
+
+---
+
+## State Management
+
+All change detection uses `core/engine/state_manager.py`:
+
+**How it works:**
+1. Fetches `catalog.json` from gh-pages (production state)
+2. Compares with local manifests (git state)
+3. Detects version changes
+4. Outputs JSON array of changed exporters
+
+**Override:**
+- Set `FORCE_REBUILD=true` to rebuild everything
+- Set `TARGET_EXPORTER=name` to build specific exporter
+
+---
+
+## Metadata Publishing (V3)
+
+Each build job publishes **exactly 1 JSON file**:
+
+```bash
+# RPM job (el9/amd64) publishes:
+catalog/node_exporter/rpm_amd64_el9.json
+
+# RPM job (el9/arm64) publishes:
+catalog/node_exporter/rpm_arm64_el9.json
+
+# DEB job (debian-12/amd64) publishes:
+catalog/node_exporter/deb_amd64_debian-12.json
+
+# Docker job publishes:
+catalog/node_exporter/docker.json
+```
+
+**No race conditions:** Each job writes to a different file.
+
+**Aggregation:** Portal generation aggregates these files into `metadata.json` on-demand.
+
+---
+
+## Security Scanning
+
+Security scans run in parallel with builds:
+
+**Docker images:**
+- Trivy scan with SARIF output
+- Results uploaded to GitHub Security tab
+- Critical/High vulnerabilities block release
+
+**Python code:**
+- Bandit: Security linter for Python
+- pip-audit: Check dependencies for CVEs
+- Results in security.yml workflow
+
+**Frequency:**
+- Daily: security.yml (scheduled)
+- On PR: build-pr.yml (gating)
+- On release: build.yml (embedded)
+
+---
+
+## See Also
+
+- [Unified Workflow Architecture](./unified-workflow.md) - Complete migration details
+- [State Manager Documentation](../api-reference/state-manager.md) - Change detection logic
+- [V3 Catalog Architecture](../api-reference/catalog-v3.md) - Granular metadata structure
