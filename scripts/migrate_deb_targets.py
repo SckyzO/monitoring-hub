@@ -8,8 +8,6 @@ universal DEB package is built on Debian 12 for maximum compatibility
 across all Debian/Ubuntu distributions.
 """
 
-import glob
-import sys
 from pathlib import Path
 
 import yaml
@@ -63,12 +61,12 @@ def main():
         else:
             skipped += 1
 
-    print(f"\n✅ Migration complete:")
+    print("\n✅ Migration complete:")
     print(f"   Updated: {updated}")
     print(f"   Skipped: {skipped} (no DEB or already debian-12)")
-    print(f"\n💡 Universal DEB built on Debian 12, compatible with:")
-    print(f"   - Ubuntu 20.04, 22.04, 24.04+")
-    print(f"   - Debian 11, 12, 13+")
+    print("\n💡 Universal DEB built on Debian 12, compatible with:")
+    print("   - Ubuntu 20.04, 22.04, 24.04+")
+    print("   - Debian 11, 12, 13+")
 
 
 if __name__ == "__main__":
