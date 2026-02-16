@@ -276,6 +276,6 @@ Before declaring the migration complete, verify:
 
 ## See Also
 
-- [V3 Granular Catalog Architecture](./refactoring-v2-plan.md)
-- [State Manager Documentation](../user-guide/state-management.md)
-- [Workflow Development Guide](../contributing/workflow-development.md)
+- [V3 Granular Catalog Architecture](../api-reference/catalog-v3.md)
+- [CI/CD Workflows](./ci-cd.md)
+- [State Manager Documentation](../api-reference/state-manager.md)

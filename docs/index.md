@@ -3,7 +3,7 @@
 **The definitive Software Factory for Prometheus Exporters.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Release Pipeline](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/release.yml?branch=main&label=Release)](https://github.com/SckyzO/monitoring-hub/actions/workflows/release.yml)
+[![Build Pipeline](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/build.yml?branch=main&label=Build)](https://github.com/SckyzO/monitoring-hub/actions/workflows/build.yml)
 [![Auto Release](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/auto-release.yml?branch=main&label=Auto%20Release)](https://github.com/SckyzO/monitoring-hub/actions/workflows/auto-release.yml)
 [![Security](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/security.yml?branch=main&label=Security)](https://github.com/SckyzO/monitoring-hub/actions/workflows/security.yml)
 [![Watcher](https://img.shields.io/github/actions/workflow/status/SckyzO/monitoring-hub/scan-updates.yml?branch=main&label=Watcher)](https://github.com/SckyzO/monitoring-hub/actions/workflows/scan-updates.yml)
