@@ -876,8 +876,7 @@ jobs:
           python3 -m core.engine.site_generator_v2 \
             --output index.html \
             --repo-dir . \
-            --catalog-dir catalog \
-            --release-urls-dir release-urls
+            --catalog-dir catalog
           echo "::endgroup::"
 
           echo "::group::📤 Publishing to gh-pages"
