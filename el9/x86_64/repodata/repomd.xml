@@ -1,8 +1,0 @@
-<?xml version='1.0' encoding='utf-8'?>
-<repomd xmlns="http://linux.duke.edu/metadata/repo">
-  <data type="primary">
-    <location href="repodata/primary.xml.gz" />
-    <checksum type="sha256">da7d1d7ab676d553419aec324c1718fdd67e45eb65bba547e6d519929d4f588a</checksum>
-    <size>502</size>
-  </data>
-</repomd>
