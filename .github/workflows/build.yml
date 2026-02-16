@@ -96,7 +96,7 @@ jobs:
           rpm_dists = ['el8', 'el9', 'el10']
           # Limit DEB distributions to stay under GitHub's 256 matrix job limit
           # With ~34 exporters × 2 distros × 2 archs = ~136 jobs (safe margin)
-          deb_dists = ['ubuntu-22.04', 'ubuntu-24.04']
+          deb_dists = ['debian-12', 'debian-13']
 
           for exporter in exporters:
               manifest_path = f'exporters/{exporter}/manifest.yaml'
@@ -597,8 +597,6 @@ jobs:
 
           # Map distribution name to Docker image
           case $dist in
-            ubuntu-22.04) image="ubuntu:22.04" ;;
-            ubuntu-24.04) image="ubuntu:24.04" ;;
             debian-12) image="debian:12" ;;
             debian-13) image="debian:trixie" ;;
             *) echo "Error: Unknown distribution: $dist"; exit 1 ;;
