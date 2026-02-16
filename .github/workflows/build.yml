@@ -276,7 +276,8 @@ jobs:
       fail-fast: false
       matrix:
         arch: [amd64, arm64]
-        dist: [ubuntu-22.04, ubuntu-24.04, debian-12, debian-13]
+        # Single DEB for all Debian/Ubuntu distributions (built on oldest for max compatibility)
+        dist: [debian-12]
     steps:
       - uses: actions/checkout@v6
 
