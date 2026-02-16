@@ -812,7 +812,7 @@ jobs:
           echo "::group::📥 Preparing artifacts"
 
           # Organize artifacts (preserve directory structure to avoid overwrites)
-          mkdir -p release-urls build-info
+          mkdir -p release-urls build-info catalog
 
           if [ -d "artifacts" ]; then
             # Copy with unique names to avoid overwrites
@@ -827,6 +827,35 @@ jobs:
               cp "$file" "build-info/${dir}_build-info.json"
             done
 
+            # Organize V3 catalog metadata JSON files
+            # Expected structure: catalog/<exporter>/rpm_*.json, deb_*.json, docker.json
+            echo "Organizing V3 catalog metadata..."
+
+            # Find all metadata JSON files and organize them
+            find artifacts -type f \( -name "rpm_*.json" -o -name "deb_*.json" -o -name "docker.json" \) | while read file; do
+              # Extract exporter name from artifact directory name
+              # Artifact names: rpm-<exporter>-<arch>-<dist>, deb-<exporter>-<arch>-<dist>, docker-<exporter>
+              artifact_dir=$(basename $(dirname "$file"))
+
+              # Extract exporter name (remove prefix and suffix patterns)
+              if [[ "$artifact_dir" == docker-* ]]; then
+                exporter="${artifact_dir#docker-}"
+              elif [[ "$artifact_dir" == rpm-* ]]; then
+                # rpm-node_exporter-amd64-el9 -> node_exporter
+                exporter=$(echo "$artifact_dir" | sed 's/^rpm-//' | sed 's/-[^-]*-[^-]*$//')
+              elif [[ "$artifact_dir" == deb-* ]]; then
+                # deb-node_exporter-amd64-debian-12 -> node_exporter
+                exporter=$(echo "$artifact_dir" | sed 's/^deb-//' | sed 's/-[^-]*-[^-]*$//')
+              fi
+
+              if [ -n "$exporter" ]; then
+                mkdir -p "catalog/$exporter"
+                filename=$(basename "$file")
+                cp "$file" "catalog/$exporter/$filename"
+                echo "  ✓ catalog/$exporter/$filename"
+              fi
+            done
+
             # Copy security stats if available
             if [ -f "artifacts/security-stats/security-stats.json" ]; then
               cp artifacts/security-stats/security-stats.json .
@@ -838,6 +867,8 @@ jobs:
           ls -la release-urls/ || echo "  (none)"
           echo "Build info collected:"
           ls -la build-info/ || echo "  (none)"
+          echo "Catalog structure:"
+          find catalog -type f 2>/dev/null || echo "  (none)"
 
           echo "::endgroup::"
 
