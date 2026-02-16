@@ -148,11 +148,16 @@ artifacts:
   # --- Artifact: DEB Package --------------------------------------------------
   deb:
     enabled: true                 # [REQUIRED] Set to true to build DEB packages.
-    targets:                      # [OPTIONAL] Default: [ubuntu-22.04, ubuntu-24.04, debian-12, debian-13].
-      - ubuntu-22.04              # Ubuntu 22.04 LTS (Jammy Jellyfish)
-      - ubuntu-24.04              # Ubuntu 24.04 LTS (Noble Numbat)
-      - debian-12                 # Debian 12 (Bookworm)
-      - debian-13                 # Debian 13 (Trixie)
+    targets:                      # [REQUIRED] Distribution target for build.
+      - debian-12                 # NOTE: Single universal DEB built on Debian 12 (Bookworm).
+                                  # This package is compatible with all modern Debian/Ubuntu distributions:
+                                  # - Ubuntu 20.04+, 22.04, 24.04+ (Focal, Jammy, Noble+)
+                                  # - Debian 11+, 12, 13+ (Bullseye, Bookworm, Trixie+)
+                                  #
+                                  # For binary_repack exporters (Go static binaries), there is no
+                                  # technical difference between distributions. Building on Debian 12
+                                  # provides maximum compatibility while minimizing build time and
+                                  # avoiding filename collisions on GitHub Releases.
 
     summary: "..."                # [OPTIONAL] Short summary for DEB metadata. Defaults to description.
 

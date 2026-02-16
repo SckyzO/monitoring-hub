@@ -14,29 +14,26 @@ artifacts:
     enabled: true
     summary: Prometheus MySQL Exporter
     targets:
-      - el8
-      - el9
-      - el10
+    - el8
+    - el9
+    - el10
     system_user: mysqld_exporter
     systemd:
       enabled: true
     extra_files:
-      - source: assets/my.cnf
-        dest: /var/lib/mysqld_exporter/.my.cnf
-        config: true
-        mode: '0600'
+    - source: assets/my.cnf
+      dest: /var/lib/mysqld_exporter/.my.cnf
+      config: true
+      mode: '0600'
     directories:
-      - path: /var/lib/mysqld_exporter
-        owner: mysqld_exporter
-        group: mysqld_exporter
-        mode: '0700'
+    - path: /var/lib/mysqld_exporter
+      owner: mysqld_exporter
+      group: mysqld_exporter
+      mode: '0700'
   deb:
     enabled: true
     targets:
-      - ubuntu-22.04
-      - ubuntu-24.04
-      - debian-12
-      - debian-13
+    - debian-12
     summary: Prometheus exporter for MySQL server metrics
     systemd:
       enabled: true
@@ -44,21 +41,21 @@ artifacts:
     priority: optional
     system_user: mysqld_exporter
     extra_files:
-      - source: assets/my.cnf
-        dest: /var/lib/mysqld_exporter/.my.cnf
-        config: true
-        mode: '0600'
+    - source: assets/my.cnf
+      dest: /var/lib/mysqld_exporter/.my.cnf
+      config: true
+      mode: '0600'
     directories:
-      - path: /var/lib/mysqld_exporter
-        owner: mysqld_exporter
-        group: mysqld_exporter
-        mode: '0700'
+    - path: /var/lib/mysqld_exporter
+      owner: mysqld_exporter
+      group: mysqld_exporter
+      mode: '0700'
   docker:
     enabled: true
     entrypoint:
-      - /usr/bin/mysqld_exporter
+    - /usr/bin/mysqld_exporter
     cmd:
-      - --config.my-cnf=/var/lib/mysqld_exporter/.my.cnf
+    - --config.my-cnf=/var/lib/mysqld_exporter/.my.cnf
     validation:
       port: 9104
       enabled: true

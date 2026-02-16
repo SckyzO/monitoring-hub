@@ -1,7 +1,7 @@
 name: redis_exporter
 description: Prometheus exporter for Redis metrics
 category: Database
-version: "v1.81.0"
+version: v1.81.0
 updated: true
 upstream:
   type: github
@@ -15,24 +15,21 @@ artifacts:
     enabled: true
     summary: Prometheus Redis Exporter
     targets:
-      - el8
-      - el9
-      - el10
+    - el8
+    - el9
+    - el10
     system_user: redis_exporter
     systemd:
       enabled: true
     directories:
-      - path: /var/lib/redis_exporter
-        owner: redis_exporter
-        group: redis_exporter
-        mode: '0755'
+    - path: /var/lib/redis_exporter
+      owner: redis_exporter
+      group: redis_exporter
+      mode: '0755'
   deb:
     enabled: true
     targets:
-      - ubuntu-22.04
-      - ubuntu-24.04
-      - debian-12
-      - debian-13
+    - debian-12
     summary: Prometheus exporter for Redis metrics
     systemd:
       enabled: true
@@ -40,14 +37,14 @@ artifacts:
     priority: optional
     system_user: redis_exporter
     directories:
-      - path: /var/lib/redis_exporter
-        owner: redis_exporter
-        group: redis_exporter
-        mode: '0755'
+    - path: /var/lib/redis_exporter
+      owner: redis_exporter
+      group: redis_exporter
+      mode: '0755'
   docker:
     enabled: true
     entrypoint:
-      - /usr/bin/redis_exporter
+    - /usr/bin/redis_exporter
     validation:
       port: 9121
       enabled: true

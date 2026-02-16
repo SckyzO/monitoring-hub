@@ -1,7 +1,7 @@
 name: alertmanager
 description: Handle alerts and notifications for the Prometheus ecosystem
 category: Infrastructure
-version: "v0.31.1"
+version: v0.31.1
 updated: true
 upstream:
   type: github
@@ -11,38 +11,35 @@ build:
   method: binary_repack
   binary_name: alertmanager
   extra_binaries:
-    - amtool
+  - amtool
 artifacts:
   rpm:
     enabled: true
     targets:
-      - el8
-      - el9
-      - el10
+    - el8
+    - el9
+    - el10
     summary: Prometheus Alertmanager
     systemd:
       enabled: true
     system_user: alertmanager
     extra_files:
-      - source: assets/alertmanager.yml
-        dest: /etc/alertmanager/alertmanager.yml
-        config: true
+    - source: assets/alertmanager.yml
+      dest: /etc/alertmanager/alertmanager.yml
+      config: true
     directories:
-      - path: /etc/alertmanager
-        mode: '0755'
-        owner: root
-        group: root
-      - path: /var/lib/alertmanager
-        mode: '0755'
-        owner: alertmanager
-        group: alertmanager
+    - path: /etc/alertmanager
+      mode: '0755'
+      owner: root
+      group: root
+    - path: /var/lib/alertmanager
+      mode: '0755'
+      owner: alertmanager
+      group: alertmanager
   deb:
     enabled: true
     targets:
-      - ubuntu-22.04
-      - ubuntu-24.04
-      - debian-12
-      - debian-13
+    - debian-12
     summary: Handle alerts and notifications for the Prometheus ecosystem
     systemd:
       enabled: true
@@ -50,24 +47,24 @@ artifacts:
     priority: optional
     system_user: alertmanager
     extra_files:
-      - source: assets/alertmanager.yml
-        dest: /etc/alertmanager/alertmanager.yml
-        config: true
+    - source: assets/alertmanager.yml
+      dest: /etc/alertmanager/alertmanager.yml
+      config: true
     directories:
-      - path: /etc/alertmanager
-        mode: '0755'
-        owner: root
-        group: root
-      - path: /var/lib/alertmanager
-        mode: '0755'
-        owner: alertmanager
-        group: alertmanager
+    - path: /etc/alertmanager
+      mode: '0755'
+      owner: root
+      group: root
+    - path: /var/lib/alertmanager
+      mode: '0755'
+      owner: alertmanager
+      group: alertmanager
   docker:
     enabled: true
     entrypoint:
-      - /usr/bin/alertmanager
+    - /usr/bin/alertmanager
     cmd:
-      - --config.file=/etc/alertmanager/alertmanager.yml
+    - --config.file=/etc/alertmanager/alertmanager.yml
     validation:
       port: 9093
       enabled: true

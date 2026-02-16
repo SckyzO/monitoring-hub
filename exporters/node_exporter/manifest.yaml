@@ -14,19 +14,16 @@ artifacts:
   rpm:
     enabled: true
     targets:
-      - el8
-      - el9
-      - el10
+    - el8
+    - el9
+    - el10
     summary: Prometheus exporter for hardware and OS metrics
     systemd:
       enabled: true
   deb:
     enabled: true
     targets:
-      - ubuntu-22.04
-      - ubuntu-24.04
-      - debian-12
-      - debian-13
+    - debian-12
     summary: Prometheus exporter for hardware and OS metrics
     systemd:
       enabled: true
@@ -35,7 +32,7 @@ artifacts:
   docker:
     enabled: true
     entrypoint:
-      - /usr/bin/node_exporter
+    - /usr/bin/node_exporter
     cmd: []
     validation:
       port: 9100

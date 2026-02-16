@@ -83,7 +83,8 @@
 ## <img src=".github/icons/rocket-amber.svg" width="24" height="24" style="vertical-align: bottom;"> Key Features
 
 *   **Native Multi-Arch:** Every tool is built for `x86_64` and `aarch64` (ARM64).
-*   **Multi-Format Packages:** RPM (RHEL/CentOS/Rocky/Alma), DEB (Ubuntu/Debian), and OCI containers.
+*   **Multi-Format Packages:** RPM (RHEL 8/9/10), DEB (universal package for Ubuntu 20.04+/Debian 11+), and OCI containers.
+*   **Universal DEB Packages:** Single DEB per architecture built on Debian 12, compatible with all modern Ubuntu/Debian distributions. No version-specific packages needed for static binaries.
 *   **GPG-Signed Packages:** All RPM and DEB packages are cryptographically signed for integrity verification.
 *   **Security-First:** Container images scanned with Trivy, Python code with Bandit, dependencies with pip-audit.
 *   **Hardened Containers:** All Docker images use Red Hat UBI 9 Minimal base.
@@ -272,8 +273,8 @@ catalog/
 │   ├── rpm_amd64_el9.json           # Atomic: 1 job = 1 file
 │   ├── rpm_amd64_el10.json
 │   ├── rpm_arm64_el9.json
-│   ├── deb_amd64_ubuntu-22.04.json
-│   ├── deb_amd64_debian-12.json
+│   ├── deb_amd64_debian-12.json     # Universal DEB (Ubuntu 20.04+, Debian 11+)
+│   ├── deb_arm64_debian-12.json     # Universal DEB (Ubuntu 20.04+, Debian 11+)
 │   ├── docker.json
 │   └── metadata.json                # Aggregated (generated on-demand)
 └── catalog.json                     # Global index (backward compatible)
@@ -308,12 +309,15 @@ sudo dnf install <exporter_name>
 
 ### APT Repository (DEB)
 ```bash
-# Ubuntu 22.04/24.04, Debian 12/13
+# Universal DEB packages compatible with Ubuntu 20.04+, Debian 11+
 curl -fsSL https://sckyzo.github.io/monitoring-hub/apt/monitoring-hub.asc | \
   sudo gpg --dearmor -o /usr/share/keyrings/monitoring-hub.gpg
 
+# Replace 'bookworm' with your distribution codename:
+# - Ubuntu: focal (20.04), jammy (22.04), noble (24.04)
+# - Debian: bullseye (11), bookworm (12), trixie (13)
 echo "deb [signed-by=/usr/share/keyrings/monitoring-hub.gpg] \
-  https://sckyzo.github.io/monitoring-hub/apt jammy main" | \
+  https://sckyzo.github.io/monitoring-hub/apt bookworm main" | \
   sudo tee /etc/apt/sources.list.d/monitoring-hub.list
 
 sudo apt update && sudo apt install <exporter_name>
