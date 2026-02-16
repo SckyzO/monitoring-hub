@@ -66,15 +66,21 @@ def aggregate_rpm_artifacts(artifacts: List[Dict[str, Any]]) -> Dict[str, Any]:
         dist = artifact.get("dist")
         arch = artifact.get("arch")
         status = artifact.get("status", "unknown")
+        package = artifact.get("package", {})
+        url = package.get("url", "")
+
+        # Build GitHub Releases URL if empty
+        if not url and package.get("filename"):
+            url = f"https://github.com/sckyzo/monitoring-hub/releases/latest/download/{package['filename']}"
 
         if dist not in rpm_data:
             rpm_data[dist] = {}
 
         rpm_data[dist][arch] = {
             "status": status,
-            "url": artifact.get("package", {}).get("url"),
-            "size_bytes": artifact.get("package", {}).get("size_bytes"),
-            "sha256": artifact.get("package", {}).get("sha256"),
+            "url": url,
+            "size_bytes": package.get("size_bytes"),
+            "sha256": package.get("sha256"),
             "build_date": artifact.get("build_date"),
         }
 
@@ -92,15 +98,21 @@ def aggregate_deb_artifacts(artifacts: List[Dict[str, Any]]) -> Dict[str, Any]:
         dist = artifact.get("dist")
         arch = artifact.get("arch")
         status = artifact.get("status", "unknown")
+        package = artifact.get("package", {})
+        url = package.get("url", "")
+
+        # Build GitHub Releases URL if empty
+        if not url and package.get("filename"):
+            url = f"https://github.com/sckyzo/monitoring-hub/releases/latest/download/{package['filename']}"
 
         if dist not in deb_data:
             deb_data[dist] = {}
 
         deb_data[dist][arch] = {
             "status": status,
-            "url": artifact.get("package", {}).get("url"),
-            "size_bytes": artifact.get("package", {}).get("size_bytes"),
-            "sha256": artifact.get("package", {}).get("sha256"),
+            "url": url,
+            "size_bytes": package.get("size_bytes"),
+            "sha256": package.get("sha256"),
             "build_date": artifact.get("build_date"),
         }
 
