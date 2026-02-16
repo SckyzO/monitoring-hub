@@ -833,7 +833,8 @@ jobs:
             find artifacts -type f \( -name "rpm_*.json" -o -name "deb_*.json" -o -name "docker.json" \) | while read file; do
               # Extract exporter name from artifact directory name
               # Artifact names: rpm-<exporter>-<arch>-<dist>, deb-<exporter>-<arch>-<dist>, docker-<exporter>
-              artifact_dir=$(basename $(dirname "$file"))
+              # Note: artifacts have nested structure (artifacts/artifact-name/build-subdir/file.json)
+              artifact_dir=$(basename $(dirname $(dirname "$file")))
 
               # Extract exporter name (remove prefix and suffix patterns)
               if [[ "$artifact_dir" == docker-* ]]; then
@@ -843,7 +844,8 @@ jobs:
                 exporter=$(echo "$artifact_dir" | sed 's/^rpm-//' | sed 's/-[^-]*-[^-]*$//')
               elif [[ "$artifact_dir" == deb-* ]]; then
                 # deb-node_exporter-amd64-debian-12 -> node_exporter
-                exporter=$(echo "$artifact_dir" | sed 's/^deb-//' | sed 's/-[^-]*-[^-]*$//')
+                # Remove: deb- prefix, then -<arch>-<dist>-<version> (3 components)
+                exporter=$(echo "$artifact_dir" | sed 's/^deb-//' | sed 's/-[^-]*-[^-]*-[^-]*$//')
               fi
 
               if [ -n "$exporter" ]; then
