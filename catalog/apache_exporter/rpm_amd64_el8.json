@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "rpm",
+  "exporter": "apache_exporter",
+  "version": "1.0.12",
+  "arch": "amd64",
+  "dist": "el8",
+  "build_date": "2026-02-16T13:21:34.412568+00:00",
+  "status": "success",
+  "package": {
+    "filename": "apache_exporter-1.0.12-1.el8.x86_64.rpm",
+    "url": "",
+    "sha256": "7c2fef9c4b2337528752937eb0f35ca33f9c2300077cb69b999ace1732a68636",
+    "size_bytes": 4282744
+  },
+  "rpm_metadata": {}
+}

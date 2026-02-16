@@ -1,0 +1,101 @@
+{
+  "format_version": "3.0",
+  "exporter": "mysqld_exporter",
+  "version": "0.18.0",
+  "category": "Database",
+  "description": "Prometheus exporter for MySQL server metrics",
+  "last_updated": "2026-02-16T13:29:04.849810+00:00",
+  "artifacts": {
+    "rpm": {
+      "el8": {
+        "amd64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/mysqld_exporter-0.18.0-1.el8.x86_64.rpm",
+          "size_bytes": 4428496,
+          "sha256": "be529aeccf83fe92070ebddbf17ea6d6bbb6054827ac40dbeaaa55d42dced927",
+          "build_date": "2026-02-16T13:15:10.686825+00:00"
+        },
+        "arm64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/mysqld_exporter-0.18.0-1.el8.aarch64.rpm",
+          "size_bytes": 3807796,
+          "sha256": "b54e50405ee823a531ab94be184e931f4c5fab6970a5990c6f64bbf07d784727",
+          "build_date": "2026-02-16T13:27:17.844492+00:00"
+        }
+      },
+      "el10": {
+        "arm64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/mysqld_exporter-0.18.0-1.el10.aarch64.rpm",
+          "size_bytes": 3849352,
+          "sha256": "38ed16ffd52d3288ad2e1e2d9c58c5bb20e21809a02376998b39c1a4aeea3f53",
+          "build_date": "2026-02-16T13:27:36.332975+00:00"
+        },
+        "amd64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/mysqld_exporter-0.18.0-1.el10.x86_64.rpm",
+          "size_bytes": 4322582,
+          "sha256": "85a65d341898a0d8e708fbfa26c68e21d1ba2d91885d5550d24d36ce15eb90a5",
+          "build_date": "2026-02-16T13:26:41.749508+00:00"
+        }
+      },
+      "el9": {
+        "arm64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/mysqld_exporter-0.18.0-1.el9.aarch64.rpm",
+          "size_bytes": 3849862,
+          "sha256": "d9131b5da863dd411aae403e31d98d0119e26beefae411c655a49e000ef25d2c",
+          "build_date": "2026-02-16T13:29:04.849810+00:00"
+        },
+        "amd64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/mysqld_exporter-0.18.0-1.el9.x86_64.rpm",
+          "size_bytes": 4322338,
+          "sha256": "2ecb501d04c26b38d0405702ea0532334eb15f009d3f2ef5efc1b09ea33c2684",
+          "build_date": "2026-02-16T13:15:19.242527+00:00"
+        }
+      }
+    },
+    "deb": {
+      "debian-12": {
+        "amd64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/mysqld-exporter_0.18.0-1_amd64.deb",
+          "size_bytes": 9593572,
+          "sha256": "cb0462b5b43de21fd6334699f210938c3335c4ce41865b2c8b9a6a18947a14a6",
+          "build_date": "2026-02-16T12:55:37.218981+00:00"
+        },
+        "arm64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/mysqld-exporter_0.18.0-1_arm64.deb",
+          "size_bytes": 8802530,
+          "sha256": "9bb35e95d8724c2c2db8668e5e01385773ebf1642cd1316a8493b6e401b64173",
+          "build_date": "2026-02-16T13:01:40.052278+00:00"
+        }
+      }
+    },
+    "docker": {
+      "status": "success",
+      "images": [
+        {
+          "registry": "ghcr.io",
+          "repository": "SckyzO/monitoring-hub/mysqld_exporter",
+          "tags": [
+            "0.18.0",
+            "latest"
+          ],
+          "architectures": [
+            "linux/amd64"
+          ],
+          "created": "2026-02-16T12:53:29Z"
+        }
+      ],
+      "build_date": "2026-02-16T12:53:30.114868+00:00"
+    }
+  },
+  "status": {
+    "rpm": "success",
+    "deb": "success",
+    "docker": "success"
+  }
+}

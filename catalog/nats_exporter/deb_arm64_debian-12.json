@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "deb",
+  "exporter": "nats_exporter",
+  "version": "0.19.1",
+  "arch": "arm64",
+  "dist": "debian-12",
+  "build_date": "2026-02-16T13:09:06.078138+00:00",
+  "status": "success",
+  "package": {
+    "filename": "nats-exporter_0.19.1-1_arm64.deb",
+    "url": "",
+    "sha256": "51e102519fbc1804d86f76e9f78ce6f8eb8b7c36b55f6139ed90423568f9b57f",
+    "size_bytes": 3708574
+  },
+  "deb_metadata": {}
+}

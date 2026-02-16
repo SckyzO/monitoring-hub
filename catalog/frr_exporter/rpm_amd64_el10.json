@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "rpm",
+  "exporter": "frr_exporter",
+  "version": "1.10.0",
+  "arch": "amd64",
+  "dist": "el10",
+  "build_date": "2026-02-16T13:17:51.700982+00:00",
+  "status": "success",
+  "package": {
+    "filename": "frr_exporter-1.10.0-1.el10.x86_64.rpm",
+    "url": "",
+    "sha256": "c7fcc3bae40ef4533d963628c6f79b98aafaac9dda01f820bdeffcab14c2e54c",
+    "size_bytes": 4237728
+  },
+  "rpm_metadata": {}
+}

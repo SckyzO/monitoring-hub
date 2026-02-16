@@ -5,13 +5,13 @@
   "version": "1.10.2",
   "arch": "amd64",
   "dist": "debian-12",
-  "build_date": "2026-02-16T12:25:31.408164+00:00",
+  "build_date": "2026-02-16T12:57:01.540910+00:00",
   "status": "success",
   "package": {
     "filename": "node-exporter_1.10.2-1_amd64.deb",
     "url": "",
-    "sha256": "ae14ccab334f6b40d766a844414a00290b77c7ac5ff65e0e0efa894ff4e3f645",
-    "size_bytes": 11634362
+    "sha256": "c947ad0925e72dc49b5b1486078a23b9aa093e467468f4191511835bd890d347",
+    "size_bytes": 11634358
   },
   "deb_metadata": {}
 }

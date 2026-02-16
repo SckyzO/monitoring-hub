@@ -1,0 +1,22 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "docker",
+  "exporter": "nats_exporter",
+  "version": "0.19.1",
+  "build_date": "2026-02-16T12:54:16.836692+00:00",
+  "status": "success",
+  "images": [
+    {
+      "registry": "ghcr.io",
+      "repository": "SckyzO/monitoring-hub/nats_exporter",
+      "tags": [
+        "0.19.1",
+        "latest"
+      ],
+      "architectures": [
+        "linux/amd64"
+      ],
+      "created": "2026-02-16T12:54:16Z"
+    }
+  ]
+}

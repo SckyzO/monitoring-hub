@@ -1,0 +1,22 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "docker",
+  "exporter": "ha_cluster_exporter",
+  "version": "1.4.0",
+  "build_date": "2026-02-16T12:54:47.841637+00:00",
+  "status": "success",
+  "images": [
+    {
+      "registry": "ghcr.io",
+      "repository": "SckyzO/monitoring-hub/ha_cluster_exporter",
+      "tags": [
+        "1.4.0",
+        "latest"
+      ],
+      "architectures": [
+        "linux/amd64"
+      ],
+      "created": "2026-02-16T12:54:47Z"
+    }
+  ]
+}

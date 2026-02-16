@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "rpm",
+  "exporter": "process_exporter",
+  "version": "0.8.7",
+  "arch": "arm64",
+  "dist": "el8",
+  "build_date": "2026-02-16T13:26:06.861134+00:00",
+  "status": "success",
+  "package": {
+    "filename": "process_exporter-0.8.7-1.el8.aarch64.rpm",
+    "url": "",
+    "sha256": "8a205e31f373807a500fac47614434c482db6373778f4567511ebe6571e23d78",
+    "size_bytes": 3228380
+  },
+  "rpm_metadata": {}
+}

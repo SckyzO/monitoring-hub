@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "deb",
+  "exporter": "textfile_exporter",
+  "version": "0.1.4",
+  "arch": "amd64",
+  "dist": "debian-12",
+  "build_date": "2026-02-16T13:00:37.305270+00:00",
+  "status": "success",
+  "package": {
+    "filename": "textfile-exporter_0.1.4-1_amd64.deb",
+    "url": "",
+    "sha256": "4a5ff42ee68f6858e0d0b87610add8dc2d1c3bb3ce0d9d46f100ecea22bddfaf",
+    "size_bytes": 3648652
+  },
+  "deb_metadata": {}
+}

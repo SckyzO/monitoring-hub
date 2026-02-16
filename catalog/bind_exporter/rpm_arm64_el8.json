@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "rpm",
+  "exporter": "bind_exporter",
+  "version": "0.8.0",
+  "arch": "arm64",
+  "dist": "el8",
+  "build_date": "2026-02-16T13:27:23.650970+00:00",
+  "status": "success",
+  "package": {
+    "filename": "bind_exporter-0.8.0-1.el8.aarch64.rpm",
+    "url": "",
+    "sha256": "f42197e95f576925cb86d34ac9571b269eaab370779d0e1d8fb221a7a68f6068",
+    "size_bytes": 3708708
+  },
+  "rpm_metadata": {}
+}

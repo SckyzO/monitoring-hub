@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "rpm",
+  "exporter": "keepalived_exporter",
+  "version": "1.7.0",
+  "arch": "arm64",
+  "dist": "el10",
+  "build_date": "2026-02-16T13:17:58.479992+00:00",
+  "status": "success",
+  "package": {
+    "filename": "keepalived_exporter-1.7.0-1.el10.aarch64.rpm",
+    "url": "",
+    "sha256": "1b206f30bdb5fa49574979b8eb82ed84d66787956882acf4885293fe34ec7cc1",
+    "size_bytes": 3092274
+  },
+  "rpm_metadata": {}
+}

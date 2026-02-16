@@ -1,0 +1,101 @@
+{
+  "format_version": "3.0",
+  "exporter": "smartctl_exporter",
+  "version": "0.14.0",
+  "category": "Storage",
+  "description": "Prometheus exporter for S.M.A.R.T. storage devices metrics",
+  "last_updated": "2026-02-16T13:21:59.255571+00:00",
+  "artifacts": {
+    "rpm": {
+      "el8": {
+        "amd64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/smartctl_exporter-0.14.0-1.el8.x86_64.rpm",
+          "size_bytes": 4082404,
+          "sha256": "8d97e6273b5d65213549a58d78a6fd35c4707db28a88fc73c26e8b8b95209bbd",
+          "build_date": "2026-02-16T13:16:43.160312+00:00"
+        },
+        "arm64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/smartctl_exporter-0.14.0-1.el8.aarch64.rpm",
+          "size_bytes": 3557868,
+          "sha256": "34d58ee4111ee6a3cfe40d3cb189915a9a4d09c7d1eec020d51eb5a2eec078d7",
+          "build_date": "2026-02-16T13:21:58.045226+00:00"
+        }
+      },
+      "el10": {
+        "arm64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/smartctl_exporter-0.14.0-1.el10.aarch64.rpm",
+          "size_bytes": 3595634,
+          "sha256": "47e5d3f8d7932821bee159fa153755cadcf2f8d1153a29fe777c6cee805acadc",
+          "build_date": "2026-02-16T13:20:04.411272+00:00"
+        },
+        "amd64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/smartctl_exporter-0.14.0-1.el10.x86_64.rpm",
+          "size_bytes": 3986401,
+          "sha256": "832a921eda4a37ca42eb748c825a6a27d7b245e3a05546a23c1d9294b70e7f72",
+          "build_date": "2026-02-16T13:20:41.914473+00:00"
+        }
+      },
+      "el9": {
+        "arm64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/smartctl_exporter-0.14.0-1.el9.aarch64.rpm",
+          "size_bytes": 3595302,
+          "sha256": "272ea6c985fd28a375994478ff89c78dc33ae19a166deeea134aeb42be518288",
+          "build_date": "2026-02-16T13:21:59.255571+00:00"
+        },
+        "amd64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/smartctl_exporter-0.14.0-1.el9.x86_64.rpm",
+          "size_bytes": 3987093,
+          "sha256": "5181f6cad5bf75144fe254ded85dfe9ae650f9d0c0e024a136d6613fd888dc37",
+          "build_date": "2026-02-16T13:14:12.348050+00:00"
+        }
+      }
+    },
+    "deb": {
+      "debian-12": {
+        "amd64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/smartctl-exporter_0.14.0-1_amd64.deb",
+          "size_bytes": 9111460,
+          "sha256": "b79b1a097246b366b51a7b586a7a42a1c129525f092e9b419b6a25e812a67357",
+          "build_date": "2026-02-16T12:57:23.864929+00:00"
+        },
+        "arm64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/smartctl-exporter_0.14.0-1_arm64.deb",
+          "size_bytes": 8548066,
+          "sha256": "e37eb76f10fd51aa7de8fad66c940f0951a0595d8639590733c887a90bd64895",
+          "build_date": "2026-02-16T13:05:23.073559+00:00"
+        }
+      }
+    },
+    "docker": {
+      "status": "success",
+      "images": [
+        {
+          "registry": "ghcr.io",
+          "repository": "SckyzO/monitoring-hub/smartctl_exporter",
+          "tags": [
+            "0.14.0",
+            "latest"
+          ],
+          "architectures": [
+            "linux/amd64"
+          ],
+          "created": "2026-02-16T12:53:45Z"
+        }
+      ],
+      "build_date": "2026-02-16T12:53:45.497781+00:00"
+    }
+  },
+  "status": {
+    "rpm": "success",
+    "deb": "success",
+    "docker": "success"
+  }
+}

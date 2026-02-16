@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "deb",
+  "exporter": "json_exporter",
+  "version": "0.7.0",
+  "arch": "arm64",
+  "dist": "debian-12",
+  "build_date": "2026-02-16T13:08:09.804954+00:00",
+  "status": "success",
+  "package": {
+    "filename": "json-exporter_0.7.0-1_arm64.deb",
+    "url": "",
+    "sha256": "e8d127637e8cd9e928d5b773377a0d801939e31c4b052aa03b7a9c732fd6dd92",
+    "size_bytes": 9566832
+  },
+  "deb_metadata": {}
+}

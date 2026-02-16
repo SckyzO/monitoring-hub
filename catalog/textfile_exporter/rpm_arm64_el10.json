@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "rpm",
+  "exporter": "textfile_exporter",
+  "version": "0.1.4",
+  "arch": "arm64",
+  "dist": "el10",
+  "build_date": "2026-02-16T13:23:32.395204+00:00",
+  "status": "success",
+  "package": {
+    "filename": "textfile_exporter-0.1.4-1.el10.aarch64.rpm",
+    "url": "",
+    "sha256": "7071551f48f9cbfb52369df9164db85585d0b45ccc78545d182a3fb88f4a8090",
+    "size_bytes": 2782834
+  },
+  "rpm_metadata": {}
+}

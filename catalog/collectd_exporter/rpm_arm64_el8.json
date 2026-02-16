@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "rpm",
+  "exporter": "collectd_exporter",
+  "version": "0.7.0",
+  "arch": "arm64",
+  "dist": "el8",
+  "build_date": "2026-02-16T13:36:20.809063+00:00",
+  "status": "success",
+  "package": {
+    "filename": "collectd_exporter-0.7.0-1.el8.aarch64.rpm",
+    "url": "",
+    "sha256": "03662712397f156c4108cfbb4dc9ce2501f8f5864b20cc88045db27f64520136",
+    "size_bytes": 3450224
+  },
+  "rpm_metadata": {}
+}

@@ -1,0 +1,22 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "docker",
+  "exporter": "mysqld_exporter",
+  "version": "0.18.0",
+  "build_date": "2026-02-16T12:53:30.114868+00:00",
+  "status": "success",
+  "images": [
+    {
+      "registry": "ghcr.io",
+      "repository": "SckyzO/monitoring-hub/mysqld_exporter",
+      "tags": [
+        "0.18.0",
+        "latest"
+      ],
+      "architectures": [
+        "linux/amd64"
+      ],
+      "created": "2026-02-16T12:53:29Z"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "deb",
+  "exporter": "elasticsearch_exporter",
+  "version": "1.10.0",
+  "arch": "arm64",
+  "dist": "debian-12",
+  "build_date": "2026-02-16T13:03:55.095158+00:00",
+  "status": "success",
+  "package": {
+    "filename": "elasticsearch-exporter_1.10.0-1_arm64.deb",
+    "url": "",
+    "sha256": "51e8f6ef715440c7c98c51e415a768df30146411198daaaedb030617d18a6aef",
+    "size_bytes": 5574548
+  },
+  "deb_metadata": {}
+}

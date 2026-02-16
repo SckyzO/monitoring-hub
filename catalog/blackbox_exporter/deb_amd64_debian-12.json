@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "deb",
+  "exporter": "blackbox_exporter",
+  "version": "0.28.0",
+  "arch": "amd64",
+  "dist": "debian-12",
+  "build_date": "2026-02-16T12:56:37.455282+00:00",
+  "status": "success",
+  "package": {
+    "filename": "blackbox-exporter_0.28.0-1_amd64.deb",
+    "url": "",
+    "sha256": "bd364c1423bfd2e6a67590fff40fabea579cac23860b145110e2368195ff8523",
+    "size_bytes": 16079828
+  },
+  "deb_metadata": {}
+}

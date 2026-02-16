@@ -1,0 +1,22 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "docker",
+  "exporter": "textfile_exporter",
+  "version": "0.1.4",
+  "build_date": "2026-02-16T12:53:48.066450+00:00",
+  "status": "success",
+  "images": [
+    {
+      "registry": "ghcr.io",
+      "repository": "SckyzO/monitoring-hub/textfile_exporter",
+      "tags": [
+        "0.1.4",
+        "latest"
+      ],
+      "architectures": [
+        "linux/amd64"
+      ],
+      "created": "2026-02-16T12:53:47Z"
+    }
+  ]
+}

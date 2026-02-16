@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "rpm",
+  "exporter": "json_exporter",
+  "version": "0.7.0",
+  "arch": "arm64",
+  "dist": "el9",
+  "build_date": "2026-02-16T13:14:38.143816+00:00",
+  "status": "success",
+  "package": {
+    "filename": "json_exporter-0.7.0-1.el9.aarch64.rpm",
+    "url": "",
+    "sha256": "ed70de09ac34259f0575a821cc8510b3051ce18e973affdb519ef0878f121d1f",
+    "size_bytes": 3954734
+  },
+  "rpm_metadata": {}
+}

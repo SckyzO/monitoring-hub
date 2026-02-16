@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "deb",
+  "exporter": "ipmi_exporter",
+  "version": "1.10.1",
+  "arch": "amd64",
+  "dist": "debian-12",
+  "build_date": "2026-02-16T12:57:04.378540+00:00",
+  "status": "success",
+  "package": {
+    "filename": "ipmi-exporter_1.10.1-1_amd64.deb",
+    "url": "",
+    "sha256": "4b64af745b764b83f9579f44bef5efbda10f042c535631c827a8f3ca5f8855e9",
+    "size_bytes": 9257258
+  },
+  "deb_metadata": {}
+}

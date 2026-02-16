@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "rpm",
+  "exporter": "nats_exporter",
+  "version": "0.19.1",
+  "arch": "amd64",
+  "dist": "el9",
+  "build_date": "2026-02-16T13:33:02.906627+00:00",
+  "status": "success",
+  "package": {
+    "filename": "nats_exporter-0.19.1-1.el9.x86_64.rpm",
+    "url": "",
+    "sha256": "f046d2d092ea0843f91c1b820fd506e08d5de7441a378639f1e330eb188aa062",
+    "size_bytes": 3468204
+  },
+  "rpm_metadata": {}
+}

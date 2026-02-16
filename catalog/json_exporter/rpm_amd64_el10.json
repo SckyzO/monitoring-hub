@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "rpm",
+  "exporter": "json_exporter",
+  "version": "0.7.0",
+  "arch": "amd64",
+  "dist": "el10",
+  "build_date": "2026-02-16T13:12:34.588566+00:00",
+  "status": "success",
+  "package": {
+    "filename": "json_exporter-0.7.0-1.el10.x86_64.rpm",
+    "url": "",
+    "sha256": "db5b5daa6523e50298fb8ffe98cc2128e507df815bf14f0b89836f10a9e9e216",
+    "size_bytes": 4381312
+  },
+  "rpm_metadata": {}
+}

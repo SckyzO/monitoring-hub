@@ -1,0 +1,73 @@
+{
+  "format_version": "3.0",
+  "exporter": "dellhw_exporter",
+  "version": "1.13.13",
+  "category": "Infrastructure",
+  "description": "Prometheus exporter for Dell Hardware components using OMSA.",
+  "last_updated": "2026-02-16T13:26:36.051219+00:00",
+  "artifacts": {
+    "rpm": {
+      "el8": {
+        "amd64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/dellhw_exporter-1.13.13-1.el8.x86_64.rpm",
+          "size_bytes": 3304924,
+          "sha256": "2e9c4aacc8dc190e27e4a5bc9d51029793a5fc2075a7f2df041a5fb97e761ee4",
+          "build_date": "2026-02-16T13:26:36.051219+00:00"
+        }
+      },
+      "el9": {
+        "amd64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/dellhw_exporter-1.13.13-1.el9.x86_64.rpm",
+          "size_bytes": 3278358,
+          "sha256": "7ca26b60c9c8291ff0e84837ae2d916c67975cc32df9494b7d04eebb9bba3192",
+          "build_date": "2026-02-16T13:23:47.948841+00:00"
+        }
+      },
+      "el10": {
+        "amd64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/dellhw_exporter-1.13.13-1.el10.x86_64.rpm",
+          "size_bytes": 3278167,
+          "sha256": "f9365c643e9bb39c5a85d306d0c7fed93cf090019319a46931ce54b88423138e",
+          "build_date": "2026-02-16T13:22:57.053576+00:00"
+        }
+      }
+    },
+    "deb": {
+      "debian-12": {
+        "amd64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/dellhw-exporter_1.13.13-1_amd64.deb",
+          "size_bytes": 3851338,
+          "sha256": "ce07c193772831d5cf7eedea07782bac4c29ead8c0c4b471c56de3cb702a84af",
+          "build_date": "2026-02-16T12:57:04.016473+00:00"
+        }
+      }
+    },
+    "docker": {
+      "status": "success",
+      "images": [
+        {
+          "registry": "ghcr.io",
+          "repository": "SckyzO/monitoring-hub/dellhw_exporter",
+          "tags": [
+            "1.13.13",
+            "latest"
+          ],
+          "architectures": [
+            "linux/amd64"
+          ],
+          "created": "2026-02-16T12:54:24Z"
+        }
+      ],
+      "build_date": "2026-02-16T12:54:25.087312+00:00"
+    }
+  },
+  "status": {
+    "rpm": "success",
+    "deb": "success",
+    "docker": "success"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "deb",
+  "exporter": "nginx_exporter",
+  "version": "1.5.1",
+  "arch": "amd64",
+  "dist": "debian-12",
+  "build_date": "2026-02-16T12:59:14.375007+00:00",
+  "status": "success",
+  "package": {
+    "filename": "nginx-exporter_1.5.1-1_amd64.deb",
+    "url": "",
+    "sha256": "6221ef0693feb1361f82338787629cb487ea75d42f3e2045282dde4e43497409",
+    "size_bytes": 4930280
+  },
+  "deb_metadata": {}
+}

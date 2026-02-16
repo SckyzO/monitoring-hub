@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "deb",
+  "exporter": "eseries_exporter",
+  "version": "2.0.0",
+  "arch": "arm64",
+  "dist": "debian-12",
+  "build_date": "2026-02-16T13:03:05.222049+00:00",
+  "status": "success",
+  "package": {
+    "filename": "eseries-exporter_2.0.0-1_arm64.deb",
+    "url": "",
+    "sha256": "dd32d051bac980d7febf28dabffc0460be011de47277a8701dc5fa9f32cf7e5e",
+    "size_bytes": 3811462
+  },
+  "deb_metadata": {}
+}

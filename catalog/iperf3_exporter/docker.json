@@ -1,0 +1,22 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "docker",
+  "exporter": "iperf3_exporter",
+  "version": "1.3.1",
+  "build_date": "2026-02-16T12:53:53.291187+00:00",
+  "status": "success",
+  "images": [
+    {
+      "registry": "ghcr.io",
+      "repository": "SckyzO/monitoring-hub/iperf3_exporter",
+      "tags": [
+        "1.3.1",
+        "latest"
+      ],
+      "architectures": [
+        "linux/amd64"
+      ],
+      "created": "2026-02-16T12:53:53Z"
+    }
+  ]
+}

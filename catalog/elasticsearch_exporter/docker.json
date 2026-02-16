@@ -1,0 +1,22 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "docker",
+  "exporter": "elasticsearch_exporter",
+  "version": "1.10.0",
+  "build_date": "2026-02-16T12:53:34.895789+00:00",
+  "status": "success",
+  "images": [
+    {
+      "registry": "ghcr.io",
+      "repository": "SckyzO/monitoring-hub/elasticsearch_exporter",
+      "tags": [
+        "1.10.0",
+        "latest"
+      ],
+      "architectures": [
+        "linux/amd64"
+      ],
+      "created": "2026-02-16T12:53:34Z"
+    }
+  ]
+}

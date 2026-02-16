@@ -1,0 +1,22 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "docker",
+  "exporter": "dellhw_exporter",
+  "version": "1.13.13",
+  "build_date": "2026-02-16T12:54:25.087312+00:00",
+  "status": "success",
+  "images": [
+    {
+      "registry": "ghcr.io",
+      "repository": "SckyzO/monitoring-hub/dellhw_exporter",
+      "tags": [
+        "1.13.13",
+        "latest"
+      ],
+      "architectures": [
+        "linux/amd64"
+      ],
+      "created": "2026-02-16T12:54:24Z"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "docker",
+  "exporter": "ping_exporter",
+  "version": "1.1.5",
+  "build_date": "2026-02-16T12:53:41.462509+00:00",
+  "status": "success",
+  "images": [
+    {
+      "registry": "ghcr.io",
+      "repository": "SckyzO/monitoring-hub/ping_exporter",
+      "tags": [
+        "1.1.5",
+        "latest"
+      ],
+      "architectures": [
+        "linux/amd64"
+      ],
+      "created": "2026-02-16T12:53:41Z"
+    }
+  ]
+}

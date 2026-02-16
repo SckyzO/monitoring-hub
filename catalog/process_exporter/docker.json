@@ -1,0 +1,22 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "docker",
+  "exporter": "process_exporter",
+  "version": "0.8.7",
+  "build_date": "2026-02-16T12:53:43.618183+00:00",
+  "status": "success",
+  "images": [
+    {
+      "registry": "ghcr.io",
+      "repository": "SckyzO/monitoring-hub/process_exporter",
+      "tags": [
+        "0.8.7",
+        "latest"
+      ],
+      "architectures": [
+        "linux/amd64"
+      ],
+      "created": "2026-02-16T12:53:43Z"
+    }
+  ]
+}

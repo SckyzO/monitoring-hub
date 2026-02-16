@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "rpm",
+  "exporter": "artifactory_exporter",
+  "version": "1.16.1",
+  "arch": "amd64",
+  "dist": "el9",
+  "build_date": "2026-02-16T13:32:47.159916+00:00",
+  "status": "success",
+  "package": {
+    "filename": "artifactory_exporter-1.16.1-1.el9.x86_64.rpm",
+    "url": "",
+    "sha256": "c47a8c6fb35499c034a0a1e9ef78a2bab0e7042d9bb43c183f6aef58d88fe585",
+    "size_bytes": 3755176
+  },
+  "rpm_metadata": {}
+}

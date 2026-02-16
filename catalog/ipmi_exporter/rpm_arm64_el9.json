@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "rpm",
+  "exporter": "ipmi_exporter",
+  "version": "1.10.1",
+  "arch": "arm64",
+  "dist": "el9",
+  "build_date": "2026-02-16T13:32:11.939390+00:00",
+  "status": "success",
+  "package": {
+    "filename": "ipmi_exporter-1.10.1-1.el9.aarch64.rpm",
+    "url": "",
+    "sha256": "a8a7c6e3b7c19ea0c4042a0087c3b492dcc5a38c1384a680a317f8e427c8c291",
+    "size_bytes": 3650857
+  },
+  "rpm_metadata": {}
+}

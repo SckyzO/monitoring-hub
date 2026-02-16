@@ -1,0 +1,22 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "docker",
+  "exporter": "apache_exporter",
+  "version": "1.0.12",
+  "build_date": "2026-02-16T12:53:31.633215+00:00",
+  "status": "success",
+  "images": [
+    {
+      "registry": "ghcr.io",
+      "repository": "SckyzO/monitoring-hub/apache_exporter",
+      "tags": [
+        "1.0.12",
+        "latest"
+      ],
+      "architectures": [
+        "linux/amd64"
+      ],
+      "created": "2026-02-16T12:53:31Z"
+    }
+  ]
+}

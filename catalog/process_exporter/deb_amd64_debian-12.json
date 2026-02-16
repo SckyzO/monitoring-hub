@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "deb",
+  "exporter": "process_exporter",
+  "version": "0.8.7",
+  "arch": "amd64",
+  "dist": "debian-12",
+  "build_date": "2026-02-16T12:55:27.134323+00:00",
+  "status": "success",
+  "package": {
+    "filename": "process-exporter_0.8.7-1_amd64.deb",
+    "url": "",
+    "sha256": "f345996f9d504ddb63d5e564e205e3d8c6084e8f7736c9c267fdc1753b445eb8",
+    "size_bytes": 4381442
+  },
+  "deb_metadata": {}
+}

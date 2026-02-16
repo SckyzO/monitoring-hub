@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "rpm",
+  "exporter": "dellhw_exporter",
+  "version": "1.13.13",
+  "arch": "amd64",
+  "dist": "el10",
+  "build_date": "2026-02-16T13:22:57.053576+00:00",
+  "status": "success",
+  "package": {
+    "filename": "dellhw_exporter-1.13.13-1.el10.x86_64.rpm",
+    "url": "",
+    "sha256": "f9365c643e9bb39c5a85d306d0c7fed93cf090019319a46931ce54b88423138e",
+    "size_bytes": 3278167
+  },
+  "rpm_metadata": {}
+}

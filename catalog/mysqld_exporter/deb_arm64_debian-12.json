@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "deb",
+  "exporter": "mysqld_exporter",
+  "version": "0.18.0",
+  "arch": "arm64",
+  "dist": "debian-12",
+  "build_date": "2026-02-16T13:01:40.052278+00:00",
+  "status": "success",
+  "package": {
+    "filename": "mysqld-exporter_0.18.0-1_arm64.deb",
+    "url": "",
+    "sha256": "9bb35e95d8724c2c2db8668e5e01385773ebf1642cd1316a8493b6e401b64173",
+    "size_bytes": 8802530
+  },
+  "deb_metadata": {}
+}

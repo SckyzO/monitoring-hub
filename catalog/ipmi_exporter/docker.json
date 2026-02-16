@@ -1,0 +1,22 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "docker",
+  "exporter": "ipmi_exporter",
+  "version": "1.10.1",
+  "build_date": "2026-02-16T12:54:16.311627+00:00",
+  "status": "success",
+  "images": [
+    {
+      "registry": "ghcr.io",
+      "repository": "SckyzO/monitoring-hub/ipmi_exporter",
+      "tags": [
+        "1.10.1",
+        "latest"
+      ],
+      "architectures": [
+        "linux/amd64"
+      ],
+      "created": "2026-02-16T12:54:16Z"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "deb",
+  "exporter": "ebpf_exporter",
+  "version": "2.5.1",
+  "arch": "arm64",
+  "dist": "debian-12",
+  "build_date": "2026-02-16T13:02:04.414401+00:00",
+  "status": "success",
+  "package": {
+    "filename": "ebpf-exporter_2.5.1-1_arm64.deb",
+    "url": "",
+    "sha256": "d2c43695a3fe9b052364bfbdb8e3565270c50a47a3b271bc5c18eab93f4dc778",
+    "size_bytes": 12707106
+  },
+  "deb_metadata": {}
+}

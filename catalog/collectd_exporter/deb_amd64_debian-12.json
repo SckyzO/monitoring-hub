@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "deb",
+  "exporter": "collectd_exporter",
+  "version": "0.7.0",
+  "arch": "amd64",
+  "dist": "debian-12",
+  "build_date": "2026-02-16T13:02:33.379624+00:00",
+  "status": "success",
+  "package": {
+    "filename": "collectd-exporter_0.7.0-1_amd64.deb",
+    "url": "",
+    "sha256": "47478e5b79e9ccbf224eeeb4e6ef7c91103a6db1b68e2a86a47835dd7f0dfbe7",
+    "size_bytes": 8831328
+  },
+  "deb_metadata": {}
+}

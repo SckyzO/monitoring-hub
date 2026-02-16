@@ -1,0 +1,22 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "docker",
+  "exporter": "ebpf_exporter",
+  "version": "2.5.1",
+  "build_date": "2026-02-16T12:53:39.682232+00:00",
+  "status": "success",
+  "images": [
+    {
+      "registry": "ghcr.io",
+      "repository": "SckyzO/monitoring-hub/ebpf_exporter",
+      "tags": [
+        "2.5.1",
+        "latest"
+      ],
+      "architectures": [
+        "linux/amd64"
+      ],
+      "created": "2026-02-16T12:53:39Z"
+    }
+  ]
+}

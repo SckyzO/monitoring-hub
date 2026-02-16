@@ -1,0 +1,22 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "docker",
+  "exporter": "podman_exporter",
+  "version": "1.20.0",
+  "build_date": "2026-02-16T12:53:32.557553+00:00",
+  "status": "success",
+  "images": [
+    {
+      "registry": "ghcr.io",
+      "repository": "SckyzO/monitoring-hub/podman_exporter",
+      "tags": [
+        "1.20.0",
+        "latest"
+      ],
+      "architectures": [
+        "linux/amd64"
+      ],
+      "created": "2026-02-16T12:53:32Z"
+    }
+  ]
+}

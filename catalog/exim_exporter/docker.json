@@ -1,0 +1,22 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "docker",
+  "exporter": "exim_exporter",
+  "version": "1.6.2",
+  "build_date": "2026-02-16T12:54:19.275015+00:00",
+  "status": "success",
+  "images": [
+    {
+      "registry": "ghcr.io",
+      "repository": "SckyzO/monitoring-hub/exim_exporter",
+      "tags": [
+        "1.6.2",
+        "latest"
+      ],
+      "architectures": [
+        "linux/amd64"
+      ],
+      "created": "2026-02-16T12:54:19Z"
+    }
+  ]
+}

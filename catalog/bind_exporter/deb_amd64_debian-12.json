@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "deb",
+  "exporter": "bind_exporter",
+  "version": "0.8.0",
+  "arch": "amd64",
+  "dist": "debian-12",
+  "build_date": "2026-02-16T12:55:46.241615+00:00",
+  "status": "success",
+  "package": {
+    "filename": "bind-exporter_0.8.0-1_amd64.deb",
+    "url": "",
+    "sha256": "8deed2f2e9928e582eca9fd6768f3411d5b3a1b43bbb060a69971be16684cb0a",
+    "size_bytes": 9515606
+  },
+  "deb_metadata": {}
+}

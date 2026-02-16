@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "deb",
+  "exporter": "memcached_exporter",
+  "version": "0.15.5",
+  "arch": "arm64",
+  "dist": "debian-12",
+  "build_date": "2026-02-16T13:11:01.228737+00:00",
+  "status": "success",
+  "package": {
+    "filename": "memcached-exporter_0.15.5-1_arm64.deb",
+    "url": "",
+    "sha256": "f24c2b7c8ca2e5b8a7c4b21d1dfc9e49497d9d667e8e1df0b4ceea57ee81d46d",
+    "size_bytes": 8264252
+  },
+  "deb_metadata": {}
+}

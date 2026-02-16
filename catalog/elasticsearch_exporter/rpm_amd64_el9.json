@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "rpm",
+  "exporter": "elasticsearch_exporter",
+  "version": "1.10.0",
+  "arch": "amd64",
+  "dist": "el9",
+  "build_date": "2026-02-16T13:27:52.037622+00:00",
+  "status": "success",
+  "package": {
+    "filename": "elasticsearch_exporter-1.10.0-1.el9.x86_64.rpm",
+    "url": "",
+    "sha256": "63c9ba239733227ac4a6159a0bb6f0eec2f5576277b4754662ff02957f3a872c",
+    "size_bytes": 5083214
+  },
+  "rpm_metadata": {}
+}

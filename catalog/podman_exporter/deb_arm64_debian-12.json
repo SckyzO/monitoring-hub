@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "deb",
+  "exporter": "podman_exporter",
+  "version": "1.20.0",
+  "arch": "arm64",
+  "dist": "debian-12",
+  "build_date": "2026-02-16T13:03:04.269511+00:00",
+  "status": "success",
+  "package": {
+    "filename": "podman-exporter_1.20.0-1_arm64.deb",
+    "url": "",
+    "sha256": "df389a2bf8a2149f3fa20e80ac3528a1972658e8003d58bf7f2f16f25167ccef",
+    "size_bytes": 18719066
+  },
+  "deb_metadata": {}
+}

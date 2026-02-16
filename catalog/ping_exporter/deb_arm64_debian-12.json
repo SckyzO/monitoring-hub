@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "deb",
+  "exporter": "ping_exporter",
+  "version": "1.1.5",
+  "arch": "arm64",
+  "dist": "debian-12",
+  "build_date": "2026-02-16T13:08:20.824593+00:00",
+  "status": "success",
+  "package": {
+    "filename": "ping-exporter_1.1.5-1_arm64.deb",
+    "url": "",
+    "sha256": "27760ec406fc968f6ce6dfd504174dc2e6910fdd1022d8c4ddcf3275b10a7c58",
+    "size_bytes": 11366882
+  },
+  "deb_metadata": {}
+}

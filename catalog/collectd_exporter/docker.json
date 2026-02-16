@@ -1,0 +1,22 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "docker",
+  "exporter": "collectd_exporter",
+  "version": "0.7.0",
+  "build_date": "2026-02-16T12:54:41.316536+00:00",
+  "status": "success",
+  "images": [
+    {
+      "registry": "ghcr.io",
+      "repository": "SckyzO/monitoring-hub/collectd_exporter",
+      "tags": [
+        "0.7.0",
+        "latest"
+      ],
+      "architectures": [
+        "linux/amd64"
+      ],
+      "created": "2026-02-16T12:54:41Z"
+    }
+  ]
+}

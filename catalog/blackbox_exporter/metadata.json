@@ -1,0 +1,101 @@
+{
+  "format_version": "3.0",
+  "exporter": "blackbox_exporter",
+  "version": "0.28.0",
+  "category": "Network",
+  "description": "Prometheus blackbox exporter for network probing (HTTP, DNS, TCP, ICMP)",
+  "last_updated": "2026-02-16T13:11:47.727708+00:00",
+  "artifacts": {
+    "rpm": {
+      "el8": {
+        "amd64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/blackbox_exporter-0.28.0-1.el8.x86_64.rpm",
+          "size_bytes": 7383112,
+          "sha256": "307f9aec536538c586c6b660cc4f6d304ff7ee5a4fcf3df0dc752cb41714f67e",
+          "build_date": "2026-02-16T13:10:16.900106+00:00"
+        },
+        "arm64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/blackbox_exporter-0.28.0-1.el8.aarch64.rpm",
+          "size_bytes": 6374248,
+          "sha256": "165e3041efad96db93ca20afd26e067270cd4d4f7fbb7954b8f4ae4cb2cd619f",
+          "build_date": "2026-02-16T13:11:47.727708+00:00"
+        }
+      },
+      "el10": {
+        "arm64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/blackbox_exporter-0.28.0-1.el10.aarch64.rpm",
+          "size_bytes": 6463900,
+          "sha256": "74b5faa08050ef2ac63d2765b1e5fd66602a688a5d486a482de78b68213626ee",
+          "build_date": "2026-02-16T13:09:39.487251+00:00"
+        },
+        "amd64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/blackbox_exporter-0.28.0-1.el10.x86_64.rpm",
+          "size_bytes": 7229287,
+          "sha256": "96e4610929134362263800c8ad8f05d422634171940372c73ea3e806849643aa",
+          "build_date": "2026-02-16T13:11:40.421025+00:00"
+        }
+      },
+      "el9": {
+        "arm64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/blackbox_exporter-0.28.0-1.el9.aarch64.rpm",
+          "size_bytes": 6463664,
+          "sha256": "f65c72bc7f0f408e6a0f9e2135f84cbb626555eb7e0c7c15e6e8de25cbe422a0",
+          "build_date": "2026-02-16T13:10:47.397733+00:00"
+        },
+        "amd64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/blackbox_exporter-0.28.0-1.el9.x86_64.rpm",
+          "size_bytes": 7229756,
+          "sha256": "c0daa3f3ab2d960f2b84f8a933e63cd0f13a7b86ed86aaa6349d7ff8b1a63f97",
+          "build_date": "2026-02-16T13:05:25.911711+00:00"
+        }
+      }
+    },
+    "deb": {
+      "debian-12": {
+        "amd64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/blackbox-exporter_0.28.0-1_amd64.deb",
+          "size_bytes": 16079828,
+          "sha256": "bd364c1423bfd2e6a67590fff40fabea579cac23860b145110e2368195ff8523",
+          "build_date": "2026-02-16T12:56:37.455282+00:00"
+        },
+        "arm64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/blackbox-exporter_0.28.0-1_arm64.deb",
+          "size_bytes": 14782762,
+          "sha256": "ce19c6507f04e0c28697e843d7d671ecb153d80376e102253df509dab6c7e9aa",
+          "build_date": "2026-02-16T13:02:40.415162+00:00"
+        }
+      }
+    },
+    "docker": {
+      "status": "success",
+      "images": [
+        {
+          "registry": "ghcr.io",
+          "repository": "SckyzO/monitoring-hub/blackbox_exporter",
+          "tags": [
+            "0.28.0",
+            "latest"
+          ],
+          "architectures": [
+            "linux/amd64"
+          ],
+          "created": "2026-02-16T12:53:45Z"
+        }
+      ],
+      "build_date": "2026-02-16T12:53:45.745283+00:00"
+    }
+  },
+  "status": {
+    "rpm": "success",
+    "deb": "success",
+    "docker": "success"
+  }
+}

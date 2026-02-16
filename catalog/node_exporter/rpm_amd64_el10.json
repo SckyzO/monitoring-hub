@@ -5,12 +5,12 @@
   "version": "1.10.2",
   "arch": "amd64",
   "dist": "el10",
-  "build_date": "2026-02-16T12:25:06.147846+00:00",
+  "build_date": "2026-02-16T13:12:51.431708+00:00",
   "status": "success",
   "package": {
     "filename": "node_exporter-1.10.2-1.el10.x86_64.rpm",
     "url": "",
-    "sha256": "667a4a9d863958160e425ddc96a8408620d923cac0d903a47a0c39ddd82b26f2",
+    "sha256": "238546c185f1af0ca1dc56098302411cfbcc46b1aa8672a066de645caafd04ef",
     "size_bytes": 5237867
   },
   "rpm_metadata": {}

@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "deb",
+  "exporter": "artifactory_exporter",
+  "version": "1.16.1",
+  "arch": "amd64",
+  "dist": "debian-12",
+  "build_date": "2026-02-16T13:03:47.505453+00:00",
+  "status": "success",
+  "package": {
+    "filename": "artifactory-exporter_1.16.1-1_amd64.deb",
+    "url": "",
+    "sha256": "e2df5e605e007abe5ec4375b616a7fd9d845044c193b9920a95bc96ce12a511c",
+    "size_bytes": 8579764
+  },
+  "deb_metadata": {}
+}

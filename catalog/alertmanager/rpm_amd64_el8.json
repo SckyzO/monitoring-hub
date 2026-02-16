@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "rpm",
+  "exporter": "alertmanager",
+  "version": "0.31.1",
+  "arch": "amd64",
+  "dist": "el8",
+  "build_date": "2026-02-16T13:26:54.898669+00:00",
+  "status": "success",
+  "package": {
+    "filename": "alertmanager-0.31.1-1.el8.x86_64.rpm",
+    "url": "",
+    "sha256": "22b5e467655c7a6aee55223da584f7a9409e085ebe815102dafe6ba26a523d5b",
+    "size_bytes": 10014560
+  },
+  "rpm_metadata": {}
+}

@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "rpm",
+  "exporter": "blackbox_exporter",
+  "version": "0.28.0",
+  "arch": "arm64",
+  "dist": "el9",
+  "build_date": "2026-02-16T13:10:47.397733+00:00",
+  "status": "success",
+  "package": {
+    "filename": "blackbox_exporter-0.28.0-1.el9.aarch64.rpm",
+    "url": "",
+    "sha256": "f65c72bc7f0f408e6a0f9e2135f84cbb626555eb7e0c7c15e6e8de25cbe422a0",
+    "size_bytes": 6463664
+  },
+  "rpm_metadata": {}
+}

@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "rpm",
+  "exporter": "ping_exporter",
+  "version": "1.1.5",
+  "arch": "arm64",
+  "dist": "el8",
+  "build_date": "2026-02-16T13:31:28.699230+00:00",
+  "status": "success",
+  "package": {
+    "filename": "ping_exporter-1.1.5-1.el8.aarch64.rpm",
+    "url": "",
+    "sha256": "b753d73ad3394a271415df94a33a77c5a1f2302a54acb442251f3db443b1f6f6",
+    "size_bytes": 7942832
+  },
+  "rpm_metadata": {}
+}

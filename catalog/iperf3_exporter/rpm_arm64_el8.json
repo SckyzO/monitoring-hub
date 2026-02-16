@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "rpm",
+  "exporter": "iperf3_exporter",
+  "version": "1.3.1",
+  "arch": "arm64",
+  "dist": "el8",
+  "build_date": "2026-02-16T13:26:42.928235+00:00",
+  "status": "success",
+  "package": {
+    "filename": "iperf3_exporter-1.3.1-1.el8.aarch64.rpm",
+    "url": "",
+    "sha256": "51fd75db39d919f9f7ff080f4832bd6f5293ad0d74b77841b0e8d3b37a7b5948",
+    "size_bytes": 3603860
+  },
+  "rpm_metadata": {}
+}

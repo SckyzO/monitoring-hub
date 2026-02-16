@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "rpm",
+  "exporter": "mysqld_exporter",
+  "version": "0.18.0",
+  "arch": "amd64",
+  "dist": "el9",
+  "build_date": "2026-02-16T13:15:19.242527+00:00",
+  "status": "success",
+  "package": {
+    "filename": "mysqld_exporter-0.18.0-1.el9.x86_64.rpm",
+    "url": "",
+    "sha256": "2ecb501d04c26b38d0405702ea0532334eb15f009d3f2ef5efc1b09ea33c2684",
+    "size_bytes": 4322338
+  },
+  "rpm_metadata": {}
+}

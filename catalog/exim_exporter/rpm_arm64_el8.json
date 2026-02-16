@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "rpm",
+  "exporter": "exim_exporter",
+  "version": "1.6.2",
+  "arch": "arm64",
+  "dist": "el8",
+  "build_date": "2026-02-16T13:29:04.201601+00:00",
+  "status": "success",
+  "package": {
+    "filename": "exim_exporter-1.6.2-1.el8.aarch64.rpm",
+    "url": "",
+    "sha256": "71595fab65ac36f111a0e7838a8a0b42d8303366d9b9e687dbd8a7e8a0d69627",
+    "size_bytes": 3152840
+  },
+  "rpm_metadata": {}
+}

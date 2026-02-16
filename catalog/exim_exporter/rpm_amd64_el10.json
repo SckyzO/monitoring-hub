@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "rpm",
+  "exporter": "exim_exporter",
+  "version": "1.6.2",
+  "arch": "amd64",
+  "dist": "el10",
+  "build_date": "2026-02-16T13:23:13.296136+00:00",
+  "status": "success",
+  "package": {
+    "filename": "exim_exporter-1.6.2-1.el10.x86_64.rpm",
+    "url": "",
+    "sha256": "1d7a44e9532e6fb67ea97dc47f89e4f17f923247109577cb9a7d3c35abb6578c",
+    "size_bytes": 3538785
+  },
+  "rpm_metadata": {}
+}

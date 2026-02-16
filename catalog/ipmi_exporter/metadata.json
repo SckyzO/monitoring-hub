@@ -1,0 +1,101 @@
+{
+  "format_version": "3.0",
+  "exporter": "ipmi_exporter",
+  "version": "1.10.1",
+  "category": "Infrastructure",
+  "description": "Prometheus exporter for IPMI devices",
+  "last_updated": "2026-02-16T13:32:24.182619+00:00",
+  "artifacts": {
+    "rpm": {
+      "el8": {
+        "amd64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/ipmi_exporter-1.10.1-1.el8.x86_64.rpm",
+          "size_bytes": 4153032,
+          "sha256": "323a95c9d887af02f8c5c5c509dd17a02ccd97be61709571b3bd2fa412a7b201",
+          "build_date": "2026-02-16T13:31:29.375409+00:00"
+        },
+        "arm64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/ipmi_exporter-1.10.1-1.el8.aarch64.rpm",
+          "size_bytes": 3617856,
+          "sha256": "8db3c89b6e227ad760ebe5c2b1f2aae2fb63ab879198fe758aad019ca29929dd",
+          "build_date": "2026-02-16T13:32:24.182619+00:00"
+        }
+      },
+      "el10": {
+        "arm64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/ipmi_exporter-1.10.1-1.el10.aarch64.rpm",
+          "size_bytes": 3650945,
+          "sha256": "83be9fd8fbf3c9e2c8b03c40028565fde94982f5b226145730f95759b918569e",
+          "build_date": "2026-02-16T13:22:15.567993+00:00"
+        },
+        "amd64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/ipmi_exporter-1.10.1-1.el10.x86_64.rpm",
+          "size_bytes": 4053888,
+          "sha256": "8c88f3bd27e4e01e42ee054047ba56ab3164d4698c6b1c24b9d91d3838376d71",
+          "build_date": "2026-02-16T13:25:42.169638+00:00"
+        }
+      },
+      "el9": {
+        "arm64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/ipmi_exporter-1.10.1-1.el9.aarch64.rpm",
+          "size_bytes": 3650857,
+          "sha256": "a8a7c6e3b7c19ea0c4042a0087c3b492dcc5a38c1384a680a317f8e427c8c291",
+          "build_date": "2026-02-16T13:32:11.939390+00:00"
+        },
+        "amd64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/ipmi_exporter-1.10.1-1.el9.x86_64.rpm",
+          "size_bytes": 4054257,
+          "sha256": "1ee69db21673f51e6f73bf9ba523c1108bb5197711142064e52da32c9316f800",
+          "build_date": "2026-02-16T13:20:46.698029+00:00"
+        }
+      }
+    },
+    "deb": {
+      "debian-12": {
+        "amd64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/ipmi-exporter_1.10.1-1_amd64.deb",
+          "size_bytes": 9257258,
+          "sha256": "4b64af745b764b83f9579f44bef5efbda10f042c535631c827a8f3ca5f8855e9",
+          "build_date": "2026-02-16T12:57:04.378540+00:00"
+        },
+        "arm64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/ipmi-exporter_1.10.1-1_arm64.deb",
+          "size_bytes": 8655010,
+          "sha256": "584eaf06479e0491cb1bd8ba72d1a0bf948f042f5f507ce8422d2e5e3e6de016",
+          "build_date": "2026-02-16T13:11:24.805380+00:00"
+        }
+      }
+    },
+    "docker": {
+      "status": "success",
+      "images": [
+        {
+          "registry": "ghcr.io",
+          "repository": "SckyzO/monitoring-hub/ipmi_exporter",
+          "tags": [
+            "1.10.1",
+            "latest"
+          ],
+          "architectures": [
+            "linux/amd64"
+          ],
+          "created": "2026-02-16T12:54:16Z"
+        }
+      ],
+      "build_date": "2026-02-16T12:54:16.311627+00:00"
+    }
+  },
+  "status": {
+    "rpm": "success",
+    "deb": "success",
+    "docker": "success"
+  }
+}

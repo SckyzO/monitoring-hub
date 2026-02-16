@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "rpm",
+  "exporter": "snmp_exporter",
+  "version": "0.30.1",
+  "arch": "arm64",
+  "dist": "el10",
+  "build_date": "2026-02-16T13:15:47.303394+00:00",
+  "status": "success",
+  "package": {
+    "filename": "snmp_exporter-0.30.1-1.el10.aarch64.rpm",
+    "url": "",
+    "sha256": "5fe54253d7efad333c501930a5e265e58ac1995072fdf1789efca3bb083c013f",
+    "size_bytes": 3987423
+  },
+  "rpm_metadata": {}
+}

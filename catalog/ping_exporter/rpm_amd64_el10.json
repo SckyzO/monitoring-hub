@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "rpm",
+  "exporter": "ping_exporter",
+  "version": "1.1.5",
+  "arch": "amd64",
+  "dist": "el10",
+  "build_date": "2026-02-16T13:32:41.783409+00:00",
+  "status": "success",
+  "package": {
+    "filename": "ping_exporter-1.1.5-1.el10.x86_64.rpm",
+    "url": "",
+    "sha256": "f40f2a462a346eb4fdbf47f1963256d10812c9269822ac45203ae038259c5070",
+    "size_bytes": 9334070
+  },
+  "rpm_metadata": {}
+}

@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "rpm",
+  "exporter": "smartctl_exporter",
+  "version": "0.14.0",
+  "arch": "arm64",
+  "dist": "el10",
+  "build_date": "2026-02-16T13:20:04.411272+00:00",
+  "status": "success",
+  "package": {
+    "filename": "smartctl_exporter-0.14.0-1.el10.aarch64.rpm",
+    "url": "",
+    "sha256": "47e5d3f8d7932821bee159fa153755cadcf2f8d1153a29fe777c6cee805acadc",
+    "size_bytes": 3595634
+  },
+  "rpm_metadata": {}
+}

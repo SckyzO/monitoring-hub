@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "deb",
+  "exporter": "json_exporter",
+  "version": "0.7.0",
+  "arch": "amd64",
+  "dist": "debian-12",
+  "build_date": "2026-02-16T12:55:54.944624+00:00",
+  "status": "success",
+  "package": {
+    "filename": "json-exporter_0.7.0-1_amd64.deb",
+    "url": "",
+    "sha256": "14c1c871651d41f610e62a5919dac5231cffd4896b8dacdab78581ca28dd23ce",
+    "size_bytes": 10197128
+  },
+  "deb_metadata": {}
+}

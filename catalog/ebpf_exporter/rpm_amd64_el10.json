@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "rpm",
+  "exporter": "ebpf_exporter",
+  "version": "2.5.1",
+  "arch": "amd64",
+  "dist": "el10",
+  "build_date": "2026-02-16T13:05:30.761058+00:00",
+  "status": "success",
+  "package": {
+    "filename": "ebpf_exporter-2.5.1-1.el10.x86_64.rpm",
+    "url": "",
+    "sha256": "d21a89297c663304efccc7385851e778c6a2583e8c40397e51403fd11b47f651",
+    "size_bytes": 6168572
+  },
+  "rpm_metadata": {}
+}

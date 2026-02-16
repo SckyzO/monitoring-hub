@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "rpm",
+  "exporter": "podman_exporter",
+  "version": "1.20.0",
+  "arch": "amd64",
+  "dist": "el8",
+  "build_date": "2026-02-16T13:11:06.310057+00:00",
+  "status": "success",
+  "package": {
+    "filename": "podman_exporter-1.20.0-1.el8.x86_64.rpm",
+    "url": "",
+    "sha256": "3eb0eb3b3c9ad648cf2f0c9f08ddcce6750a9d3672238d201ef2d0a46235996c",
+    "size_bytes": 8736656
+  },
+  "rpm_metadata": {}
+}

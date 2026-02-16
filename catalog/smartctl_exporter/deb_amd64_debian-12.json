@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "deb",
+  "exporter": "smartctl_exporter",
+  "version": "0.14.0",
+  "arch": "amd64",
+  "dist": "debian-12",
+  "build_date": "2026-02-16T12:57:23.864929+00:00",
+  "status": "success",
+  "package": {
+    "filename": "smartctl-exporter_0.14.0-1_amd64.deb",
+    "url": "",
+    "sha256": "b79b1a097246b366b51a7b586a7a42a1c129525f092e9b419b6a25e812a67357",
+    "size_bytes": 9111460
+  },
+  "deb_metadata": {}
+}

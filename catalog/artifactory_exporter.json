@@ -1,0 +1,73 @@
+{
+  "format_version": "3.0",
+  "exporter": "artifactory_exporter",
+  "version": "1.16.1",
+  "category": "Infrastructure",
+  "description": "Prometheus exporter for JFrog Artifactory stats.",
+  "last_updated": "2026-02-16T13:33:17.635451+00:00",
+  "artifacts": {
+    "rpm": {
+      "el8": {
+        "amd64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/artifactory_exporter-1.16.1-1.el8.x86_64.rpm",
+          "size_bytes": 3838492,
+          "sha256": "65651bd8458b0ad5a117e15dd1d9ac97e38c6bd8565dbc9eb0e6b057bb21b79d",
+          "build_date": "2026-02-16T13:33:17.635451+00:00"
+        }
+      },
+      "el9": {
+        "amd64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/artifactory_exporter-1.16.1-1.el9.x86_64.rpm",
+          "size_bytes": 3755176,
+          "sha256": "c47a8c6fb35499c034a0a1e9ef78a2bab0e7042d9bb43c183f6aef58d88fe585",
+          "build_date": "2026-02-16T13:32:47.159916+00:00"
+        }
+      },
+      "el10": {
+        "amd64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/artifactory_exporter-1.16.1-1.el10.x86_64.rpm",
+          "size_bytes": 3755180,
+          "sha256": "ec6a28bd2abb444585dcb9ba7ec23b422d11a995b88ac5dda0fc514cd1a4a07f",
+          "build_date": "2026-02-16T13:27:35.738483+00:00"
+        }
+      }
+    },
+    "deb": {
+      "debian-12": {
+        "amd64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/artifactory-exporter_1.16.1-1_amd64.deb",
+          "size_bytes": 8579764,
+          "sha256": "e2df5e605e007abe5ec4375b616a7fd9d845044c193b9920a95bc96ce12a511c",
+          "build_date": "2026-02-16T13:03:47.505453+00:00"
+        }
+      }
+    },
+    "docker": {
+      "status": "success",
+      "images": [
+        {
+          "registry": "ghcr.io",
+          "repository": "SckyzO/monitoring-hub/artifactory_exporter",
+          "tags": [
+            "1.16.1",
+            "latest"
+          ],
+          "architectures": [
+            "linux/amd64"
+          ],
+          "created": "2026-02-16T12:54:22Z"
+        }
+      ],
+      "build_date": "2026-02-16T12:54:22.802185+00:00"
+    }
+  },
+  "status": {
+    "rpm": "success",
+    "deb": "success",
+    "docker": "success"
+  }
+}

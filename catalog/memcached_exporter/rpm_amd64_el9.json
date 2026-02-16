@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "rpm",
+  "exporter": "memcached_exporter",
+  "version": "0.15.5",
+  "arch": "amd64",
+  "dist": "el9",
+  "build_date": "2026-02-16T13:25:17.692882+00:00",
+  "status": "success",
+  "package": {
+    "filename": "memcached_exporter-0.15.5-1.el9.x86_64.rpm",
+    "url": "",
+    "sha256": "08f0ec594d34cedf7e30b253b0c88b3c99043e70df45c5c3d2212b598cb5e988",
+    "size_bytes": 4062132
+  },
+  "rpm_metadata": {}
+}

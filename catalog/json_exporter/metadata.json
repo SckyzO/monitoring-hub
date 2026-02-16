@@ -1,0 +1,101 @@
+{
+  "format_version": "3.0",
+  "exporter": "json_exporter",
+  "version": "0.7.0",
+  "category": "Messaging",
+  "description": "A prometheus exporter which scrapes remote JSON by JSONPath.",
+  "last_updated": "2026-02-16T13:20:22.912304+00:00",
+  "artifacts": {
+    "rpm": {
+      "el8": {
+        "amd64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/json_exporter-0.7.0-1.el8.x86_64.rpm",
+          "size_bytes": 4531084,
+          "sha256": "637296a6741fdcd740823f6482685bcfe62afe47d51bc7533d7601ad53ff6790",
+          "build_date": "2026-02-16T13:10:28.692699+00:00"
+        },
+        "arm64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/json_exporter-0.7.0-1.el8.aarch64.rpm",
+          "size_bytes": 3915396,
+          "sha256": "2e1c34858c68d144d830fea928feb2b4c20758a524938594c39d9a10bee22078",
+          "build_date": "2026-02-16T13:20:22.912304+00:00"
+        }
+      },
+      "el10": {
+        "arm64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/json_exporter-0.7.0-1.el10.aarch64.rpm",
+          "size_bytes": 3954838,
+          "sha256": "260cea825eabaa4aa881f8e2ab16d8faca01de64bea8d0941affc041056acf9a",
+          "build_date": "2026-02-16T13:13:24.935842+00:00"
+        },
+        "amd64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/json_exporter-0.7.0-1.el10.x86_64.rpm",
+          "size_bytes": 4381312,
+          "sha256": "db5b5daa6523e50298fb8ffe98cc2128e507df815bf14f0b89836f10a9e9e216",
+          "build_date": "2026-02-16T13:12:34.588566+00:00"
+        }
+      },
+      "el9": {
+        "arm64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/json_exporter-0.7.0-1.el9.aarch64.rpm",
+          "size_bytes": 3954734,
+          "sha256": "ed70de09ac34259f0575a821cc8510b3051ce18e973affdb519ef0878f121d1f",
+          "build_date": "2026-02-16T13:14:38.143816+00:00"
+        },
+        "amd64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/json_exporter-0.7.0-1.el9.x86_64.rpm",
+          "size_bytes": 4381435,
+          "sha256": "fd037a6cda429d41b431917d51c22e4ba3569a9ed03b1c933bdfa58001896efd",
+          "build_date": "2026-02-16T13:09:12.528408+00:00"
+        }
+      }
+    },
+    "deb": {
+      "debian-12": {
+        "amd64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/json-exporter_0.7.0-1_amd64.deb",
+          "size_bytes": 10197128,
+          "sha256": "14c1c871651d41f610e62a5919dac5231cffd4896b8dacdab78581ca28dd23ce",
+          "build_date": "2026-02-16T12:55:54.944624+00:00"
+        },
+        "arm64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/json-exporter_0.7.0-1_arm64.deb",
+          "size_bytes": 9566832,
+          "sha256": "e8d127637e8cd9e928d5b773377a0d801939e31c4b052aa03b7a9c732fd6dd92",
+          "build_date": "2026-02-16T13:08:09.804954+00:00"
+        }
+      }
+    },
+    "docker": {
+      "status": "success",
+      "images": [
+        {
+          "registry": "ghcr.io",
+          "repository": "SckyzO/monitoring-hub/json_exporter",
+          "tags": [
+            "0.7.0",
+            "latest"
+          ],
+          "architectures": [
+            "linux/amd64"
+          ],
+          "created": "2026-02-16T12:53:34Z"
+        }
+      ],
+      "build_date": "2026-02-16T12:53:34.826492+00:00"
+    }
+  },
+  "status": {
+    "rpm": "success",
+    "deb": "success",
+    "docker": "success"
+  }
+}

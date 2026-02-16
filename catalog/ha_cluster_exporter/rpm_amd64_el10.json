@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "rpm",
+  "exporter": "ha_cluster_exporter",
+  "version": "1.4.0",
+  "arch": "amd64",
+  "dist": "el10",
+  "build_date": "2026-02-16T13:11:53.305581+00:00",
+  "status": "success",
+  "package": {
+    "filename": "ha_cluster_exporter-1.4.0-1.el10.x86_64.rpm",
+    "url": "",
+    "sha256": "4a3489b58d02ea5f8fd8158d9a547820131952de7874e61fe1944c3e4474bdbe",
+    "size_bytes": 4308495
+  },
+  "rpm_metadata": {}
+}

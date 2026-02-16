@@ -1,0 +1,73 @@
+{
+  "format_version": "3.0",
+  "exporter": "gpfs_exporter",
+  "version": "3.3.0",
+  "category": "Storage",
+  "description": "Prometheus exporter for IBM GPFS (Spectrum Scale) metrics",
+  "last_updated": "2026-02-16T13:23:22.647212+00:00",
+  "artifacts": {
+    "rpm": {
+      "el8": {
+        "amd64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/gpfs_exporter-3.3.0-1.el8.x86_64.rpm",
+          "size_bytes": 4256712,
+          "sha256": "237105d3dc09de205316ae4eefcc2fdff80fabae50b9f71a008360bb60c59797",
+          "build_date": "2026-02-16T13:20:44.568581+00:00"
+        }
+      },
+      "el9": {
+        "amd64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/gpfs_exporter-3.3.0-1.el9.x86_64.rpm",
+          "size_bytes": 4155272,
+          "sha256": "6bdec26f634a3aac0d002354c8600b86c4b49cb250f189d5af5e9d20d27f871a",
+          "build_date": "2026-02-16T13:22:34.783640+00:00"
+        }
+      },
+      "el10": {
+        "amd64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/gpfs_exporter-3.3.0-1.el10.x86_64.rpm",
+          "size_bytes": 4155767,
+          "sha256": "86f41333571f82067b9c98c3e03027fa21e3b614fb3094044b25196a8f99e1f2",
+          "build_date": "2026-02-16T13:23:22.647212+00:00"
+        }
+      }
+    },
+    "deb": {
+      "debian-12": {
+        "amd64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/gpfs-exporter_3.3.0-1_amd64.deb",
+          "size_bytes": 9220000,
+          "sha256": "ebde77df2227e0d480a87044431f1b15e0d2a913a101390219268c668818edf1",
+          "build_date": "2026-02-16T13:00:24.560579+00:00"
+        }
+      }
+    },
+    "docker": {
+      "status": "success",
+      "images": [
+        {
+          "registry": "ghcr.io",
+          "repository": "SckyzO/monitoring-hub/gpfs_exporter",
+          "tags": [
+            "3.3.0",
+            "latest"
+          ],
+          "architectures": [
+            "linux/amd64"
+          ],
+          "created": "2026-02-16T12:54:33Z"
+        }
+      ],
+      "build_date": "2026-02-16T12:54:33.816474+00:00"
+    }
+  },
+  "status": {
+    "rpm": "success",
+    "deb": "success",
+    "docker": "success"
+  }
+}

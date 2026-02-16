@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "rpm",
+  "exporter": "eseries_exporter",
+  "version": "2.0.0",
+  "arch": "amd64",
+  "dist": "el10",
+  "build_date": "2026-02-16T13:22:46.552145+00:00",
+  "status": "success",
+  "package": {
+    "filename": "eseries_exporter-2.0.0-1.el10.x86_64.rpm",
+    "url": "",
+    "sha256": "5732c4546b7be46d8177a816090892d4077e7d5fba5b639dcdc9bf808359bc31",
+    "size_bytes": 3555005
+  },
+  "rpm_metadata": {}
+}

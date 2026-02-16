@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "rpm",
+  "exporter": "domain_exporter",
+  "version": "1.24.1",
+  "arch": "amd64",
+  "dist": "el8",
+  "build_date": "2026-02-16T13:09:25.237295+00:00",
+  "status": "success",
+  "package": {
+    "filename": "domain_exporter-1.24.1-1.el8.x86_64.rpm",
+    "url": "",
+    "sha256": "a74f6f2fb7dc51de60b46a940759ea15d9b648c635335376536ec4075407c20e",
+    "size_bytes": 5027652
+  },
+  "rpm_metadata": {}
+}

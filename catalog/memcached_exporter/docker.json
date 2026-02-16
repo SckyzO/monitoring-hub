@@ -1,0 +1,22 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "docker",
+  "exporter": "memcached_exporter",
+  "version": "0.15.5",
+  "build_date": "2026-02-16T12:54:33.258448+00:00",
+  "status": "success",
+  "images": [
+    {
+      "registry": "ghcr.io",
+      "repository": "SckyzO/monitoring-hub/memcached_exporter",
+      "tags": [
+        "0.15.5",
+        "latest"
+      ],
+      "architectures": [
+        "linux/amd64"
+      ],
+      "created": "2026-02-16T12:54:33Z"
+    }
+  ]
+}

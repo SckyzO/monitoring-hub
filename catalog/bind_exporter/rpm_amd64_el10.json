@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "rpm",
+  "exporter": "bind_exporter",
+  "version": "0.8.0",
+  "arch": "amd64",
+  "dist": "el10",
+  "build_date": "2026-02-16T13:29:03.002475+00:00",
+  "status": "success",
+  "package": {
+    "filename": "bind_exporter-0.8.0-1.el10.x86_64.rpm",
+    "url": "",
+    "sha256": "8f199169c8ecc61930e1194471565fa343a926df8dc0b5e37659a8c6ca720f1d",
+    "size_bytes": 4159435
+  },
+  "rpm_metadata": {}
+}

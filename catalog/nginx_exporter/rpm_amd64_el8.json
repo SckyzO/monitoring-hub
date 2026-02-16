@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "rpm",
+  "exporter": "nginx_exporter",
+  "version": "1.5.1",
+  "arch": "amd64",
+  "dist": "el8",
+  "build_date": "2026-02-16T13:11:49.712928+00:00",
+  "status": "success",
+  "package": {
+    "filename": "nginx_exporter-1.5.1-1.el8.x86_64.rpm",
+    "url": "",
+    "sha256": "ea1437d476fe8ad2008fd2fd75b3dc959497fe698b8ff53c8ce3f2bc09e01263",
+    "size_bytes": 4186292
+  },
+  "rpm_metadata": {}
+}

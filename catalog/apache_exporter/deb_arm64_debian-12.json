@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "deb",
+  "exporter": "apache_exporter",
+  "version": "1.0.12",
+  "arch": "arm64",
+  "dist": "debian-12",
+  "build_date": "2026-02-16T13:09:38.265630+00:00",
+  "status": "success",
+  "package": {
+    "filename": "apache-exporter_1.0.12-1_arm64.deb",
+    "url": "",
+    "sha256": "fef9c514e6d0f912b9e8c60bfecfb88577319942e25f2258f1f3c20e370f2a11",
+    "size_bytes": 8493548
+  },
+  "deb_metadata": {}
+}

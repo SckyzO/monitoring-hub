@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "deb",
+  "exporter": "textfile_exporter",
+  "version": "0.1.4",
+  "arch": "arm64",
+  "dist": "debian-12",
+  "build_date": "2026-02-16T13:01:21.932240+00:00",
+  "status": "success",
+  "package": {
+    "filename": "textfile-exporter_0.1.4-1_arm64.deb",
+    "url": "",
+    "sha256": "7fd807b1713abcf25997c61d26807bbd712d7c167031adef6f1f0e8f40f0f754",
+    "size_bytes": 3311464
+  },
+  "deb_metadata": {}
+}

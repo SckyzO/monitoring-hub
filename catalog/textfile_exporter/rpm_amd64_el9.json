@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "rpm",
+  "exporter": "textfile_exporter",
+  "version": "0.1.4",
+  "arch": "amd64",
+  "dist": "el9",
+  "build_date": "2026-02-16T13:17:35.086056+00:00",
+  "status": "success",
+  "package": {
+    "filename": "textfile_exporter-0.1.4-1.el9.x86_64.rpm",
+    "url": "",
+    "sha256": "7f158b8c9394840fa5fe619e867ce849dc012d191e11eb7fa37bd1a53cd87177",
+    "size_bytes": 3108677
+  },
+  "rpm_metadata": {}
+}

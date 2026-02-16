@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "deb",
+  "exporter": "slurm_exporter",
+  "version": "1.2.0",
+  "arch": "arm64",
+  "dist": "debian-12",
+  "build_date": "2026-02-16T13:10:24.651166+00:00",
+  "status": "success",
+  "package": {
+    "filename": "slurm-exporter_1.2.0-1_arm64.deb",
+    "url": "",
+    "sha256": "da5f4beb5f310736ff101a3d2af32fad031f3d89f73d4a0768de3eb1bc07b168",
+    "size_bytes": 3888504
+  },
+  "deb_metadata": {}
+}
