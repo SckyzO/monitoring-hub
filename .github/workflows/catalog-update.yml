@@ -64,8 +64,9 @@ jobs:
           echo "Downloaded artifacts:"
           find artifacts -type f -name "*.json" | sort
 
-          # Extract list of exporters from artifact directory names
-          exporters=$(find artifacts -type d -mindepth 1 -maxdepth 1 -exec basename {} \; | grep -E "^metadata-" | sed 's/^metadata-\(rpm\|deb\|docker\)-//' | cut -d'-' -f1 | sort -u | jq -R -s -c 'split("\n") | map(select(length > 0))')
+          # Extract list of exporters from updated-metadata-all artifact directory names
+          # The updated metadata from upload-releases.yml is in artifacts/updated-metadata-all/
+          exporters=$(find artifacts/updated-metadata-all -type d -mindepth 1 -maxdepth 1 -exec basename {} \; 2>/dev/null | grep -E "^metadata-" | sed 's/^metadata-\(rpm\|deb\|docker\)-//' | cut -d'-' -f1 | sort -u | jq -R -s -c 'split("\n") | map(select(length > 0))')
 
           echo "exporters=$exporters" >> $GITHUB_OUTPUT
           echo "Found exporters: $exporters"
@@ -119,8 +120,9 @@ jobs:
             mkdir -p "catalog/$exporter"
 
             # Find and copy all metadata files for this exporter
+            # Metadata is in updated-metadata-all artifact from upload-releases.yml
             copied=0
-            for artifact_dir in ../artifacts/metadata-*-${exporter}-*; do
+            for artifact_dir in ../artifacts/updated-metadata-all/metadata-*-${exporter}-*; do
               if [ -d "$artifact_dir" ]; then
                 echo "Processing artifact: $(basename "$artifact_dir")"
 
@@ -130,14 +132,14 @@ jobs:
                     filename=$(basename "$json_file")
                     cp "$json_file" "catalog/$exporter/$filename"
                     echo "  ✓ Copied: $filename"
-                    ((copied++))
+                    copied=$((copied + 1))
                   fi
                 done
               fi
             done
 
             # Check Docker metadata
-            docker_artifact="../artifacts/metadata-docker-${exporter}"
+            docker_artifact="../artifacts/updated-metadata-all/metadata-docker-${exporter}"
             if [ -d "$docker_artifact" ]; then
               echo "Processing Docker artifact: $(basename "$docker_artifact")"
               for json_file in "$docker_artifact"/*.json; do
@@ -145,7 +147,7 @@ jobs:
                   filename=$(basename "$json_file")
                   cp "$json_file" "catalog/$exporter/$filename"
                   echo "  ✓ Copied: $filename"
-                  ((copied++))
+                  copied=$((copied + 1))
                 fi
               done
             fi
