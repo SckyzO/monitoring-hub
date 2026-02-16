@@ -50,7 +50,7 @@ def main():
             f"Warning: Expected format_version 3.0, got {metadata.get('format_version')}"
         )
 
-    # Update URL in package section
+    # Update URL and status in package section
     if "package" in metadata:
         old_url = metadata["package"].get("url", "")
         metadata["package"]["url"] = args.url
@@ -58,6 +58,12 @@ def main():
     else:
         print("Error: No 'package' section found in metadata", file=sys.stderr)
         sys.exit(1)
+
+    # Update status to success when URL is provided
+    # This indicates the package was successfully uploaded to GitHub Releases
+    old_status = metadata.get("status", "pending")
+    metadata["status"] = "success"
+    print(f"Updated status: '{old_status}' → 'success'")
 
     # Write updated metadata back to file
     with open(metadata_path, "w") as f:
