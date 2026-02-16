@@ -251,11 +251,19 @@ jobs:
             echo "::endgroup::"
           fi
 
+      - name: Normalize Image Name
+        if: steps.check.outputs.enabled == 'true'
+        id: normalize
+        run: |
+          image_name="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/${{ matrix.exporter }}:latest"
+          image_name=$(echo "$image_name" | tr '[:upper:]' '[:lower:]')
+          echo "image_ref=$image_name" >> $GITHUB_OUTPUT
+
       - name: 🔒 Security Scan with Trivy
         if: steps.check.outputs.enabled == 'true'
         uses: aquasecurity/trivy-action@0.34.0
         with:
-          image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/${{ matrix.exporter }}:latest
+          image-ref: ${{ steps.normalize.outputs.image_ref }}
           format: 'sarif'
           output: 'trivy-${{ matrix.exporter }}.sarif'
           severity: 'CRITICAL,HIGH,MEDIUM'
