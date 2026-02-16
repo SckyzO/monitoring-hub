@@ -12,26 +12,23 @@ build:
   method: binary_repack
   binary_name: collectd_exporter
   archs:
-    - amd64
-    - arm64
+  - amd64
+  - arm64
 artifacts:
   rpm:
     enabled: true
     summary: Prometheus collectd Exporter
     targets:
-      - el8
-      - el9
-      - el10
+    - el8
+    - el9
+    - el10
     system_user: collectd_exporter
     systemd:
       enabled: true
   deb:
     enabled: true
     targets:
-      - ubuntu-22.04
-      - ubuntu-24.04
-      - debian-12
-      - debian-13
+    - debian-12
     summary: Relay metrics from collectd to Prometheus.
     systemd:
       enabled: true
@@ -41,7 +38,7 @@ artifacts:
   docker:
     enabled: true
     entrypoint:
-      - /usr/bin/collectd_exporter
+    - /usr/bin/collectd_exporter
     validation:
       enabled: true
       port: 9103

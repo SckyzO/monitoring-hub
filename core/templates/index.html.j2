@@ -718,11 +718,12 @@
                             <h4 class="text-[10px] font-black text-zinc-400 uppercase tracking-widest italic text-left">02 / Add Repository</h4>
                             <div class="rounded-2xl border overflow-hidden transition-all" :class="theme === 'light' ? 'bg-zinc-100 border-zinc-200 shadow-sm' : 'bg-black border-white/20 shadow-2xl'">
                                 <div class="flex items-center justify-between p-3 border-b text-left" :class="theme === 'light' ? 'bg-zinc-50 border-zinc-200' : 'bg-white/[0.03] border-white/5'">
-                                    <div class="flex gap-2">
-                                        <template x-for="dist in [{code: 'jammy', name: 'Ubuntu 22.04'}, {code: 'noble', name: 'Ubuntu 24.04'}, {code: 'bookworm', name: 'Debian 12'}, {code: 'trixie', name: 'Debian 13'}]">
+                                    <div class="flex flex-wrap gap-2 items-center">
+                                        <span class="text-[10px] font-black text-zinc-500 uppercase tracking-widest">Distribution:</span>
+                                        <template x-for="dist in [{code: 'bookworm', name: 'Debian 12'}, {code: 'jammy', name: 'Ubuntu 22.04'}, {code: 'noble', name: 'Ubuntu 24.04'}, {code: 'trixie', name: 'Debian 13'}]">
                                             <button @click="debTab = dist.code"
                                                     :class="debTab === dist.code ? 'text-primary-500 bg-primary-500/10' : 'text-zinc-500 hover:text-zinc-300'"
-                                                    class="px-3 py-2 rounded-xl text-[10px] font-black uppercase transition-all border-none"
+                                                    class="px-3 py-1.5 rounded-lg text-[9px] font-black uppercase transition-all border-none"
                                                     x-text="dist.name"></button>
                                         </template>
                                     </div>
@@ -733,8 +734,12 @@
                                         <i x-show="copiedRepo" data-lucide="check" class="w-4 h-4 text-emerald-500"></i>
                                     </button>
                                 </div>
-                                <div class="p-8 font-mono text-xs text-left">
-                                    <code class="block break-all leading-relaxed text-primary-500 font-bold" x-text="`echo 'deb [signed-by=/usr/share/keyrings/monitoring-hub.gpg] https://sckyzo.github.io/monitoring-hub/apt ${debTab} main' | sudo tee /etc/apt/sources.list.d/monitoring-hub.list`"></code>
+                                <div class="p-6 space-y-3 text-left">
+                                    <div class="flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400">
+                                        <i data-lucide="info" class="w-4 h-4"></i>
+                                        <span class="font-medium">Universal package compatible with Ubuntu 20.04+, Debian 11+</span>
+                                    </div>
+                                    <code class="block break-all leading-relaxed text-primary-500 font-bold font-mono text-xs" x-text="`echo 'deb [signed-by=/usr/share/keyrings/monitoring-hub.gpg] https://sckyzo.github.io/monitoring-hub/apt ${debTab} main' | sudo tee /etc/apt/sources.list.d/monitoring-hub.list`"></code>
                                 </div>
                             </div>
                         </div>
@@ -768,23 +773,28 @@
                         </div>
                         <div class="space-y-4 text-left">
                             <h4 class="text-[10px] font-black text-zinc-400 uppercase tracking-widest italic text-left">05 / Direct Binary Download</h4>
-                            <div class="grid grid-cols-1 gap-2 text-left">
-                                <template x-for="dist in (selectedItem?.artifacts?.deb?.targets || [])">
-                                    <div class="flex items-center justify-between p-4 rounded-xl border text-left transition-all" :class="theme === 'light' ? 'bg-zinc-50 border-zinc-200 shadow-sm' : 'bg-zinc-800/30 border-white/5'">
-                                        <span class="text-[11px] font-black text-zinc-500 uppercase tracking-widest" x-text="dist"></span>
-                                        <div class="flex gap-2">
-                                            <template x-for="arch in ['amd64', 'arm64']">
-                                                <a :href="getDebStatus(selectedItem, dist, arch) === 'success' ? getDebPath(selectedItem, dist, arch) : 'javascript:void(0)'"
-                                                   @mouseenter="showTip($event, getDebStatusTip(selectedItem, dist, arch))"
-                                                   @mouseleave="hideTip()"
-                                                   :class="getDebStatusClass(selectedItem, dist, arch)"
-                                                   class="px-4 py-2 rounded-xl text-[10px] font-black uppercase flex items-center gap-2 transition-all border-none">
-                                                    <i data-lucide="download" class="w-3.5 h-3.5"></i> <span x-text="arch"></span>
-                                                </a>
-                                            </template>
-                                        </div>
+                            <div class="space-y-3 text-left">
+                                <div class="flex items-center gap-2 text-xs text-zinc-500 dark:text-zinc-400 px-1">
+                                    <i data-lucide="package" class="w-4 h-4"></i>
+                                    <span class="font-medium">Universal DEB package (built on Debian 12 for maximum compatibility)</span>
+                                </div>
+                                <div class="flex items-center justify-between p-4 rounded-xl border text-left transition-all" :class="theme === 'light' ? 'bg-zinc-50 border-zinc-200 shadow-sm' : 'bg-zinc-800/30 border-white/5'">
+                                    <div class="flex flex-col gap-1">
+                                        <span class="text-[11px] font-black text-zinc-500 uppercase tracking-widest">Download Package</span>
+                                        <span class="text-[9px] text-zinc-400">Compatible: Ubuntu 20.04+, Debian 11+</span>
                                     </div>
-                                </template>
+                                    <div class="flex gap-2">
+                                        <template x-for="arch in ['amd64', 'arm64']">
+                                            <a :href="getDebStatus(selectedItem, 'debian-12', arch) === 'success' ? getDebPath(selectedItem, 'debian-12', arch) : 'javascript:void(0)'"
+                                               @mouseenter="showTip($event, getDebStatusTip(selectedItem, 'debian-12', arch))"
+                                               @mouseleave="hideTip()"
+                                               :class="getDebStatusClass(selectedItem, 'debian-12', arch)"
+                                               class="px-4 py-2 rounded-xl text-[10px] font-black uppercase flex items-center gap-2 transition-all border-none">
+                                                <i data-lucide="download" class="w-3.5 h-3.5"></i> <span x-text="arch"></span>
+                                            </a>
+                                        </template>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

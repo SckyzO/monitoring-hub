@@ -15,29 +15,26 @@ artifacts:
   rpm:
     enabled: true
     targets:
-      - el8
-      - el9
-      - el10
+    - el8
+    - el9
+    - el10
     summary: Prometheus exporter for E-Series
     systemd:
       enabled: true
     system_user: prometheus
     extra_files:
-      - source: assets/eseries_exporter.yml
-        dest: /etc/eseries_exporter/eseries_exporter.yml
-        config: true
+    - source: assets/eseries_exporter.yml
+      dest: /etc/eseries_exporter/eseries_exporter.yml
+      config: true
     directories:
-      - path: /etc/eseries_exporter
-        mode: '0755'
-        owner: root
-        group: root
+    - path: /etc/eseries_exporter
+      mode: '0755'
+      owner: root
+      group: root
   deb:
     enabled: true
     targets:
-      - ubuntu-22.04
-      - ubuntu-24.04
-      - debian-12
-      - debian-13
+    - debian-12
     summary: Prometheus exporter for NetApp/Lenovo E-Series storage systems
     systemd:
       enabled: true
@@ -45,21 +42,21 @@ artifacts:
     priority: optional
     system_user: prometheus
     extra_files:
-      - source: assets/eseries_exporter.yml
-        dest: /etc/eseries_exporter/eseries_exporter.yml
-        config: true
+    - source: assets/eseries_exporter.yml
+      dest: /etc/eseries_exporter/eseries_exporter.yml
+      config: true
     directories:
-      - path: /etc/eseries_exporter
-        mode: '0755'
-        owner: root
-        group: root
+    - path: /etc/eseries_exporter
+      mode: '0755'
+      owner: root
+      group: root
   docker:
     enabled: true
     base_image: registry.access.redhat.com/ubi9/ubi-minimal
     entrypoint:
-      - /usr/bin/eseries_exporter
+    - /usr/bin/eseries_exporter
     cmd:
-      - --config.file=/etc/eseries_exporter/eseries_exporter.yml
+    - --config.file=/etc/eseries_exporter/eseries_exporter.yml
     validation:
       port: 9313
       enabled: true

@@ -11,35 +11,32 @@ build:
   method: binary_repack
   binary_name: snmp_exporter
   extra_sources:
-    - url: https://raw.githubusercontent.com/prometheus/snmp_exporter/refs/heads/main/snmp.yml
-      filename: snmp.yml
+  - url: https://raw.githubusercontent.com/prometheus/snmp_exporter/refs/heads/main/snmp.yml
+    filename: snmp.yml
 artifacts:
   rpm:
     enabled: true
     targets:
-      - el8
-      - el9
-      - el10
+    - el8
+    - el9
+    - el10
     summary: Prometheus exporter for SNMP metrics
     systemd:
       enabled: true
     system_user: prometheus
     extra_files:
-      - source: snmp.yml
-        dest: /etc/snmp_exporter/snmp.yml
-        config: true
+    - source: snmp.yml
+      dest: /etc/snmp_exporter/snmp.yml
+      config: true
     directories:
-      - path: /etc/snmp_exporter
-        mode: '0755'
-        owner: root
-        group: root
+    - path: /etc/snmp_exporter
+      mode: '0755'
+      owner: root
+      group: root
   deb:
     enabled: true
     targets:
-      - ubuntu-22.04
-      - ubuntu-24.04
-      - debian-12
-      - debian-13
+    - debian-12
     summary: Prometheus exporter for SNMP-enabled devices
     systemd:
       enabled: true
@@ -47,21 +44,21 @@ artifacts:
     priority: optional
     system_user: prometheus
     extra_files:
-      - source: snmp.yml
-        dest: /etc/snmp_exporter/snmp.yml
-        config: true
+    - source: snmp.yml
+      dest: /etc/snmp_exporter/snmp.yml
+      config: true
     directories:
-      - path: /etc/snmp_exporter
-        mode: '0755'
-        owner: root
-        group: root
+    - path: /etc/snmp_exporter
+      mode: '0755'
+      owner: root
+      group: root
   docker:
     enabled: true
     base_image: registry.access.redhat.com/ubi9/ubi-minimal
     entrypoint:
-      - /usr/bin/snmp_exporter
+    - /usr/bin/snmp_exporter
     cmd:
-      - --config.file=/etc/snmp_exporter/snmp.yml
+    - --config.file=/etc/snmp_exporter/snmp.yml
     validation:
       port: 9116
       enabled: true
