@@ -1,0 +1,27 @@
+{
+  "tag": "node_exporter-v1.10.2",
+  "images": [
+    {
+      "registry": "ghcr.io",
+      "repository": "SckyzO/monitoring-hub/node_exporter",
+      "tag": "1.10.2",
+      "digest": "Name:      ghcr.io/sckyzo/monitoring-hub/node_exporter:1.10.2\nMediaType: application/vnd.oci.image.index.v1+json\nDigest:    sha256:e41625cd212edca30dc5b21aec81600cb42631a1953bbbe9688f1d144343e4a0\n           \nManifests: \n  Name:        ghcr.io/sckyzo/monitoring-hub/node_exporter:1.10.2@sha256:bf47802faa3c1fd9d30804635e9133a81da5733ab9094efcce55b136a2248cc4\n  MediaType:   application/vnd.oci.image.manifest.v1+json\n  Platform:    linux/amd64\n               \n  Name:        ghcr.io/sckyzo/monitoring-hub/node_exporter:1.10.2@sha256:c61f988d46bbfa589f0a25f8cc33d2c626ef9291dda350bb4edd7f60008049ef\n  MediaType:   application/vnd.oci.image.manifest.v1+json\n  Platform:    linux/arm64\n               \n  Name:        ghcr.io/sckyzo/monitoring-hub/node_exporter:1.10.2@sha256:3c11dfda9dcca3eae005a2de3bd35b458b7533a4f5cc1503e0148c052b3f8e75\n  MediaType:   application/vnd.oci.image.manifest.v1+json\n  Platform:    unknown/unknown\n  Annotations: \n    vnd.docker.reference.digest: sha256:bf47802faa3c1fd9d30804635e9133a81da5733ab9094efcce55b136a2248cc4\n    vnd.docker.reference.type:   attestation-manifest\n               \n  Name:        ghcr.io/sckyzo/monitoring-hub/node_exporter:1.10.2@sha256:3589188fd6fd8b08656c7de820b3d1ae4c4c34ddca764a9ec76b86df6267b3b2\n  MediaType:   application/vnd.oci.image.manifest.v1+json\n  Platform:    unknown/unknown\n  Annotations: \n    vnd.docker.reference.digest: sha256:c61f988d46bbfa589f0a25f8cc33d2c626ef9291dda350bb4edd7f60008049ef\n    vnd.docker.reference.type:   attestation-manifest",
+      "platforms": [
+        "linux/amd64",
+        "linux/arm64"
+      ],
+      "url": "ghcr.io/sckyzo/monitoring-hub/node_exporter:1.10.2"
+    },
+    {
+      "registry": "ghcr.io",
+      "repository": "SckyzO/monitoring-hub/node_exporter",
+      "tag": "latest",
+      "digest": "Name:      ghcr.io/sckyzo/monitoring-hub/node_exporter:1.10.2\nMediaType: application/vnd.oci.image.index.v1+json\nDigest:    sha256:e41625cd212edca30dc5b21aec81600cb42631a1953bbbe9688f1d144343e4a0\n           \nManifests: \n  Name:        ghcr.io/sckyzo/monitoring-hub/node_exporter:1.10.2@sha256:bf47802faa3c1fd9d30804635e9133a81da5733ab9094efcce55b136a2248cc4\n  MediaType:   application/vnd.oci.image.manifest.v1+json\n  Platform:    linux/amd64\n               \n  Name:        ghcr.io/sckyzo/monitoring-hub/node_exporter:1.10.2@sha256:c61f988d46bbfa589f0a25f8cc33d2c626ef9291dda350bb4edd7f60008049ef\n  MediaType:   application/vnd.oci.image.manifest.v1+json\n  Platform:    linux/arm64\n               \n  Name:        ghcr.io/sckyzo/monitoring-hub/node_exporter:1.10.2@sha256:3c11dfda9dcca3eae005a2de3bd35b458b7533a4f5cc1503e0148c052b3f8e75\n  MediaType:   application/vnd.oci.image.manifest.v1+json\n  Platform:    unknown/unknown\n  Annotations: \n    vnd.docker.reference.digest: sha256:bf47802faa3c1fd9d30804635e9133a81da5733ab9094efcce55b136a2248cc4\n    vnd.docker.reference.type:   attestation-manifest\n               \n  Name:        ghcr.io/sckyzo/monitoring-hub/node_exporter:1.10.2@sha256:3589188fd6fd8b08656c7de820b3d1ae4c4c34ddca764a9ec76b86df6267b3b2\n  MediaType:   application/vnd.oci.image.manifest.v1+json\n  Platform:    unknown/unknown\n  Annotations: \n    vnd.docker.reference.digest: sha256:c61f988d46bbfa589f0a25f8cc33d2c626ef9291dda350bb4edd7f60008049ef\n    vnd.docker.reference.type:   attestation-manifest",
+      "platforms": [
+        "linux/amd64",
+        "linux/arm64"
+      ],
+      "url": "ghcr.io/sckyzo/monitoring-hub/node_exporter:latest"
+    }
+  ]
+}
