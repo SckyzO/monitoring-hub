@@ -342,6 +342,43 @@ jobs:
             docker rm -f $container_id
           fi
 
+      - name: 📝 Generate Artifact Metadata
+        if: steps.check.outputs.enabled == 'true'
+        run: |
+          exporter="${{ matrix.exporter }}"
+          version=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(m['version'].lstrip('v'))")
+          build_dir="build/$exporter"
+
+          echo "::group::📝 Generating V3 catalog metadata for Docker"
+
+          # Generate Docker metadata
+          image_id="${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/$exporter"
+          image_id=$(echo $image_id | tr '[:upper:]' '[:lower:]')
+
+          # Create docker images JSON array
+          docker_images="[{\"registry\":\"${{ env.REGISTRY }}\",\"repository\":\"${{ env.IMAGE_NAME }}/$exporter\",\"tags\":[\"$version\",\"latest\"],\"architectures\":[\"linux/amd64\"],\"created\":\"$(date -u +"%Y-%m-%dT%H:%M:%SZ")\"}]"
+
+          # Generate V3 catalog metadata for Docker
+          python3 core/scripts/generate_artifact_metadata.py \
+            --type docker \
+            --exporter "$exporter" \
+            --version "$version" \
+            --docker-images "$docker_images" \
+            --status "success" \
+            --output "$build_dir/docker.json"
+
+          echo "✓ Docker metadata generated: $build_dir/docker.json"
+          echo "::endgroup::"
+
+      - name: Upload Artifacts
+        if: steps.check.outputs.enabled == 'true'
+        uses: actions/upload-artifact@v6
+        with:
+          name: docker-${{ matrix.exporter }}
+          path: build/**/docker.json
+          if-no-files-found: ignore
+          retention-days: 7
+
   # Build RPM packages (parallel per exporter, arch, dist)
   build-rpm:
     name: RPM - ${{ matrix.exporter }} (${{ matrix.dist }}/${{ matrix.arch }})
@@ -461,6 +498,48 @@ jobs:
           }
           EOF
 
+      - name: 📝 Generate Artifact Metadata
+        run: |
+          exporter="${{ matrix.exporter }}"
+          arch="${{ matrix.arch }}"
+          dist="${{ matrix.dist }}"
+          build_dir="build/$exporter-$arch-$dist"
+          version=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(m['version'].lstrip('v'))")
+
+          echo "::group::📝 Generating V3 catalog metadata"
+
+          # Find RPM file
+          rpm_file=$(find "$build_dir/rpms" -name "*.rpm" | head -1)
+
+          if [ -z "$rpm_file" ] || [ ! -f "$rpm_file" ]; then
+            echo "⚠️  No RPM file found in $build_dir/rpms, skipping metadata"
+            exit 0
+          fi
+
+          FILENAME=$(basename "$rpm_file")
+          SHA256=$(sha256sum "$rpm_file" | awk '{print $1}')
+          SIZE=$(stat -c%s "$rpm_file")
+
+          echo "  File: $FILENAME"
+          echo "  SHA256: $SHA256"
+          echo "  Size: $SIZE bytes"
+
+          # Generate V3 catalog metadata
+          python3 core/scripts/generate_artifact_metadata.py \
+            --type rpm \
+            --exporter "$exporter" \
+            --version "$version" \
+            --arch "$arch" \
+            --dist "$dist" \
+            --filename "$FILENAME" \
+            --sha256 "$SHA256" \
+            --size "$SIZE" \
+            --status "success" \
+            --output "$build_dir/rpm_${arch}_${dist}.json"
+
+          echo "✓ Metadata generated: $build_dir/rpm_${arch}_${dist}.json"
+          echo "::endgroup::"
+
       - name: Upload Artifacts
         uses: actions/upload-artifact@v6
         with:
@@ -468,6 +547,7 @@ jobs:
           path: |
             build/**/release_urls.json
             build/**/build-info.json
+            build/**/rpm_*.json
           if-no-files-found: ignore
           retention-days: 7
 
@@ -593,6 +673,48 @@ jobs:
           }
           EOF
 
+      - name: 📝 Generate Artifact Metadata
+        run: |
+          exporter="${{ matrix.exporter }}"
+          arch="${{ matrix.arch }}"
+          dist="${{ matrix.dist }}"
+          build_dir="build/$exporter-$arch-$dist"
+          version=$(python3 -c "import yaml; m=yaml.safe_load(open('exporters/$exporter/manifest.yaml')); print(m['version'].lstrip('v'))")
+
+          echo "::group::📝 Generating V3 catalog metadata"
+
+          # Find DEB file
+          deb_file=$(find "$build_dir/debs" -name "*.deb" | head -1)
+
+          if [ -z "$deb_file" ] || [ ! -f "$deb_file" ]; then
+            echo "⚠️  No DEB file found in $build_dir/debs, skipping metadata"
+            exit 0
+          fi
+
+          FILENAME=$(basename "$deb_file")
+          SHA256=$(sha256sum "$deb_file" | awk '{print $1}')
+          SIZE=$(stat -c%s "$deb_file")
+
+          echo "  File: $FILENAME"
+          echo "  SHA256: $SHA256"
+          echo "  Size: $SIZE bytes"
+
+          # Generate V3 catalog metadata
+          python3 core/scripts/generate_artifact_metadata.py \
+            --type deb \
+            --exporter "$exporter" \
+            --version "$version" \
+            --arch "$arch" \
+            --dist "$dist" \
+            --filename "$FILENAME" \
+            --sha256 "$SHA256" \
+            --size "$SIZE" \
+            --status "success" \
+            --output "$build_dir/deb_${arch}_${dist}.json"
+
+          echo "✓ Metadata generated: $build_dir/deb_${arch}_${dist}.json"
+          echo "::endgroup::"
+
       - name: Upload Artifacts
         uses: actions/upload-artifact@v6
         with:
@@ -600,6 +722,7 @@ jobs:
           path: |
             build/**/release_urls.json
             build/**/build-info.json
+            build/**/deb_*.json
           if-no-files-found: ignore
           retention-days: 7
 
