@@ -2,82 +2,102 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://sckyzo.github.io/monitoring-hub/docs/</loc>
-         <lastmod>2026-02-10</lastmod>
+         <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://sckyzo.github.io/monitoring-hub/docs/api-reference/builder/</loc>
-         <lastmod>2026-02-10</lastmod>
+         <lastmod>2026-02-16</lastmod>
+    </url>
+    <url>
+         <loc>https://sckyzo.github.io/monitoring-hub/docs/api-reference/catalog-v3/</loc>
+         <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://sckyzo.github.io/monitoring-hub/docs/api-reference/schema/</loc>
-         <lastmod>2026-02-10</lastmod>
+         <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://sckyzo.github.io/monitoring-hub/docs/api-reference/state-manager/</loc>
-         <lastmod>2026-02-10</lastmod>
+         <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://sckyzo.github.io/monitoring-hub/docs/architecture/build-pipeline/</loc>
-         <lastmod>2026-02-10</lastmod>
+         <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://sckyzo.github.io/monitoring-hub/docs/architecture/ci-cd/</loc>
-         <lastmod>2026-02-10</lastmod>
+         <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://sckyzo.github.io/monitoring-hub/docs/architecture/overview/</loc>
-         <lastmod>2026-02-10</lastmod>
+         <lastmod>2026-02-16</lastmod>
+    </url>
+    <url>
+         <loc>https://sckyzo.github.io/monitoring-hub/docs/architecture/refactoring-v2-plan/</loc>
+         <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://sckyzo.github.io/monitoring-hub/docs/architecture/state-management/</loc>
-         <lastmod>2026-02-10</lastmod>
+         <lastmod>2026-02-16</lastmod>
+    </url>
+    <url>
+         <loc>https://sckyzo.github.io/monitoring-hub/docs/architecture/unified-workflow/</loc>
+         <lastmod>2026-02-16</lastmod>
+    </url>
+    <url>
+         <loc>https://sckyzo.github.io/monitoring-hub/docs/architecture/v3-migration-guide/</loc>
+         <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://sckyzo.github.io/monitoring-hub/docs/contributing/development/</loc>
-         <lastmod>2026-02-10</lastmod>
+         <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://sckyzo.github.io/monitoring-hub/docs/contributing/pull-requests/</loc>
-         <lastmod>2026-02-10</lastmod>
+         <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://sckyzo.github.io/monitoring-hub/docs/contributing/security/</loc>
-         <lastmod>2026-02-10</lastmod>
+         <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://sckyzo.github.io/monitoring-hub/docs/contributing/standards/</loc>
-         <lastmod>2026-02-10</lastmod>
+         <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://sckyzo.github.io/monitoring-hub/docs/contributing/testing/</loc>
-         <lastmod>2026-02-10</lastmod>
+         <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://sckyzo.github.io/monitoring-hub/docs/getting-started/installation/</loc>
-         <lastmod>2026-02-10</lastmod>
+         <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://sckyzo.github.io/monitoring-hub/docs/getting-started/quick-start/</loc>
-         <lastmod>2026-02-10</lastmod>
+         <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://sckyzo.github.io/monitoring-hub/docs/getting-started/requirements/</loc>
-         <lastmod>2026-02-10</lastmod>
+         <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://sckyzo.github.io/monitoring-hub/docs/user-guide/adding-exporters/</loc>
-         <lastmod>2026-02-10</lastmod>
+         <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://sckyzo.github.io/monitoring-hub/docs/user-guide/local-testing/</loc>
-         <lastmod>2026-02-10</lastmod>
+         <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://sckyzo.github.io/monitoring-hub/docs/user-guide/manifest-reference/</loc>
-         <lastmod>2026-02-10</lastmod>
+         <lastmod>2026-02-16</lastmod>
+    </url>
+    <url>
+         <loc>https://sckyzo.github.io/monitoring-hub/docs/user-guide/package-repositories/</loc>
+         <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://sckyzo.github.io/monitoring-hub/docs/user-guide/troubleshooting/</loc>
-         <lastmod>2026-02-10</lastmod>
+         <lastmod>2026-02-16</lastmod>
     </url>
 </urlset>
