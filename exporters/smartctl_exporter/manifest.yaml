@@ -14,9 +14,9 @@ artifacts:
   rpm:
     enabled: true
     targets:
-    - el8
-    - el9
-    - el10
+      - el8
+      - el9
+      - el10
     summary: Prometheus exporter for S.M.A.R.T. metrics
     systemd:
       enabled: true
@@ -24,7 +24,7 @@ artifacts:
   deb:
     enabled: true
     targets:
-    - debian-12
+      - debian-12
     summary: Prometheus exporter for S.M.A.R.T. storage devices metrics
     systemd:
       enabled: true
@@ -35,7 +35,7 @@ artifacts:
     enabled: true
     base_image: registry.access.redhat.com/ubi9/ubi-minimal
     entrypoint:
-    - /usr/bin/smartctl_exporter
+      - /usr/bin/smartctl_exporter
     validation:
       port: 9633
       enabled: true
