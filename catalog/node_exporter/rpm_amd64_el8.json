@@ -5,13 +5,13 @@
   "version": "1.10.2",
   "arch": "amd64",
   "dist": "el8",
-  "build_date": "2026-02-15T23:17:25.668700+00:00",
+  "build_date": "2026-02-16T00:50:20.098461+00:00",
   "status": "success",
   "package": {
     "filename": "node_exporter-1.10.2-1.el8.x86_64.rpm",
     "url": "https://github.com/SckyzO/monitoring-hub/releases/download/node_exporter-v1.10.2/node_exporter-1.10.2-1.el8.x86_64.rpm",
-    "sha256": "92a915fcee244853ccf0fea7b140396b3d2c42dd75f20c6b479fa5a835fc5ebf",
-    "size_bytes": 5383732
+    "sha256": "e4bfab94e93e0cd0466e821620edd9cd52707bb1fedbeb9d1db980c5bc77b254",
+    "size_bytes": 5383736
   },
   "rpm_metadata": {}
 }
