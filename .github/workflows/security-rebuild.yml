@@ -138,46 +138,52 @@ jobs:
             echo "- *...and $remaining more*" >> $GITHUB_STEP_SUMMARY
           fi
 
-  trigger-rebuilds:
-    name: Trigger - ${{ matrix.exporter }}
+  trigger-rebuild:
+    name: 🚀 Trigger Unified Build
     needs: [check-base-image, detect-exporters]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     if: needs.check-base-image.outputs.rebuild_needed == 'true'
-    strategy:
-      fail-fast: false
-      max-parallel: 3
-      matrix:
-        exporter: ${{ fromJson(needs.detect-exporters.outputs.exporters) }}
     steps:
-      - name: 🚀 Trigger Release Rebuild
+      - name: 🚀 Trigger Unified Build Workflow
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          EXPORTER: ${{ matrix.exporter }}
+          EXPORTERS: ${{ needs.detect-exporters.outputs.exporters }}
+          COUNT: ${{ needs.detect-exporters.outputs.count }}
           SCOPE: ${{ inputs.scope || 'all' }}
           REPO: ${{ github.repository }}
         run: |
-          echo "::group::🚀 Triggering security rebuild for $EXPORTER"
+          echo "::group::🚀 Triggering unified build for $COUNT exporter(s)"
 
-          # Determine package type based on scope
-          package_type="all"
-          if [ "$SCOPE" = "docker-only" ]; then
-            package_type="docker"
-          elif [ "$SCOPE" = "packages-only" ]; then
-            # Trigger both RPM and DEB but skip Docker
-            package_type="all"
-            echo "Note: Will build RPM and DEB only"
-          fi
+          echo "Scope: $SCOPE"
+          echo "Exporters to rebuild:"
+          echo "$EXPORTERS" | jq -r '.[] | "  → " + .'
 
-          # Retry up to 3 times with 10s delay
+          # Trigger unified build.yml workflow with all exporters at once
+          # This replaces 34× individual builds with 1× batch build
           max_retries=3
           for i in $(seq 1 $max_retries); do
             if gh workflow run build.yml \
               --repo "$REPO" \
               --ref main \
-              --field exporter="$EXPORTER" \
-              --field package_type="$package_type"; then
-              echo "✓ Release workflow triggered for $EXPORTER"
+              --raw-field exporters="$EXPORTERS" \
+              --field force_rebuild="true"; then
+              echo "✓ Unified build workflow triggered for $COUNT exporter(s)"
+
+              echo "## ✅ Security Rebuild Triggered" >> $GITHUB_STEP_SUMMARY
+              echo "" >> $GITHUB_STEP_SUMMARY
+              echo "**Strategy:** Unified build (all exporters in one workflow)" >> $GITHUB_STEP_SUMMARY
+              echo "**Exporters:** $COUNT" >> $GITHUB_STEP_SUMMARY
+              echo "**Scope:** $SCOPE" >> $GITHUB_STEP_SUMMARY
+              echo "" >> $GITHUB_STEP_SUMMARY
+              echo "**Exporters list:**" >> $GITHUB_STEP_SUMMARY
+              echo "$EXPORTERS" | jq -r '.[:10][] | "- " + .' >> $GITHUB_STEP_SUMMARY
+
+              if [ "$COUNT" -gt 10 ]; then
+                remaining=$((COUNT - 10))
+                echo "- *...and $remaining more*" >> $GITHUB_STEP_SUMMARY
+              fi
+
               break
             else
               if [ $i -lt $max_retries ]; then
@@ -192,14 +198,8 @@ jobs:
 
           echo "::endgroup::"
 
-      - name: 📋 Log Rebuild
-        env:
-          EXPORTER: ${{ matrix.exporter }}
-        run: |
-          echo "✓ Triggered security rebuild for **$EXPORTER**" >> $GITHUB_STEP_SUMMARY
-
   summary:
-    needs: [detect-exporters, trigger-rebuilds]
+    needs: [detect-exporters, trigger-rebuild]
     runs-on: ubuntu-latest
     timeout-minutes: 5
     if: always()
@@ -209,13 +209,13 @@ jobs:
           COUNT: ${{ needs.detect-exporters.outputs.count }}
           REPO: ${{ github.repository }}
         run: |
-          echo "## ✅ Security Rebuild Complete" >> $GITHUB_STEP_SUMMARY
+          echo "## ✅ Security Rebuild Initiated" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "Triggered rebuild for **$COUNT exporter(s)**" >> $GITHUB_STEP_SUMMARY
+          echo "Triggered unified build for **$COUNT exporter(s)**" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "All exporters will receive:" >> $GITHUB_STEP_SUMMARY
           echo "- ✅ Latest UBI9 Minimal base image" >> $GITHUB_STEP_SUMMARY
           echo "- ✅ Latest system packages (glibc, openssl, etc.)" >> $GITHUB_STEP_SUMMARY
           echo "- ✅ Fresh Trivy security scan" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "Monitor progress in the [Release workflow runs](https://github.com/$REPO/actions/workflows/build.yml)" >> $GITHUB_STEP_SUMMARY
+          echo "Monitor progress in the [Build workflow](https://github.com/$REPO/actions/workflows/build.yml)" >> $GITHUB_STEP_SUMMARY
