@@ -13,24 +13,24 @@ build:
   method: binary_repack
   binary_name: keepalived-exporter
   archs:
-  - amd64
-  - arm64
+    - amd64
+    - arm64
   extra_binaries: []
   extra_sources: []
 artifacts:
   rpm:
     enabled: true
     targets:
-    - el8
-    - el9
-    - el10
+      - el8
+      - el9
+      - el10
     summary: Prometheus exporter for Keepalived metrics.
     systemd:
       enabled: true
   deb:
     enabled: true
     targets:
-    - debian-12
+      - debian-12
     summary: Prometheus exporter for Keepalived metrics.
     systemd:
       enabled: true
@@ -39,7 +39,7 @@ artifacts:
   docker:
     enabled: true
     entrypoint:
-    - /usr/bin/keepalived-exporter
+      - /usr/bin/keepalived-exporter
     validation:
       enabled: true
       command: --version

@@ -15,21 +15,21 @@ artifacts:
     enabled: true
     summary: Prometheus Textfile Exporter
     targets:
-    - el8
-    - el9
-    - el10
+      - el8
+      - el9
+      - el10
     system_user: textfile_exporter
     systemd:
       enabled: true
     directories:
-    - path: /var/lib/textfile_exporter
-      owner: textfile_exporter
-      group: textfile_exporter
-      mode: '0755'
+      - path: /var/lib/textfile_exporter
+        owner: textfile_exporter
+        group: textfile_exporter
+        mode: '0755'
   deb:
     enabled: true
     targets:
-    - debian-12
+      - debian-12
     summary: Prometheus exporter for local text files metrics
     systemd:
       enabled: true
@@ -37,16 +37,16 @@ artifacts:
     priority: optional
     system_user: textfile_exporter
     directories:
-    - path: /var/lib/textfile_exporter
-      owner: textfile_exporter
-      group: textfile_exporter
-      mode: '0755'
+      - path: /var/lib/textfile_exporter
+        owner: textfile_exporter
+        group: textfile_exporter
+        mode: '0755'
   docker:
     enabled: true
     entrypoint:
-    - /usr/bin/textfile_exporter
+      - /usr/bin/textfile_exporter
     cmd:
-    - --textfile.directory=/var/lib/textfile_exporter
+      - --textfile.directory=/var/lib/textfile_exporter
     validation:
       port: 9014
       enabled: true

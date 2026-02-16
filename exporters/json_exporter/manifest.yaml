@@ -11,47 +11,47 @@ build:
   method: binary_repack
   binary_name: json_exporter
   archs:
-  - amd64
-  - arm64
+    - amd64
+    - arm64
   extra_binaries: []
   extra_sources: []
 artifacts:
   rpm:
     enabled: true
     targets:
-    - el8
-    - el9
-    - el10
+      - el8
+      - el9
+      - el10
     summary: A prometheus exporter which scrapes remote JSON by JSONPath.
     systemd:
       enabled: true
     extra_files:
-    - source: assets/config.yml
-      dest: /etc/json_exporter/config.yml
-      mode: '0644'
+      - source: assets/config.yml
+        dest: /etc/json_exporter/config.yml
+        mode: '0644'
     directories:
-    - path: /etc/json_exporter
-      mode: '0755'
+      - path: /etc/json_exporter
+        mode: '0755'
   deb:
     enabled: true
     targets:
-    - debian-12
+      - debian-12
     summary: A prometheus exporter which scrapes remote JSON by JSONPath.
     systemd:
       enabled: true
     section: net
     priority: optional
     extra_files:
-    - source: assets/config.yml
-      dest: /etc/json_exporter/config.yml
-      mode: '0644'
+      - source: assets/config.yml
+        dest: /etc/json_exporter/config.yml
+        mode: '0644'
     directories:
-    - path: /etc/json_exporter
-      mode: '0755'
+      - path: /etc/json_exporter
+        mode: '0755'
   docker:
     enabled: true
     entrypoint:
-    - /usr/bin/json_exporter
+      - /usr/bin/json_exporter
     validation:
       enabled: true
       port: 7979

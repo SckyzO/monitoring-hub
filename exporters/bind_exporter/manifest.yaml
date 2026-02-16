@@ -14,21 +14,21 @@ artifacts:
     enabled: true
     summary: Prometheus Bind Exporter
     targets:
-    - el8
-    - el9
-    - el10
+      - el8
+      - el9
+      - el10
     system_user: bind_exporter
     systemd:
       enabled: true
     directories:
-    - path: /var/lib/bind_exporter
-      owner: bind_exporter
-      group: bind_exporter
-      mode: '0755'
+      - path: /var/lib/bind_exporter
+        owner: bind_exporter
+        group: bind_exporter
+        mode: '0755'
   deb:
     enabled: true
     targets:
-    - debian-12
+      - debian-12
     summary: Prometheus exporter for Bind (DNS) statistics
     systemd:
       enabled: true
@@ -36,14 +36,14 @@ artifacts:
     priority: optional
     system_user: bind_exporter
     directories:
-    - path: /var/lib/bind_exporter
-      owner: bind_exporter
-      group: bind_exporter
-      mode: '0755'
+      - path: /var/lib/bind_exporter
+        owner: bind_exporter
+        group: bind_exporter
+        mode: '0755'
   docker:
     enabled: true
     entrypoint:
-    - /usr/bin/bind_exporter
+      - /usr/bin/bind_exporter
     validation:
       port: 9119
       enabled: true

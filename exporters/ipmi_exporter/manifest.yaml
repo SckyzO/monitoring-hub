@@ -14,31 +14,31 @@ artifacts:
     enabled: true
     summary: Prometheus exporter for IPMI devices
     targets:
-    - el8
-    - el9
-    - el10
+      - el8
+      - el9
+      - el10
     dependencies:
-    - freeipmi
+      - freeipmi
     system_user: ipmi_exporter
     systemd:
       enabled: true
     extra_files:
-    - source: assets/ipmi_remote.yml
-      dest: /etc/ipmi_exporter/ipmi_remote.yml
-      config: true
+      - source: assets/ipmi_remote.yml
+        dest: /etc/ipmi_exporter/ipmi_remote.yml
+        config: true
     directories:
-    - path: /var/lib/ipmi_exporter
-      owner: ipmi_exporter
-      group: ipmi_exporter
-      mode: '0755'
-    - path: /etc/ipmi_exporter
-      owner: root
-      group: root
-      mode: '0755'
+      - path: /var/lib/ipmi_exporter
+        owner: ipmi_exporter
+        group: ipmi_exporter
+        mode: '0755'
+      - path: /etc/ipmi_exporter
+        owner: root
+        group: root
+        mode: '0755'
   deb:
     enabled: true
     targets:
-    - debian-12
+      - debian-12
     summary: Prometheus exporter for IPMI devices
     systemd:
       enabled: true
@@ -46,26 +46,26 @@ artifacts:
     priority: optional
     system_user: ipmi_exporter
     extra_files:
-    - source: assets/ipmi_remote.yml
-      dest: /etc/ipmi_exporter/ipmi_remote.yml
-      config: true
+      - source: assets/ipmi_remote.yml
+        dest: /etc/ipmi_exporter/ipmi_remote.yml
+        config: true
     directories:
-    - path: /var/lib/ipmi_exporter
-      owner: ipmi_exporter
-      group: ipmi_exporter
-      mode: '0755'
-    - path: /etc/ipmi_exporter
-      owner: root
-      group: root
-      mode: '0755'
+      - path: /var/lib/ipmi_exporter
+        owner: ipmi_exporter
+        group: ipmi_exporter
+        mode: '0755'
+      - path: /etc/ipmi_exporter
+        owner: root
+        group: root
+        mode: '0755'
     dependencies:
-    - freeipmi-tools
+      - freeipmi-tools
   docker:
     enabled: true
     entrypoint:
-    - /usr/bin/ipmi_exporter
+      - /usr/bin/ipmi_exporter
     cmd:
-    - --config.file=/etc/ipmi_exporter/ipmi_remote.yml
+      - --config.file=/etc/ipmi_exporter/ipmi_remote.yml
     validation:
       port: 9290
       enabled: true
