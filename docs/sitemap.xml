@@ -21,6 +21,14 @@
          <lastmod>2026-02-16</lastmod>
     </url>
     <url>
+         <loc>https://sckyzo.github.io/monitoring-hub/docs/architecture/ARCHIVED-refactoring-v2-plan/</loc>
+         <lastmod>2026-02-16</lastmod>
+    </url>
+    <url>
+         <loc>https://sckyzo.github.io/monitoring-hub/docs/architecture/ARCHIVED-v3-migration-guide/</loc>
+         <lastmod>2026-02-16</lastmod>
+    </url>
+    <url>
          <loc>https://sckyzo.github.io/monitoring-hub/docs/architecture/build-pipeline/</loc>
          <lastmod>2026-02-16</lastmod>
     </url>
@@ -33,19 +41,11 @@
          <lastmod>2026-02-16</lastmod>
     </url>
     <url>
-         <loc>https://sckyzo.github.io/monitoring-hub/docs/architecture/refactoring-v2-plan/</loc>
-         <lastmod>2026-02-16</lastmod>
-    </url>
-    <url>
          <loc>https://sckyzo.github.io/monitoring-hub/docs/architecture/state-management/</loc>
          <lastmod>2026-02-16</lastmod>
     </url>
     <url>
          <loc>https://sckyzo.github.io/monitoring-hub/docs/architecture/unified-workflow/</loc>
-         <lastmod>2026-02-16</lastmod>
-    </url>
-    <url>
-         <loc>https://sckyzo.github.io/monitoring-hub/docs/architecture/v3-migration-guide/</loc>
          <lastmod>2026-02-16</lastmod>
     </url>
     <url>
