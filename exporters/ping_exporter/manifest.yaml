@@ -1,7 +1,7 @@
 name: ping_exporter
 description: Prometheus exporter for ICMP ping metrics
 category: Network
-version: v1.1.5
+version: "v1.2.0"
 updated: true
 upstream:
   type: github
