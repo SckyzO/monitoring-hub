@@ -14,7 +14,7 @@ import yaml
 # Add project root to path
 sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
-from core.engine.schema import ExporterManifestSchema
+from core.engine.schema import ManifestSchema
 
 
 def main():
@@ -32,7 +32,7 @@ def main():
         print(f"❌ Failed to load {manifest_path}: {e}")
         sys.exit(1)
 
-    schema = ExporterManifestSchema()
+    schema = ManifestSchema()
     errors = schema.validate(data)
 
     if errors:
