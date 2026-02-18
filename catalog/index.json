@@ -63,7 +63,7 @@
     },
     {
       "name": "eseries_exporter",
-      "version": "2.0.0",
+      "version": "2.1.0",
       "category": "Storage",
       "last_updated": null
     },
@@ -155,7 +155,7 @@
       "name": "ping_exporter",
       "version": "1.2.0",
       "category": "Network",
-      "last_updated": "2026-02-17T08:49:07.725020+00:00"
+      "last_updated": null
     },
     {
       "name": "podman_exporter",
