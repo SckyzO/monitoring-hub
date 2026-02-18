@@ -2,16 +2,16 @@
   "format_version": "3.0",
   "artifact_type": "rpm",
   "exporter": "eseries_exporter",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "arch": "amd64",
   "dist": "el10",
-  "build_date": "2026-02-16T13:22:46.552145+00:00",
+  "build_date": "2026-02-18T10:15:09.928540+00:00",
   "status": "success",
   "package": {
-    "filename": "eseries_exporter-2.0.0-1.el10.x86_64.rpm",
-    "url": "",
-    "sha256": "5732c4546b7be46d8177a816090892d4077e7d5fba5b639dcdc9bf808359bc31",
-    "size_bytes": 3555005
+    "filename": "eseries_exporter-2.1.0-1.el10.x86_64.rpm",
+    "url": "https://github.com/SckyzO/monitoring-hub/releases/download/eseries_exporter-v2.1.0/eseries_exporter-2.1.0-1.el10.x86_64.rpm",
+    "sha256": "9a3b82597b90bb54124089164b0d2f59a94efc5d66f62cfdb435f9f3b38908bc",
+    "size_bytes": 4037760
   },
   "rpm_metadata": {}
 }
