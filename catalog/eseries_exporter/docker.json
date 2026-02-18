@@ -2,21 +2,21 @@
   "format_version": "3.0",
   "artifact_type": "docker",
   "exporter": "eseries_exporter",
-  "version": "2.0.0",
-  "build_date": "2026-02-16T12:53:32.893261+00:00",
+  "version": "2.1.0",
+  "build_date": "2026-02-18T16:24:07.524545+00:00",
   "status": "success",
   "images": [
     {
       "registry": "ghcr.io",
       "repository": "SckyzO/monitoring-hub/eseries_exporter",
       "tags": [
-        "2.0.0",
+        "2.1.0",
         "latest"
       ],
       "architectures": [
         "linux/amd64"
       ],
-      "created": "2026-02-16T12:53:32Z"
+      "created": "2026-02-18T16:24:07Z"
     }
   ]
 }

@@ -5,13 +5,13 @@
   "version": "2.1.0",
   "arch": "arm64",
   "dist": "el8",
-  "build_date": "2026-02-18T10:20:37.838128+00:00",
+  "build_date": "2026-02-18T16:29:31.920767+00:00",
   "status": "success",
   "package": {
     "filename": "eseries_exporter-2.1.0-1.el8.aarch64.rpm",
-    "url": "https://github.com/SckyzO/monitoring-hub/releases/download/eseries_exporter-v2.1.0/eseries_exporter-2.1.0-1.el8.aarch64.rpm",
-    "sha256": "26473e9d4eeea0cffc6d8687db101203dbd552e402797b93bdcb7f7b39e0b424",
-    "size_bytes": 3513256
+    "url": "",
+    "sha256": "23f298a305dd376fd289a7029908357d91c1931511d91083285b208c56554a88",
+    "size_bytes": 3513252
   },
   "rpm_metadata": {}
 }

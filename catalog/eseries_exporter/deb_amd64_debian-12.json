@@ -5,13 +5,13 @@
   "version": "2.1.0",
   "arch": "amd64",
   "dist": "debian-12",
-  "build_date": "2026-02-18T10:15:39.899529+00:00",
+  "build_date": "2026-02-18T16:24:20.200827+00:00",
   "status": "success",
   "package": {
     "filename": "eseries-exporter_2.1.0-1_amd64.deb",
-    "url": "https://github.com/SckyzO/monitoring-hub/releases/download/eseries_exporter-v2.1.0/eseries-exporter_2.1.0-1_amd64.deb",
-    "sha256": "94f82051b57d643a154812c86f73d63040b6eee8270fade47a301bbe6f82cdde",
-    "size_bytes": 4838260
+    "url": "",
+    "sha256": "707523b7cbc0614eca46374797da9b33fb822ef27949bba67cfabef0e9f52cdf",
+    "size_bytes": 4838264
   },
   "deb_metadata": {}
 }
