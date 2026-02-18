@@ -7,7 +7,7 @@ upstream:
   type: github
   repo: sckyzo/eseries_exporter
   strategy: latest_release
-  archive_name: '{name}_linux_{arch}.tar.gz'
+  archive_name: '{name}-{version}-linux-{arch}.tar.gz'
 build:
   method: binary_repack
   binary_name: eseries_exporter
