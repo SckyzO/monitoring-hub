@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "deb",
+  "exporter": "eseries_exporter",
+  "version": "2.1.0",
+  "arch": "amd64",
+  "dist": "ubuntu-24.04",
+  "build_date": "2026-02-18T10:15:45.234810+00:00",
+  "status": "success",
+  "package": {
+    "filename": "eseries-exporter_2.1.0-1_amd64.deb",
+    "url": "https://github.com/SckyzO/monitoring-hub/releases/download/eseries_exporter-v2.1.0/eseries-exporter_2.1.0-1_amd64.deb",
+    "sha256": "94f82051b57d643a154812c86f73d63040b6eee8270fade47a301bbe6f82cdde",
+    "size_bytes": 4838260
+  },
+  "deb_metadata": {}
+}
