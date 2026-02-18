@@ -36,8 +36,8 @@ def load_manifest(path):
 
 
 @retry(
-    stop=stop_after_attempt(3),
-    wait=wait_exponential(multiplier=1, min=2, max=10),
+    stop=stop_after_attempt(6),
+    wait=wait_exponential(multiplier=2, min=4, max=60),
     retry=retry_if_exception_type((requests.exceptions.RequestException, OSError)),
     reraise=True,
 )
@@ -184,8 +184,8 @@ def download_and_extract(data, output_dir, arch):
 
 
 @retry(
-    stop=stop_after_attempt(3),
-    wait=wait_exponential(multiplier=1, min=2, max=10),
+    stop=stop_after_attempt(6),
+    wait=wait_exponential(multiplier=2, min=4, max=60),
     retry=retry_if_exception_type(requests.exceptions.RequestException),
     reraise=True,
 )
