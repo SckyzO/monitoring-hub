@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "deb",
+  "exporter": "eseries_exporter",
+  "version": "2.1.0",
+  "arch": "arm64",
+  "dist": "debian-13",
+  "build_date": "2026-02-18T10:23:57.867064+00:00",
+  "status": "success",
+  "package": {
+    "filename": "eseries-exporter_2.1.0-1_arm64.deb",
+    "url": "https://github.com/SckyzO/monitoring-hub/releases/download/eseries_exporter-v2.1.0/eseries-exporter_2.1.0-1_arm64.deb",
+    "sha256": "fc1cb357f2b9fa6a139ce674188b86ce5fa5804171b30f830a20658a160089a0",
+    "size_bytes": 4414296
+  },
+  "deb_metadata": {}
+}
