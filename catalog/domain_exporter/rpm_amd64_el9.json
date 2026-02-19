@@ -2,16 +2,16 @@
   "format_version": "3.0",
   "artifact_type": "rpm",
   "exporter": "domain_exporter",
-  "version": "1.24.1",
+  "version": "1.25.0",
   "arch": "amd64",
   "dist": "el9",
-  "build_date": "2026-02-16T13:10:32.521245+00:00",
+  "build_date": "2026-02-19T08:40:32.039662+00:00",
   "status": "success",
   "package": {
-    "filename": "domain_exporter-1.24.1-1.el9.x86_64.rpm",
+    "filename": "domain_exporter-1.25.0-1.el9.x86_64.rpm",
     "url": "",
-    "sha256": "6bb31350206b69e00bc61935a6bc434b07dc489200795905051521a16340b81c",
-    "size_bytes": 5033603
+    "sha256": "668cf295e94136cd1993149777f7b80d3f5cdf84357d37f5feb4915c5c55647d",
+    "size_bytes": 5256562
   },
   "rpm_metadata": {}
 }

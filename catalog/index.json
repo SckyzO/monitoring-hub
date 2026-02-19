@@ -45,9 +45,9 @@
     },
     {
       "name": "domain_exporter",
-      "version": "1.24.1",
+      "version": "1.25.0",
       "category": "Web",
-      "last_updated": null
+      "last_updated": "2026-02-19T08:46:45.927250+00:00"
     },
     {
       "name": "ebpf_exporter",
@@ -65,7 +65,7 @@
       "name": "eseries_exporter",
       "version": "2.1.0",
       "category": "Storage",
-      "last_updated": "2026-02-18T16:30:23.689347+00:00"
+      "last_updated": null
     },
     {
       "name": "exim_exporter",

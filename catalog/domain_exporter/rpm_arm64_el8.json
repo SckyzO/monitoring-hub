@@ -2,16 +2,16 @@
   "format_version": "3.0",
   "artifact_type": "rpm",
   "exporter": "domain_exporter",
-  "version": "1.24.1",
+  "version": "1.25.0",
   "arch": "arm64",
   "dist": "el8",
-  "build_date": "2026-02-16T13:17:03.380912+00:00",
+  "build_date": "2026-02-19T08:45:16.934433+00:00",
   "status": "success",
   "package": {
-    "filename": "domain_exporter-1.24.1-1.el8.aarch64.rpm",
+    "filename": "domain_exporter-1.25.0-1.el8.aarch64.rpm",
     "url": "",
-    "sha256": "2cb949884d852f13650f173953c66ecad943fa2e83fe8555d9ddd84cdc240d36",
-    "size_bytes": 4268556
+    "sha256": "a8edec59cd93c53b846b39012324c9080a8b215bd86ea38eafd42b4cd0fd0ec0",
+    "size_bytes": 4343040
   },
   "rpm_metadata": {}
 }

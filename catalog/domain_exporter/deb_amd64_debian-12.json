@@ -2,16 +2,16 @@
   "format_version": "3.0",
   "artifact_type": "deb",
   "exporter": "domain_exporter",
-  "version": "1.24.1",
+  "version": "1.25.0",
   "arch": "amd64",
   "dist": "debian-12",
-  "build_date": "2026-02-16T12:58:18.106757+00:00",
+  "build_date": "2026-02-19T08:40:13.277460+00:00",
   "status": "success",
   "package": {
-    "filename": "domain-exporter_1.24.1-1_amd64.deb",
+    "filename": "domain-exporter_1.25.0-1_amd64.deb",
     "url": "",
-    "sha256": "dbbc57297c5395e551afc1bc617550970899b94dbdf513ac9199506ea3e4d9e8",
-    "size_bytes": 6085780
+    "sha256": "8b1118cb8a58f755658e466571868680b9d27510f392014796aefc8ef780ac53",
+    "size_bytes": 6329072
   },
   "deb_metadata": {}
 }

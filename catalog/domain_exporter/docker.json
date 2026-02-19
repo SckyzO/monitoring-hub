@@ -2,21 +2,21 @@
   "format_version": "3.0",
   "artifact_type": "docker",
   "exporter": "domain_exporter",
-  "version": "1.24.1",
-  "build_date": "2026-02-16T12:53:46.120955+00:00",
+  "version": "1.25.0",
+  "build_date": "2026-02-19T08:39:58.205313+00:00",
   "status": "success",
   "images": [
     {
       "registry": "ghcr.io",
       "repository": "SckyzO/monitoring-hub/domain_exporter",
       "tags": [
-        "1.24.1",
+        "1.25.0",
         "latest"
       ],
       "architectures": [
         "linux/amd64"
       ],
-      "created": "2026-02-16T12:53:46Z"
+      "created": "2026-02-19T08:39:58Z"
     }
   ]
 }
