@@ -1,7 +1,7 @@
 name: domain_exporter
 description: Exports the expiration time of your domains as Prometheus metrics.
 category: Web
-version: v1.24.1
+version: "v1.25.0"
 new: true
 updated: false
 upstream:
