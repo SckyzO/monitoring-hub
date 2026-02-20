@@ -47,7 +47,7 @@
       "name": "domain_exporter",
       "version": "1.25.0",
       "category": "Web",
-      "last_updated": "2026-02-19T08:46:45.927250+00:00"
+      "last_updated": null
     },
     {
       "name": "ebpf_exporter",
@@ -123,7 +123,7 @@
     },
     {
       "name": "mongodb_exporter",
-      "version": "0.48.0",
+      "version": "0.49.0",
       "category": "Database",
       "last_updated": null
     },
