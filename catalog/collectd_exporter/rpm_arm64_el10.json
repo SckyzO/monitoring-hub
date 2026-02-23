@@ -5,12 +5,12 @@
   "version": "0.7.0",
   "arch": "arm64",
   "dist": "el10",
-  "build_date": "2026-02-16T13:31:56.993684+00:00",
+  "build_date": "2026-02-23T04:46:54.933316+00:00",
   "status": "success",
   "package": {
     "filename": "collectd_exporter-0.7.0-1.el10.aarch64.rpm",
     "url": "",
-    "sha256": "9e924112ec0996bd5f2da90db4a7d03920f5b0193b63ef48ad28d0adc8122f72",
+    "sha256": "9d496b6fa73c7f4b105d0317d010eae6c5b474b186248478823066b13a06f98d",
     "size_bytes": 3492420
   },
   "rpm_metadata": {}

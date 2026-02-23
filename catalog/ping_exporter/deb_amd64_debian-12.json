@@ -5,13 +5,13 @@
   "version": "1.2.0",
   "arch": "amd64",
   "dist": "debian-12",
-  "build_date": "2026-02-17T08:42:41.818529+00:00",
+  "build_date": "2026-02-23T04:30:12.966385+00:00",
   "status": "success",
   "package": {
     "filename": "ping-exporter_1.2.0-1_amd64.deb",
     "url": "",
-    "sha256": "717980477630c92b6933a6511681d0ae4a5d77cddea37d3fe69f9d394526688e",
-    "size_bytes": 12899058
+    "sha256": "139e1bdae09b7c58272e92b93361f7a2840b2f4cb48bc5332e7e4990e00cce33",
+    "size_bytes": 12899066
   },
   "deb_metadata": {}
 }

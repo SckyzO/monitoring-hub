@@ -5,13 +5,13 @@
   "version": "0.8.7",
   "arch": "amd64",
   "dist": "debian-12",
-  "build_date": "2026-02-16T12:55:27.134323+00:00",
+  "build_date": "2026-02-23T04:30:48.421603+00:00",
   "status": "success",
   "package": {
     "filename": "process-exporter_0.8.7-1_amd64.deb",
     "url": "",
-    "sha256": "f345996f9d504ddb63d5e564e205e3d8c6084e8f7736c9c267fdc1753b445eb8",
-    "size_bytes": 4381442
+    "sha256": "16ba9dd8f881d2c7ccf061da43b567dd6202efa7363c2b342dd910bf9458e745",
+    "size_bytes": 4381444
   },
   "deb_metadata": {}
 }

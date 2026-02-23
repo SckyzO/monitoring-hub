@@ -5,13 +5,13 @@
   "version": "0.7.0",
   "arch": "arm64",
   "dist": "debian-12",
-  "build_date": "2026-02-16T13:03:27.357141+00:00",
+  "build_date": "2026-02-23T04:36:04.836068+00:00",
   "status": "success",
   "package": {
     "filename": "collectd-exporter_0.7.0-1_arm64.deb",
     "url": "",
-    "sha256": "cc6f09b548da0ae3b949c8c216c65799b6bdb5116a2cf337d942d55084a8ca81",
-    "size_bytes": 8288118
+    "sha256": "614a6650f4b5206c488ca8e72c1d9a6d282e510e10661d6d73293297fb47e651",
+    "size_bytes": 8288116
   },
   "deb_metadata": {}
 }

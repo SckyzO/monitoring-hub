@@ -4,55 +4,55 @@
   "version": "1.5.1",
   "category": "Web",
   "description": "Prometheus exporter for NGINX metrics",
-  "last_updated": "2026-02-16T13:21:14.563743+00:00",
+  "last_updated": "2026-02-23T05:12:19.346727+00:00",
   "artifacts": {
     "rpm": {
-      "el8": {
-        "amd64": {
-          "status": "success",
-          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/nginx_exporter-1.5.1-1.el8.x86_64.rpm",
-          "size_bytes": 4186292,
-          "sha256": "ea1437d476fe8ad2008fd2fd75b3dc959497fe698b8ff53c8ce3f2bc09e01263",
-          "build_date": "2026-02-16T13:11:49.712928+00:00"
-        },
-        "arm64": {
-          "status": "success",
-          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/nginx_exporter-1.5.1-1.el8.aarch64.rpm",
-          "size_bytes": 3575836,
-          "sha256": "5f353e949050f0708a3d341fa9a7504ef4ccbadebbf7010b36762e2c3124bb43",
-          "build_date": "2026-02-16T13:21:14.563743+00:00"
-        }
-      },
       "el10": {
-        "arm64": {
-          "status": "success",
-          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/nginx_exporter-1.5.1-1.el10.aarch64.rpm",
-          "size_bytes": 3683233,
-          "sha256": "e82f0a534cdf70b25eaa3ec2adfb24011c75dbbc3e437172b1cfcc6459bbf2ff",
-          "build_date": "2026-02-16T13:20:00.072621+00:00"
-        },
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/nginx_exporter-1.5.1-1.el10.x86_64.rpm",
           "size_bytes": 4143495,
-          "sha256": "cf031d11b859da2ec678ac8cad6b7751bce20e5375401e53b813fc773997b052",
-          "build_date": "2026-02-16T13:18:26.707867+00:00"
-        }
-      },
-      "el9": {
+          "sha256": "c24d381b5fc9166c0696eb2beb966f623678ad5e178d10cb9bcfecf742e62d57",
+          "build_date": "2026-02-23T04:57:39.171967+00:00"
+        },
         "arm64": {
           "status": "success",
-          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/nginx_exporter-1.5.1-1.el9.aarch64.rpm",
-          "size_bytes": 3682947,
-          "sha256": "c258747dada28425e3b04e272814087e1f4f0db29f189bf80b498a51919cf784",
-          "build_date": "2026-02-16T13:10:49.480637+00:00"
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/nginx_exporter-1.5.1-1.el10.aarch64.rpm",
+          "size_bytes": 3683233,
+          "sha256": "9e2f6bba92497f9742b388cf3cf28b8137ce0684df524dad2d1fcae62124a38a",
+          "build_date": "2026-02-23T04:56:44.801135+00:00"
+        }
+      },
+      "el8": {
+        "arm64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/nginx_exporter-1.5.1-1.el8.aarch64.rpm",
+          "size_bytes": 3575836,
+          "sha256": "520e724ec1f98a989c9ac53e19e9b3e0b6567152c47fa5e50da40fe339a4205d",
+          "build_date": "2026-02-23T05:11:03.272746+00:00"
         },
         "amd64": {
           "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/nginx_exporter-1.5.1-1.el8.x86_64.rpm",
+          "size_bytes": 4186292,
+          "sha256": "aae2884c1c608f548bd8080eee2704293665f9e3a9705a7af818a31a990d6a45",
+          "build_date": "2026-02-23T04:54:42.828034+00:00"
+        }
+      },
+      "el9": {
+        "amd64": {
+          "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/nginx_exporter-1.5.1-1.el9.x86_64.rpm",
-          "size_bytes": 4143208,
-          "sha256": "3d5e8bf6b46e9b5470e986348488ff96488d553182b1d33ef5d353e7bab5d87b",
-          "build_date": "2026-02-16T13:15:47.114464+00:00"
+          "size_bytes": 4143189,
+          "sha256": "89ad03a651b457cc6a27a928957fccc803c0979bdfd232a124570bfc823fb9fd",
+          "build_date": "2026-02-23T05:01:38.217220+00:00"
+        },
+        "arm64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/nginx_exporter-1.5.1-1.el9.aarch64.rpm",
+          "size_bytes": 3682951,
+          "sha256": "620671af901a68d056484a152669f676d640e90738896883603c7f85e758a6e5",
+          "build_date": "2026-02-23T05:12:19.346727+00:00"
         }
       }
     },
@@ -61,16 +61,16 @@
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/nginx-exporter_1.5.1-1_amd64.deb",
-          "size_bytes": 4930280,
-          "sha256": "6221ef0693feb1361f82338787629cb487ea75d42f3e2045282dde4e43497409",
-          "build_date": "2026-02-16T12:59:14.375007+00:00"
+          "size_bytes": 4930286,
+          "sha256": "e013b7a4cd867e8f8a0ef939723309df900db6b970049522fe923623b45ee8dc",
+          "build_date": "2026-02-23T04:29:52.103357+00:00"
         },
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/nginx-exporter_1.5.1-1_arm64.deb",
-          "size_bytes": 4451034,
-          "sha256": "6816756714a597fc2ba3d8612b7bf3b726f5ae309015c3451a262bc05b14efd9",
-          "build_date": "2026-02-16T13:09:30.086072+00:00"
+          "size_bytes": 4451036,
+          "sha256": "a46d5d57f290c10d2d1bcb986953a09f357554690b241c0eb9f8a023ab44ee51",
+          "build_date": "2026-02-23T04:43:48.324804+00:00"
         }
       }
     },
@@ -87,10 +87,10 @@
           "architectures": [
             "linux/amd64"
           ],
-          "created": "2026-02-16T12:53:40Z"
+          "created": "2026-02-23T04:28:39Z"
         }
       ],
-      "build_date": "2026-02-16T12:53:40.422071+00:00"
+      "build_date": "2026-02-23T04:28:39.622676+00:00"
     }
   },
   "status": {

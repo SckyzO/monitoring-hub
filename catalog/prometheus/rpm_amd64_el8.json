@@ -5,12 +5,12 @@
   "version": "3.9.1",
   "arch": "amd64",
   "dist": "el8",
-  "build_date": "2026-02-16T13:33:47.300146+00:00",
+  "build_date": "2026-02-23T05:00:50.703681+00:00",
   "status": "success",
   "package": {
     "filename": "prometheus-3.9.1-1.el8.x86_64.rpm",
     "url": "",
-    "sha256": "d46093247ff2ceb138347d69d1d6909fb6c8e6a5f27e1a1932d5e3ca645dac6b",
+    "sha256": "0e3602fe85ab2b6346780a4910e9f4a9e4708f33dedc84c768ac30833a1d89e7",
     "size_bytes": 29215432
   },
   "rpm_metadata": {}

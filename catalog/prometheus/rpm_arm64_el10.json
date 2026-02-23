@@ -5,12 +5,12 @@
   "version": "3.9.1",
   "arch": "arm64",
   "dist": "el10",
-  "build_date": "2026-02-16T13:30:57.101836+00:00",
+  "build_date": "2026-02-23T05:15:07.314383+00:00",
   "status": "success",
   "package": {
     "filename": "prometheus-3.9.1-1.el10.aarch64.rpm",
     "url": "",
-    "sha256": "2cbb75e55f7463ab4e216c8fa312935af8b685fc4df9b72c077c2aaa9b4fc171",
+    "sha256": "467141e0fbe708474a2b08b24d23a7037eb68d076eb4e1d7646b839cf142356e",
     "size_bytes": 26541158
   },
   "rpm_metadata": {}

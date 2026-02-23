@@ -3,7 +3,7 @@
   "artifact_type": "docker",
   "exporter": "frr_exporter",
   "version": "1.10.0",
-  "build_date": "2026-02-16T12:54:33.154281+00:00",
+  "build_date": "2026-02-23T04:28:02.091607+00:00",
   "status": "success",
   "images": [
     {
@@ -16,7 +16,7 @@
       "architectures": [
         "linux/amd64"
       ],
-      "created": "2026-02-16T12:54:33Z"
+      "created": "2026-02-23T04:28:01Z"
     }
   ]
 }

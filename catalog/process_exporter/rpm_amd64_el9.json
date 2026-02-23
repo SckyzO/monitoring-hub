@@ -5,13 +5,13 @@
   "version": "0.8.7",
   "arch": "amd64",
   "dist": "el9",
-  "build_date": "2026-02-16T13:21:01.387666+00:00",
+  "build_date": "2026-02-23T05:02:38.522211+00:00",
   "status": "success",
   "package": {
     "filename": "process_exporter-0.8.7-1.el9.x86_64.rpm",
     "url": "",
-    "sha256": "a5eae81db0c16446ebc25b4b728cf278dfe3a344d644c1d6a8b8bb504d10439d",
-    "size_bytes": 3695418
+    "sha256": "abd485243a8ac6a2f451d2178468ef1227fcef457809dab791c472a44d4df2dd",
+    "size_bytes": 3695448
   },
   "rpm_metadata": {}
 }

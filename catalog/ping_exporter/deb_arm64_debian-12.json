@@ -5,13 +5,13 @@
   "version": "1.2.0",
   "arch": "arm64",
   "dist": "debian-12",
-  "build_date": "2026-02-17T08:49:07.725020+00:00",
+  "build_date": "2026-02-23T04:39:41.027598+00:00",
   "status": "success",
   "package": {
     "filename": "ping-exporter_1.2.0-1_arm64.deb",
     "url": "",
-    "sha256": "c55c7aa1f9fd54910e0d59dcbd63a38f21541d977a4c91ec9d005ddaa51b6423",
-    "size_bytes": 11365262
+    "sha256": "74f722360111237e25d773c29a494166782ee8b63e7a744266bb21757421d2d8",
+    "size_bytes": 11365264
   },
   "deb_metadata": {}
 }

@@ -5,13 +5,13 @@
   "version": "2.5.1",
   "arch": "arm64",
   "dist": "el9",
-  "build_date": "2026-02-16T13:10:42.902257+00:00",
+  "build_date": "2026-02-23T04:51:52.275620+00:00",
   "status": "success",
   "package": {
     "filename": "ebpf_exporter-2.5.1-1.el9.aarch64.rpm",
     "url": "",
-    "sha256": "e2932a4c7c808b3ac1c220f1789c78cdc1bbfed908880d5c559f6ea46d16b425",
-    "size_bytes": 5566470
+    "sha256": "14ee7d0b6c6cd12c8e50fbfb329d4e766255fdb7773a13cffd9b993015128261",
+    "size_bytes": 5566483
   },
   "rpm_metadata": {}
 }
