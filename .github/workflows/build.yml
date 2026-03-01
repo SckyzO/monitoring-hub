@@ -380,7 +380,7 @@ jobs:
 
       - name: Upload Artifacts
         if: steps.check.outputs.enabled == 'true'
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: docker-${{ matrix.exporter }}
           path: build/**/docker.json
@@ -549,7 +549,7 @@ jobs:
           echo "::endgroup::"
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: rpm-${{ matrix.exporter }}-${{ matrix.arch }}-${{ matrix.dist }}
           path: |
@@ -722,7 +722,7 @@ jobs:
           echo "::endgroup::"
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: deb-${{ matrix.exporter }}-${{ matrix.arch }}-${{ matrix.dist }}
           path: |
@@ -771,7 +771,7 @@ jobs:
           fi
 
       - name: Upload Security Stats
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: security-stats
           path: security-stats.json
