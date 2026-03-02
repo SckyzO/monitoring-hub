@@ -3,7 +3,7 @@
   "artifact_type": "docker",
   "exporter": "ping_exporter",
   "version": "1.2.0",
-  "build_date": "2026-02-23T04:27:58.385199+00:00",
+  "build_date": "2026-03-02T04:17:48.184707+00:00",
   "status": "success",
   "images": [
     {
@@ -16,7 +16,7 @@
       "architectures": [
         "linux/amd64"
       ],
-      "created": "2026-02-23T04:27:58Z"
+      "created": "2026-03-02T04:17:48Z"
     }
   ]
 }

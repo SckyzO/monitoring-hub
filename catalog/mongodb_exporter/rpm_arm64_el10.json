@@ -1,0 +1,17 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "rpm",
+  "exporter": "mongodb_exporter",
+  "version": "0.49.0",
+  "arch": "arm64",
+  "dist": "el10",
+  "build_date": "2026-03-02T04:55:04.014983+00:00",
+  "status": "success",
+  "package": {
+    "filename": "mongodb_exporter-0.49.0-1.el10.aarch64.rpm",
+    "url": "",
+    "sha256": "c4d0ed1a39049e46c93db0dcc7c943398dc1f97e8da332b7ce87b16deadbbc67",
+    "size_bytes": 8182162
+  },
+  "rpm_metadata": {}
+}

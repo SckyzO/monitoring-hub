@@ -4,55 +4,55 @@
   "version": "1.10.2",
   "category": "System",
   "description": "Hardware and OS metrics exporter for Prometheus",
-  "last_updated": "2026-02-23T05:07:26.497881+00:00",
+  "last_updated": "2026-03-02T05:00:01.020780+00:00",
   "artifacts": {
     "rpm": {
-      "el10": {
+      "el8": {
         "amd64": {
           "status": "success",
-          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/node_exporter-1.10.2-1.el10.x86_64.rpm",
-          "size_bytes": 5237867,
-          "sha256": "df8798935a31d9f4ce46d7ac48f01113fb4a2f998cad760b30996155848c1bc6",
-          "build_date": "2026-02-23T05:01:38.106146+00:00"
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/node_exporter-1.10.2-1.el8.x86_64.rpm",
+          "size_bytes": 5383736,
+          "sha256": "20b406a4c4db2aac4a7554855144684ad1dfe9c526ec4aab51dbb99a8d3f7803",
+          "build_date": "2026-03-02T04:51:41.157515+00:00"
         },
+        "arm64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/node_exporter-1.10.2-1.el8.aarch64.rpm",
+          "size_bytes": 4610116,
+          "sha256": "3394823953a2477079e5af4df5bfaf4abbff8921e994864a85fa407b841da69e",
+          "build_date": "2026-03-02T04:57:49.697011+00:00"
+        }
+      },
+      "el10": {
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/node_exporter-1.10.2-1.el10.aarch64.rpm",
           "size_bytes": 4653013,
-          "sha256": "5baa142106833e179c2ffd0a0e209cbea3fe95fecbb0d9d276fcfbdf777004b4",
-          "build_date": "2026-02-23T04:56:06.795866+00:00"
-        }
-      },
-      "el8": {
-        "arm64": {
-          "status": "success",
-          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/node_exporter-1.10.2-1.el8.aarch64.rpm",
-          "size_bytes": 4610112,
-          "sha256": "96c73c509d150464b0b4d8a515a47fe43e486c7213bfc84702a401e8bb2818ef",
-          "build_date": "2026-02-23T05:07:26.497881+00:00"
+          "sha256": "391bc713ee52c616ab70a0723e20d0fd9b40a30a9cafce46e91fa6e6b431205a",
+          "build_date": "2026-03-02T04:54:26.350709+00:00"
         },
         "amd64": {
           "status": "success",
-          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/node_exporter-1.10.2-1.el8.x86_64.rpm",
-          "size_bytes": 5383732,
-          "sha256": "71deba329bae348d1872d3ae59ef6171ac896f829daab37f3bb65e4ab2fe45a3",
-          "build_date": "2026-02-23T05:01:43.012135+00:00"
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/node_exporter-1.10.2-1.el10.x86_64.rpm",
+          "size_bytes": 5237867,
+          "sha256": "8ba593ff14edae243fda1ba65ab28f881217800f529b03641a19a29c6cb8c864",
+          "build_date": "2026-03-02T04:47:07.719007+00:00"
         }
       },
       "el9": {
-        "amd64": {
-          "status": "success",
-          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/node_exporter-1.10.2-1.el9.x86_64.rpm",
-          "size_bytes": 5240869,
-          "sha256": "082ec9a4f499bd7342d655fd4052a82db1700b0ddb39e1cb7cdb3048e25bb2ce",
-          "build_date": "2026-02-23T05:03:34.800187+00:00"
-        },
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/node_exporter-1.10.2-1.el9.aarch64.rpm",
-          "size_bytes": 4652880,
-          "sha256": "b1f8a6f718c4c1e8bdfdfe5ebd86e9e9349f7de93fcc1c606032a20da11728f5",
-          "build_date": "2026-02-23T04:58:44.556121+00:00"
+          "size_bytes": 4652881,
+          "sha256": "82becc0833f215d353bb2540484a02c1940f9a9140e14df1afe0f21a8fdf4c94",
+          "build_date": "2026-03-02T05:00:01.020780+00:00"
+        },
+        "amd64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/node_exporter-1.10.2-1.el9.x86_64.rpm",
+          "size_bytes": 5241002,
+          "sha256": "11653518c56a8abc0e9f32101a34684ef5e6c2b334f844427fd249debc80f39e",
+          "build_date": "2026-03-02T04:47:14.399028+00:00"
         }
       }
     },
@@ -61,16 +61,16 @@
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/node-exporter_1.10.2-1_amd64.deb",
-          "size_bytes": 11634364,
-          "sha256": "37c5e33aa20aacc74843ab45fbc8f9c822418acdb02152a2d6fd9df6f2b6c253",
-          "build_date": "2026-02-23T04:34:02.841892+00:00"
+          "size_bytes": 11634362,
+          "sha256": "2c76cde5ad2bf839256e855bf1a352fcd5136856fff7d415152431fcdc97074e",
+          "build_date": "2026-03-02T04:20:08.907068+00:00"
         },
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/node-exporter_1.10.2-1_arm64.deb",
-          "size_bytes": 10656604,
-          "sha256": "14238ded0aca823044267b9724d798f950456260e35b890771422cb9105123fa",
-          "build_date": "2026-02-23T04:36:16.392325+00:00"
+          "size_bytes": 10656594,
+          "sha256": "e1064cbee649e7a50175756ef2e34a1801216bba882a727805d4f0c3014d4c4e",
+          "build_date": "2026-03-02T04:33:34.202206+00:00"
         }
       }
     },
@@ -87,10 +87,10 @@
           "architectures": [
             "linux/amd64"
           ],
-          "created": "2026-02-23T04:28:46Z"
+          "created": "2026-03-02T04:18:47Z"
         }
       ],
-      "build_date": "2026-02-23T04:28:47.089574+00:00"
+      "build_date": "2026-03-02T04:18:47.861505+00:00"
     }
   },
   "status": {

@@ -5,13 +5,13 @@
   "version": "0.19.1",
   "arch": "amd64",
   "dist": "debian-12",
-  "build_date": "2026-02-23T04:31:22.968378+00:00",
+  "build_date": "2026-03-02T04:27:37.172433+00:00",
   "status": "success",
   "package": {
     "filename": "nats-exporter_0.19.1-1_amd64.deb",
     "url": "",
-    "sha256": "25bc5f1c442429b14df26d6c98345edf1dda1b8c83d356fd49372f4d446cc330",
-    "size_bytes": 4106858
+    "sha256": "a938c51c7080e8bc5ac0fb7c3b6bdf3079f30caeb2e012d0d962d19b9b5dba11",
+    "size_bytes": 4106854
   },
   "deb_metadata": {}
 }

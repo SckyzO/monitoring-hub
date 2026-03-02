@@ -5,13 +5,13 @@
   "version": "0.7.0",
   "arch": "amd64",
   "dist": "el9",
-  "build_date": "2026-02-23T05:05:03.492616+00:00",
+  "build_date": "2026-03-02T04:53:13.297983+00:00",
   "status": "success",
   "package": {
     "filename": "json_exporter-0.7.0-1.el9.x86_64.rpm",
     "url": "",
-    "sha256": "cca63aefeb34c2290d453f653416f5189e3475d1ffd4b9580fe023551e82a0b2",
-    "size_bytes": 4380893
+    "sha256": "8b862667352aad8d2ae8d08f9c3c92270b0adf2c78ca647d15a853a2a50373ab",
+    "size_bytes": 4381518
   },
   "rpm_metadata": {}
 }

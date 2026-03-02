@@ -4,55 +4,55 @@
   "version": "1.2.0",
   "category": "Network",
   "description": "Prometheus exporter for ICMP ping metrics",
-  "last_updated": "2026-02-23T05:10:14.503397+00:00",
+  "last_updated": "2026-03-02T04:58:39.245607+00:00",
   "artifacts": {
     "rpm": {
-      "el10": {
-        "amd64": {
-          "status": "success",
-          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/ping_exporter-1.2.0-1.el10.x86_64.rpm",
-          "size_bytes": 9335460,
-          "sha256": "42a603aa861146ff645e060bd45d6a83a1f588d74a662b7aeb2f223550cff63b",
-          "build_date": "2026-02-23T05:00:45.076411+00:00"
-        },
-        "arm64": {
-          "status": "success",
-          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/ping_exporter-1.2.0-1.el10.aarch64.rpm",
-          "size_bytes": 8207648,
-          "sha256": "fcb9033064f2de4cd70ad11cd9ad5aa51eb496941820d5655587d1737322454d",
-          "build_date": "2026-02-23T05:07:30.918055+00:00"
-        }
-      },
       "el8": {
-        "arm64": {
-          "status": "success",
-          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/ping_exporter-1.2.0-1.el8.aarch64.rpm",
-          "size_bytes": 7942024,
-          "sha256": "04ac7aece5c0dd32c294cc30ea455f8b4ba2c319a5e339c945b61edc63d89d0f",
-          "build_date": "2026-02-23T05:00:47.038082+00:00"
-        },
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/ping_exporter-1.2.0-1.el8.x86_64.rpm",
           "size_bytes": 9365596,
-          "sha256": "eeb2e2fc5331db81731c622d00589ec141dc42b19193166d7ea861105ec87fa1",
-          "build_date": "2026-02-23T04:58:55.266519+00:00"
-        }
-      },
-      "el9": {
-        "amd64": {
-          "status": "success",
-          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/ping_exporter-1.2.0-1.el9.x86_64.rpm",
-          "size_bytes": 9335073,
-          "sha256": "e23d78cc9b54c0fb4252e9d7077cd00668d73052a228ab00c34db5030b24d679",
-          "build_date": "2026-02-23T05:03:17.173385+00:00"
+          "sha256": "5fc5dd10f88e64bcf7b2ea6633a5848d80c858c5739bbf6269831e6eff7636be",
+          "build_date": "2026-03-02T04:49:17.146925+00:00"
         },
         "arm64": {
           "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/ping_exporter-1.2.0-1.el8.aarch64.rpm",
+          "size_bytes": 7942024,
+          "sha256": "9464fb8f719401dba7bc046ac1965bce6491aa7ad65b961f101c84aa327df6df",
+          "build_date": "2026-03-02T04:53:20.606393+00:00"
+        }
+      },
+      "el10": {
+        "arm64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/ping_exporter-1.2.0-1.el10.aarch64.rpm",
+          "size_bytes": 8207648,
+          "sha256": "fe63e64edaf5ad60db532288d2a21f8eb3ad492881c29320f42ca4cd198b116d",
+          "build_date": "2026-03-02T04:52:55.002055+00:00"
+        },
+        "amd64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/ping_exporter-1.2.0-1.el10.x86_64.rpm",
+          "size_bytes": 9335460,
+          "sha256": "349ce5f22a54328a9c1e8c42685ad12126df274d55668045b1f412e9bc5f0d9a",
+          "build_date": "2026-03-02T04:51:33.103421+00:00"
+        }
+      },
+      "el9": {
+        "arm64": {
+          "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/ping_exporter-1.2.0-1.el9.aarch64.rpm",
-          "size_bytes": 8207411,
-          "sha256": "933570999d390cb591fc145ce9a74548c8a1d338af158d2b030b405bfa612b14",
-          "build_date": "2026-02-23T05:10:14.503397+00:00"
+          "size_bytes": 8207409,
+          "sha256": "49ebc1f822c7774acc2166711622ebd4f1f041bce2cb5e69f2936ad44acb012b",
+          "build_date": "2026-03-02T04:58:17.068409+00:00"
+        },
+        "amd64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/ping_exporter-1.2.0-1.el9.x86_64.rpm",
+          "size_bytes": 9335043,
+          "sha256": "6b910006759dea807317da527e986bce48495f5ba69f1032f2c9114cc51ae54e",
+          "build_date": "2026-03-02T04:58:39.245607+00:00"
         }
       }
     },
@@ -61,16 +61,16 @@
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/ping-exporter_1.2.0-1_amd64.deb",
-          "size_bytes": 12899066,
-          "sha256": "139e1bdae09b7c58272e92b93361f7a2840b2f4cb48bc5332e7e4990e00cce33",
-          "build_date": "2026-02-23T04:30:12.966385+00:00"
+          "size_bytes": 12899062,
+          "sha256": "f2117594451994a49570951ee052ca6a8dfddd67ba1dd5b15a52d39355b75e26",
+          "build_date": "2026-03-02T04:28:01.110865+00:00"
         },
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/ping-exporter_1.2.0-1_arm64.deb",
-          "size_bytes": 11365264,
-          "sha256": "74f722360111237e25d773c29a494166782ee8b63e7a744266bb21757421d2d8",
-          "build_date": "2026-02-23T04:39:41.027598+00:00"
+          "size_bytes": 11365260,
+          "sha256": "7319421d9ac8d05223472eebf50962dd4fdf87fb18ad948a7d160ae190b01045",
+          "build_date": "2026-03-02T04:30:36.868577+00:00"
         }
       }
     },
@@ -87,10 +87,10 @@
           "architectures": [
             "linux/amd64"
           ],
-          "created": "2026-02-23T04:27:58Z"
+          "created": "2026-03-02T04:17:48Z"
         }
       ],
-      "build_date": "2026-02-23T04:27:58.385199+00:00"
+      "build_date": "2026-03-02T04:17:48.184707+00:00"
     }
   },
   "status": {

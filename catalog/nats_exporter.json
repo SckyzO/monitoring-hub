@@ -4,55 +4,55 @@
   "version": "0.19.1",
   "category": "Messaging",
   "description": "NATS metrics exporter for Prometheus.",
-  "last_updated": "2026-02-23T05:09:37.835102+00:00",
+  "last_updated": "2026-03-02T04:57:28.963079+00:00",
   "artifacts": {
     "rpm": {
-      "el10": {
-        "amd64": {
-          "status": "success",
-          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/nats_exporter-0.19.1-1.el10.x86_64.rpm",
-          "size_bytes": 3468270,
-          "sha256": "091d057f78e833d0b91b352c73e24ab04411817b65209e900c6fbd1f136840ba",
-          "build_date": "2026-02-23T04:58:19.869206+00:00"
-        },
-        "arm64": {
-          "status": "success",
-          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/nats_exporter-0.19.1-1.el10.aarch64.rpm",
-          "size_bytes": 3092510,
-          "sha256": "7e3378184c709ea9368cd83f438e5eddd768351acf1014338297df70fbb77c56",
-          "build_date": "2026-02-23T05:02:05.568790+00:00"
-        }
-      },
       "el8": {
-        "arm64": {
-          "status": "success",
-          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/nats_exporter-0.19.1-1.el8.aarch64.rpm",
-          "size_bytes": 2998704,
-          "sha256": "9adedb2ac614f9ce1712e9d01d3bc7f94b7443c1fb95ddef3e33d79f8c3678d7",
-          "build_date": "2026-02-23T05:09:37.835102+00:00"
-        },
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/nats_exporter-0.19.1-1.el8.x86_64.rpm",
           "size_bytes": 3507444,
-          "sha256": "b39f1a833fe28ceece82b5735c547a03510d29097a39ed3ecc3b117336618245",
-          "build_date": "2026-02-23T04:56:23.693571+00:00"
+          "sha256": "6e3f3ff96ad0805e41801978921e58f58078e7a1f2ae66853f2ce818174c41d4",
+          "build_date": "2026-03-02T04:57:28.963079+00:00"
+        },
+        "arm64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/nats_exporter-0.19.1-1.el8.aarch64.rpm",
+          "size_bytes": 2998704,
+          "sha256": "52353cd2e6335695d4a11cd2eedef5ae4a92a01b5a6da25a73a2e8586632cda1",
+          "build_date": "2026-03-02T04:55:01.334237+00:00"
+        }
+      },
+      "el10": {
+        "arm64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/nats_exporter-0.19.1-1.el10.aarch64.rpm",
+          "size_bytes": 3092510,
+          "sha256": "cd85c99aef12b803638205309b69f8d8efa788c75811dbef2fcb01553b63ea06",
+          "build_date": "2026-03-02T04:48:38.953336+00:00"
+        },
+        "amd64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/nats_exporter-0.19.1-1.el10.x86_64.rpm",
+          "size_bytes": 3468270,
+          "sha256": "43dd85205a0d61f03a9e77aed08dfa7856ca5f2b11dd7ee0f74b5ebba68eb2ab",
+          "build_date": "2026-03-02T04:47:56.168909+00:00"
         }
       },
       "el9": {
-        "amd64": {
-          "status": "success",
-          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/nats_exporter-0.19.1-1.el9.x86_64.rpm",
-          "size_bytes": 3468206,
-          "sha256": "885f2049c5ef85d2777a42722eb6303366b4d05d16086bf051c18f7187c68304",
-          "build_date": "2026-02-23T04:53:09.132698+00:00"
-        },
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/nats_exporter-0.19.1-1.el9.aarch64.rpm",
           "size_bytes": 3092373,
-          "sha256": "2ca4401484481ab2a68ffed09bb8afecc8c428ccff82ff313401aca391fb821c",
-          "build_date": "2026-02-23T05:04:21.413538+00:00"
+          "sha256": "9dd4171b42fa45314199244c33d806b286472601afc8656577a22f74b61fc717",
+          "build_date": "2026-03-02T04:57:27.737119+00:00"
+        },
+        "amd64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/nats_exporter-0.19.1-1.el9.x86_64.rpm",
+          "size_bytes": 3468197,
+          "sha256": "858377edb0426801a8cea4c9b8423abb52feba751a4212b93403fda2290462f8",
+          "build_date": "2026-03-02T04:52:33.877873+00:00"
         }
       }
     },
@@ -61,16 +61,16 @@
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/nats-exporter_0.19.1-1_amd64.deb",
-          "size_bytes": 4106858,
-          "sha256": "25bc5f1c442429b14df26d6c98345edf1dda1b8c83d356fd49372f4d446cc330",
-          "build_date": "2026-02-23T04:31:22.968378+00:00"
+          "size_bytes": 4106854,
+          "sha256": "a938c51c7080e8bc5ac0fb7c3b6bdf3079f30caeb2e012d0d962d19b9b5dba11",
+          "build_date": "2026-03-02T04:27:37.172433+00:00"
         },
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/nats-exporter_0.19.1-1_arm64.deb",
-          "size_bytes": 3708574,
-          "sha256": "e780a609f386dd4b688164349db39f56690c54a118740c12e35067280f20fe6c",
-          "build_date": "2026-02-23T04:38:40.467400+00:00"
+          "size_bytes": 3708560,
+          "sha256": "457ea72063b192fc3d188f16c707887e718f3dba08a351e503d8a4eda374db92",
+          "build_date": "2026-03-02T04:25:32.162620+00:00"
         }
       }
     },
@@ -87,10 +87,10 @@
           "architectures": [
             "linux/amd64"
           ],
-          "created": "2026-02-23T04:27:54Z"
+          "created": "2026-03-02T04:18:51Z"
         }
       ],
-      "build_date": "2026-02-23T04:27:54.444721+00:00"
+      "build_date": "2026-03-02T04:18:51.115768+00:00"
     }
   },
   "status": {

@@ -1,0 +1,22 @@
+{
+  "format_version": "3.0",
+  "artifact_type": "docker",
+  "exporter": "mongodb_exporter",
+  "version": "0.49.0",
+  "build_date": "2026-03-02T04:18:39.640121+00:00",
+  "status": "success",
+  "images": [
+    {
+      "registry": "ghcr.io",
+      "repository": "SckyzO/monitoring-hub/mongodb_exporter",
+      "tags": [
+        "0.49.0",
+        "latest"
+      ],
+      "architectures": [
+        "linux/amd64"
+      ],
+      "created": "2026-03-02T04:18:39Z"
+    }
+  ]
+}

@@ -5,12 +5,12 @@
   "version": "2.5.1",
   "arch": "amd64",
   "dist": "el8",
-  "build_date": "2026-02-23T04:41:35.840263+00:00",
+  "build_date": "2026-03-02T04:35:01.397998+00:00",
   "status": "success",
   "package": {
     "filename": "ebpf_exporter-2.5.1-1.el8.x86_64.rpm",
     "url": "",
-    "sha256": "0311a1465c11769915a64f450365428b77938217575de642960b1f5613adae4e",
+    "sha256": "3201d239443ebccfbe8686c10547f93781d3bcf7c36824ea87a77d114b862073",
     "size_bytes": 6372868
   },
   "rpm_metadata": {}

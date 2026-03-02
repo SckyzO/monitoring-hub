@@ -3,7 +3,7 @@
   "artifact_type": "docker",
   "exporter": "prometheus",
   "version": "3.10.0",
-  "build_date": "2026-02-26T08:43:11.038609+00:00",
+  "build_date": "2026-03-02T04:18:04.629882+00:00",
   "status": "success",
   "images": [
     {
@@ -16,7 +16,7 @@
       "architectures": [
         "linux/amd64"
       ],
-      "created": "2026-02-26T08:43:10Z"
+      "created": "2026-03-02T04:18:04Z"
     }
   ]
 }

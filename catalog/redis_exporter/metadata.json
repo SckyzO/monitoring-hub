@@ -4,55 +4,55 @@
   "version": "1.81.0",
   "category": "Database",
   "description": "Prometheus exporter for Redis metrics",
-  "last_updated": "2026-02-23T05:08:44.819336+00:00",
+  "last_updated": "2026-03-02T04:59:42.264383+00:00",
   "artifacts": {
     "rpm": {
-      "el10": {
-        "amd64": {
-          "status": "success",
-          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/redis_exporter-1.81.0-1.el10.x86_64.rpm",
-          "size_bytes": 3290579,
-          "sha256": "da560fbb0fc18c312163ee7b00f071f269332d6330fa5158ee9a26fc81587701",
-          "build_date": "2026-02-23T05:02:37.303483+00:00"
-        },
-        "arm64": {
-          "status": "success",
-          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/redis_exporter-1.81.0-1.el10.aarch64.rpm",
-          "size_bytes": 2932087,
-          "sha256": "8c9137993f365b07eded3ca94dadef292a12fb4b33ac8504e5e00a2f824370bf",
-          "build_date": "2026-02-23T05:08:44.819336+00:00"
-        }
-      },
       "el8": {
-        "arm64": {
-          "status": "success",
-          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/redis_exporter-1.81.0-1.el8.aarch64.rpm",
-          "size_bytes": 2839896,
-          "sha256": "ffc2f8cf0940b5e1c5f6bdeb479ab326fefd77edcb3065506cc2ea159b225485",
-          "build_date": "2026-02-23T05:08:02.665616+00:00"
-        },
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/redis_exporter-1.81.0-1.el8.x86_64.rpm",
           "size_bytes": 3322828,
-          "sha256": "53bb27796498c14d2b958e198c18e3c9b3341051a3bca73b380c7616b589e279",
-          "build_date": "2026-02-23T04:55:49.002113+00:00"
-        }
-      },
-      "el9": {
-        "amd64": {
-          "status": "success",
-          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/redis_exporter-1.81.0-1.el9.x86_64.rpm",
-          "size_bytes": 3290420,
-          "sha256": "d9a629b4f133d1220102ab7b76dd5dc26f4ca277684c9fe12dda5a8b6ebb434b",
-          "build_date": "2026-02-23T05:07:18.794356+00:00"
+          "sha256": "8d3ed038cbd61a4fee22bbcd5dadd7350859bf00feb4c688f6e380a08baa483c",
+          "build_date": "2026-03-02T04:58:20.645868+00:00"
         },
         "arm64": {
           "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/redis_exporter-1.81.0-1.el8.aarch64.rpm",
+          "size_bytes": 2839900,
+          "sha256": "ffc0dd9f6a572fff58eee4c736758a16b87726e7cf2d2a7c1599aed1a78e914b",
+          "build_date": "2026-03-02T04:59:42.264383+00:00"
+        }
+      },
+      "el10": {
+        "arm64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/redis_exporter-1.81.0-1.el10.aarch64.rpm",
+          "size_bytes": 2932087,
+          "sha256": "d0e1b2ababf076ac72e5d99b52b2c849351e75189ed8d0b18d6d08d7a0fa948a",
+          "build_date": "2026-03-02T04:53:48.541959+00:00"
+        },
+        "amd64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/redis_exporter-1.81.0-1.el10.x86_64.rpm",
+          "size_bytes": 3290579,
+          "sha256": "867d946e50a0272fb90383c1406a3611135ecfe8304ac2875dad4b5600e1c336",
+          "build_date": "2026-03-02T04:58:51.046474+00:00"
+        }
+      },
+      "el9": {
+        "arm64": {
+          "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/redis_exporter-1.81.0-1.el9.aarch64.rpm",
-          "size_bytes": 2930456,
-          "sha256": "87176801d49bbf03602f5b1ac464866f75857ffd6278554ab4e70d4fd0a84573",
-          "build_date": "2026-02-23T05:04:07.414865+00:00"
+          "size_bytes": 2930396,
+          "sha256": "b1f22bb2240ec2b7eee85da16e39f5da80c3ee89173fff4ec71888f57d8c4555",
+          "build_date": "2026-03-02T04:50:12.104986+00:00"
+        },
+        "amd64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/redis_exporter-1.81.0-1.el9.x86_64.rpm",
+          "size_bytes": 3290369,
+          "sha256": "5bd554237091fe472b645cbab857a50e8c3e652f6e4ce9c11a5183c1a63d6f9e",
+          "build_date": "2026-03-02T04:56:14.023365+00:00"
         }
       }
     },
@@ -61,16 +61,16 @@
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/redis-exporter_1.81.0-1_amd64.deb",
-          "size_bytes": 3869632,
-          "sha256": "6163671bf91839b5ebfd3431d15dd07ae8bf3fb3958a1e6c692b003c9c096a02",
-          "build_date": "2026-02-23T04:31:03.288429+00:00"
+          "size_bytes": 3869628,
+          "sha256": "81fd3ad2c51556b63aa76b2b565e3e20585fbe2faaf743f666612142574858b5",
+          "build_date": "2026-03-02T04:30:12.910607+00:00"
         },
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/redis-exporter_1.81.0-1_arm64.deb",
-          "size_bytes": 3497028,
-          "sha256": "a3eff745e7be94b8c21a863b1b733fbfd345df74a8072ebf01f11ed9af0213a8",
-          "build_date": "2026-02-23T04:39:51.219650+00:00"
+          "size_bytes": 3497030,
+          "sha256": "de5b11a77ed3880ed086da1fa75029164092dfb94e97d4666280822341d63e26",
+          "build_date": "2026-03-02T04:36:37.805243+00:00"
         }
       }
     },
@@ -87,10 +87,10 @@
           "architectures": [
             "linux/amd64"
           ],
-          "created": "2026-02-23T04:29:05Z"
+          "created": "2026-03-02T04:18:36Z"
         }
       ],
-      "build_date": "2026-02-23T04:29:05.466931+00:00"
+      "build_date": "2026-03-02T04:18:36.190982+00:00"
     }
   },
   "status": {

@@ -5,13 +5,13 @@
   "version": "0.28.0",
   "arch": "amd64",
   "dist": "debian-12",
-  "build_date": "2026-02-23T04:35:18.803809+00:00",
+  "build_date": "2026-03-02T04:19:44.966628+00:00",
   "status": "success",
   "package": {
     "filename": "blackbox-exporter_0.28.0-1_amd64.deb",
     "url": "",
-    "sha256": "681f3b5effbfe28e99b96822b47a07ac1b93ef1078bd28d693bfe0043e8e7a7d",
-    "size_bytes": 16079826
+    "sha256": "4d7ffaa4d94c9ac73380cc5d13af362fb2295f3910552c5b594d96fc1753272f",
+    "size_bytes": 16079818
   },
   "deb_metadata": {}
 }

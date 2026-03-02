@@ -5,13 +5,13 @@
   "version": "0.1.4",
   "arch": "amd64",
   "dist": "el9",
-  "build_date": "2026-02-23T05:04:54.706676+00:00",
+  "build_date": "2026-03-02T05:00:06.063554+00:00",
   "status": "success",
   "package": {
     "filename": "textfile_exporter-0.1.4-1.el9.x86_64.rpm",
     "url": "",
-    "sha256": "820affd17f3fe8c16ea787cb977e8003efcf4d54313d93f1af1ebfc9ddeeed6c",
-    "size_bytes": 3108862
+    "sha256": "12014a0b9b7b597acd4cb2bee9d7dde1daaa44ae412db19d073eb93815999dc1",
+    "size_bytes": 3108761
   },
   "rpm_metadata": {}
 }

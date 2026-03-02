@@ -5,13 +5,13 @@
   "version": "1.10.2",
   "arch": "arm64",
   "dist": "el8",
-  "build_date": "2026-02-23T05:07:26.497881+00:00",
+  "build_date": "2026-03-02T04:57:49.697011+00:00",
   "status": "success",
   "package": {
     "filename": "node_exporter-1.10.2-1.el8.aarch64.rpm",
     "url": "",
-    "sha256": "96c73c509d150464b0b4d8a515a47fe43e486c7213bfc84702a401e8bb2818ef",
-    "size_bytes": 4610112
+    "sha256": "3394823953a2477079e5af4df5bfaf4abbff8921e994864a85fa407b841da69e",
+    "size_bytes": 4610116
   },
   "rpm_metadata": {}
 }

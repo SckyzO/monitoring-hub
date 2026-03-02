@@ -5,13 +5,13 @@
   "version": "1.10.0",
   "arch": "arm64",
   "dist": "debian-12",
-  "build_date": "2026-02-23T04:38:15.408582+00:00",
+  "build_date": "2026-03-02T04:26:31.590343+00:00",
   "status": "success",
   "package": {
     "filename": "frr-exporter_1.10.0-1_arm64.deb",
     "url": "",
-    "sha256": "d80725c04397885b5fc366cf3267f2d46e1a82e9411add0e2c83df4938e25050",
-    "size_bytes": 8611198
+    "sha256": "c349b0210f100d73fccf025311a91a7c38df909b684ae1a12f34693f888f6d85",
+    "size_bytes": 8611188
   },
   "deb_metadata": {}
 }

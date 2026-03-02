@@ -5,13 +5,13 @@
   "version": "1.13.13",
   "arch": "amd64",
   "dist": "debian-12",
-  "build_date": "2026-02-23T04:31:58.168352+00:00",
+  "build_date": "2026-03-02T04:21:53.847084+00:00",
   "status": "success",
   "package": {
     "filename": "dellhw-exporter_1.13.13-1_amd64.deb",
     "url": "",
-    "sha256": "d62d5f98ab6d79b51f0b703953c49b612bd50bb895aacb87fa3f3d56dbb63dbd",
-    "size_bytes": 3851330
+    "sha256": "d03ddcfe836b83e235a0b3f9df521fc19e153797bdaea7a20ac7b2f11031aabf",
+    "size_bytes": 3851306
   },
   "deb_metadata": {}
 }

@@ -5,13 +5,13 @@
   "version": "0.8.0",
   "arch": "amd64",
   "dist": "debian-12",
-  "build_date": "2026-02-23T04:31:23.188878+00:00",
+  "build_date": "2026-03-02T04:21:14.843562+00:00",
   "status": "success",
   "package": {
     "filename": "bind-exporter_0.8.0-1_amd64.deb",
     "url": "",
-    "sha256": "4392a8632a4cd5cee7fc71d0cdc0bc68a7d9b21f10faeac3d46849e3d97ff106",
-    "size_bytes": 9515604
+    "sha256": "5d25a3e983fb2e2c21efcdeb84a08372a3a4c5c3c8391d89f4eff86c0b042fe7",
+    "size_bytes": 9515606
   },
   "deb_metadata": {}
 }

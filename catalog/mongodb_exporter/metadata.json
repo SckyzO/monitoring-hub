@@ -1,0 +1,101 @@
+{
+  "format_version": "3.0",
+  "exporter": "mongodb_exporter",
+  "version": "0.49.0",
+  "category": "Database",
+  "description": "MongoDB exporter for Prometheus.",
+  "last_updated": "2026-03-02T05:00:33.171419+00:00",
+  "artifacts": {
+    "rpm": {
+      "el8": {
+        "amd64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/mongodb_exporter-0.49.0-1.el8.x86_64.rpm",
+          "size_bytes": 9380572,
+          "sha256": "e3bfaacdcb2091e2ab3b70e30c47c9890e493fb996728b86e40a452c483b2612",
+          "build_date": "2026-03-02T04:53:49.361349+00:00"
+        },
+        "arm64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/mongodb_exporter-0.49.0-1.el8.aarch64.rpm",
+          "size_bytes": 8046700,
+          "sha256": "ce26859f0ec88293a92803b0c789e05c57e9bfe5b873a88270bc4dad09ea73e4",
+          "build_date": "2026-03-02T04:54:43.415011+00:00"
+        }
+      },
+      "el10": {
+        "arm64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/mongodb_exporter-0.49.0-1.el10.aarch64.rpm",
+          "size_bytes": 8182162,
+          "sha256": "c4d0ed1a39049e46c93db0dcc7c943398dc1f97e8da332b7ce87b16deadbbc67",
+          "build_date": "2026-03-02T04:55:04.014983+00:00"
+        },
+        "amd64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/mongodb_exporter-0.49.0-1.el10.x86_64.rpm",
+          "size_bytes": 9192073,
+          "sha256": "cb504768346b4b2bb74472251fabcd6e2c028c295d89f81ac055974115e48fe4",
+          "build_date": "2026-03-02T04:48:50.033589+00:00"
+        }
+      },
+      "el9": {
+        "arm64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/mongodb_exporter-0.49.0-1.el9.aarch64.rpm",
+          "size_bytes": 8182031,
+          "sha256": "81970f1f2b1ba2f1b9d32ea30d37439c824b9283aec68a0bbe126c7c81049f2e",
+          "build_date": "2026-03-02T05:00:33.171419+00:00"
+        },
+        "amd64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/mongodb_exporter-0.49.0-1.el9.x86_64.rpm",
+          "size_bytes": 9192270,
+          "sha256": "ddd0d4838bf81d36c4a9b3b1504ac13cf04ac8d14dbd65a606bf0c68857872bf",
+          "build_date": "2026-03-02T04:43:35.313632+00:00"
+        }
+      }
+    },
+    "deb": {
+      "debian-12": {
+        "amd64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/mongodb-exporter_0.49.0-1_amd64.deb",
+          "size_bytes": 11691818,
+          "sha256": "a7e6d40965fbd6546280c29ef894b1baf322235ea63837c03987398e801f3562",
+          "build_date": "2026-03-02T04:19:52.026553+00:00"
+        },
+        "arm64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/mongodb-exporter_0.49.0-1_arm64.deb",
+          "size_bytes": 10537044,
+          "sha256": "81635c877b45438cf7643e3c59728fc749c33f2363a788155adf0453d3563a50",
+          "build_date": "2026-03-02T04:35:50.173777+00:00"
+        }
+      }
+    },
+    "docker": {
+      "status": "success",
+      "images": [
+        {
+          "registry": "ghcr.io",
+          "repository": "SckyzO/monitoring-hub/mongodb_exporter",
+          "tags": [
+            "0.49.0",
+            "latest"
+          ],
+          "architectures": [
+            "linux/amd64"
+          ],
+          "created": "2026-03-02T04:18:39Z"
+        }
+      ],
+      "build_date": "2026-03-02T04:18:39.640121+00:00"
+    }
+  },
+  "status": {
+    "rpm": "success",
+    "deb": "success",
+    "docker": "success"
+  }
+}
