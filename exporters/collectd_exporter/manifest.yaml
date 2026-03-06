@@ -1,7 +1,7 @@
 name: collectd_exporter
 description: Relay metrics from collectd to Prometheus.
 category: System
-version: v0.7.0
+version: "v0.7.1"
 new: true
 updated: false
 upstream:
