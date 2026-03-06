@@ -2,16 +2,16 @@
   "format_version": "3.0",
   "artifact_type": "rpm",
   "exporter": "collectd_exporter",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "arch": "arm64",
   "dist": "el10",
-  "build_date": "2026-03-02T04:40:01.629809+00:00",
+  "build_date": "2026-03-06T08:36:06.195735+00:00",
   "status": "success",
   "package": {
-    "filename": "collectd_exporter-0.7.0-1.el10.aarch64.rpm",
+    "filename": "collectd_exporter-0.7.1-1.el10.aarch64.rpm",
     "url": "",
-    "sha256": "e11c9f46e89e706f0510037d03e5628da2404d9d616119ac1f530dba5204f688",
-    "size_bytes": 3492420
+    "sha256": "2cb7f3d687d5175139922717f32f8a09e4598c5c1826a2a0618908ca32486f8f",
+    "size_bytes": 3676829
   },
   "rpm_metadata": {}
 }

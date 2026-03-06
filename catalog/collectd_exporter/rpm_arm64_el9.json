@@ -2,16 +2,16 @@
   "format_version": "3.0",
   "artifact_type": "rpm",
   "exporter": "collectd_exporter",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "arch": "arm64",
   "dist": "el9",
-  "build_date": "2026-03-02T04:37:33.796423+00:00",
+  "build_date": "2026-03-06T08:37:52.739033+00:00",
   "status": "success",
   "package": {
-    "filename": "collectd_exporter-0.7.0-1.el9.aarch64.rpm",
+    "filename": "collectd_exporter-0.7.1-1.el9.aarch64.rpm",
     "url": "",
-    "sha256": "4892920396a554bde26c93b5475b765f2c6d68f5ae2b5827099b33f49552bd77",
-    "size_bytes": 3492348
+    "sha256": "871bf467c9a03edf331b0a6951a5f2cefbb0680884b329c8999614599c0cdaec",
+    "size_bytes": 3676699
   },
   "rpm_metadata": {}
 }

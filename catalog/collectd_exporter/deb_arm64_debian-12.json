@@ -2,16 +2,16 @@
   "format_version": "3.0",
   "artifact_type": "deb",
   "exporter": "collectd_exporter",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "arch": "arm64",
   "dist": "debian-12",
-  "build_date": "2026-03-02T04:28:33.698887+00:00",
+  "build_date": "2026-03-06T08:40:57.517186+00:00",
   "status": "success",
   "package": {
-    "filename": "collectd-exporter_0.7.0-1_arm64.deb",
+    "filename": "collectd-exporter_0.7.1-1_arm64.deb",
     "url": "",
-    "sha256": "95bc3f467b1b2f673818f1fd1ae3f2246310c25ea8fd9789140787be743d55c5",
-    "size_bytes": 8288106
+    "sha256": "2fac79338193afb6c8e510786103c010f8cbe945cb696fec9547dbae7f2a9bd5",
+    "size_bytes": 8419864
   },
   "deb_metadata": {}
 }
