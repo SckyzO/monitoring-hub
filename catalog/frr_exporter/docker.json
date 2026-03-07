@@ -2,21 +2,21 @@
   "format_version": "3.0",
   "artifact_type": "docker",
   "exporter": "frr_exporter",
-  "version": "1.10.0",
-  "build_date": "2026-03-02T04:17:52.669661+00:00",
+  "version": "1.10.1",
+  "build_date": "2026-03-07T08:26:41.659687+00:00",
   "status": "success",
   "images": [
     {
       "registry": "ghcr.io",
       "repository": "SckyzO/monitoring-hub/frr_exporter",
       "tags": [
-        "1.10.0",
+        "1.10.1",
         "latest"
       ],
       "architectures": [
         "linux/amd64"
       ],
-      "created": "2026-03-02T04:17:52Z"
+      "created": "2026-03-07T08:26:41Z"
     }
   ]
 }

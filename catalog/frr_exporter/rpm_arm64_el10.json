@@ -2,16 +2,16 @@
   "format_version": "3.0",
   "artifact_type": "rpm",
   "exporter": "frr_exporter",
-  "version": "1.10.0",
+  "version": "1.10.1",
   "arch": "arm64",
   "dist": "el10",
-  "build_date": "2026-03-02T04:45:38.186545+00:00",
+  "build_date": "2026-03-07T08:28:44.313408+00:00",
   "status": "success",
   "package": {
-    "filename": "frr_exporter-1.10.0-1.el10.aarch64.rpm",
+    "filename": "frr_exporter-1.10.1-1.el10.aarch64.rpm",
     "url": "",
-    "sha256": "29a6d10ffee351f333db3d542903d17f2d1f29c095c35cc0cdde7ccf3bcc574e",
-    "size_bytes": 3768352
+    "sha256": "1495d9dace3e0266a23937553ef62128bc087981166a8f0783d5be5272c58250",
+    "size_bytes": 3766016
   },
   "rpm_metadata": {}
 }
