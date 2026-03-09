@@ -5,12 +5,12 @@
   "version": "1.7.0",
   "arch": "amd64",
   "dist": "el10",
-  "build_date": "2026-03-02T04:38:28.604024+00:00",
+  "build_date": "2026-03-09T04:48:36.473484+00:00",
   "status": "success",
   "package": {
     "filename": "keepalived_exporter-1.7.0-1.el10.x86_64.rpm",
     "url": "",
-    "sha256": "23b3b2d64cce6d9e7c5875e8e2944ff3acc8dfeae447b7b63b4654c15a964130",
+    "sha256": "eceff32553a9944d73ddbf79a668b90e72a709039e876eb6a73e703f0054ac12",
     "size_bytes": 3453423
   },
   "rpm_metadata": {}

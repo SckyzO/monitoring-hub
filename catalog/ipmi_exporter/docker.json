@@ -3,7 +3,7 @@
   "artifact_type": "docker",
   "exporter": "ipmi_exporter",
   "version": "1.10.1",
-  "build_date": "2026-03-02T04:17:57.148864+00:00",
+  "build_date": "2026-03-09T04:21:54.744419+00:00",
   "status": "success",
   "images": [
     {
@@ -16,7 +16,7 @@
       "architectures": [
         "linux/amd64"
       ],
-      "created": "2026-03-02T04:17:57Z"
+      "created": "2026-03-09T04:21:54Z"
     }
   ]
 }

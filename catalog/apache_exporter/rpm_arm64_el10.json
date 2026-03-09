@@ -5,12 +5,12 @@
   "version": "1.0.12",
   "arch": "arm64",
   "dist": "el10",
-  "build_date": "2026-03-02T04:39:50.165794+00:00",
+  "build_date": "2026-03-09T04:37:30.752134+00:00",
   "status": "success",
   "package": {
     "filename": "apache_exporter-1.0.12-1.el10.aarch64.rpm",
     "url": "",
-    "sha256": "e465314cb3a12ebfbaa05c3f4ea439aac929dc5af26dbaf9621eb399c4dcc061",
+    "sha256": "c8b022fb233f14836bdc8a16c3a6affbbce367e1cb642e1287df9e1e99504212",
     "size_bytes": 3724389
   },
   "rpm_metadata": {}

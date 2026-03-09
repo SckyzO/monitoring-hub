@@ -3,7 +3,7 @@
   "artifact_type": "docker",
   "exporter": "json_exporter",
   "version": "0.7.0",
-  "build_date": "2026-03-02T04:18:40.369327+00:00",
+  "build_date": "2026-03-09T04:21:56.666515+00:00",
   "status": "success",
   "images": [
     {
@@ -16,7 +16,7 @@
       "architectures": [
         "linux/amd64"
       ],
-      "created": "2026-03-02T04:18:40Z"
+      "created": "2026-03-09T04:21:56Z"
     }
   ]
 }

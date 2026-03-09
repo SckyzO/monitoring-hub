@@ -5,13 +5,13 @@
   "version": "0.7.0",
   "arch": "amd64",
   "dist": "debian-12",
-  "build_date": "2026-03-02T04:27:48.824481+00:00",
+  "build_date": "2026-03-09T04:31:28.268149+00:00",
   "status": "success",
   "package": {
     "filename": "json-exporter_0.7.0-1_amd64.deb",
     "url": "",
-    "sha256": "4f997cf092e93b3fb1c2ff37492853165d00c607621820902d0d09ecc847175d",
-    "size_bytes": 10197112
+    "sha256": "a03c38556422071e38bcecaa2c81912957ef59fb762dea6d78b3cdfa172cee5f",
+    "size_bytes": 10197122
   },
   "deb_metadata": {}
 }

@@ -3,7 +3,7 @@
   "artifact_type": "docker",
   "exporter": "iperf3_exporter",
   "version": "1.3.1",
-  "build_date": "2026-03-02T04:18:56.832044+00:00",
+  "build_date": "2026-03-09T04:22:40.353634+00:00",
   "status": "success",
   "images": [
     {
@@ -16,7 +16,7 @@
       "architectures": [
         "linux/amd64"
       ],
-      "created": "2026-03-02T04:18:56Z"
+      "created": "2026-03-09T04:22:40Z"
     }
   ]
 }

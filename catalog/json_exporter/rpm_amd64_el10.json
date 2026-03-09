@@ -5,12 +5,12 @@
   "version": "0.7.0",
   "arch": "amd64",
   "dist": "el10",
-  "build_date": "2026-03-02T04:51:31.157758+00:00",
+  "build_date": "2026-03-09T04:46:42.078129+00:00",
   "status": "success",
   "package": {
     "filename": "json_exporter-0.7.0-1.el10.x86_64.rpm",
     "url": "",
-    "sha256": "2944c9e304d90504754c60a76dc6c27067b6f6e5327686757c66570510ada3d7",
+    "sha256": "b8f44e1f7a51259fb48706652d9e1b9425fb5cd5161108f54558245bb8c76db5",
     "size_bytes": 4381312
   },
   "rpm_metadata": {}

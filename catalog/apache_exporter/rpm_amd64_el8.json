@@ -5,12 +5,12 @@
   "version": "1.0.12",
   "arch": "amd64",
   "dist": "el8",
-  "build_date": "2026-03-02T04:36:46.296614+00:00",
+  "build_date": "2026-03-09T04:38:03.684255+00:00",
   "status": "success",
   "package": {
     "filename": "apache_exporter-1.0.12-1.el8.x86_64.rpm",
     "url": "",
-    "sha256": "1cd3bda221d0ae6f34cc68a6c147c72af75ec30f5333c891a9dd1099ab277828",
+    "sha256": "0e5c1fb8b1273a79f412c71393863768591b125bd11c98536c81fdd0dc652490",
     "size_bytes": 4282744
   },
   "rpm_metadata": {}

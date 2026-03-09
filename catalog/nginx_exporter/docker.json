@@ -3,7 +3,7 @@
   "artifact_type": "docker",
   "exporter": "nginx_exporter",
   "version": "1.5.1",
-  "build_date": "2026-03-02T04:18:48.832124+00:00",
+  "build_date": "2026-03-09T04:22:03.455926+00:00",
   "status": "success",
   "images": [
     {
@@ -16,7 +16,7 @@
       "architectures": [
         "linux/amd64"
       ],
-      "created": "2026-03-02T04:18:48Z"
+      "created": "2026-03-09T04:22:03Z"
     }
   ]
 }

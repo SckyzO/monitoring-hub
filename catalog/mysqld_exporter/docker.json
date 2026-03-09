@@ -3,7 +3,7 @@
   "artifact_type": "docker",
   "exporter": "mysqld_exporter",
   "version": "0.18.0",
-  "build_date": "2026-03-02T04:18:03.385953+00:00",
+  "build_date": "2026-03-09T04:21:45.516007+00:00",
   "status": "success",
   "images": [
     {
@@ -16,7 +16,7 @@
       "architectures": [
         "linux/amd64"
       ],
-      "created": "2026-03-02T04:18:03Z"
+      "created": "2026-03-09T04:21:45Z"
     }
   ]
 }

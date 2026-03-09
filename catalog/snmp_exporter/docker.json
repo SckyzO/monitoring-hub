@@ -3,7 +3,7 @@
   "artifact_type": "docker",
   "exporter": "snmp_exporter",
   "version": "0.30.1",
-  "build_date": "2026-03-02T04:18:53.092455+00:00",
+  "build_date": "2026-03-09T04:22:03.080103+00:00",
   "status": "success",
   "images": [
     {
@@ -16,7 +16,7 @@
       "architectures": [
         "linux/amd64"
       ],
-      "created": "2026-03-02T04:18:52Z"
+      "created": "2026-03-09T04:22:02Z"
     }
   ]
 }

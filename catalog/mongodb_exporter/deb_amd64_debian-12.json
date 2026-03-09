@@ -5,13 +5,13 @@
   "version": "0.49.0",
   "arch": "amd64",
   "dist": "debian-12",
-  "build_date": "2026-03-02T04:19:52.026553+00:00",
+  "build_date": "2026-03-09T04:25:11.566738+00:00",
   "status": "success",
   "package": {
     "filename": "mongodb-exporter_0.49.0-1_amd64.deb",
     "url": "",
-    "sha256": "a7e6d40965fbd6546280c29ef894b1baf322235ea63837c03987398e801f3562",
-    "size_bytes": 11691818
+    "sha256": "94f1947deb7d3007e57e6d8129dd0de0672a75778f80a508bb090bcff44f7cf8",
+    "size_bytes": 11691816
   },
   "deb_metadata": {}
 }
