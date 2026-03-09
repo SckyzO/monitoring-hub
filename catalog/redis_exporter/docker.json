@@ -2,21 +2,21 @@
   "format_version": "3.0",
   "artifact_type": "docker",
   "exporter": "redis_exporter",
-  "version": "1.81.0",
-  "build_date": "2026-03-09T04:22:45.222282+00:00",
+  "version": "1.82.0",
+  "build_date": "2026-03-09T08:40:24.740887+00:00",
   "status": "success",
   "images": [
     {
       "registry": "ghcr.io",
       "repository": "SckyzO/monitoring-hub/redis_exporter",
       "tags": [
-        "1.81.0",
+        "1.82.0",
         "latest"
       ],
       "architectures": [
         "linux/amd64"
       ],
-      "created": "2026-03-09T04:22:45Z"
+      "created": "2026-03-09T08:40:24Z"
     }
   ]
 }
