@@ -5,13 +5,13 @@
   "version": "0.15.5",
   "arch": "amd64",
   "dist": "el8",
-  "build_date": "2026-03-09T04:45:11.003935+00:00",
+  "build_date": "2026-03-16T05:16:50.898226+00:00",
   "status": "success",
   "package": {
     "filename": "memcached_exporter-0.15.5-1.el8.x86_64.rpm",
     "url": "",
-    "sha256": "58caaad4c23e480c32b2b11463d48809101ff090cae0f344e5380876399364eb",
-    "size_bytes": 4158516
+    "sha256": "ba2337a80c4fc7f83faa95b0c3306f6ab0ca8370c20e5a1a1e7ebefac5de71e1",
+    "size_bytes": 4158520
   },
   "rpm_metadata": {}
 }

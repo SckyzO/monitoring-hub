@@ -4,7 +4,7 @@
   "version": "3.10.0",
   "category": "Infrastructure",
   "description": "The Prometheus monitoring system and time series database.",
-  "last_updated": "2026-03-09T05:09:43.862500+00:00",
+  "last_updated": "2026-03-16T05:27:19.515153+00:00",
   "artifacts": {
     "rpm": {
       "el8": {
@@ -12,15 +12,15 @@
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/prometheus-3.10.0-1.el8.x86_64.rpm",
           "size_bytes": 31606288,
-          "sha256": "1a44a332219d53423b5c191493b5339b6b76bc7f4c8016ad893a3655eabde2a1",
-          "build_date": "2026-03-09T05:03:53.109188+00:00"
+          "sha256": "b0ef0de488d45329400812edc557e5c5efd387aa9fbe84d7e40f3e275e6569a9",
+          "build_date": "2026-03-16T05:13:51.765105+00:00"
         },
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/prometheus-3.10.0-1.el8.aarch64.rpm",
-          "size_bytes": 27720548,
-          "sha256": "3a60150e07210f1a717be7db3e4b64cd1527ee56291bea077acd0ba37dd1f77d",
-          "build_date": "2026-03-09T05:09:43.862500+00:00"
+          "size_bytes": 27720552,
+          "sha256": "4ad20827f55316fff002d87facaf597c1b30e8d92916c81a4d20bfb879635837",
+          "build_date": "2026-03-16T05:23:18.083975+00:00"
         }
       },
       "el10": {
@@ -28,31 +28,31 @@
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/prometheus-3.10.0-1.el10.aarch64.rpm",
           "size_bytes": 28538405,
-          "sha256": "46be3b4745d284fc16de1ee4127128470fecd55544cc43d550f3f51a19b6b69b",
-          "build_date": "2026-03-09T04:59:43.345173+00:00"
+          "sha256": "2a450ee10f5fed2affd8bec12a2413a76ff92e6ef5da39595881dd20273e0ca8",
+          "build_date": "2026-03-16T05:27:19.515153+00:00"
         },
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/prometheus-3.10.0-1.el10.x86_64.rpm",
           "size_bytes": 31709777,
-          "sha256": "1125189c5921513f22ccfdc1627fbfb7083a811818f45d7829a431c878cbd11f",
-          "build_date": "2026-03-09T05:00:40.086014+00:00"
+          "sha256": "02f882b247fac91824e8c698caf2800006e423b00c7c21213bbbe929af50ae2c",
+          "build_date": "2026-03-16T05:26:06.441118+00:00"
         }
       },
       "el9": {
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/prometheus-3.10.0-1.el9.aarch64.rpm",
-          "size_bytes": 28538183,
-          "sha256": "dd892dc402057524639d48ed9d088d4849b85412dfcc9c065afea60368be8dce",
-          "build_date": "2026-03-09T05:02:41.858534+00:00"
+          "size_bytes": 28538184,
+          "sha256": "aeeb447c3b4eda8d31d9026603d6d90a2a331d90ff0f5bf53474aeb8cfe2879e",
+          "build_date": "2026-03-16T05:26:31.317390+00:00"
         },
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/prometheus-3.10.0-1.el9.x86_64.rpm",
-          "size_bytes": 31708236,
-          "sha256": "243b1154313f34fd5a2d4743f3295866dbf7ba8c59697b88049e45b512d3297b",
-          "build_date": "2026-03-09T04:54:54.821074+00:00"
+          "size_bytes": 31708185,
+          "sha256": "3607a54409a6fc1969065e6fcb4920e9a0075d9e7740239515428863159d1c58",
+          "build_date": "2026-03-16T05:22:03.071065+00:00"
         }
       }
     },
@@ -61,16 +61,16 @@
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/prometheus_3.10.0-1_amd64.deb",
-          "size_bytes": 140208114,
-          "sha256": "c3a1373ae581bfb2154c0aea9768f3474c5ed98ae01620aa2c05458e916e4361",
-          "build_date": "2026-03-09T04:35:55.571557+00:00"
+          "size_bytes": 140208112,
+          "sha256": "f73b8ce90621ce24d176bac4101971fc67fbfa515adf36ac0f6c8657ceb90a9f",
+          "build_date": "2026-03-16T04:56:13.738590+00:00"
         },
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/prometheus_3.10.0-1_arm64.deb",
-          "size_bytes": 129208950,
-          "sha256": "dfe298f1e6e378ddcf977a4b7aa34b283d09fa21809248c599bf3f32ba8b605b",
-          "build_date": "2026-03-09T04:38:16.902187+00:00"
+          "size_bytes": 129208982,
+          "sha256": "7b3aacae53121199850e2d45ec92db45e206cc98a58ccc900b7a0ca8f451038e",
+          "build_date": "2026-03-16T05:08:14.781704+00:00"
         }
       }
     },
@@ -87,10 +87,10 @@
           "architectures": [
             "linux/amd64"
           ],
-          "created": "2026-03-09T04:23:16Z"
+          "created": "2026-03-16T04:43:36Z"
         }
       ],
-      "build_date": "2026-03-09T04:23:16.564293+00:00"
+      "build_date": "2026-03-16T04:43:36.694572+00:00"
     }
   },
   "status": {

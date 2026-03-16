@@ -5,13 +5,13 @@
   "version": "0.18.0",
   "arch": "amd64",
   "dist": "debian-12",
-  "build_date": "2026-03-09T04:26:10.757954+00:00",
+  "build_date": "2026-03-16T04:55:29.158810+00:00",
   "status": "success",
   "package": {
     "filename": "mysqld-exporter_0.18.0-1_amd64.deb",
     "url": "",
-    "sha256": "c8ea8bbbded40fdb145137ee7f9897947fa3fb7dcf64fbb0c17f007fbd0df898",
-    "size_bytes": 9593566
+    "sha256": "45720d248de049ed33b5cfb39c05470285ed4d768e4d2ea62b8793ba458afebb",
+    "size_bytes": 9593578
   },
   "deb_metadata": {}
 }

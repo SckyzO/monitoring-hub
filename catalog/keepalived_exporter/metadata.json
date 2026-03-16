@@ -4,23 +4,23 @@
   "version": "1.7.0",
   "category": "Network",
   "description": "Prometheus exporter for Keepalived metrics.",
-  "last_updated": "2026-03-09T05:02:48.965331+00:00",
+  "last_updated": "2026-03-16T05:18:28.909428+00:00",
   "artifacts": {
     "rpm": {
       "el8": {
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/keepalived_exporter-1.7.0-1.el8.x86_64.rpm",
-          "size_bytes": 3488228,
-          "sha256": "6429a4cdead067c9c0d4019b5dbf20f96eccbd7878e60c5aba884798af1cdb8f",
-          "build_date": "2026-03-09T04:45:58.269164+00:00"
+          "size_bytes": 3488232,
+          "sha256": "1d0a1bb52382ff88bfb8bebe612c0a424c9ad03c21845996bcf9b0ab3d57f53f",
+          "build_date": "2026-03-16T05:08:21.776766+00:00"
         },
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/keepalived_exporter-1.7.0-1.el8.aarch64.rpm",
           "size_bytes": 3001760,
-          "sha256": "848a8a969e08788e8dc89c6b4311cced259c70c7b70853e0951b54137c99fd30",
-          "build_date": "2026-03-09T05:02:48.965331+00:00"
+          "sha256": "f2ec5f082ad4c7a0562a4534282fea86d0fd5dbbd906b9e6fc269b85a9a21832",
+          "build_date": "2026-03-16T05:18:09.087114+00:00"
         }
       },
       "el10": {
@@ -28,15 +28,15 @@
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/keepalived_exporter-1.7.0-1.el10.aarch64.rpm",
           "size_bytes": 3092274,
-          "sha256": "13f4a5378dfa977f65826364e13c06cbb7350cdc5d4be1ba8f3baf3ee7f6b496",
-          "build_date": "2026-03-09T04:48:35.531800+00:00"
+          "sha256": "11c928ce8fb53c5125afb55f337e5126c523fad68db6da1492e65487b0656aca",
+          "build_date": "2026-03-16T05:18:28.909428+00:00"
         },
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/keepalived_exporter-1.7.0-1.el10.x86_64.rpm",
           "size_bytes": 3453423,
-          "sha256": "eceff32553a9944d73ddbf79a668b90e72a709039e876eb6a73e703f0054ac12",
-          "build_date": "2026-03-09T04:48:36.473484+00:00"
+          "sha256": "69debe22471582ff9fbee71337e661da3b7fc27e2042980019d18106fec15a49",
+          "build_date": "2026-03-16T05:17:16.924950+00:00"
         }
       },
       "el9": {
@@ -44,15 +44,15 @@
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/keepalived_exporter-1.7.0-1.el9.aarch64.rpm",
           "size_bytes": 3092089,
-          "sha256": "a0df013a9a50abcd44c3bde8845206481baa0cc53ace874637123d50a38b1490",
-          "build_date": "2026-03-09T04:49:21.545695+00:00"
+          "sha256": "1f48b3840a1ba85de729ee7b2ef7bfe88f4b87480f4de6dd56404ca8422be230",
+          "build_date": "2026-03-16T05:14:38.526284+00:00"
         },
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/keepalived_exporter-1.7.0-1.el9.x86_64.rpm",
-          "size_bytes": 3453317,
-          "sha256": "8f4a2800e41dbf3571f808471684ccf236b54bf3b5bf048d7289caa627c5a8bf",
-          "build_date": "2026-03-09T04:51:41.424470+00:00"
+          "size_bytes": 3453325,
+          "sha256": "e033cf773606d693a50eebb4b191305f4814f53b06193651a9bb992ffd8d9039",
+          "build_date": "2026-03-16T05:11:56.585047+00:00"
         }
       }
     },
@@ -61,16 +61,16 @@
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/keepalived-exporter_1.7.0-1_amd64.deb",
-          "size_bytes": 4088732,
-          "sha256": "db6d48e84687ac04422bf28442705e7000ba36935c7c23b5158a0bb4853719d4",
-          "build_date": "2026-03-09T04:32:18.034195+00:00"
+          "size_bytes": 4088718,
+          "sha256": "e4e92906d21902ff383ba39585e9f058763be4ec410224a72a0d80e2c1292f12",
+          "build_date": "2026-03-16T04:46:23.109148+00:00"
         },
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/keepalived-exporter_1.7.0-1_arm64.deb",
-          "size_bytes": 3729696,
-          "sha256": "d5c8778019cbbf360428bb51e4a791dea3f21239cc0175fdde30772706d3b2a1",
-          "build_date": "2026-03-09T04:35:17.631615+00:00"
+          "size_bytes": 3729694,
+          "sha256": "c067149e2d857e48f453eb0497a77e775a195d8b3ff94bf149ff21af27e19e15",
+          "build_date": "2026-03-16T04:55:44.399645+00:00"
         }
       }
     },
@@ -87,10 +87,10 @@
           "architectures": [
             "linux/amd64"
           ],
-          "created": "2026-03-09T04:22:22Z"
+          "created": "2026-03-16T04:43:53Z"
         }
       ],
-      "build_date": "2026-03-09T04:22:22.980857+00:00"
+      "build_date": "2026-03-16T04:43:53.508223+00:00"
     }
   },
   "status": {

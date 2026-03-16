@@ -3,7 +3,7 @@
   "artifact_type": "docker",
   "exporter": "slurm_exporter",
   "version": "1.2.0",
-  "build_date": "2026-03-09T04:22:54.693551+00:00",
+  "build_date": "2026-03-16T04:43:46.815048+00:00",
   "status": "success",
   "images": [
     {
@@ -16,7 +16,7 @@
       "architectures": [
         "linux/amd64"
       ],
-      "created": "2026-03-09T04:22:54Z"
+      "created": "2026-03-16T04:43:46Z"
     }
   ]
 }

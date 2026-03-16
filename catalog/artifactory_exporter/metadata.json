@@ -4,7 +4,7 @@
   "version": "1.16.1",
   "category": "Infrastructure",
   "description": "Prometheus exporter for JFrog Artifactory stats.",
-  "last_updated": "2026-03-09T04:35:49.183249+00:00",
+  "last_updated": "2026-03-16T05:09:12.653688+00:00",
   "artifacts": {
     "rpm": {
       "el8": {
@@ -12,17 +12,17 @@
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/artifactory_exporter-1.16.1-1.el8.x86_64.rpm",
           "size_bytes": 3838496,
-          "sha256": "5470a87d570f1718b519ce7ec70fd7f15cca7564ee0b6395a35b86669a68998b",
-          "build_date": "2026-03-09T04:35:49.183249+00:00"
+          "sha256": "c724fccdd3e4c0a75128a22ebdcbe7e0a958d090e7b11d80558409c555d31cab",
+          "build_date": "2026-03-16T05:00:49.641697+00:00"
         }
       },
       "el9": {
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/artifactory_exporter-1.16.1-1.el9.x86_64.rpm",
-          "size_bytes": 3755238,
-          "sha256": "9159ecb6234c3dc708ac16b0f997fe4af205f99ad5bfe1b59d9e8ca38b6747a4",
-          "build_date": "2026-03-09T04:34:32.544348+00:00"
+          "size_bytes": 3755309,
+          "sha256": "459c06b183cf47ed50269a5ee0c2f5471656ab126f2e1a327cdde2779a7bc412",
+          "build_date": "2026-03-16T05:09:12.653688+00:00"
         }
       },
       "el10": {
@@ -30,8 +30,8 @@
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/artifactory_exporter-1.16.1-1.el10.x86_64.rpm",
           "size_bytes": 3755180,
-          "sha256": "6be4d058f7b3dd4a902c176435b8106b1dc488382482762b31b58ae7c1fe69bd",
-          "build_date": "2026-03-09T04:34:47.979949+00:00"
+          "sha256": "0710edccb1a57048cc9bf98e24223acd16e94d808a0806baae7a67540cb47c5f",
+          "build_date": "2026-03-16T05:03:17.443012+00:00"
         }
       }
     },
@@ -40,9 +40,9 @@
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/artifactory-exporter_1.16.1-1_amd64.deb",
-          "size_bytes": 8579764,
-          "sha256": "c43f30e5c60fefdc9b440b7b97ff557e41b4bb25dfe6651f4eb13064f18664a4",
-          "build_date": "2026-03-09T04:23:56.680565+00:00"
+          "size_bytes": 8579762,
+          "sha256": "f28750cd6095c7a2ed3389d35723e4b556a21ba4300abfcce3765befba4896e3",
+          "build_date": "2026-03-16T04:44:34.444805+00:00"
         }
       }
     },
@@ -59,10 +59,10 @@
           "architectures": [
             "linux/amd64"
           ],
-          "created": "2026-03-09T04:22:00Z"
+          "created": "2026-03-16T04:43:08Z"
         }
       ],
-      "build_date": "2026-03-09T04:22:00.461509+00:00"
+      "build_date": "2026-03-16T04:43:08.305193+00:00"
     }
   },
   "status": {

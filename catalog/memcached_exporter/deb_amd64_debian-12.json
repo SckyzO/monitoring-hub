@@ -5,13 +5,13 @@
   "version": "0.15.5",
   "arch": "amd64",
   "dist": "debian-12",
-  "build_date": "2026-03-09T04:33:23.343520+00:00",
+  "build_date": "2026-03-16T04:47:07.766704+00:00",
   "status": "success",
   "package": {
     "filename": "memcached-exporter_0.15.5-1_amd64.deb",
     "url": "",
-    "sha256": "befc686ab7c3927c3c6b08ba6d333c2379635c13c1bf5f22382f3b7677116608",
-    "size_bytes": 9006966
+    "sha256": "773ef040e6f906a16502b873f7825809de71ec4eea7c01df7776ac05e01f2457",
+    "size_bytes": 9006986
   },
   "deb_metadata": {}
 }

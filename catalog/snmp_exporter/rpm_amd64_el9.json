@@ -5,13 +5,13 @@
   "version": "0.30.1",
   "arch": "amd64",
   "dist": "el9",
-  "build_date": "2026-03-09T05:04:24.677919+00:00",
+  "build_date": "2026-03-16T05:22:30.263161+00:00",
   "status": "success",
   "package": {
     "filename": "snmp_exporter-0.30.1-1.el9.x86_64.rpm",
     "url": "",
-    "sha256": "205c32a4dc066a9d91b988802092ba8206fde42b2a196e868a0c011dd9e776ea",
-    "size_bytes": 4471004
+    "sha256": "6d00beb6ef9246cda68a57dff698fbe16c8ac4819dae85c1e798a833862ceb8a",
+    "size_bytes": 4470953
   },
   "rpm_metadata": {}
 }

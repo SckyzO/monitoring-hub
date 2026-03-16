@@ -5,13 +5,13 @@
   "version": "0.19.1",
   "arch": "arm64",
   "dist": "el8",
-  "build_date": "2026-03-09T04:55:18.351579+00:00",
+  "build_date": "2026-03-16T05:20:46.186205+00:00",
   "status": "success",
   "package": {
     "filename": "nats_exporter-0.19.1-1.el8.aarch64.rpm",
     "url": "",
-    "sha256": "634401bf45a9cff6bf53b431680268cca3f67cf8f3a2fd2e87b0c7bdfba9a1fe",
-    "size_bytes": 2998708
+    "sha256": "21b9d7551b10a46c10083a0023418f6434d80c5e8ce65e8965f6193486487d78",
+    "size_bytes": 2998704
   },
   "rpm_metadata": {}
 }

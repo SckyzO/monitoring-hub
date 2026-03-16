@@ -5,13 +5,13 @@
   "version": "1.13.13",
   "arch": "amd64",
   "dist": "el8",
-  "build_date": "2026-03-09T04:43:02.967436+00:00",
+  "build_date": "2026-03-16T05:09:02.103420+00:00",
   "status": "success",
   "package": {
     "filename": "dellhw_exporter-1.13.13-1.el8.x86_64.rpm",
     "url": "",
-    "sha256": "ed1f517d9677e09b4ea01c683949bd034cec9f8525ead5fd34fbd7c11167047e",
-    "size_bytes": 3304928
+    "sha256": "3cc8d9e3311cd30352e89558caa871fd455b15476641b0cd5f8b860775a05607",
+    "size_bytes": 3304924
   },
   "rpm_metadata": {}
 }

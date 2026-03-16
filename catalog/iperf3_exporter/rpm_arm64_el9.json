@@ -5,12 +5,12 @@
   "version": "1.3.1",
   "arch": "arm64",
   "dist": "el9",
-  "build_date": "2026-03-09T04:44:00.726635+00:00",
+  "build_date": "2026-03-16T05:06:06.437885+00:00",
   "status": "success",
   "package": {
     "filename": "iperf3_exporter-1.3.1-1.el9.aarch64.rpm",
     "url": "",
-    "sha256": "a49510c78689cb5547681daf8c2766011f36d39f6a66c16577f7d804f8440c01",
+    "sha256": "d39293504933e010be59538e5a4943db0ddeba918807697a23a8438e4abdcf8c",
     "size_bytes": 3707310
   },
   "rpm_metadata": {}

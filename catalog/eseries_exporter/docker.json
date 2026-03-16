@@ -3,7 +3,7 @@
   "artifact_type": "docker",
   "exporter": "eseries_exporter",
   "version": "2.1.0",
-  "build_date": "2026-03-09T04:22:52.314459+00:00",
+  "build_date": "2026-03-16T04:43:53.526151+00:00",
   "status": "success",
   "images": [
     {
@@ -16,7 +16,7 @@
       "architectures": [
         "linux/amd64"
       ],
-      "created": "2026-03-09T04:22:52Z"
+      "created": "2026-03-16T04:43:53Z"
     }
   ]
 }

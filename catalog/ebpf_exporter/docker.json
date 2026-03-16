@@ -3,7 +3,7 @@
   "artifact_type": "docker",
   "exporter": "ebpf_exporter",
   "version": "2.5.1",
-  "build_date": "2026-03-09T04:22:05.907981+00:00",
+  "build_date": "2026-03-16T04:43:18.910726+00:00",
   "status": "success",
   "images": [
     {
@@ -16,7 +16,7 @@
       "architectures": [
         "linux/amd64"
       ],
-      "created": "2026-03-09T04:22:05Z"
+      "created": "2026-03-16T04:43:18Z"
     }
   ]
 }

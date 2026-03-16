@@ -5,12 +5,12 @@
   "version": "2.1.0",
   "arch": "amd64",
   "dist": "el10",
-  "build_date": "2026-03-09T04:49:49.441255+00:00",
+  "build_date": "2026-03-16T05:06:44.379125+00:00",
   "status": "success",
   "package": {
     "filename": "eseries_exporter-2.1.0-1.el10.x86_64.rpm",
     "url": "",
-    "sha256": "53e45ca02cc69a28185625e2db1df39fbc5a112c0c0304f993cb1b80110ac791",
+    "sha256": "515d95b6260baecf61a6e543fbd67e9b6722f5b73ac60d9e1d9e097aad82e9a3",
     "size_bytes": 4037760
   },
   "rpm_metadata": {}

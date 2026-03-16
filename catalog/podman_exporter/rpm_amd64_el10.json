@@ -5,12 +5,12 @@
   "version": "1.20.0",
   "arch": "amd64",
   "dist": "el10",
-  "build_date": "2026-03-09T05:00:51.233341+00:00",
+  "build_date": "2026-03-16T05:21:25.922349+00:00",
   "status": "success",
   "package": {
     "filename": "podman_exporter-1.20.0-1.el10.x86_64.rpm",
     "url": "",
-    "sha256": "cb3e5ed6d1946b65ebfebf69f848bb10a9b532b03808030fc5702125d69d50f9",
+    "sha256": "94bd665d94153f83a8ecffae921b01f9b1fc5cf773519495a4863c3608ad6e45",
     "size_bytes": 8522498
   },
   "rpm_metadata": {}

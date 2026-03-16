@@ -5,12 +5,12 @@
   "version": "0.30.1",
   "arch": "arm64",
   "dist": "el10",
-  "build_date": "2026-03-09T05:02:31.682178+00:00",
+  "build_date": "2026-03-16T05:26:12.620896+00:00",
   "status": "success",
   "package": {
     "filename": "snmp_exporter-0.30.1-1.el10.aarch64.rpm",
     "url": "",
-    "sha256": "7c3642852e3897b5582d1c1cf38c39ac821a1236bdc2c2abca1575a848bb3037",
+    "sha256": "3cc30af10826c37fae4eb6b0cf6a93dfef2635b9281da78dc303292fd0d731a7",
     "size_bytes": 3987155
   },
   "rpm_metadata": {}
