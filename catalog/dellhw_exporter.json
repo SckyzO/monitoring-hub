@@ -1,37 +1,37 @@
 {
   "format_version": "3.0",
   "exporter": "dellhw_exporter",
-  "version": "1.13.13",
+  "version": "2.0.0",
   "category": "Infrastructure",
   "description": "Prometheus exporter for Dell Hardware components using OMSA.",
-  "last_updated": "2026-03-16T05:09:02.103420+00:00",
+  "last_updated": "2026-03-21T08:29:13.752923+00:00",
   "artifacts": {
     "rpm": {
       "el8": {
         "amd64": {
           "status": "success",
-          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/dellhw_exporter-1.13.13-1.el8.x86_64.rpm",
-          "size_bytes": 3304924,
-          "sha256": "3cc8d9e3311cd30352e89558caa871fd455b15476641b0cd5f8b860775a05607",
-          "build_date": "2026-03-16T05:09:02.103420+00:00"
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/dellhw_exporter-2.0.0-1.el8.x86_64.rpm",
+          "size_bytes": 3952160,
+          "sha256": "5af58e6cf657847d83703feb7c9989fddff0162deba475fc8630cb211cdbfab9",
+          "build_date": "2026-03-21T08:29:13.752923+00:00"
         }
       },
       "el9": {
         "amd64": {
           "status": "success",
-          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/dellhw_exporter-1.13.13-1.el9.x86_64.rpm",
-          "size_bytes": 3278128,
-          "sha256": "2eeeddf9219295ddb37fb5f11509857152c8559846bee59b3e43914d75d0b7bf",
-          "build_date": "2026-03-16T05:04:11.383673+00:00"
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/dellhw_exporter-2.0.0-1.el9.x86_64.rpm",
+          "size_bytes": 3911834,
+          "sha256": "c245098c3a72e1944178720587dfada0f0ce8dac504e0cb2955deccd32f4c5c5",
+          "build_date": "2026-03-21T08:28:45.410523+00:00"
         }
       },
       "el10": {
         "amd64": {
           "status": "success",
-          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/dellhw_exporter-1.13.13-1.el10.x86_64.rpm",
-          "size_bytes": 3278167,
-          "sha256": "f2ecb63e361cb81f1d6268cef2f985f08b0459e2256875d9c9df9fec790d2427",
-          "build_date": "2026-03-16T05:03:21.824356+00:00"
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/dellhw_exporter-2.0.0-1.el10.x86_64.rpm",
+          "size_bytes": 3911883,
+          "sha256": "f27be247ef8c7853aeaae2982b982eb6087e909dbfbc1de3374298ab024daab1",
+          "build_date": "2026-03-21T08:28:43.477561+00:00"
         }
       }
     },
@@ -39,35 +39,22 @@
       "debian-12": {
         "amd64": {
           "status": "success",
-          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/dellhw-exporter_1.13.13-1_amd64.deb",
-          "size_bytes": 3851330,
-          "sha256": "42d8c6de7f4df1ffdd042d42d19ea40bca2804c0b891655d36a105db11cb8eeb",
-          "build_date": "2026-03-16T04:53:01.813488+00:00"
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/dellhw-exporter_2.0.0-1_amd64.deb",
+          "size_bytes": 4638816,
+          "sha256": "dc52d0c3ff2563b10189330d58847ec0f56bde57953e1052279860e55c76f18e",
+          "build_date": "2026-03-21T08:28:57.860902+00:00"
         }
       }
     },
     "docker": {
-      "status": "success",
-      "images": [
-        {
-          "registry": "ghcr.io",
-          "repository": "SckyzO/monitoring-hub/dellhw_exporter",
-          "tags": [
-            "1.13.13",
-            "latest"
-          ],
-          "architectures": [
-            "linux/amd64"
-          ],
-          "created": "2026-03-16T04:43:55Z"
-        }
-      ],
-      "build_date": "2026-03-16T04:43:55.274481+00:00"
+      "status": "na",
+      "images": [],
+      "build_date": null
     }
   },
   "status": {
     "rpm": "success",
     "deb": "success",
-    "docker": "success"
+    "docker": "na"
   }
 }

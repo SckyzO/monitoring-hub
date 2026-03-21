@@ -39,9 +39,9 @@
     },
     {
       "name": "dellhw_exporter",
-      "version": "1.13.13",
+      "version": "2.0.0",
       "category": "Infrastructure",
-      "last_updated": null
+      "last_updated": "2026-03-21T08:29:13.752923+00:00"
     },
     {
       "name": "domain_exporter",
@@ -131,7 +131,7 @@
       "name": "mysqld_exporter",
       "version": "0.19.0",
       "category": "Database",
-      "last_updated": "2026-03-19T08:45:22.732829+00:00"
+      "last_updated": null
     },
     {
       "name": "nats_exporter",
