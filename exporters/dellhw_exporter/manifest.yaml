@@ -1,7 +1,7 @@
 name: dellhw_exporter
 description: Prometheus exporter for Dell Hardware components using OMSA.
 category: Infrastructure
-version: v1.13.13
+version: "v2.0.0"
 new: true
 updated: false
 upstream:
