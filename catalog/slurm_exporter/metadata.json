@@ -1,58 +1,58 @@
 {
   "format_version": "3.0",
   "exporter": "slurm_exporter",
-  "version": "1.2.0",
+  "version": "1.5.0",
   "category": "Infrastructure",
   "description": "Prometheus exporter for Slurm workload manager metrics",
-  "last_updated": "2026-03-16T05:27:03.827056+00:00",
+  "last_updated": "2026-03-22T08:41:58.611694+00:00",
   "artifacts": {
     "rpm": {
       "el8": {
         "amd64": {
           "status": "success",
-          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/slurm_exporter-1.2.0-1.el8.x86_64.rpm",
-          "size_bytes": 3633528,
-          "sha256": "3809aaaa6e75f44715332c42546c5ba17058bef4d313b5893d23e45e66086aeb",
-          "build_date": "2026-03-16T05:18:09.840909+00:00"
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/slurm_exporter-1.5.0-1.el8.x86_64.rpm",
+          "size_bytes": 4021828,
+          "sha256": "c662747645069dbdc42816c8a5623b2f82aa4b93348ce16e375b917984814215",
+          "build_date": "2026-03-22T08:30:54.400880+00:00"
         },
         "arm64": {
           "status": "success",
-          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/slurm_exporter-1.2.0-1.el8.aarch64.rpm",
-          "size_bytes": 3144988,
-          "sha256": "e7c3f1af3229f1b07e593c030cebcf2add926b1b21d847f567021082ca2864fa",
-          "build_date": "2026-03-16T05:25:27.102768+00:00"
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/slurm_exporter-1.5.0-1.el8.aarch64.rpm",
+          "size_bytes": 3435268,
+          "sha256": "4aea8c5540412a4fb20023b12a30d6e24c928b556e0344268cca02fe9b5a87b3",
+          "build_date": "2026-03-22T08:41:58.611694+00:00"
         }
       },
       "el10": {
         "arm64": {
           "status": "success",
-          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/slurm_exporter-1.2.0-1.el10.aarch64.rpm",
-          "size_bytes": 3239989,
-          "sha256": "ef8433ed4505609e01ff3de4854d5cbf16b66219811c0a541c0c07fb8c860a23",
-          "build_date": "2026-03-16T05:26:50.511348+00:00"
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/slurm_exporter-1.5.0-1.el10.aarch64.rpm",
+          "size_bytes": 3536683,
+          "sha256": "b44fd8e96c95b9990342ddd4d7e1d67b3797ff56b50964d15200497076cb6957",
+          "build_date": "2026-03-22T08:32:34.855307+00:00"
         },
         "amd64": {
           "status": "success",
-          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/slurm_exporter-1.2.0-1.el10.x86_64.rpm",
-          "size_bytes": 3601521,
-          "sha256": "b643c2f325cfc68de8f54ac6f6ba209926bbcc9bfe04f4c49c04f3960dbc1de5",
-          "build_date": "2026-03-16T05:21:07.376495+00:00"
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/slurm_exporter-1.5.0-1.el10.x86_64.rpm",
+          "size_bytes": 3981015,
+          "sha256": "0298d2d690140703820f8f07e0460e126d37090020712c609fb5690a89a03688",
+          "build_date": "2026-03-22T08:30:42.717845+00:00"
         }
       },
       "el9": {
         "arm64": {
           "status": "success",
-          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/slurm_exporter-1.2.0-1.el9.aarch64.rpm",
-          "size_bytes": 3239869,
-          "sha256": "f80a8a0fbeff615aae04cce98811714112981c6c6e751cf0563dc3323a137739",
-          "build_date": "2026-03-16T05:27:03.827056+00:00"
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/slurm_exporter-1.5.0-1.el9.aarch64.rpm",
+          "size_bytes": 3536551,
+          "sha256": "2a776d2def1c09a224ec07024f3763591df60fd5e2add26ef141460e0e6d6908",
+          "build_date": "2026-03-22T08:35:02.052731+00:00"
         },
         "amd64": {
           "status": "success",
-          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/slurm_exporter-1.2.0-1.el9.x86_64.rpm",
-          "size_bytes": 3601647,
-          "sha256": "feb4ec9312b2abeb057106fafb7eaedb53fd9e7bffe8cad860315f9967c0b4fd",
-          "build_date": "2026-03-16T05:19:15.835680+00:00"
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/slurm_exporter-1.5.0-1.el9.x86_64.rpm",
+          "size_bytes": 3980608,
+          "sha256": "428562d07d4868551722d6c7b5fbaa1fb6c0d52de9e9b31cfd883afd489d7841",
+          "build_date": "2026-03-22T08:30:40.629430+00:00"
         }
       }
     },
@@ -60,42 +60,29 @@
       "debian-12": {
         "amd64": {
           "status": "success",
-          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/slurm-exporter_1.2.0-1_amd64.deb",
-          "size_bytes": 4241922,
-          "sha256": "a7a382dbf02f48515beeb30eb0ae468689c1f16c6d4011c4b1171f005c3cd527",
-          "build_date": "2026-03-16T04:45:50.089843+00:00"
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/slurm-exporter_1.5.0-1_amd64.deb",
+          "size_bytes": 4723090,
+          "sha256": "efbf0e59760346ccdaa0ac85918f01a3bb4e2ced4bd1a5da51e72d1a398c860c",
+          "build_date": "2026-03-22T08:30:51.164539+00:00"
         },
         "arm64": {
           "status": "success",
-          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/slurm-exporter_1.2.0-1_arm64.deb",
-          "size_bytes": 3888498,
-          "sha256": "9e0ce86e3d1de9d1451fef59a0ab855740f33613a59ec596a20b0343bcf797bc",
-          "build_date": "2026-03-16T05:01:05.359598+00:00"
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/slurm-exporter_1.5.0-1_arm64.deb",
+          "size_bytes": 4262504,
+          "sha256": "3940ffea441625147c24e8983c23d4b378d090c327d966a85d9873750bc5a2ad",
+          "build_date": "2026-03-22T08:37:48.840304+00:00"
         }
       }
     },
     "docker": {
-      "status": "success",
-      "images": [
-        {
-          "registry": "ghcr.io",
-          "repository": "SckyzO/monitoring-hub/slurm_exporter",
-          "tags": [
-            "1.2.0",
-            "latest"
-          ],
-          "architectures": [
-            "linux/amd64"
-          ],
-          "created": "2026-03-16T04:43:46Z"
-        }
-      ],
-      "build_date": "2026-03-16T04:43:46.815048+00:00"
+      "status": "na",
+      "images": [],
+      "build_date": null
     }
   },
   "status": {
     "rpm": "success",
     "deb": "success",
-    "docker": "success"
+    "docker": "na"
   }
 }
