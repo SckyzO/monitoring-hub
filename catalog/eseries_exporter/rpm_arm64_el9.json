@@ -5,13 +5,13 @@
   "version": "2.1.0",
   "arch": "arm64",
   "dist": "el9",
-  "build_date": "2026-03-16T05:00:26.814752+00:00",
+  "build_date": "2026-03-23T05:00:31.535249+00:00",
   "status": "success",
   "package": {
     "filename": "eseries_exporter-2.1.0-1.el9.aarch64.rpm",
     "url": "",
-    "sha256": "dc8f770ceeee5f08a6a5eb5c8d743746ff3adc5cfc7583caa823b1602be83424",
-    "size_bytes": 3613085
+    "sha256": "1d391a2a1de9559f6bda2a6e35b043feec06e57255a7cc75028d1e8a22a4a92c",
+    "size_bytes": 3613084
   },
   "rpm_metadata": {}
 }

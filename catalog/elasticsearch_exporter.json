@@ -4,23 +4,23 @@
   "version": "1.10.0",
   "category": "Database",
   "description": "Prometheus exporter for various metrics about Elasticsearch.",
-  "last_updated": "2026-03-16T05:15:12.793628+00:00",
+  "last_updated": "2026-03-23T05:03:20.716008+00:00",
   "artifacts": {
     "rpm": {
       "el8": {
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/elasticsearch_exporter-1.10.0-1.el8.x86_64.rpm",
-          "size_bytes": 5144224,
-          "sha256": "f030c23e4149d46a513a35853a2c693fcb81ccb4aa27c23adf79f3541202f098",
-          "build_date": "2026-03-16T05:01:21.250956+00:00"
+          "size_bytes": 5144220,
+          "sha256": "3139d30c09aa747df2c7d4ab308367664e03ebb4b28c85f7622ec4b7ae281fcc",
+          "build_date": "2026-03-23T04:56:52.706827+00:00"
         },
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/elasticsearch_exporter-1.10.0-1.el8.aarch64.rpm",
-          "size_bytes": 4383340,
-          "sha256": "210334b1dda7910c4065be8b611d2f5014983074d42373460a73cdca5bf09938",
-          "build_date": "2026-03-16T05:15:12.793628+00:00"
+          "size_bytes": 4383344,
+          "sha256": "ce9ff6c426164d4880f13cf5a60b6e9f7e7eac16f7a6d150f3297fe973a01b9e",
+          "build_date": "2026-03-23T05:03:20.716008+00:00"
         }
       },
       "el10": {
@@ -28,31 +28,31 @@
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/elasticsearch_exporter-1.10.0-1.el10.aarch64.rpm",
           "size_bytes": 4502438,
-          "sha256": "d1c6b86b04a0d1bc797f759d9e01a83fff7b6ed626435591a77b038a90e7b4a9",
-          "build_date": "2026-03-16T05:11:35.669708+00:00"
+          "sha256": "e67af8c032348ad585202ef777a73ead2316dd7d260c8dafbc95aa67e03d0a3c",
+          "build_date": "2026-03-23T04:54:57.194706+00:00"
         },
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/elasticsearch_exporter-1.10.0-1.el10.x86_64.rpm",
           "size_bytes": 5083371,
-          "sha256": "7f3ad0c276fdcfebdf97f98f18f52b9c758c23819e04899e384b9d8371c2034e",
-          "build_date": "2026-03-16T05:09:37.880504+00:00"
+          "sha256": "f391dba9fc5bc446d6a770c943c2ce997b9578e43c3bc395bf133f221663ed47",
+          "build_date": "2026-03-23T04:58:25.480808+00:00"
         }
       },
       "el9": {
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/elasticsearch_exporter-1.10.0-1.el9.aarch64.rpm",
-          "size_bytes": 4502260,
-          "sha256": "96107ce7338c2a919eae56895b7c241ef03ac9f83468b2c3aeef32e83e7a8179",
-          "build_date": "2026-03-16T05:14:10.700114+00:00"
+          "size_bytes": 4502261,
+          "sha256": "8c8cac5974d7f5333f88ab6c337b23f92f8d714d9eeb3f5863089f273d094dbe",
+          "build_date": "2026-03-23T05:01:08.737774+00:00"
         },
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/elasticsearch_exporter-1.10.0-1.el9.x86_64.rpm",
-          "size_bytes": 5083058,
-          "sha256": "0704b8b7cdbcdf69f7125d4b1263d38425d2d23baa8473d9e2365cde246c0644",
-          "build_date": "2026-03-16T05:08:29.274887+00:00"
+          "size_bytes": 5083057,
+          "sha256": "d2fc9028f6e22c45ae265126ccd36a07a8911604f96b8561f7ebb2df4b2441fa",
+          "build_date": "2026-03-23T04:54:54.385097+00:00"
         }
       }
     },
@@ -61,41 +61,28 @@
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/elasticsearch-exporter_1.10.0-1_amd64.deb",
-          "size_bytes": 6196710,
-          "sha256": "9c34f415034bc6cb5cce13f93a3493882e9465bae346d5482c0c33a1e6de14b2",
-          "build_date": "2026-03-16T04:52:50.937039+00:00"
+          "size_bytes": 6196712,
+          "sha256": "a60297f26ae1d28a1e2e8216b78478dc2ec06393ae469e1a1a03fb0f3bcb406a",
+          "build_date": "2026-03-23T04:32:38.474791+00:00"
         },
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/elasticsearch-exporter_1.10.0-1_arm64.deb",
-          "size_bytes": 5574554,
-          "sha256": "4195e49b786bd7f4ff8a6cd4dfe84125a31c8b497c232f11de4be2c02bb96dc9",
-          "build_date": "2026-03-16T04:53:17.928117+00:00"
+          "size_bytes": 5574550,
+          "sha256": "e9a104144fedf312707a7aef238f5ef4d9af9ed834208e69202ff43c68b9ec75",
+          "build_date": "2026-03-23T04:39:12.378398+00:00"
         }
       }
     },
     "docker": {
-      "status": "success",
-      "images": [
-        {
-          "registry": "ghcr.io",
-          "repository": "SckyzO/monitoring-hub/elasticsearch_exporter",
-          "tags": [
-            "1.10.0",
-            "latest"
-          ],
-          "architectures": [
-            "linux/amd64"
-          ],
-          "created": "2026-03-16T04:43:20Z"
-        }
-      ],
-      "build_date": "2026-03-16T04:43:20.144040+00:00"
+      "status": "na",
+      "images": [],
+      "build_date": null
     }
   },
   "status": {
     "rpm": "success",
     "deb": "success",
-    "docker": "success"
+    "docker": "na"
   }
 }

@@ -5,12 +5,12 @@
   "version": "3.3.0",
   "arch": "amd64",
   "dist": "el8",
-  "build_date": "2026-03-16T05:05:47.492712+00:00",
+  "build_date": "2026-03-23T04:53:10.819128+00:00",
   "status": "success",
   "package": {
     "filename": "gpfs_exporter-3.3.0-1.el8.x86_64.rpm",
     "url": "",
-    "sha256": "cf7d8610ea226a7322a4cbbae36d094beac1b50946b66692712ce76ec287a1f9",
+    "sha256": "a0337c1c814ad98b11cac02c6c542c5150857073584d1d366bb6e9bfcf52ed06",
     "size_bytes": 4256716
   },
   "rpm_metadata": {}

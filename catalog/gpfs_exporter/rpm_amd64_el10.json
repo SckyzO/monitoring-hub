@@ -5,12 +5,12 @@
   "version": "3.3.0",
   "arch": "amd64",
   "dist": "el10",
-  "build_date": "2026-03-16T05:08:19.332103+00:00",
+  "build_date": "2026-03-23T04:56:33.856105+00:00",
   "status": "success",
   "package": {
     "filename": "gpfs_exporter-3.3.0-1.el10.x86_64.rpm",
     "url": "",
-    "sha256": "1a0f9e8b7e5b92ef674051d01d5e72079782be712c0987282a29624800fa8420",
+    "sha256": "4cd2c950ef7d706d089820b4f61dbcaa6842dac1a3b9acdc463a8092571f1a60",
     "size_bytes": 4155767
   },
   "rpm_metadata": {}

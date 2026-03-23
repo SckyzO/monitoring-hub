@@ -4,23 +4,23 @@
   "version": "2.5.1",
   "category": "System",
   "description": "Prometheus exporter for custom eBPF metrics.",
-  "last_updated": "2026-03-16T05:09:44.031671+00:00",
+  "last_updated": "2026-03-23T04:54:54.617340+00:00",
   "artifacts": {
     "rpm": {
       "el8": {
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/ebpf_exporter-2.5.1-1.el8.x86_64.rpm",
-          "size_bytes": 6372868,
-          "sha256": "02483d59480f4b98be7a60f0596627d862a62556312b6d16957ecd3a6d5f8b2e",
-          "build_date": "2026-03-16T05:03:10.722980+00:00"
+          "size_bytes": 6372872,
+          "sha256": "84c4592a65e52deab43f5da6c3864352e4f936e4ca4df434e033a6da3ca4e30e",
+          "build_date": "2026-03-23T04:54:54.617340+00:00"
         },
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/ebpf_exporter-2.5.1-1.el8.aarch64.rpm",
           "size_bytes": 5537320,
-          "sha256": "7f102d9030dd89bf72ed382e863d9166610b8f6ddfb45cb459eb498a83a5ecb3",
-          "build_date": "2026-03-16T05:07:32.716897+00:00"
+          "sha256": "bdcc5b7df3e83f4757b3e357356544999acb0cce172887007de221a2956d0282",
+          "build_date": "2026-03-23T04:54:34.144442+00:00"
         }
       },
       "el10": {
@@ -28,31 +28,31 @@
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/ebpf_exporter-2.5.1-1.el10.aarch64.rpm",
           "size_bytes": 5566653,
-          "sha256": "84ce66511cb5db9857f539acff5e6823c56d29326cd5421f00a085923761c06a",
-          "build_date": "2026-03-16T05:09:44.031671+00:00"
+          "sha256": "0c8f00f068c7a6a62af497cd7e2ccca1ab82d265827352cce9e1048bd7ce863c",
+          "build_date": "2026-03-23T04:47:25.119066+00:00"
         },
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/ebpf_exporter-2.5.1-1.el10.x86_64.rpm",
           "size_bytes": 6168572,
-          "sha256": "0eb932c7e3407a0602d2210c60563164aa394c494ba82cfa5d3a52aa2656023e",
-          "build_date": "2026-03-16T05:04:18.306994+00:00"
+          "sha256": "faaa89dafa67ebb78067c89874a22442acfbe3db87a91b1db61ae550c4f8931f",
+          "build_date": "2026-03-23T04:51:02.540340+00:00"
         }
       },
       "el9": {
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/ebpf_exporter-2.5.1-1.el9.aarch64.rpm",
-          "size_bytes": 5566435,
-          "sha256": "0071e28d5c372178aebd11465c563412216e38ee3146398118b69e06984ae026",
-          "build_date": "2026-03-16T05:09:33.838848+00:00"
+          "size_bytes": 5566428,
+          "sha256": "daad042a3fef175a30ca472fc2d3c20516e1728b49dff4671b781ada611b3eb9",
+          "build_date": "2026-03-23T04:49:02.746637+00:00"
         },
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/ebpf_exporter-2.5.1-1.el9.x86_64.rpm",
-          "size_bytes": 6168909,
-          "sha256": "1622d3a87b9c56884b4531408eab04c853864b78d8521f19c4cd2fa20e97f1c2",
-          "build_date": "2026-03-16T04:56:47.264589+00:00"
+          "size_bytes": 6168372,
+          "sha256": "3299facdc54395224514333073423e676484ac1da620d7de77f1b820a175516f",
+          "build_date": "2026-03-23T04:50:01.804384+00:00"
         }
       }
     },
@@ -62,40 +62,27 @@
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/ebpf-exporter_2.5.1-1_amd64.deb",
           "size_bytes": 13682360,
-          "sha256": "57f3a1d4ce772be0419dacb8e1b7134026598fecba21abd1c720d31b9a4a79bb",
-          "build_date": "2026-03-16T04:53:38.151285+00:00"
+          "sha256": "206a7734019cd6154c1c41c4712ab2aae99fe1b185bccd081baf45e80aaf90da",
+          "build_date": "2026-03-23T04:43:04.205931+00:00"
         },
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/ebpf-exporter_2.5.1-1_arm64.deb",
-          "size_bytes": 12707120,
-          "sha256": "4c46bd7c453a70528117b714503447e0c4a04f5d9e16c9043ac28627b669563b",
-          "build_date": "2026-03-16T04:52:59.100435+00:00"
+          "size_bytes": 12707106,
+          "sha256": "837d0ca0b508984b166c5f2225715b3d2abeebacdf3d9c8236acb6cf4efe5df5",
+          "build_date": "2026-03-23T04:40:36.589184+00:00"
         }
       }
     },
     "docker": {
-      "status": "success",
-      "images": [
-        {
-          "registry": "ghcr.io",
-          "repository": "SckyzO/monitoring-hub/ebpf_exporter",
-          "tags": [
-            "2.5.1",
-            "latest"
-          ],
-          "architectures": [
-            "linux/amd64"
-          ],
-          "created": "2026-03-16T04:43:18Z"
-        }
-      ],
-      "build_date": "2026-03-16T04:43:18.910726+00:00"
+      "status": "na",
+      "images": [],
+      "build_date": null
     }
   },
   "status": {
     "rpm": "success",
     "deb": "success",
-    "docker": "success"
+    "docker": "na"
   }
 }

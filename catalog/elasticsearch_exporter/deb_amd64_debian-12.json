@@ -5,13 +5,13 @@
   "version": "1.10.0",
   "arch": "amd64",
   "dist": "debian-12",
-  "build_date": "2026-03-16T04:52:50.937039+00:00",
+  "build_date": "2026-03-23T04:32:38.474791+00:00",
   "status": "success",
   "package": {
     "filename": "elasticsearch-exporter_1.10.0-1_amd64.deb",
     "url": "",
-    "sha256": "9c34f415034bc6cb5cce13f93a3493882e9465bae346d5482c0c33a1e6de14b2",
-    "size_bytes": 6196710
+    "sha256": "a60297f26ae1d28a1e2e8216b78478dc2ec06393ae469e1a1a03fb0f3bcb406a",
+    "size_bytes": 6196712
   },
   "deb_metadata": {}
 }

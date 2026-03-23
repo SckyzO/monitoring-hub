@@ -4,7 +4,7 @@
   "version": "0.1.4",
   "category": "System",
   "description": "Prometheus exporter for local text files metrics",
-  "last_updated": "2026-03-16T05:26:49.434679+00:00",
+  "last_updated": "2026-03-23T05:14:01.781142+00:00",
   "artifacts": {
     "rpm": {
       "el8": {
@@ -12,15 +12,15 @@
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/textfile_exporter-0.1.4-1.el8.x86_64.rpm",
           "size_bytes": 3129440,
-          "sha256": "8f4887e32fa21cca3a658c2ade8d1dccdd3901c9071201dd98890a6614e8becf",
-          "build_date": "2026-03-16T05:22:01.890871+00:00"
+          "sha256": "0e4b93a5b5c8ed5b5366a4310652c7244565ec91e16249beb48e173970e11dfa",
+          "build_date": "2026-03-23T05:14:00.714886+00:00"
         },
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/textfile_exporter-0.1.4-1.el8.aarch64.rpm",
           "size_bytes": 2695932,
-          "sha256": "981c3045f76df14c40636ef7681f25afef0807baba152f6792745fef611614f7",
-          "build_date": "2026-03-16T05:25:50.175947+00:00"
+          "sha256": "ef6f7025bc79c9cf4b3e3516cae4a6dfbbb91b4316d8965b81dca98048b3bc2d",
+          "build_date": "2026-03-23T05:12:57.977065+00:00"
         }
       },
       "el10": {
@@ -28,31 +28,31 @@
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/textfile_exporter-0.1.4-1.el10.aarch64.rpm",
           "size_bytes": 2782834,
-          "sha256": "42b5bac48aec893a14946855e4f07196a29eada03751c57a8aaf2c32a473e116",
-          "build_date": "2026-03-16T05:26:16.368400+00:00"
+          "sha256": "a0c51a47c884578c2c132d31abc48aff8e8d42cee1d41e8694ff8694f10a3425",
+          "build_date": "2026-03-23T05:13:13.670427+00:00"
         },
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/textfile_exporter-0.1.4-1.el10.x86_64.rpm",
           "size_bytes": 3108861,
-          "sha256": "69d16a31fa42aca5cad284820687859e618cf32e6bd8429f348d9de5756ff8dc",
-          "build_date": "2026-03-16T05:26:49.434679+00:00"
+          "sha256": "56939bc44f88303816e5fc2b6add03776944c75867c519edd89738391948599d",
+          "build_date": "2026-03-23T05:13:48.038828+00:00"
         }
       },
       "el9": {
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/textfile_exporter-0.1.4-1.el9.aarch64.rpm",
-          "size_bytes": 2782632,
-          "sha256": "8339c4c6beae8de098489b8a8d0faa42124282ece666d6cc3b85903c48121e0a",
-          "build_date": "2026-03-16T05:26:02.000192+00:00"
+          "size_bytes": 2782634,
+          "sha256": "72aa231a7be46bf922a0a0ff005cd64a88a889709b6e06794e0f6fb952368031",
+          "build_date": "2026-03-23T05:14:01.781142+00:00"
         },
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/textfile_exporter-0.1.4-1.el9.x86_64.rpm",
           "size_bytes": 3108762,
-          "sha256": "c1768316e2effae7d7d28d195b97284c695b6497485f374639ba910d2f6f063d",
-          "build_date": "2026-03-16T05:24:11.400583+00:00"
+          "sha256": "41d7ff9fa6b7038212ab9bce801454fafb0061d581c0e41a47c107414dc45a5c",
+          "build_date": "2026-03-23T05:08:59.519000+00:00"
         }
       }
     },
@@ -62,40 +62,27 @@
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/textfile-exporter_0.1.4-1_amd64.deb",
           "size_bytes": 3648654,
-          "sha256": "69695105476a47337dca9692ddd98d54d1565ecdb1142981f539d0a9abbb0205",
-          "build_date": "2026-03-16T04:54:23.224563+00:00"
+          "sha256": "e0cee25f3fa068ab6d132dc26d0ba1bed9ba110fbb264740faa556768d007ded",
+          "build_date": "2026-03-23T04:43:32.439755+00:00"
         },
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/textfile-exporter_0.1.4-1_arm64.deb",
-          "size_bytes": 3311458,
-          "sha256": "be8075c0722f48b395ead826d42be16103702715b930a8102bf3fd5840c890c6",
-          "build_date": "2026-03-16T04:59:56.865189+00:00"
+          "size_bytes": 3311464,
+          "sha256": "1a8c061d5f332d3e532aba0b93d36beea98063c3c30f71d9e7b156326d6c5512",
+          "build_date": "2026-03-23T04:44:46.633488+00:00"
         }
       }
     },
     "docker": {
-      "status": "success",
-      "images": [
-        {
-          "registry": "ghcr.io",
-          "repository": "SckyzO/monitoring-hub/textfile_exporter",
-          "tags": [
-            "0.1.4",
-            "latest"
-          ],
-          "architectures": [
-            "linux/amd64"
-          ],
-          "created": "2026-03-16T04:44:04Z"
-        }
-      ],
-      "build_date": "2026-03-16T04:44:04.859047+00:00"
+      "status": "na",
+      "images": [],
+      "build_date": null
     }
   },
   "status": {
     "rpm": "success",
     "deb": "success",
-    "docker": "success"
+    "docker": "na"
   }
 }

@@ -5,12 +5,12 @@
   "version": "1.16.1",
   "arch": "amd64",
   "dist": "debian-12",
-  "build_date": "2026-03-16T04:44:34.444805+00:00",
+  "build_date": "2026-03-23T04:32:34.184791+00:00",
   "status": "success",
   "package": {
     "filename": "artifactory-exporter_1.16.1-1_amd64.deb",
     "url": "",
-    "sha256": "f28750cd6095c7a2ed3389d35723e4b556a21ba4300abfcce3765befba4896e3",
+    "sha256": "d1c934d5ed2ecca2d063be9b4a26e59264b1f1228fe9f06cbd2d0cb1863eee1d",
     "size_bytes": 8579762
   },
   "deb_metadata": {}

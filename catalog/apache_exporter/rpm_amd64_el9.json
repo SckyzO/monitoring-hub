@@ -5,13 +5,13 @@
   "version": "1.0.12",
   "arch": "amd64",
   "dist": "el9",
-  "build_date": "2026-03-16T04:59:44.391279+00:00",
+  "build_date": "2026-03-23T04:43:43.467022+00:00",
   "status": "success",
   "package": {
     "filename": "apache_exporter-1.0.12-1.el9.x86_64.rpm",
     "url": "",
-    "sha256": "68c6cd2496de9030270972dbe6d12a97f6f6d0dda15b6098011a26cbe6dafe42",
-    "size_bytes": 4179682
+    "sha256": "8ead83d8070a0025bf4d6c79ac17fcd6ebd04e5fc6cc867d72d7b8abc21d0750",
+    "size_bytes": 4179468
   },
   "rpm_metadata": {}
 }

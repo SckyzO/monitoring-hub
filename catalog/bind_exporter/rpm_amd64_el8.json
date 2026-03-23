@@ -5,12 +5,12 @@
   "version": "0.8.0",
   "arch": "amd64",
   "dist": "el8",
-  "build_date": "2026-03-16T05:01:23.121122+00:00",
+  "build_date": "2026-03-23T04:50:37.211061+00:00",
   "status": "success",
   "package": {
     "filename": "bind_exporter-0.8.0-1.el8.x86_64.rpm",
     "url": "",
-    "sha256": "e42d884b7cca252155563cd7d0b0cf85f539e45419a05bf57e7d3d4d85c7dc68",
+    "sha256": "78ea8dd210b26c24852cb2b5d45cc5ea2461800d293eedf586be5aa4891f1186",
     "size_bytes": 4262540
   },
   "rpm_metadata": {}

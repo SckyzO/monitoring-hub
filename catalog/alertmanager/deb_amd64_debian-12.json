@@ -5,13 +5,13 @@
   "version": "0.31.1",
   "arch": "amd64",
   "dist": "debian-12",
-  "build_date": "2026-03-16T04:45:16.758015+00:00",
+  "build_date": "2026-03-23T04:32:46.637101+00:00",
   "status": "success",
   "package": {
     "filename": "alertmanager_0.31.1-1_amd64.deb",
     "url": "",
-    "sha256": "a1a262407d46c52df3d747856d97808a65d49387e0b3db309346ffab7581c6a2",
-    "size_bytes": 37511838
+    "sha256": "cb8a9d4c3523a3b41133c088051132cd50870637c5f5e0c47804f9aaccfd1150",
+    "size_bytes": 37511870
   },
   "deb_metadata": {}
 }

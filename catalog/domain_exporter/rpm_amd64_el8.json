@@ -5,12 +5,12 @@
   "version": "1.25.0",
   "arch": "amd64",
   "dist": "el8",
-  "build_date": "2026-03-16T04:59:53.927001+00:00",
+  "build_date": "2026-03-23T04:44:30.821312+00:00",
   "status": "success",
   "package": {
     "filename": "domain_exporter-1.25.0-1.el8.x86_64.rpm",
     "url": "",
-    "sha256": "d34b5c1c4bcb69af83aa97186d23912466b027803a62d73db2be73aba5144d6d",
+    "sha256": "144b9c0e19749f95aaf39cec8255811d7feda2dd7ea35b1bb631564d4b6833dc",
     "size_bytes": 5254052
   },
   "rpm_metadata": {}
