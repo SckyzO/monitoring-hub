@@ -2,16 +2,16 @@
   "format_version": "3.0",
   "artifact_type": "rpm",
   "exporter": "nats_exporter",
-  "version": "0.19.1",
+  "version": "0.19.2",
   "arch": "amd64",
   "dist": "el10",
-  "build_date": "2026-03-23T04:59:31.855424+00:00",
+  "build_date": "2026-03-27T08:45:40.434084+00:00",
   "status": "success",
   "package": {
-    "filename": "nats_exporter-0.19.1-1.el10.x86_64.rpm",
+    "filename": "nats_exporter-0.19.2-1.el10.x86_64.rpm",
     "url": "",
-    "sha256": "f328ced30830e0f59afaa131bd8fa486e204057e2069ba6691d6fa2c7e125c8e",
-    "size_bytes": 3468270
+    "sha256": "bbf0374254e26e53e1d763a24ca1581541a9afa4470e16445d262a7f1bab2724",
+    "size_bytes": 3468210
   },
   "rpm_metadata": {}
 }
