@@ -137,7 +137,7 @@
       "name": "nats_exporter",
       "version": "0.19.2",
       "category": "Messaging",
-      "last_updated": "2026-03-27T08:52:14.677701+00:00"
+      "last_updated": null
     },
     {
       "name": "nginx_exporter",
@@ -183,9 +183,9 @@
     },
     {
       "name": "slurm_exporter",
-      "version": "1.5.1",
+      "version": "1.6.0",
       "category": "Infrastructure",
-      "last_updated": null
+      "last_updated": "2026-03-28T08:41:57.039836+00:00"
     },
     {
       "name": "smartctl_exporter",

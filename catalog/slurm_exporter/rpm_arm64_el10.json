@@ -2,16 +2,16 @@
   "format_version": "3.0",
   "artifact_type": "rpm",
   "exporter": "slurm_exporter",
-  "version": "1.5.1",
+  "version": "1.6.0",
   "arch": "arm64",
   "dist": "el10",
-  "build_date": "2026-03-25T08:47:30.600734+00:00",
+  "build_date": "2026-03-28T08:37:22.607969+00:00",
   "status": "success",
   "package": {
-    "filename": "slurm_exporter-1.5.1-1.el10.aarch64.rpm",
+    "filename": "slurm_exporter-1.6.0-1.el10.aarch64.rpm",
     "url": "",
-    "sha256": "b5cb4469d7a7ed03b3a3dd04a4474ec541808549399555849aafbb086c16909c",
-    "size_bytes": 3535801
+    "sha256": "3bf00378ec9b3941abdf6bac6b55ba7f6189f11494a2a61f47f40dd1e01649a7",
+    "size_bytes": 3539462
   },
   "rpm_metadata": {}
 }
