@@ -5,12 +5,12 @@
   "version": "0.7.1",
   "arch": "amd64",
   "dist": "debian-12",
-  "build_date": "2026-03-23T04:32:44.205617+00:00",
+  "build_date": "2026-03-30T04:57:21.805121+00:00",
   "status": "success",
   "package": {
     "filename": "collectd-exporter_0.7.1-1_amd64.deb",
     "url": "",
-    "sha256": "4ac62bd3f309ba2d170db7102b483ac55a7dec2cbb13227f879083a5c6d912b7",
+    "sha256": "e550bbc748a8c68af315d8bd52e3a5e436542ec3a74f9a57145c69e568e95f55",
     "size_bytes": 9193442
   },
   "deb_metadata": {}

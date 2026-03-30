@@ -5,12 +5,12 @@
   "version": "1.7.0",
   "arch": "arm64",
   "dist": "el8",
-  "build_date": "2026-03-23T05:10:32.330838+00:00",
+  "build_date": "2026-03-30T05:21:14.412260+00:00",
   "status": "success",
   "package": {
     "filename": "keepalived_exporter-1.7.0-1.el8.aarch64.rpm",
     "url": "",
-    "sha256": "48de078aa359f0be3e2beb92d60cd2eff2bc2ffc98e6b7c33b9d8d6fe921a31f",
+    "sha256": "5ed221af92eebfba5c838129f73e199f44bd01de88583421a715298453b3a06b",
     "size_bytes": 3001760
   },
   "rpm_metadata": {}

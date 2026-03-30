@@ -5,13 +5,13 @@
   "version": "0.19.0",
   "arch": "amd64",
   "dist": "el9",
-  "build_date": "2026-03-23T05:07:28.683791+00:00",
+  "build_date": "2026-03-30T05:13:29.548130+00:00",
   "status": "success",
   "package": {
     "filename": "mysqld_exporter-0.19.0-1.el9.x86_64.rpm",
     "url": "",
-    "sha256": "dc506306f5179b93d601aad16ae96507f097c8abcc1378b9f88cbf841609f4b2",
-    "size_bytes": 4413503
+    "sha256": "1c2bdcadeb47e7cbb233ecf33ba7a11f3a2bdc17b868f4a71bbb736e8433f47b",
+    "size_bytes": 4413439
   },
   "rpm_metadata": {}
 }

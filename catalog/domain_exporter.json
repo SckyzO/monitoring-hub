@@ -4,55 +4,55 @@
   "version": "1.25.0",
   "category": "Web",
   "description": "Exports the expiration time of your domains as Prometheus metrics.",
-  "last_updated": "2026-03-23T04:55:43.742160+00:00",
+  "last_updated": "2026-03-30T05:16:32.158021+00:00",
   "artifacts": {
     "rpm": {
-      "el8": {
-        "amd64": {
-          "status": "success",
-          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/domain_exporter-1.25.0-1.el8.x86_64.rpm",
-          "size_bytes": 5254052,
-          "sha256": "144b9c0e19749f95aaf39cec8255811d7feda2dd7ea35b1bb631564d4b6833dc",
-          "build_date": "2026-03-23T04:44:30.821312+00:00"
-        },
-        "arm64": {
-          "status": "success",
-          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/domain_exporter-1.25.0-1.el8.aarch64.rpm",
-          "size_bytes": 4343040,
-          "sha256": "ac9774697b7835cd9f72fcf62fe711a735b6004768baa51f73eef4a3d3e2a562",
-          "build_date": "2026-03-23T04:55:43.742160+00:00"
-        }
-      },
       "el10": {
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/domain_exporter-1.25.0-1.el10.aarch64.rpm",
           "size_bytes": 4485240,
-          "sha256": "6a8014395c7f142ccbc17de96ea3bce91000a690cc84d6682f828fdc5d93b47b",
-          "build_date": "2026-03-23T04:55:00.174833+00:00"
+          "sha256": "d6a93a06113d32f31930f337a9a827bd93b26f3d7a4d66f312d3f01d1427caea",
+          "build_date": "2026-03-30T05:10:52.280008+00:00"
         },
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/domain_exporter-1.25.0-1.el10.x86_64.rpm",
           "size_bytes": 5256695,
-          "sha256": "ca5e3248f379d30f91273772610c3a2d0ec7e899d49ce77c50cb23480f09e6c0",
-          "build_date": "2026-03-23T04:52:11.230780+00:00"
+          "sha256": "f1c049915f204c2a46722e18827e1298872acc31889e4664ac36aafcb11d3e87",
+          "build_date": "2026-03-30T05:08:58.100787+00:00"
+        }
+      },
+      "el8": {
+        "amd64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/domain_exporter-1.25.0-1.el8.x86_64.rpm",
+          "size_bytes": 5254052,
+          "sha256": "cc04038c32454564fd9e549611f0a5b1d2b66dbeb2a4e22cbeb901d0fb53f5fa",
+          "build_date": "2026-03-30T05:06:59.712232+00:00"
+        },
+        "arm64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/domain_exporter-1.25.0-1.el8.aarch64.rpm",
+          "size_bytes": 4343040,
+          "sha256": "707a03388266838dc674b1cba77c98d59f4508ccc76086ab41d97f4cd2174692",
+          "build_date": "2026-03-30T05:09:21.912216+00:00"
         }
       },
       "el9": {
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/domain_exporter-1.25.0-1.el9.aarch64.rpm",
-          "size_bytes": 4485115,
-          "sha256": "b456d90f610435675ff5df7318717e69970375928fe5c008136cc419a49d54e2",
-          "build_date": "2026-03-23T04:53:33.368800+00:00"
+          "size_bytes": 4485113,
+          "sha256": "4f5e21eae933ece0d2aafc3d65aa1780ea7971124bb0fa03f12655b7226ad2d9",
+          "build_date": "2026-03-30T05:16:32.158021+00:00"
         },
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/domain_exporter-1.25.0-1.el9.x86_64.rpm",
-          "size_bytes": 5256562,
-          "sha256": "507757764106cca366aebc940d6066cdae09edd17b621d61a7431b1518ff4c6c",
-          "build_date": "2026-03-23T04:50:09.706143+00:00"
+          "size_bytes": 5256564,
+          "sha256": "b4f029c2619bf5fc7e25ed27658ecdd3247004f5dbc75e70b816b17b4bec5f0a",
+          "build_date": "2026-03-30T05:08:40.421942+00:00"
         }
       }
     },
@@ -61,16 +61,16 @@
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/domain-exporter_1.25.0-1_amd64.deb",
-          "size_bytes": 6329084,
-          "sha256": "0050b39819a19847a95030d6d345fa6c8d7151792f8577d5fee124030a0c43b8",
-          "build_date": "2026-03-23T04:36:12.334071+00:00"
+          "size_bytes": 6329080,
+          "sha256": "8ee99e231cfbfe43a86948f8b0b61a486f7ae09de9768a45ef2813d2621f5c92",
+          "build_date": "2026-03-30T04:50:02.443290+00:00"
         },
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/domain-exporter_1.25.0-1_arm64.deb",
-          "size_bytes": 5424280,
-          "sha256": "9f0794a6b1fffe26dd205894c27074f4167b16e9ea0a80d33893c78118fad187",
-          "build_date": "2026-03-23T04:38:28.866495+00:00"
+          "size_bytes": 5424272,
+          "sha256": "21020c53d0f38a770a4f3500bdc7f54d9f0df0f9f651cdecb4d140356c93ddcb",
+          "build_date": "2026-03-30T05:03:28.551131+00:00"
         }
       }
     },

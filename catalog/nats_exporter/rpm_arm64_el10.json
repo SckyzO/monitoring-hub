@@ -5,12 +5,12 @@
   "version": "0.19.2",
   "arch": "arm64",
   "dist": "el10",
-  "build_date": "2026-03-27T08:47:49.196471+00:00",
+  "build_date": "2026-03-30T05:27:51.287007+00:00",
   "status": "success",
   "package": {
     "filename": "nats_exporter-0.19.2-1.el10.aarch64.rpm",
     "url": "",
-    "sha256": "b3062aa7ed590b3a008dd0488e7220675a30a82ec2924c19015c3e299af6b954",
+    "sha256": "120968f752b0d72b1122883ccb05ad6cee0e1dfabefd74dd6dd6e191a72dece5",
     "size_bytes": 3092206
   },
   "rpm_metadata": {}

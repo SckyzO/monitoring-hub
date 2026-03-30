@@ -4,55 +4,55 @@
   "version": "1.6.2",
   "category": "Messaging",
   "description": "Prometheus exporter for Exim mail server metrics.",
-  "last_updated": "2026-03-23T04:59:16.483505+00:00",
+  "last_updated": "2026-03-30T05:21:52.290763+00:00",
   "artifacts": {
     "rpm": {
-      "el8": {
-        "amd64": {
-          "status": "success",
-          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/exim_exporter-1.6.2-1.el8.x86_64.rpm",
-          "size_bytes": 3619052,
-          "sha256": "fcc4dee0d5b26a64fbe4abe46cd9bd2576e34e279b3eceb7f417897caed698ec",
-          "build_date": "2026-03-23T04:54:30.989791+00:00"
-        },
-        "arm64": {
-          "status": "success",
-          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/exim_exporter-1.6.2-1.el8.aarch64.rpm",
-          "size_bytes": 3152844,
-          "sha256": "1e5b603580273d7ed6b290ad78d23b4af63222dd1aa56a270aaebfcf5ddd732f",
-          "build_date": "2026-03-23T04:59:16.483505+00:00"
-        }
-      },
       "el10": {
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/exim_exporter-1.6.2-1.el10.aarch64.rpm",
           "size_bytes": 3191779,
-          "sha256": "79a2a71f5a1b8b6c21c333605ee6ae5d9012a7710c7d6897dae6aa4b854bab5e",
-          "build_date": "2026-03-23T04:53:44.019158+00:00"
+          "sha256": "c319ea8f4d84a39ab7ab093b4ee34f01c24c458bcb23ec88ea9628849d392213",
+          "build_date": "2026-03-30T05:11:06.196800+00:00"
         },
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/exim_exporter-1.6.2-1.el10.x86_64.rpm",
           "size_bytes": 3538785,
-          "sha256": "b24b6683a755b5efaa4158df0dc4126b39423ee3cf6555326b95b4510c505434",
-          "build_date": "2026-03-23T04:55:49.432618+00:00"
+          "sha256": "0ba20d820f7c8b7bdcbeb267984d84339b4f19698af0edc42239042a03abea0e",
+          "build_date": "2026-03-30T05:07:00.834185+00:00"
+        }
+      },
+      "el8": {
+        "amd64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/exim_exporter-1.6.2-1.el8.x86_64.rpm",
+          "size_bytes": 3619052,
+          "sha256": "46a21bd9c404150beaf996225334b94d3f664d95be3390a82fa03bd156d6170a",
+          "build_date": "2026-03-30T05:09:51.610842+00:00"
+        },
+        "arm64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/exim_exporter-1.6.2-1.el8.aarch64.rpm",
+          "size_bytes": 3152844,
+          "sha256": "5215875de3e0edff060da8d33a8507fd8ba342fc69664d60aee320c1020427d1",
+          "build_date": "2026-03-30T05:10:08.972425+00:00"
         }
       },
       "el9": {
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/exim_exporter-1.6.2-1.el9.aarch64.rpm",
-          "size_bytes": 3191637,
-          "sha256": "7e93c90a0bff1622334cf512d7a964bc8a399835a99e5c3a2ca45386e3e5dc6f",
-          "build_date": "2026-03-23T04:58:53.216241+00:00"
+          "size_bytes": 3191642,
+          "sha256": "f39292d7952ca2485c0e534a014839325725b05ef19fd5d125dca9920d184124",
+          "build_date": "2026-03-30T05:21:52.290763+00:00"
         },
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/exim_exporter-1.6.2-1.el9.x86_64.rpm",
-          "size_bytes": 3540877,
-          "sha256": "72c4e14bf1641544ccf5523c10f87fe484274965ee93a88563f8dca11cf0117e",
-          "build_date": "2026-03-23T04:54:47.572841+00:00"
+          "size_bytes": 3540876,
+          "sha256": "c9da017b2f2d42f225037eec1c6ccb466616975aa84d0576780dbc44fd349d54",
+          "build_date": "2026-03-30T05:04:26.036332+00:00"
         }
       }
     },
@@ -61,16 +61,16 @@
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/exim-exporter_1.6.2-1_amd64.deb",
-          "size_bytes": 8033644,
-          "sha256": "89b002246c4c4ca0c6b8f8146633920586924584872e2d975730d44efc27ec51",
-          "build_date": "2026-03-23T04:32:38.757651+00:00"
+          "size_bytes": 8033668,
+          "sha256": "7cbbb09aa116d5654c9f93f7fcc94a7bda02201a6a56f42bbdd473a14911f37d",
+          "build_date": "2026-03-30T04:56:43.622106+00:00"
         },
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/exim-exporter_1.6.2-1_arm64.deb",
-          "size_bytes": 7506122,
-          "sha256": "c56658ca3a3601e581e351051bc3bff6645aa175c248e88b6248ef5d59c2cf36",
-          "build_date": "2026-03-23T04:46:47.999393+00:00"
+          "size_bytes": 7506132,
+          "sha256": "18696e5a6bd2125d3188f937080c09d475feff6cc6682fc08ebb6cd15ef89762",
+          "build_date": "2026-03-30T04:59:38.618458+00:00"
         }
       }
     },

@@ -5,13 +5,13 @@
   "version": "0.30.1",
   "arch": "amd64",
   "dist": "debian-12",
-  "build_date": "2026-03-23T04:40:43.153605+00:00",
+  "build_date": "2026-03-30T04:58:56.964724+00:00",
   "status": "success",
   "package": {
     "filename": "snmp-exporter_0.30.1-1_amd64.deb",
     "url": "",
-    "sha256": "5cac29196fc761997ddeba7797ffdf2f11dd5a1904b4fab9a60579b9a968c6f4",
-    "size_bytes": 9806186
+    "sha256": "c3faf061ee708befc2bd9e6ef7eb6700ff7560ceb0fe1409724d6e4d3d523a24",
+    "size_bytes": 9806174
   },
   "deb_metadata": {}
 }

@@ -5,12 +5,12 @@
   "version": "0.28.0",
   "arch": "amd64",
   "dist": "el10",
-  "build_date": "2026-03-23T04:51:13.871654+00:00",
+  "build_date": "2026-03-30T05:02:30.463104+00:00",
   "status": "success",
   "package": {
     "filename": "blackbox_exporter-0.28.0-1.el10.x86_64.rpm",
     "url": "",
-    "sha256": "59533279101ea6503a20926e5c29d65b8a72502ff2aaafac62240861ca7e2426",
+    "sha256": "727628b927a9bafb3cbcc015b50a7411028cd062f17edf569daf07d31adfd522",
     "size_bytes": 7229287
   },
   "rpm_metadata": {}

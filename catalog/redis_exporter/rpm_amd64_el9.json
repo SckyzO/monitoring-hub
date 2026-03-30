@@ -5,13 +5,13 @@
   "version": "1.82.0",
   "arch": "amd64",
   "dist": "el9",
-  "build_date": "2026-03-23T05:13:03.502975+00:00",
+  "build_date": "2026-03-30T05:31:34.327669+00:00",
   "status": "success",
   "package": {
     "filename": "redis_exporter-1.82.0-1.el9.x86_64.rpm",
     "url": "",
-    "sha256": "8c06f7d05979937a8207ad3cfe3ab5b925f32f852acad063bef47e95bc14607f",
-    "size_bytes": 3721012
+    "sha256": "c823c53af7cfdd9018dc5569967ad4f6709de94fcbd9b386cc04ff2d9b885e88",
+    "size_bytes": 3720907
   },
   "rpm_metadata": {}
 }

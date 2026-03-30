@@ -5,13 +5,13 @@
   "version": "2.1.0",
   "arch": "amd64",
   "dist": "debian-12",
-  "build_date": "2026-03-23T04:34:24.965194+00:00",
+  "build_date": "2026-03-30T04:48:53.516744+00:00",
   "status": "success",
   "package": {
     "filename": "eseries-exporter_2.1.0-1_amd64.deb",
     "url": "",
-    "sha256": "2533a26aac00ea8633cdf19b9b3a35a274a7bbfcc244db6a4157226f0966c301",
-    "size_bytes": 4838260
+    "sha256": "410829b0af231dcea36a477c7e3f431194ede4f4ac91f2468a93b5844696ce57",
+    "size_bytes": 4838256
   },
   "deb_metadata": {}
 }

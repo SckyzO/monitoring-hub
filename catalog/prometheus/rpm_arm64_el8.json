@@ -5,12 +5,12 @@
   "version": "3.10.0",
   "arch": "arm64",
   "dist": "el8",
-  "build_date": "2026-03-23T05:12:39.986815+00:00",
+  "build_date": "2026-03-30T05:27:07.459332+00:00",
   "status": "success",
   "package": {
     "filename": "prometheus-3.10.0-1.el8.aarch64.rpm",
     "url": "",
-    "sha256": "b8a440651b49abe3773a455e007cad7dc64d9e11a416479b8a2e82a496ad4640",
+    "sha256": "9fcecda58b9b29fae0655a9b887c6c9d30111c5e5a7f70c7b855ecb3c67f37bd",
     "size_bytes": 27720548
   },
   "rpm_metadata": {}

@@ -5,13 +5,13 @@
   "version": "1.7.0",
   "arch": "arm64",
   "dist": "debian-12",
-  "build_date": "2026-03-23T04:48:11.922057+00:00",
+  "build_date": "2026-03-30T05:01:21.864896+00:00",
   "status": "success",
   "package": {
     "filename": "keepalived-exporter_1.7.0-1_arm64.deb",
     "url": "",
-    "sha256": "fce31fb4c76bf3a264b4357af05fbeafdf8821a2129acd91c72abe55d6fa70bd",
-    "size_bytes": 3729696
+    "sha256": "4f1e93641d2e657b9e691276250d3e76fd6e7b4fa30f77b9a4ecb5ca3a493fea",
+    "size_bytes": 3729692
   },
   "deb_metadata": {}
 }

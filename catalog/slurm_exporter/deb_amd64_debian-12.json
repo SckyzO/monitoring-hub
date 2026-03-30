@@ -5,13 +5,13 @@
   "version": "1.6.0",
   "arch": "amd64",
   "dist": "debian-12",
-  "build_date": "2026-03-28T08:35:39.101614+00:00",
+  "build_date": "2026-03-30T04:58:01.535488+00:00",
   "status": "success",
   "package": {
     "filename": "slurm-exporter_1.6.0-1_amd64.deb",
     "url": "",
-    "sha256": "fb8de6297c7c2a50c077bd996cdd1e34558ddcf9b1cb9e656f8826d3e7d30387",
-    "size_bytes": 4726274
+    "sha256": "8baa17b05abc9c62b2902be25af05924c09bdd172be7cd9e2662ab135cf959b7",
+    "size_bytes": 4726284
   },
   "deb_metadata": {}
 }

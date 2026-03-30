@@ -5,13 +5,13 @@
   "version": "0.1.4",
   "arch": "arm64",
   "dist": "debian-12",
-  "build_date": "2026-03-23T04:44:46.633488+00:00",
+  "build_date": "2026-03-30T05:03:48.952798+00:00",
   "status": "success",
   "package": {
     "filename": "textfile-exporter_0.1.4-1_arm64.deb",
     "url": "",
-    "sha256": "1a8c061d5f332d3e532aba0b93d36beea98063c3c30f71d9e7b156326d6c5512",
-    "size_bytes": 3311464
+    "sha256": "da17985c58b0bac6f801a9d77718ad368dbb7baef888eb37665e1ecb5c03f025",
+    "size_bytes": 3311462
   },
   "deb_metadata": {}
 }
