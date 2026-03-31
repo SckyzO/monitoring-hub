@@ -2,16 +2,16 @@
   "format_version": "3.0",
   "artifact_type": "deb",
   "exporter": "slurm_exporter",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "arch": "amd64",
   "dist": "debian-12",
-  "build_date": "2026-03-30T04:58:01.535488+00:00",
+  "build_date": "2026-03-31T08:54:34.703176+00:00",
   "status": "success",
   "package": {
-    "filename": "slurm-exporter_1.6.0-1_amd64.deb",
+    "filename": "slurm-exporter_1.7.0-1_amd64.deb",
     "url": "",
-    "sha256": "8baa17b05abc9c62b2902be25af05924c09bdd172be7cd9e2662ab135cf959b7",
-    "size_bytes": 4726284
+    "sha256": "4bcad56358aab4fbb9e25fb1d717b7f94725fd5afccbb1f9e69ca04efc14543e",
+    "size_bytes": 4728672
   },
   "deb_metadata": {}
 }
