@@ -2,16 +2,16 @@
   "format_version": "3.0",
   "artifact_type": "rpm",
   "exporter": "slurm_exporter",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "arch": "amd64",
   "dist": "el9",
-  "build_date": "2026-03-31T08:54:19.173680+00:00",
+  "build_date": "2026-04-01T09:00:17.599982+00:00",
   "status": "success",
   "package": {
-    "filename": "slurm_exporter-1.7.0-1.el9.x86_64.rpm",
+    "filename": "slurm_exporter-1.7.1-1.el9.x86_64.rpm",
     "url": "",
-    "sha256": "05ea2189f90d1a063e1009399b7df2bad04a8a8818da04de929c75a3e543e80c",
-    "size_bytes": 3987075
+    "sha256": "704f168185ef74d6185af2c77377d64ab40a22b820c76db4513f01297bb46050",
+    "size_bytes": 3987244
   },
   "rpm_metadata": {}
 }

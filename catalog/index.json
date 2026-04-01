@@ -183,9 +183,9 @@
     },
     {
       "name": "slurm_exporter",
-      "version": "1.7.0",
+      "version": "1.7.1",
       "category": "Infrastructure",
-      "last_updated": "2026-03-31T09:00:54.868553+00:00"
+      "last_updated": "2026-04-01T09:06:52.556612+00:00"
     },
     {
       "name": "smartctl_exporter",
