@@ -171,9 +171,9 @@
     },
     {
       "name": "prometheus",
-      "version": "3.10.0",
+      "version": "3.11.0",
       "category": "Infrastructure",
-      "last_updated": null
+      "last_updated": "2026-04-03T09:04:41.657017+00:00"
     },
     {
       "name": "redis_exporter",
@@ -183,9 +183,9 @@
     },
     {
       "name": "slurm_exporter",
-      "version": "1.7.1",
+      "version": "1.8.0",
       "category": "Infrastructure",
-      "last_updated": "2026-04-01T09:06:52.556612+00:00"
+      "last_updated": null
     },
     {
       "name": "smartctl_exporter",

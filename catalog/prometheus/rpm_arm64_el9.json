@@ -2,16 +2,16 @@
   "format_version": "3.0",
   "artifact_type": "rpm",
   "exporter": "prometheus",
-  "version": "3.10.0",
+  "version": "3.11.0",
   "arch": "arm64",
   "dist": "el9",
-  "build_date": "2026-03-30T05:34:24.762423+00:00",
+  "build_date": "2026-04-03T08:57:40.643666+00:00",
   "status": "success",
   "package": {
-    "filename": "prometheus-3.10.0-1.el9.aarch64.rpm",
+    "filename": "prometheus-3.11.0-1.el9.aarch64.rpm",
     "url": "",
-    "sha256": "babdfb226162db384e4122c92527cf3a735afdb1aa4a6111871dc1bb915761d1",
-    "size_bytes": 28538172
+    "sha256": "917adff684866bbe922a8716fe26dca38c8fca7fb27073d69d55343245f2b490",
+    "size_bytes": 29825298
   },
   "rpm_metadata": {}
 }

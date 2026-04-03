@@ -2,16 +2,16 @@
   "format_version": "3.0",
   "artifact_type": "deb",
   "exporter": "prometheus",
-  "version": "3.10.0",
+  "version": "3.11.0",
   "arch": "amd64",
   "dist": "debian-12",
-  "build_date": "2026-03-30T04:51:25.010777+00:00",
+  "build_date": "2026-04-03T08:49:43.732134+00:00",
   "status": "success",
   "package": {
-    "filename": "prometheus_3.10.0-1_amd64.deb",
+    "filename": "prometheus_3.11.0-1_amd64.deb",
     "url": "",
-    "sha256": "60300d37cc792c02c360a5164ed6beaba1e1bb5fa7d5a236ec5515926668f0fe",
-    "size_bytes": 140208120
+    "sha256": "a29f219510a77a7ace69826b65259c3b0c94fe1e20a7864c58a702b27afda880",
+    "size_bytes": 149350374
   },
   "deb_metadata": {}
 }
