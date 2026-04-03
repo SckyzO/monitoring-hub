@@ -5,13 +5,13 @@
   "version": "3.11.0",
   "arch": "amd64",
   "dist": "el9",
-  "build_date": "2026-04-03T08:49:23.758026+00:00",
+  "build_date": "2026-04-03T09:07:48.422991+00:00",
   "status": "success",
   "package": {
     "filename": "prometheus-3.11.0-1.el9.x86_64.rpm",
     "url": "",
-    "sha256": "a4721f7c10a600865a0f96ea1d17989e12f5570e6351c7c33fe9be1d5fa4c70c",
-    "size_bytes": 33227681
+    "sha256": "f20baeb5feda5b03d8ad1cf75e74be93e3e675f0abce3e331c2c80122d23e845",
+    "size_bytes": 33227575
   },
   "rpm_metadata": {}
 }
