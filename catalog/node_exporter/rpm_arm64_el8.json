@@ -2,16 +2,16 @@
   "format_version": "3.0",
   "artifact_type": "rpm",
   "exporter": "node_exporter",
-  "version": "1.10.2",
+  "version": "1.11.0",
   "arch": "arm64",
   "dist": "el8",
-  "build_date": "2026-03-30T05:24:00.965300+00:00",
+  "build_date": "2026-04-05T08:44:27.809960+00:00",
   "status": "success",
   "package": {
-    "filename": "node_exporter-1.10.2-1.el8.aarch64.rpm",
+    "filename": "node_exporter-1.11.0-1.el8.aarch64.rpm",
     "url": "",
-    "sha256": "18c4aebb2fe671318afcd5ac3f641286fb7de8737549240cc4c5b90ac05dfbb1",
-    "size_bytes": 4610116
+    "sha256": "50e199e9d236ff9b5a2329f59bbacab3620a30f5edf30998689f7f30699f680d",
+    "size_bytes": 4745244
   },
   "rpm_metadata": {}
 }

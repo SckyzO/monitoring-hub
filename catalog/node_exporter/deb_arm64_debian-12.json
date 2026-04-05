@@ -2,16 +2,16 @@
   "format_version": "3.0",
   "artifact_type": "deb",
   "exporter": "node_exporter",
-  "version": "1.10.2",
+  "version": "1.11.0",
   "arch": "arm64",
   "dist": "debian-12",
-  "build_date": "2026-03-30T04:57:52.856092+00:00",
+  "build_date": "2026-04-05T08:45:47.137440+00:00",
   "status": "success",
   "package": {
-    "filename": "node-exporter_1.10.2-1_arm64.deb",
+    "filename": "node-exporter_1.11.0-1_arm64.deb",
     "url": "",
-    "sha256": "be997a4e71307b3cdafe0608a6a7334b4e82e83db75b9459f0fec152bf8dd08b",
-    "size_bytes": 10656596
+    "sha256": "b2cea87646e61d5a06f66716cabe80fdcfc3c919c838f13a867f62345383ec67",
+    "size_bytes": 11008708
   },
   "deb_metadata": {}
 }
