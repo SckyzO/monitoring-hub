@@ -5,13 +5,13 @@
   "version": "1.2.0",
   "arch": "arm64",
   "dist": "el9",
-  "build_date": "2026-03-30T05:25:51.272726+00:00",
+  "build_date": "2026-04-06T05:29:07.379597+00:00",
   "status": "success",
   "package": {
     "filename": "ping_exporter-1.2.0-1.el9.aarch64.rpm",
     "url": "",
-    "sha256": "4b358af08b69815fae163cbfcab6be1e014dc5edd9cf287d04ef125c7788aa54",
-    "size_bytes": 8207410
+    "sha256": "bfdeb30ba006237845b5f9f8352aedd3985782e0fac57c3642ab495705542d2a",
+    "size_bytes": 8207483
   },
   "rpm_metadata": {}
 }

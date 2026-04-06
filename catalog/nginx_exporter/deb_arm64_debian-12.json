@@ -5,13 +5,13 @@
   "version": "1.5.1",
   "arch": "arm64",
   "dist": "debian-12",
-  "build_date": "2026-03-30T04:55:04.052300+00:00",
+  "build_date": "2026-04-06T05:03:23.396472+00:00",
   "status": "success",
   "package": {
     "filename": "nginx-exporter_1.5.1-1_arm64.deb",
     "url": "",
-    "sha256": "bcfcf72b476879ba61055a6aacc3805e347b1557bd92e6be059371b59ac046fe",
-    "size_bytes": 4451040
+    "sha256": "7768e426cb9dfa48207308c19e329c8ac4a0e8a03bc6241628066d098c6a68c0",
+    "size_bytes": 4451030
   },
   "deb_metadata": {}
 }

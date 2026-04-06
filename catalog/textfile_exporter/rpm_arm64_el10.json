@@ -5,12 +5,12 @@
   "version": "0.1.4",
   "arch": "arm64",
   "dist": "el10",
-  "build_date": "2026-03-30T05:32:13.416761+00:00",
+  "build_date": "2026-04-06T05:27:36.730414+00:00",
   "status": "success",
   "package": {
     "filename": "textfile_exporter-0.1.4-1.el10.aarch64.rpm",
     "url": "",
-    "sha256": "23eff6680f7fdc1e5a407a5f81bfaae075b1f04c951b143f764210e5ce8e32ba",
+    "sha256": "2ba27ebb97f0b6d70bb4e6c82b30a11cf3ddb1f87dfad8761d7d8fc6e02fe635",
     "size_bytes": 2782834
   },
   "rpm_metadata": {}

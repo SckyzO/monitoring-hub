@@ -5,13 +5,13 @@
   "version": "0.31.1",
   "arch": "amd64",
   "dist": "el9",
-  "build_date": "2026-03-30T05:05:33.158513+00:00",
+  "build_date": "2026-04-06T04:58:43.924631+00:00",
   "status": "success",
   "package": {
     "filename": "alertmanager-0.31.1-1.el9.x86_64.rpm",
     "url": "",
-    "sha256": "7c11374681145e14ce05fe9211a762de554c1f7f3c6cfcc86d6de9b5476aa43b",
-    "size_bytes": 9743652
+    "sha256": "c29dfe668fffe4c7354ed54e23ae899f13560d7708df3141ee2b02874744a273",
+    "size_bytes": 9743623
   },
   "rpm_metadata": {}
 }

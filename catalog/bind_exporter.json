@@ -4,7 +4,7 @@
   "version": "0.8.0",
   "category": "Network",
   "description": "Prometheus exporter for Bind (DNS) statistics",
-  "last_updated": "2026-03-30T05:14:30.288937+00:00",
+  "last_updated": "2026-04-06T05:11:10.658620+00:00",
   "artifacts": {
     "rpm": {
       "el10": {
@@ -12,47 +12,47 @@
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/bind_exporter-0.8.0-1.el10.aarch64.rpm",
           "size_bytes": 3746452,
-          "sha256": "daa12fe67cebb8d5fc2847ce1fc9df87eccb7ef755b4876fc1f609247c5af9a2",
-          "build_date": "2026-03-30T05:07:43.647820+00:00"
+          "sha256": "276d4c7cb3522cd0a54cbc8b93252abd21c5233ef794d42cb8fadd7f82beaf0a",
+          "build_date": "2026-04-06T05:08:27.293286+00:00"
         },
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/bind_exporter-0.8.0-1.el10.x86_64.rpm",
           "size_bytes": 4159435,
-          "sha256": "29254f50139bc8a7337ec86eb49829dc620cd572fe4428e3ed1fb1093b853473",
-          "build_date": "2026-03-30T04:59:00.976160+00:00"
+          "sha256": "28074bce6f92d00ac073cec40c88642ae8b8e25b3721cfe9dc8147e59d5cea22",
+          "build_date": "2026-04-06T05:04:58.391508+00:00"
         }
       },
       "el8": {
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/bind_exporter-0.8.0-1.el8.x86_64.rpm",
-          "size_bytes": 4262536,
-          "sha256": "0172d1dbb06f3ecd3a13905a8ff226cb354be4b54bcf21e125b8c095925b05a8",
-          "build_date": "2026-03-30T05:01:35.529093+00:00"
+          "size_bytes": 4262540,
+          "sha256": "b1254b6173b7fc4e696a724511639e8452d34bfc21bb47fdefc527351b8d3fac",
+          "build_date": "2026-04-06T05:04:35.953134+00:00"
         },
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/bind_exporter-0.8.0-1.el8.aarch64.rpm",
           "size_bytes": 3708708,
-          "sha256": "209270eb42f601812e4d76d29e16db4c4a24bbbf814c47f4744acd866b02f349",
-          "build_date": "2026-03-30T05:14:30.288937+00:00"
+          "sha256": "5854e85dd161abd4bc9df1feba5daf750afb77b2d738b3e280710c957fd39929",
+          "build_date": "2026-04-06T05:11:10.658620+00:00"
         }
       },
       "el9": {
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/bind_exporter-0.8.0-1.el9.aarch64.rpm",
-          "size_bytes": 3746219,
-          "sha256": "4f8116c57cefcff5996aa5cca8e114203d75b1d51223789a8daed6f690c10026",
-          "build_date": "2026-03-30T05:05:29.991194+00:00"
+          "size_bytes": 3746222,
+          "sha256": "b6730917bfa3bddc23113bdba9b72ebc666fd854ccb35facf8b6de09a5f10d68",
+          "build_date": "2026-04-06T05:06:25.192410+00:00"
         },
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/bind_exporter-0.8.0-1.el9.x86_64.rpm",
-          "size_bytes": 4158556,
-          "sha256": "30e7c3d37c1b663e995f80c3b95db4791f597c5682b1497999e4f08064906558",
-          "build_date": "2026-03-30T05:00:18.372589+00:00"
+          "size_bytes": 4159398,
+          "sha256": "7aa62fa9ee068d553d118233e1309a05d5947196ce95ceabebf8da5b0143a342",
+          "build_date": "2026-04-06T05:09:51.344617+00:00"
         }
       }
     },
@@ -61,16 +61,16 @@
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/bind-exporter_0.8.0-1_amd64.deb",
-          "size_bytes": 9515602,
-          "sha256": "7f4820924d3a2b0226a61973995bae11b6d9a44542cc9a53eb9bbfedd9ffa2ec",
-          "build_date": "2026-03-30T04:49:56.482728+00:00"
+          "size_bytes": 9515596,
+          "sha256": "b20127fc3c28395c4f45656ae9573c13aed993cf3093909f8ebee75087886f8c",
+          "build_date": "2026-04-06T04:54:43.594760+00:00"
         },
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/bind-exporter_0.8.0-1_arm64.deb",
-          "size_bytes": 8914886,
-          "sha256": "b55bad2bb041445121584695b441ce00efb5d621cf3862561f59595eec182a7d",
-          "build_date": "2026-03-30T04:55:18.767246+00:00"
+          "size_bytes": 8914878,
+          "sha256": "a6b6c6f97a16f5848925c28b43675588fe130442c5cd207ecef6fa5088e67495",
+          "build_date": "2026-04-06T04:56:00.751683+00:00"
         }
       }
     },

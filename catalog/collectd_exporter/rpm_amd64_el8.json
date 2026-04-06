@@ -5,12 +5,12 @@
   "version": "0.7.1",
   "arch": "amd64",
   "dist": "el8",
-  "build_date": "2026-03-30T05:13:27.323588+00:00",
+  "build_date": "2026-04-06T05:15:02.657909+00:00",
   "status": "success",
   "package": {
     "filename": "collectd_exporter-0.7.1-1.el8.x86_64.rpm",
     "url": "",
-    "sha256": "535bedfdc529c6c71b20428c6167569a86657e732f448bd50b5c45d60ab1679b",
+    "sha256": "9c5685d2490542ff5532dccfafcf697b4bc443057981a85c295064122cf41fbc",
     "size_bytes": 4235084
   },
   "rpm_metadata": {}
