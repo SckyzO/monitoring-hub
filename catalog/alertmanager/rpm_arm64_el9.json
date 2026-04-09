@@ -2,16 +2,16 @@
   "format_version": "3.0",
   "artifact_type": "rpm",
   "exporter": "alertmanager",
-  "version": "0.31.1",
+  "version": "0.32.0",
   "arch": "arm64",
   "dist": "el9",
-  "build_date": "2026-04-06T05:11:22.461419+00:00",
+  "build_date": "2026-04-09T09:10:07.873141+00:00",
   "status": "success",
   "package": {
-    "filename": "alertmanager-0.31.1-1.el9.aarch64.rpm",
+    "filename": "alertmanager-0.32.0-1.el9.aarch64.rpm",
     "url": "",
-    "sha256": "03406618f410288c7d6ca39a779805566144317200d306591ac9e95dda4d06f7",
-    "size_bytes": 8775647
+    "sha256": "75e433dce842103ce8edb2693a8b84518f1611b736afb72903cd9776ff6aa84a",
+    "size_bytes": 8447852
   },
   "rpm_metadata": {}
 }

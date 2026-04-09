@@ -2,16 +2,16 @@
   "format_version": "3.0",
   "artifact_type": "rpm",
   "exporter": "alertmanager",
-  "version": "0.31.1",
+  "version": "0.32.0",
   "arch": "arm64",
   "dist": "el8",
-  "build_date": "2026-04-06T05:07:44.630110+00:00",
+  "build_date": "2026-04-09T09:10:26.025694+00:00",
   "status": "success",
   "package": {
-    "filename": "alertmanager-0.31.1-1.el8.aarch64.rpm",
+    "filename": "alertmanager-0.32.0-1.el8.aarch64.rpm",
     "url": "",
-    "sha256": "3211ebd7c18b608f15342b3646efef641710c7bd870c830001c57eb511abf6a9",
-    "size_bytes": 8701600
+    "sha256": "251be45f68d83241653d80ce1eefd593e0143b7554a3317a1407f4cd07dcddec",
+    "size_bytes": 8383692
   },
   "rpm_metadata": {}
 }
