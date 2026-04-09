@@ -5,7 +5,7 @@
       "name": "alertmanager",
       "version": "0.32.0",
       "category": "Infrastructure",
-      "last_updated": "2026-04-09T09:13:18.351630+00:00"
+      "last_updated": "2026-04-09T09:23:13.846097+00:00"
     },
     {
       "name": "apache_exporter",
@@ -117,9 +117,9 @@
     },
     {
       "name": "memcached_exporter",
-      "version": "0.15.5",
+      "version": "0.16.0",
       "category": "Database",
-      "last_updated": null
+      "last_updated": "2026-04-09T09:21:46.904900+00:00"
     },
     {
       "name": "mongodb_exporter",

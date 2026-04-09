@@ -2,16 +2,16 @@
   "format_version": "3.0",
   "artifact_type": "rpm",
   "exporter": "memcached_exporter",
-  "version": "0.15.5",
+  "version": "0.16.0",
   "arch": "arm64",
   "dist": "el8",
-  "build_date": "2026-04-06T05:25:43.496342+00:00",
+  "build_date": "2026-04-09T09:20:50.687541+00:00",
   "status": "success",
   "package": {
-    "filename": "memcached_exporter-0.15.5-1.el8.aarch64.rpm",
+    "filename": "memcached_exporter-0.16.0-1.el8.aarch64.rpm",
     "url": "",
-    "sha256": "f018456125eed4f9fd3c7ab8ba0e2a9569adde7c70e53b851370d2b0f95c4b27",
-    "size_bytes": 3576872
+    "sha256": "6642d5a35a43e40f5759ce5167772835862b9af3f7d3d2ae9b0c4010b77d344b",
+    "size_bytes": 3642408
   },
   "rpm_metadata": {}
 }
