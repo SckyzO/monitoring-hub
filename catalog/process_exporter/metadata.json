@@ -4,23 +4,23 @@
   "version": "0.8.7",
   "category": "System",
   "description": "Prometheus exporter for process metrics",
-  "last_updated": "2026-04-06T05:33:04.694863+00:00",
+  "last_updated": "2026-04-13T06:02:26.725165+00:00",
   "artifacts": {
     "rpm": {
       "el10": {
-        "arm64": {
-          "status": "success",
-          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/process_exporter-0.8.7-1.el10.aarch64.rpm",
-          "size_bytes": 3323406,
-          "sha256": "e919908d1cd3f8169fce0309194b07ec754c572fd67ce7590309f7ffecf934ee",
-          "build_date": "2026-04-06T05:22:26.519528+00:00"
-        },
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/process_exporter-0.8.7-1.el10.x86_64.rpm",
           "size_bytes": 3695560,
-          "sha256": "d7182751741c99e5792a83c60f038d2250fc61a09aadd5668ff1993ca96109f7",
-          "build_date": "2026-04-06T05:17:39.691939+00:00"
+          "sha256": "8075a1feeb8ddfa8deaf80d4faa33c2c176dcfa0a12282051381e300d539d554",
+          "build_date": "2026-04-13T05:49:58.748119+00:00"
+        },
+        "arm64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/process_exporter-0.8.7-1.el10.aarch64.rpm",
+          "size_bytes": 3323406,
+          "sha256": "c40b9589e3422788e82023f5f80ea2f85717fbde3047d388398653e33b0a0fc4",
+          "build_date": "2026-04-13T05:46:31.021579+00:00"
         }
       },
       "el8": {
@@ -28,31 +28,31 @@
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/process_exporter-0.8.7-1.el8.x86_64.rpm",
           "size_bytes": 3732720,
-          "sha256": "f4b79875d28ff88c14ecda061b39f6346568f409246a781132d5dd0362bda3fb",
-          "build_date": "2026-04-06T05:15:33.477123+00:00"
+          "sha256": "9db8a81e6cecec171fcaad7a7942cd76d9081738ad66995b66e10eb1b5a5d4a4",
+          "build_date": "2026-04-13T05:53:42.554051+00:00"
         },
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/process_exporter-0.8.7-1.el8.aarch64.rpm",
-          "size_bytes": 3228384,
-          "sha256": "21bfa4861c00aecbe9077789118e70975d573c9e8156a9dbf6c20bd8864ab56b",
-          "build_date": "2026-04-06T05:33:04.694863+00:00"
+          "size_bytes": 3228376,
+          "sha256": "21f08a874b306b2fd22f198e0d5a1f0ff3b866e475142d31728140398facefe4",
+          "build_date": "2026-04-13T06:00:47.084028+00:00"
         }
       },
       "el9": {
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/process_exporter-0.8.7-1.el9.aarch64.rpm",
-          "size_bytes": 3323426,
-          "sha256": "0ed5cefe94269bda33bbfb6e1bac5aae0ab9650637ca5480b16524f2b871c5aa",
-          "build_date": "2026-04-06T05:24:02.253454+00:00"
+          "size_bytes": 3323221,
+          "sha256": "8aa42d910cf0486654cdf80f679a3289d1e754edb9818a65100f79d897de356c",
+          "build_date": "2026-04-13T06:02:26.725165+00:00"
         },
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/process_exporter-0.8.7-1.el9.x86_64.rpm",
-          "size_bytes": 3695490,
-          "sha256": "41f67713bdb2637b30188faadd0ef59a08edb5a9e5de1b988ce216f7ee8c7265",
-          "build_date": "2026-04-06T05:27:24.293202+00:00"
+          "size_bytes": 3695437,
+          "sha256": "c8b04753c1b3c12973469224ce378b29b9a34e2b7f28f41814743b56a4143993",
+          "build_date": "2026-04-13T05:57:30.062368+00:00"
         }
       }
     },
@@ -61,16 +61,16 @@
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/process-exporter_0.8.7-1_amd64.deb",
-          "size_bytes": 4381444,
-          "sha256": "723754f95ceaf514d5a095f46f35d8f63ee3dc845beff91e267bac6a003b68d9",
-          "build_date": "2026-04-06T04:51:56.972502+00:00"
+          "size_bytes": 4381446,
+          "sha256": "608376eae87f095a702402e7b2d4f7857baa59a8d627f31d52390a697b214e44",
+          "build_date": "2026-04-13T05:17:46.436132+00:00"
         },
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/process-exporter_0.8.7-1_arm64.deb",
-          "size_bytes": 4016204,
-          "sha256": "56d69e486e1bb76c169e84721ff8b804d3d99d592d5ac6ce0f709943214d1854",
-          "build_date": "2026-04-06T05:04:29.017527+00:00"
+          "size_bytes": 4016214,
+          "sha256": "5334e9be48a04fa219d5a8d5ad82185868410efa25a653c3e956deac030c0d89",
+          "build_date": "2026-04-13T05:33:25.111286+00:00"
         }
       }
     },

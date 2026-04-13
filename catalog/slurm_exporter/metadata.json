@@ -4,23 +4,23 @@
   "version": "1.8.0",
   "category": "Infrastructure",
   "description": "Prometheus exporter for Slurm workload manager metrics",
-  "last_updated": "2026-04-06T05:30:53.770796+00:00",
+  "last_updated": "2026-04-13T06:03:07.543855+00:00",
   "artifacts": {
     "rpm": {
       "el10": {
-        "arm64": {
-          "status": "success",
-          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/slurm_exporter-1.8.0-1.el10.aarch64.rpm",
-          "size_bytes": 3571014,
-          "sha256": "713e7df2132780747c848b1a4f9aa29b1e69b976fe91644134ec1853233836ac",
-          "build_date": "2026-04-06T05:27:23.573030+00:00"
-        },
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/slurm_exporter-1.8.0-1.el10.x86_64.rpm",
           "size_bytes": 4019178,
-          "sha256": "34188ac2489d81a404c7f6c2ac03cace0875b5fdad625d6448cda14f5f8a83d5",
-          "build_date": "2026-04-06T05:17:47.512946+00:00"
+          "sha256": "16cec0dd41d66245a0865ea42725099c8ce13993726b3747e5d39268a967077f",
+          "build_date": "2026-04-13T05:57:51.205484+00:00"
+        },
+        "arm64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/slurm_exporter-1.8.0-1.el10.aarch64.rpm",
+          "size_bytes": 3571014,
+          "sha256": "409bd93aba3ce6e1d3105541b57b1d7c1aaaa8703195433e8df1650174c1e35e",
+          "build_date": "2026-04-13T06:00:25.501620+00:00"
         }
       },
       "el8": {
@@ -28,31 +28,31 @@
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/slurm_exporter-1.8.0-1.el8.x86_64.rpm",
           "size_bytes": 4059524,
-          "sha256": "936efcfdeb243a4289026029cb33b2c50b41f65cf94e79d090a5cf11cd73fceb",
-          "build_date": "2026-04-06T05:30:53.770796+00:00"
+          "sha256": "ffa422801c96c5a5b3084baf4a1f09a06503658eae0d350c6ab4d4a00640bc42",
+          "build_date": "2026-04-13T05:57:09.455472+00:00"
         },
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/slurm_exporter-1.8.0-1.el8.aarch64.rpm",
           "size_bytes": 3468416,
-          "sha256": "8958d69d62c9ebcdefc0c6c50a3103b8b83e839f15acce35a93bb3b666de85ff",
-          "build_date": "2026-04-06T05:22:21.504816+00:00"
+          "sha256": "c71dd3749721db320c98ad76f1ba23a97fa94ef3cfb75fcf708f8d0fea4fcf97",
+          "build_date": "2026-04-13T05:54:09.340433+00:00"
         }
       },
       "el9": {
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/slurm_exporter-1.8.0-1.el9.aarch64.rpm",
-          "size_bytes": 3571052,
-          "sha256": "82284077a11c1868dcb2307db0ba0eeba65fccfe0506ba46c2011827ee81cd5b",
-          "build_date": "2026-04-06T05:29:09.251906+00:00"
+          "size_bytes": 3571051,
+          "sha256": "6ec2dbf3a2a06b86e7eb393003c71be24bb8ff9ee38f2b890734a161da62e9e1",
+          "build_date": "2026-04-13T06:03:07.543855+00:00"
         },
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/slurm_exporter-1.8.0-1.el9.x86_64.rpm",
-          "size_bytes": 4019469,
-          "sha256": "de4628c29d595a6801147625da797e5246619e93cb0e6b2e552748cbaee1bec4",
-          "build_date": "2026-04-06T05:26:35.715742+00:00"
+          "size_bytes": 4019460,
+          "sha256": "6969d26d8bff37b877be16b53d1755b868a63f1ecdc11717ca59378a5f22700f",
+          "build_date": "2026-04-13T05:59:36.796211+00:00"
         }
       }
     },
@@ -61,16 +61,16 @@
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/slurm-exporter_1.8.0-1_amd64.deb",
-          "size_bytes": 4767388,
-          "sha256": "3f2612834f077914ed3cd4f0c13c01c9e15bdb50e3325b8c2e87b1a2c5a70436",
-          "build_date": "2026-04-06T04:58:01.826863+00:00"
+          "size_bytes": 4767394,
+          "sha256": "0469810a038e77313fe1389f2a37ab23e2e861ca069428a4781141dfb33690f1",
+          "build_date": "2026-04-13T05:19:02.062045+00:00"
         },
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/slurm-exporter_1.8.0-1_arm64.deb",
-          "size_bytes": 4303632,
-          "sha256": "53bf4c278fe9e7afc256ef1b70797f82abd1ddf80071067a018a8d38059624ed",
-          "build_date": "2026-04-06T04:57:06.810339+00:00"
+          "size_bytes": 4303640,
+          "sha256": "b018ef8c22c8e8de8b824b8e0849fb62412639cc934b68185f7bc347a91fa740",
+          "build_date": "2026-04-13T05:25:08.242211+00:00"
         }
       }
     },

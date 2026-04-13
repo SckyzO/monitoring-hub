@@ -5,13 +5,13 @@
   "version": "0.28.0",
   "arch": "arm64",
   "dist": "debian-12",
-  "build_date": "2026-04-06T04:56:15.192766+00:00",
+  "build_date": "2026-04-13T05:24:36.916574+00:00",
   "status": "success",
   "package": {
     "filename": "blackbox-exporter_0.28.0-1_arm64.deb",
     "url": "",
-    "sha256": "899318d1f95d251ff7ff95177d4392c4a143b281758e6937bfd0d15a8adfff08",
-    "size_bytes": 14782750
+    "sha256": "4359062b9f6ed357bfc1ca975ab1508a018692d38260a010fa4d8072a366cd25",
+    "size_bytes": 14782760
   },
   "deb_metadata": {}
 }

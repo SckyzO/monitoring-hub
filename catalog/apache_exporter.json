@@ -4,55 +4,55 @@
   "version": "1.0.12",
   "category": "Web",
   "description": "Prometheus exporter for Apache HTTP Server",
-  "last_updated": "2026-04-06T05:11:43.738374+00:00",
+  "last_updated": "2026-04-13T05:46:19.149883+00:00",
   "artifacts": {
     "rpm": {
       "el10": {
-        "arm64": {
-          "status": "success",
-          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/apache_exporter-1.0.12-1.el10.aarch64.rpm",
-          "size_bytes": 3724389,
-          "sha256": "afb2b46b7c6e0c7ffb362c81c7288570bcac96f171e4f9be218f1c1433f79e5e",
-          "build_date": "2026-04-06T05:05:32.287857+00:00"
-        },
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/apache_exporter-1.0.12-1.el10.x86_64.rpm",
           "size_bytes": 4178549,
-          "sha256": "7deaea6a4a083a826d5f75b1f980bc88dbde33f66a39da3392d5a71123c0838a",
-          "build_date": "2026-04-06T05:00:04.961109+00:00"
+          "sha256": "f8a6180f4bc804519965cd642d0b69dd6bff35aaa555cf9085fe4ff172699ee5",
+          "build_date": "2026-04-13T05:35:03.889839+00:00"
+        },
+        "arm64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/apache_exporter-1.0.12-1.el10.aarch64.rpm",
+          "size_bytes": 3724389,
+          "sha256": "0a594743cebced4ff220d8659b9106368a44a250f41625c0782fc4390f183d24",
+          "build_date": "2026-04-13T05:36:11.464215+00:00"
         }
       },
       "el8": {
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/apache_exporter-1.0.12-1.el8.x86_64.rpm",
-          "size_bytes": 4282744,
-          "sha256": "a1fc3e5b90616f531ff1b725dc5c5bb1804dd66cb0f49c5f3db10265ac7f1655",
-          "build_date": "2026-04-06T05:05:36.608497+00:00"
+          "size_bytes": 4282740,
+          "sha256": "55ee6d7f62bccf2517ad08b41b07af5b539001fad6a7090103fb7206d9a0965e",
+          "build_date": "2026-04-13T05:32:14.315333+00:00"
         },
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/apache_exporter-1.0.12-1.el8.aarch64.rpm",
-          "size_bytes": 3686148,
-          "sha256": "6a00ee0a49e1b0f7e4f880a2f63564726c828ebf20a645f6dbb95d56229501ba",
-          "build_date": "2026-04-06T05:11:43.738374+00:00"
+          "size_bytes": 3686144,
+          "sha256": "79611a4647297fbd850ca1273c8c50805d1203db24e22f3b125a3c64a68ac955",
+          "build_date": "2026-04-13T05:42:27.062030+00:00"
         }
       },
       "el9": {
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/apache_exporter-1.0.12-1.el9.aarch64.rpm",
-          "size_bytes": 3724149,
-          "sha256": "efef754e749cebd487a1837d75d3e66c08e4f4f53eb4695016ef0fbad48c548f",
-          "build_date": "2026-04-06T05:08:25.504462+00:00"
+          "size_bytes": 3724131,
+          "sha256": "55ea09098f0706d33785d0261dfe15cd688a46580fe11b8fa3e514a7877053e7",
+          "build_date": "2026-04-13T05:46:19.149883+00:00"
         },
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/apache_exporter-1.0.12-1.el9.x86_64.rpm",
-          "size_bytes": 4179469,
-          "sha256": "3317d3988461675675ba02254a307d0edda9d9a7ee8768409e00097317974b57",
-          "build_date": "2026-04-06T05:04:57.393976+00:00"
+          "size_bytes": 4179682,
+          "sha256": "54a5615d620543696c5f5145dd7cfb73488b88f1e9babf17fc28450ebebe99b3",
+          "build_date": "2026-04-13T05:35:14.841901+00:00"
         }
       }
     },
@@ -61,16 +61,16 @@
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/apache-exporter_1.0.12-1_amd64.deb",
-          "size_bytes": 9255426,
-          "sha256": "0c095a2e06db55eca85692c1ce106485f9d8e03fa2e5ab5151e74f6ee5d39d01",
-          "build_date": "2026-04-06T04:53:32.937467+00:00"
+          "size_bytes": 9255424,
+          "sha256": "7bc3687e9e2b8add91b26693539e39bf96813ae2b85907cc5ee985800f55fb9b",
+          "build_date": "2026-04-13T05:17:48.874154+00:00"
         },
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/apache-exporter_1.0.12-1_arm64.deb",
-          "size_bytes": 8493558,
-          "sha256": "0f3d2ff0e2c3b9b807ebb682c0d54ea50a232ac932765f0d471818dcfd41b234",
-          "build_date": "2026-04-06T04:55:40.933032+00:00"
+          "size_bytes": 8493560,
+          "sha256": "aff38aec77cb203edf9f12c784e99dea4204dd34e8c78baa200480ac5de19916",
+          "build_date": "2026-04-13T05:24:29.025907+00:00"
         }
       }
     },

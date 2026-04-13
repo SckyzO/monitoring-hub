@@ -5,13 +5,13 @@
   "version": "3.11.0",
   "arch": "amd64",
   "dist": "debian-12",
-  "build_date": "2026-04-06T04:51:08.673858+00:00",
+  "build_date": "2026-04-13T05:19:22.145587+00:00",
   "status": "success",
   "package": {
     "filename": "prometheus_3.11.0-1_amd64.deb",
     "url": "",
-    "sha256": "f08c49a987a2b79dbe3c4119340b738ce1f4ae0322b8334a8eac6846fafc11b5",
-    "size_bytes": 149350368
+    "sha256": "8d7c030ec15901be7f49889b53acdaffd15b4b8118c8d39b6d79c6ef03450d7c",
+    "size_bytes": 149350366
   },
   "deb_metadata": {}
 }

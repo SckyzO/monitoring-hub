@@ -4,23 +4,23 @@
   "version": "0.49.0",
   "category": "Database",
   "description": "MongoDB exporter for Prometheus.",
-  "last_updated": "2026-04-06T05:27:05.289453+00:00",
+  "last_updated": "2026-04-13T05:57:10.796504+00:00",
   "artifacts": {
     "rpm": {
       "el10": {
-        "arm64": {
-          "status": "success",
-          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/mongodb_exporter-0.49.0-1.el10.aarch64.rpm",
-          "size_bytes": 8182162,
-          "sha256": "7cdadde1d9fdcad75fc1bd7cfd920e42af57f5f5e82125f7c1872861d0f8c6fa",
-          "build_date": "2026-04-06T05:22:57.569516+00:00"
-        },
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/mongodb_exporter-0.49.0-1.el10.x86_64.rpm",
           "size_bytes": 9192073,
-          "sha256": "9aeab6614aeff5e42e4887d9d25dabae0e4c9294621dcc60b7061bd3c3591701",
-          "build_date": "2026-04-06T05:18:55.334488+00:00"
+          "sha256": "a5ebbb1c692ba6c3ef325060f04ed2dd9c8a40729be7f70d8a18f175085b5cda",
+          "build_date": "2026-04-13T05:50:18.027146+00:00"
+        },
+        "arm64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/mongodb_exporter-0.49.0-1.el10.aarch64.rpm",
+          "size_bytes": 8182162,
+          "sha256": "4b890723cad2ad1d09d0f67dbb35a3a27d8c88d7441027aad089e342d7dfd3a7",
+          "build_date": "2026-04-13T05:46:38.933959+00:00"
         }
       },
       "el8": {
@@ -28,31 +28,31 @@
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/mongodb_exporter-0.49.0-1.el8.x86_64.rpm",
           "size_bytes": 9380568,
-          "sha256": "3bc2c9176ca5310113b04f1ea4a337bf639e81a02b79bcf174f0569cb2ec24b4",
-          "build_date": "2026-04-06T05:16:49.756827+00:00"
+          "sha256": "81cc4fb1f757d6ef4f95e92acfeae14ef2bf49b3092bd71b5c791105d660ff8b",
+          "build_date": "2026-04-13T05:49:46.838783+00:00"
         },
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/mongodb_exporter-0.49.0-1.el8.aarch64.rpm",
           "size_bytes": 8046700,
-          "sha256": "d0298a535cb2f303089f8c7bd35c76b3e09c2032883537528000c7220245331b",
-          "build_date": "2026-04-06T05:27:05.289453+00:00"
+          "sha256": "42fca7920e1dc750ceca9b9a2dc2be86bbcdb8df0ca888851351939cd5b5a967",
+          "build_date": "2026-04-13T05:57:10.796504+00:00"
         }
       },
       "el9": {
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/mongodb_exporter-0.49.0-1.el9.aarch64.rpm",
-          "size_bytes": 8182027,
-          "sha256": "795a9bf94ad5488281bd6c1634a7b09a52254d2d8e3c4155d2e19dd979d54c6d",
-          "build_date": "2026-04-06T05:24:52.871317+00:00"
+          "size_bytes": 8182026,
+          "sha256": "bfd22b5cce8d786c36ad2dd55d06ec5543bd169b3d4c4ff76ca2838b2b8a5649",
+          "build_date": "2026-04-13T05:56:00.531603+00:00"
         },
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/mongodb_exporter-0.49.0-1.el9.x86_64.rpm",
-          "size_bytes": 9192131,
-          "sha256": "0d207adfdd2ac3f122ba1c51f4d5b0dae04b62183622eb1a8dfedd2783e62b29",
-          "build_date": "2026-04-06T05:23:27.015394+00:00"
+          "size_bytes": 9191852,
+          "sha256": "cb1270783e12c4132c1e7caa9f61180603ce3ffb0755a58425271cea8056a34d",
+          "build_date": "2026-04-13T05:52:09.346358+00:00"
         }
       }
     },
@@ -62,15 +62,15 @@
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/mongodb-exporter_0.49.0-1_amd64.deb",
           "size_bytes": 11691816,
-          "sha256": "9687d892645b319dbe894646c441d856571e01f734cba680aa329c95f07d405f",
-          "build_date": "2026-04-06T04:49:44.264747+00:00"
+          "sha256": "6c13a7c163db71075977d849495d7a90cc6603967339e4b970c4dad82371e232",
+          "build_date": "2026-04-13T05:19:04.461058+00:00"
         },
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/mongodb-exporter_0.49.0-1_arm64.deb",
-          "size_bytes": 10537070,
-          "sha256": "fbc2958f3e34331a5def3e414ac76b696b05b44718bc87845bb3bdad12f6d0dd",
-          "build_date": "2026-04-06T04:55:11.549731+00:00"
+          "size_bytes": 10537060,
+          "sha256": "b5dbe26cc73bc973d4217afe3bd2dbe53dda3b07a4eb20eb70d271398824fed4",
+          "build_date": "2026-04-13T05:32:50.141169+00:00"
         }
       }
     },

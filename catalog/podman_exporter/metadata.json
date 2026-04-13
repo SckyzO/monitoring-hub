@@ -4,23 +4,23 @@
   "version": "1.20.0",
   "category": "System",
   "description": "Prometheus exporter for Podman containers",
-  "last_updated": "2026-04-06T05:28:57.879122+00:00",
+  "last_updated": "2026-04-13T06:04:10.349438+00:00",
   "artifacts": {
     "rpm": {
       "el10": {
-        "arm64": {
-          "status": "success",
-          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/podman_exporter-1.20.0-1.el10.aarch64.rpm",
-          "size_bytes": 7670831,
-          "sha256": "4fd3c7c4cd0e8c4ae69773ca9f814fdd2cc1ceefd4e6a2547f1dc065ba0d7e7a",
-          "build_date": "2026-04-06T05:28:57.879122+00:00"
-        },
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/podman_exporter-1.20.0-1.el10.x86_64.rpm",
           "size_bytes": 8522498,
-          "sha256": "d06d674cdc1f172ba309362e1e0e7a62b4a2fc7afd4347a7621a8abbd67b3a79",
-          "build_date": "2026-04-06T05:19:24.195157+00:00"
+          "sha256": "5e5954c755bf4371d9b16b99b44b701bdca35f83578102b7f6f8e6eaa2820851",
+          "build_date": "2026-04-13T05:52:55.425978+00:00"
+        },
+        "arm64": {
+          "status": "success",
+          "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/podman_exporter-1.20.0-1.el10.aarch64.rpm",
+          "size_bytes": 7670831,
+          "sha256": "d176dd36a6f87598401a01234962f11e5e844810521311e6db5be46891599b3f",
+          "build_date": "2026-04-13T05:56:28.692694+00:00"
         }
       },
       "el8": {
@@ -28,31 +28,31 @@
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/podman_exporter-1.20.0-1.el8.x86_64.rpm",
           "size_bytes": 8736656,
-          "sha256": "98fadcef9d9f9c0d2c6e4e064d751ef37db52e9865dbfefe4ad250c635f61aad",
-          "build_date": "2026-04-06T05:19:47.462495+00:00"
+          "sha256": "a26a88576edffc9cd306d890230a30646e37ef83a5914274367a50c5277788d8",
+          "build_date": "2026-04-13T05:51:35.314032+00:00"
         },
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/podman_exporter-1.20.0-1.el8.aarch64.rpm",
           "size_bytes": 7592068,
-          "sha256": "2ca6d35fefc898343d78eff9b5706b2b5bcdd414be84ba17645605ca7193edf5",
-          "build_date": "2026-04-06T05:25:34.136132+00:00"
+          "sha256": "6d63a3cc1e10d6c8ee75a654947b27749918126e58b6b347831686b838829e12",
+          "build_date": "2026-04-13T06:04:10.349438+00:00"
         }
       },
       "el9": {
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/podman_exporter-1.20.0-1.el9.aarch64.rpm",
-          "size_bytes": 7671027,
-          "sha256": "570e10bab99adb8cca33f83b2280de3b87765576250b020cfae7f468882afdd1",
-          "build_date": "2026-04-06T05:22:04.098287+00:00"
+          "size_bytes": 7670608,
+          "sha256": "8c8e55dfaad56359afe7320d498f8ab88d00f3b75ff0aee21534d91709a9092b",
+          "build_date": "2026-04-13T05:51:59.749062+00:00"
         },
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/podman_exporter-1.20.0-1.el9.x86_64.rpm",
-          "size_bytes": 8522337,
-          "sha256": "e7d4e85dbf7139acba139c323adc7ce455a804701061352bed6c9b9544755e9c",
-          "build_date": "2026-04-06T05:20:52.427251+00:00"
+          "size_bytes": 8522339,
+          "sha256": "87dc79f65dc3c1d40482db914aff51c53d99da9002330105cb2f931337df7237",
+          "build_date": "2026-04-13T05:56:18.540008+00:00"
         }
       }
     },
@@ -61,16 +61,16 @@
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/podman-exporter_1.20.0-1_amd64.deb",
-          "size_bytes": 20011252,
-          "sha256": "65bbcf4a743eaaaad018b8ded3480c7d27b8cd6843eb72136130dc3ccc118e90",
-          "build_date": "2026-04-06T04:48:21.719065+00:00"
+          "size_bytes": 20011256,
+          "sha256": "973fb22bad980937bba9c526850e30c5cc9faf1d0b932eee848d13a3598f5062",
+          "build_date": "2026-04-13T05:18:26.901158+00:00"
         },
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/podman-exporter_1.20.0-1_arm64.deb",
-          "size_bytes": 18719052,
-          "sha256": "5d9ccfd8813ad2293cadf973d24a02483dfd33da7d3e8fe573fb91ecfdbf880f",
-          "build_date": "2026-04-06T05:04:10.293563+00:00"
+          "size_bytes": 18719070,
+          "sha256": "854b6af68e676fafca71d095f77f3022f16854605ccb1aa379150bd82b1b1608",
+          "build_date": "2026-04-13T05:27:46.003065+00:00"
         }
       }
     },

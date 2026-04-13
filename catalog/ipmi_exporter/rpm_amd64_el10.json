@@ -5,12 +5,12 @@
   "version": "1.10.1",
   "arch": "amd64",
   "dist": "el10",
-  "build_date": "2026-04-06T05:12:10.309547+00:00",
+  "build_date": "2026-04-13T05:43:31.957943+00:00",
   "status": "success",
   "package": {
     "filename": "ipmi_exporter-1.10.1-1.el10.x86_64.rpm",
     "url": "",
-    "sha256": "d5261f08e5be188b17c266a2654bf1f972012229597193ee4ca5ceb289e6ae62",
+    "sha256": "e36fbf276a6bbaf2dd6ccd927b575d0351551717975bd2b38639b6da41692abc",
     "size_bytes": 4053888
   },
   "rpm_metadata": {}

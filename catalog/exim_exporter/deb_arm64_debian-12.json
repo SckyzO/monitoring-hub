@@ -5,13 +5,13 @@
   "version": "1.6.2",
   "arch": "arm64",
   "dist": "debian-12",
-  "build_date": "2026-04-06T04:54:44.036821+00:00",
+  "build_date": "2026-04-13T05:32:22.537162+00:00",
   "status": "success",
   "package": {
     "filename": "exim-exporter_1.6.2-1_arm64.deb",
     "url": "",
-    "sha256": "cb56e6b39bcf417ed5a3c191770111664671b48704f17a3c9bc9748b71d2f857",
-    "size_bytes": 7506128
+    "sha256": "185911cde5983f6830f6276ebfb1006158ff2238da0442e70737b61f1b299abd",
+    "size_bytes": 7506134
   },
   "deb_metadata": {}
 }

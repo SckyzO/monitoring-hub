@@ -5,13 +5,13 @@
   "version": "1.4.0",
   "arch": "arm64",
   "dist": "debian-12",
-  "build_date": "2026-04-06T04:57:42.492271+00:00",
+  "build_date": "2026-04-13T05:28:30.705143+00:00",
   "status": "success",
   "package": {
     "filename": "ha-cluster-exporter_1.4.0-1_arm64.deb",
     "url": "",
-    "sha256": "9d6520cfb27d94bc3f0287b4a92f010b31740cbb03c36e144157828bd811e208",
-    "size_bytes": 9257312
+    "sha256": "ff621280860f1d5db3241c674ce4cd20d1073a7d698c6b82ce36ae5624c7e3a1",
+    "size_bytes": 9257310
   },
   "deb_metadata": {}
 }
