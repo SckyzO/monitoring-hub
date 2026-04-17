@@ -702,7 +702,7 @@ jobs:
       - run: pip install -r requirements/base.txt
 
       - name: 📥 Download Trivy SARIF Results
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         continue-on-error: true
         with:
           pattern: trivy-sarif-*
