@@ -5,12 +5,12 @@
   "version": "1.3.1",
   "arch": "amd64",
   "dist": "el10",
-  "build_date": "2026-04-13T05:37:33.333282+00:00",
+  "build_date": "2026-04-20T05:37:34.784814+00:00",
   "status": "success",
   "package": {
     "filename": "iperf3_exporter-1.3.1-1.el10.x86_64.rpm",
     "url": "",
-    "sha256": "acf1a25cd7f119ec54328284a85ee73f176cde44ab2dbbf6471994f60db7b773",
+    "sha256": "24e1c747ad2e0277493d611dcd9d5db21f8cddadaa5cbc74a07f48f4fc509ff4",
     "size_bytes": 4171854
   },
   "rpm_metadata": {}

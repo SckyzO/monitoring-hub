@@ -5,13 +5,13 @@
   "version": "1.8.0",
   "arch": "arm64",
   "dist": "el9",
-  "build_date": "2026-04-13T06:03:07.543855+00:00",
+  "build_date": "2026-04-20T06:00:16.486223+00:00",
   "status": "success",
   "package": {
     "filename": "slurm_exporter-1.8.0-1.el9.aarch64.rpm",
     "url": "",
-    "sha256": "6ec2dbf3a2a06b86e7eb393003c71be24bb8ff9ee38f2b890734a161da62e9e1",
-    "size_bytes": 3571051
+    "sha256": "4a335e2448d70542d77c410ee8d2e91c7cd7a2d7f9c6e6f72596e9f85996f608",
+    "size_bytes": 3571056
   },
   "rpm_metadata": {}
 }

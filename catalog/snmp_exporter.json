@@ -4,7 +4,7 @@
   "version": "0.30.1",
   "category": "Network",
   "description": "Prometheus exporter for SNMP-enabled devices",
-  "last_updated": "2026-04-13T06:05:04.298531+00:00",
+  "last_updated": "2026-04-20T06:02:59.761820+00:00",
   "artifacts": {
     "rpm": {
       "el10": {
@@ -12,15 +12,15 @@
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/snmp_exporter-0.30.1-1.el10.x86_64.rpm",
           "size_bytes": 4469186,
-          "sha256": "96a11fa1e06728f549bad332c3648a51b56bd36d32cd1cfb2cd3c0bf96783cb5",
-          "build_date": "2026-04-13T05:53:55.927967+00:00"
+          "sha256": "b6161b9abcc129a1c4577df42579b64acbb4212dcf266bea65a5ee3ff04c9a5c",
+          "build_date": "2026-04-20T05:54:06.331603+00:00"
         },
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/snmp_exporter-0.30.1-1.el10.aarch64.rpm",
           "size_bytes": 3990902,
-          "sha256": "9bcd0567e7a4e9299147a57f9d1c148cdeeef58869bd790f4ce7b85f76cf72b7",
-          "build_date": "2026-04-13T05:57:38.325579+00:00"
+          "sha256": "db83ecfb4aa39a6391d0596584370e87d5e53475ced3a31a415bf7a623784594",
+          "build_date": "2026-04-20T05:58:20.753143+00:00"
         }
       },
       "el8": {
@@ -28,31 +28,31 @@
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/snmp_exporter-0.30.1-1.el8.x86_64.rpm",
           "size_bytes": 4588528,
-          "sha256": "c3cbeeda0e99a2eff934ccd8a1d0e6228430fdaecd8ede0ce8c5d1ae97acc2c8",
-          "build_date": "2026-04-13T05:53:15.174365+00:00"
+          "sha256": "1c934140e554a2b93bca6e35cfe5210b6f6dfd2fb23597fd7793589d30555217",
+          "build_date": "2026-04-20T05:57:00.456839+00:00"
         },
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/snmp_exporter-0.30.1-1.el8.aarch64.rpm",
-          "size_bytes": 3959808,
-          "sha256": "e20ad93c24451b1e3f683e1fea456f59186f2129dc8b17e56624d97a79b58309",
-          "build_date": "2026-04-13T06:05:04.298531+00:00"
+          "size_bytes": 3959804,
+          "sha256": "dbb02706518becc5a3a622da2fb6d02cc4307db6e5d98a7b9e7e110a247978ff",
+          "build_date": "2026-04-20T06:02:24.008704+00:00"
         }
       },
       "el9": {
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/snmp_exporter-0.30.1-1.el9.aarch64.rpm",
-          "size_bytes": 3991038,
-          "sha256": "4d8234adfdff6d4f56b59337137436c096c50d668598a52e52ef7bdbc62b387e",
-          "build_date": "2026-04-13T05:57:43.962118+00:00"
+          "size_bytes": 3991108,
+          "sha256": "12506240906cb6e61c329ef5da97a92a6fe08b8e4ec20069af089a482c32ed71",
+          "build_date": "2026-04-20T06:02:59.761820+00:00"
         },
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/snmp_exporter-0.30.1-1.el9.x86_64.rpm",
-          "size_bytes": 4469519,
-          "sha256": "9dae734dc9edbbb3b9a3b896623b8aafb1cdc4517e2a9d62ddfa7af3ecd7e278",
-          "build_date": "2026-04-13T05:58:32.662905+00:00"
+          "size_bytes": 4470998,
+          "sha256": "9bfa091107f48388c925afb9a52170b2fbc945c9edf6a0f6a7fb869aab452ffa",
+          "build_date": "2026-04-20T05:53:53.681472+00:00"
         }
       }
     },
@@ -61,16 +61,16 @@
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/snmp-exporter_0.30.1-1_amd64.deb",
-          "size_bytes": 9806172,
-          "sha256": "41ce35ec0870aaa6271d39e98b9770a91263ac25c80a0bde76f911a29276bf3d",
-          "build_date": "2026-04-13T05:28:11.401441+00:00"
+          "size_bytes": 9806180,
+          "sha256": "28979291d5ec3b8d7f78b1c81d4c7f3ba7efe0afdeaf0c42785110757a24924b",
+          "build_date": "2026-04-20T05:25:38.614307+00:00"
         },
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/snmp-exporter_0.30.1-1_arm64.deb",
-          "size_bytes": 8997718,
-          "sha256": "d7ea94b192680cef5e8f8cf99f621dfed409cae5ef212d729dd838a6f0cf3802",
-          "build_date": "2026-04-13T05:32:36.130106+00:00"
+          "size_bytes": 8997710,
+          "sha256": "4c4a60c337c7bf9625cfe31cb5abc4e805ab2a062b6b24059ff37a61d52d7e5c",
+          "build_date": "2026-04-20T05:24:48.959646+00:00"
         }
       }
     },

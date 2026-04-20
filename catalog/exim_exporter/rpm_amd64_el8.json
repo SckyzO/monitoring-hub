@@ -5,13 +5,13 @@
   "version": "1.6.2",
   "arch": "amd64",
   "dist": "el8",
-  "build_date": "2026-04-13T05:41:17.153240+00:00",
+  "build_date": "2026-04-20T05:39:48.224717+00:00",
   "status": "success",
   "package": {
     "filename": "exim_exporter-1.6.2-1.el8.x86_64.rpm",
     "url": "",
-    "sha256": "6cfaa0d8b859292f677d266891b588004246cd567fa71cd7f525968a873db6ce",
-    "size_bytes": 3619044
+    "sha256": "7ccb2d230d8d8d87fe9fe766b69e4f7eb56b52234931ba3200d69c2dc9b69deb",
+    "size_bytes": 3619052
   },
   "rpm_metadata": {}
 }

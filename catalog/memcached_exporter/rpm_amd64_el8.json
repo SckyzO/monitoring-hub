@@ -5,12 +5,12 @@
   "version": "0.16.0",
   "arch": "amd64",
   "dist": "el8",
-  "build_date": "2026-04-13T05:39:26.332258+00:00",
+  "build_date": "2026-04-20T05:42:53.576449+00:00",
   "status": "success",
   "package": {
     "filename": "memcached_exporter-0.16.0-1.el8.x86_64.rpm",
     "url": "",
-    "sha256": "d8c6615ca5f3276f4511b2da2c17fcbb5788f73b59505117efc139b7b7a54e50",
+    "sha256": "92b36674341a2fe60606a9e5d05ba30eb9675067205df04b229caa60bf47cb7e",
     "size_bytes": 4235572
   },
   "rpm_metadata": {}

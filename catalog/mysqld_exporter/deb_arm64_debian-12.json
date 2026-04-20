@@ -5,13 +5,13 @@
   "version": "0.19.0",
   "arch": "arm64",
   "dist": "debian-12",
-  "build_date": "2026-04-13T05:26:43.740905+00:00",
+  "build_date": "2026-04-20T05:24:38.196588+00:00",
   "status": "success",
   "package": {
     "filename": "mysqld-exporter_0.19.0-1_arm64.deb",
     "url": "",
-    "sha256": "49f8c78c90ff5017dbf8bf704b75baf90cbcf2286efea80a7ff94d788b707634",
-    "size_bytes": 9007188
+    "sha256": "178aa8067f049cd894b1939693124a514e171be04f54f6745981e910914f7055",
+    "size_bytes": 9007176
   },
   "deb_metadata": {}
 }

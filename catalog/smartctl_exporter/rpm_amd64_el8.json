@@ -5,12 +5,12 @@
   "version": "0.14.0",
   "arch": "amd64",
   "dist": "el8",
-  "build_date": "2026-04-13T05:57:40.180174+00:00",
+  "build_date": "2026-04-20T05:57:21.733852+00:00",
   "status": "success",
   "package": {
     "filename": "smartctl_exporter-0.14.0-1.el8.x86_64.rpm",
     "url": "",
-    "sha256": "cda70cbf3bf44252e7b7b001c9489bd6d32094a206461c7632ca521ca2ed2225",
+    "sha256": "458f01757cadb18ff3dbb771f99481531505a329e446ac400f140c44145fd367",
     "size_bytes": 4082404
   },
   "rpm_metadata": {}

@@ -5,13 +5,13 @@
   "version": "2.0.0",
   "arch": "amd64",
   "dist": "el9",
-  "build_date": "2026-04-13T05:33:24.722510+00:00",
+  "build_date": "2026-04-20T05:35:28.353989+00:00",
   "status": "success",
   "package": {
     "filename": "dellhw_exporter-2.0.0-1.el9.x86_64.rpm",
     "url": "",
-    "sha256": "93861ffd18b12ba3e647a019321d27947caa2e18391869019d3f8d16157bedd0",
-    "size_bytes": 3911765
+    "sha256": "aca718acb426ec3d3a62050b9b87fd5172e6e59ba38e8caf32223da97813aa7b",
+    "size_bytes": 3911834
   },
   "rpm_metadata": {}
 }

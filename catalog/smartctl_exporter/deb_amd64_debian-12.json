@@ -5,13 +5,13 @@
   "version": "0.14.0",
   "arch": "amd64",
   "dist": "debian-12",
-  "build_date": "2026-04-13T05:25:17.737192+00:00",
+  "build_date": "2026-04-20T05:17:05.433106+00:00",
   "status": "success",
   "package": {
     "filename": "smartctl-exporter_0.14.0-1_amd64.deb",
     "url": "",
-    "sha256": "256742ab1f5a3bc52211c0d6d7e92146bd9ac61863fa29cd2d3616dc60323845",
-    "size_bytes": 9111448
+    "sha256": "719432cf2d49a3f422b75f2a2e9ac358f3171077dd45629f089145161a7c8358",
+    "size_bytes": 9111450
   },
   "deb_metadata": {}
 }

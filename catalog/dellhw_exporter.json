@@ -4,7 +4,7 @@
   "version": "2.0.0",
   "category": "Infrastructure",
   "description": "Prometheus exporter for Dell Hardware components using OMSA.",
-  "last_updated": "2026-04-13T05:34:22.886776+00:00",
+  "last_updated": "2026-04-20T05:37:56.738409+00:00",
   "artifacts": {
     "rpm": {
       "el10": {
@@ -12,26 +12,26 @@
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/dellhw_exporter-2.0.0-1.el10.x86_64.rpm",
           "size_bytes": 3911883,
-          "sha256": "bf9d33b74f2395fd4aafb7b734477a394bac639c19cc3f16c7a7c502b8f7c0d6",
-          "build_date": "2026-04-13T05:34:22.886776+00:00"
+          "sha256": "a2714e51a5213066f43c444ab16c03ac66a6da51ad6a6ba7a1ba85f80d079ea7",
+          "build_date": "2026-04-20T05:37:56.738409+00:00"
         }
       },
       "el8": {
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/dellhw_exporter-2.0.0-1.el8.x86_64.rpm",
-          "size_bytes": 3952160,
-          "sha256": "64dca3b699d667885143e593f74ca38df521caee85112c9a0af2696a23cb4973",
-          "build_date": "2026-04-13T05:32:51.242693+00:00"
+          "size_bytes": 3952164,
+          "sha256": "c0b9f156f9b43eb26604cac831569eeeb6bee72b313f1451277eab003d29564c",
+          "build_date": "2026-04-20T05:37:55.326984+00:00"
         }
       },
       "el9": {
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/dellhw_exporter-2.0.0-1.el9.x86_64.rpm",
-          "size_bytes": 3911765,
-          "sha256": "93861ffd18b12ba3e647a019321d27947caa2e18391869019d3f8d16157bedd0",
-          "build_date": "2026-04-13T05:33:24.722510+00:00"
+          "size_bytes": 3911834,
+          "sha256": "aca718acb426ec3d3a62050b9b87fd5172e6e59ba38e8caf32223da97813aa7b",
+          "build_date": "2026-04-20T05:35:28.353989+00:00"
         }
       }
     },
@@ -41,8 +41,8 @@
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/dellhw-exporter_2.0.0-1_amd64.deb",
           "size_bytes": 4638810,
-          "sha256": "efdc6de95cf93a8714291ccb45f92df490a37a87b52fd3c0834d397e1e276a06",
-          "build_date": "2026-04-13T05:25:34.299417+00:00"
+          "sha256": "38a9c9262ffdacb2721e592331a3946f38cca55c0463e313b0df71abea33c9b4",
+          "build_date": "2026-04-20T05:24:26.419363+00:00"
         }
       }
     },

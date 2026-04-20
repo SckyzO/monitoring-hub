@@ -5,13 +5,13 @@
   "version": "0.1.4",
   "arch": "amd64",
   "dist": "debian-12",
-  "build_date": "2026-04-13T05:28:52.487566+00:00",
+  "build_date": "2026-04-20T05:19:03.810283+00:00",
   "status": "success",
   "package": {
     "filename": "textfile-exporter_0.1.4-1_amd64.deb",
     "url": "",
-    "sha256": "96f6063859b5e83eb8164b50322097797a8129d389f3bf31718fa0c15cc4e183",
-    "size_bytes": 3648650
+    "sha256": "3cf92d07ea826f6d57a9ea4c7beecb58d8c5561e582ccd9326c4888bc981735f",
+    "size_bytes": 3648652
   },
   "deb_metadata": {}
 }

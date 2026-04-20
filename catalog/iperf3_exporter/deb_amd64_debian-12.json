@@ -5,13 +5,13 @@
   "version": "1.3.1",
   "arch": "amd64",
   "dist": "debian-12",
-  "build_date": "2026-04-13T05:25:30.212474+00:00",
+  "build_date": "2026-04-20T05:18:07.302368+00:00",
   "status": "success",
   "package": {
     "filename": "iperf3-exporter_1.3.1-1_amd64.deb",
     "url": "",
-    "sha256": "3e82626bf509c6e46e5839078f501ccfb6a412fb32b8c19bdf8fce912ef993c4",
-    "size_bytes": 4966138
+    "sha256": "2eb65bddc6a474e63f16f672291c9a32bea8d9a2b85306784f7a4bd48cdb1096",
+    "size_bytes": 4966136
   },
   "deb_metadata": {}
 }
