@@ -5,12 +5,12 @@
   "version": "1.11.0",
   "arch": "arm64",
   "dist": "el10",
-  "build_date": "2026-04-20T05:44:52.625654+00:00",
+  "build_date": "2026-04-27T05:57:49.328075+00:00",
   "status": "success",
   "package": {
     "filename": "frr_exporter-1.11.0-1.el10.aarch64.rpm",
     "url": "",
-    "sha256": "a8b30cae2f31fcbe58a22440cf3a7a525ff6aef976f91a8453f8ba5ebfee423d",
+    "sha256": "735eeb102da7212142a53dcebc096f70e18628651b0e20e921186c64ad096014",
     "size_bytes": 3771403
   },
   "rpm_metadata": {}

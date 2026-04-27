@@ -4,7 +4,7 @@
   "version": "1.3.1",
   "category": "Network",
   "description": "Prometheus exporter for iPerf3 metrics.",
-  "last_updated": "2026-04-20T05:44:31.526584+00:00",
+  "last_updated": "2026-04-27T06:05:36.301782+00:00",
   "artifacts": {
     "rpm": {
       "el10": {
@@ -12,15 +12,15 @@
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/iperf3_exporter-1.3.1-1.el10.x86_64.rpm",
           "size_bytes": 4171854,
-          "sha256": "24e1c747ad2e0277493d611dcd9d5db21f8cddadaa5cbc74a07f48f4fc509ff4",
-          "build_date": "2026-04-20T05:37:34.784814+00:00"
+          "sha256": "b4791fdcd78058fee9642f4b73c9191741a0e4a939ea0f744164a773088ad1bf",
+          "build_date": "2026-04-27T05:51:36.690321+00:00"
         },
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/iperf3_exporter-1.3.1-1.el10.aarch64.rpm",
           "size_bytes": 3707435,
-          "sha256": "5a0a812ff2c217208d376f7bed6a3d9ad4c8c85318dde7753bea5644f4748b99",
-          "build_date": "2026-04-20T05:38:53.578297+00:00"
+          "sha256": "05b6fd5feffe21896d02ca6976dcd8197c7d0b100febedbad68bd087a012cd7e",
+          "build_date": "2026-04-27T05:57:10.408177+00:00"
         }
       },
       "el8": {
@@ -28,31 +28,31 @@
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/iperf3_exporter-1.3.1-1.el8.x86_64.rpm",
           "size_bytes": 4223340,
-          "sha256": "f6f7d45eb805afc3507ffa896f7a534eb4f4a094ffe1252fec71d3db25fa54f7",
-          "build_date": "2026-04-20T05:42:03.183832+00:00"
+          "sha256": "b32be38188cca63d78e11617181e7681af1d738cb90080a6dd2abd1911d28537",
+          "build_date": "2026-04-27T05:55:57.073081+00:00"
         },
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/iperf3_exporter-1.3.1-1.el8.aarch64.rpm",
           "size_bytes": 3603856,
-          "sha256": "967545b4a1f35475a30405352ba1a10bc58b2de4ccce4d684b805545e70f302c",
-          "build_date": "2026-04-20T05:41:00.334567+00:00"
+          "sha256": "354e6f33b5634616175d07747c0c0c5d4dc317d432012ec53ddd5cf38ced66a4",
+          "build_date": "2026-04-27T05:55:57.546712+00:00"
         }
       },
       "el9": {
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/iperf3_exporter-1.3.1-1.el9.aarch64.rpm",
-          "size_bytes": 3707311,
-          "sha256": "e67efb286781d85a1ebd94538a64d3eb25929692c113537f1f984d60b0471267",
-          "build_date": "2026-04-20T05:44:31.526584+00:00"
+          "size_bytes": 3707308,
+          "sha256": "5ec11c3cfbc2ca5100297b066b11f5a187fe194cb44eb8c01a26c6b5db62e7a9",
+          "build_date": "2026-04-27T06:05:36.301782+00:00"
         },
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/iperf3_exporter-1.3.1-1.el9.x86_64.rpm",
           "size_bytes": 4171721,
-          "sha256": "94996efe3f0b243fdcc4c61b73f0ae8e653a7404197cdb9da1967f88ed09cf94",
-          "build_date": "2026-04-20T05:40:04.679700+00:00"
+          "sha256": "5046c7565660baa1dbdcb6ff82cef9e9bb5381ef626dc3168fd5250a7a9ad74b",
+          "build_date": "2026-04-27T06:03:17.019560+00:00"
         }
       }
     },
@@ -61,16 +61,16 @@
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/iperf3-exporter_1.3.1-1_amd64.deb",
-          "size_bytes": 4966136,
-          "sha256": "2eb65bddc6a474e63f16f672291c9a32bea8d9a2b85306784f7a4bd48cdb1096",
-          "build_date": "2026-04-20T05:18:07.302368+00:00"
+          "size_bytes": 4966134,
+          "sha256": "4a29e57f4f11c46d92cef2ba4018e1b2c75952f1238a399fb4315867c1c3b9f0",
+          "build_date": "2026-04-27T05:29:26.420624+00:00"
         },
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/iperf3-exporter_1.3.1-1_arm64.deb",
-          "size_bytes": 4483114,
-          "sha256": "cf84a4a10f294765129920ad826929e407d5a464dcf7ec4f4e6d68b642876d37",
-          "build_date": "2026-04-20T05:27:47.964496+00:00"
+          "size_bytes": 4483120,
+          "sha256": "3967204de8c325bc541740efb38a5e82568d3bcccce9e62f8808aa2d7f3a754b",
+          "build_date": "2026-04-27T05:34:05.280220+00:00"
         }
       }
     },

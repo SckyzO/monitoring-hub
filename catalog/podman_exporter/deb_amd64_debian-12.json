@@ -5,12 +5,12 @@
   "version": "1.20.0",
   "arch": "amd64",
   "dist": "debian-12",
-  "build_date": "2026-04-20T05:25:43.254832+00:00",
+  "build_date": "2026-04-27T05:36:15.139752+00:00",
   "status": "success",
   "package": {
     "filename": "podman-exporter_1.20.0-1_amd64.deb",
     "url": "",
-    "sha256": "62f5f382cfb1431d2c918861c0e88f04aef86cb508c26b264455f282fda296ed",
+    "sha256": "0de7c7f7c6a20dba2488319e748701fe044fb3042bd25c2faebae91fb4561eb7",
     "size_bytes": 20011254
   },
   "deb_metadata": {}

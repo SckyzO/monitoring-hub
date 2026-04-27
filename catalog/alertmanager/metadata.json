@@ -4,7 +4,7 @@
   "version": "0.32.0",
   "category": "Infrastructure",
   "description": "Handle alerts and notifications for the Prometheus ecosystem",
-  "last_updated": "2026-04-20T05:41:59.821066+00:00",
+  "last_updated": "2026-04-27T05:51:06.336575+00:00",
   "artifacts": {
     "rpm": {
       "el10": {
@@ -12,15 +12,15 @@
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/alertmanager-0.32.0-1.el10.x86_64.rpm",
           "size_bytes": 9355002,
-          "sha256": "890a18f1a619d0ea8727f3ad7d3cc684849ff3ff3042bf766bff3ca3eccc00c9",
-          "build_date": "2026-04-20T05:36:13.965223+00:00"
+          "sha256": "037e311fa8ccf8b89e452abf29937f94733c1c8076a4867ed2790900034326ab",
+          "build_date": "2026-04-27T05:38:14.708588+00:00"
         },
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/alertmanager-0.32.0-1.el10.aarch64.rpm",
           "size_bytes": 8448081,
-          "sha256": "0e013439bdaeb4ba2fed2a23e5613fd1e1cb97bb88b0834e7902512643ea2972",
-          "build_date": "2026-04-20T05:35:19.051837+00:00"
+          "sha256": "65ab94f1f520301ca8aef992d367f80040c8d9f9fff8331e824c48faad16010b",
+          "build_date": "2026-04-27T05:49:19.336133+00:00"
         }
       },
       "el8": {
@@ -28,31 +28,31 @@
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/alertmanager-0.32.0-1.el8.x86_64.rpm",
           "size_bytes": 9595212,
-          "sha256": "a50e2eea1b68ca932786d25fde0b70c26648b6954f9c719acdf98dc3d01dfef2",
-          "build_date": "2026-04-20T05:29:52.062122+00:00"
+          "sha256": "68f5789f0d3f433204ebdb1c7fbf02181e49e9e0f27a5e40915f2bc21354db08",
+          "build_date": "2026-04-27T05:47:26.030159+00:00"
         },
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/alertmanager-0.32.0-1.el8.aarch64.rpm",
-          "size_bytes": 8383696,
-          "sha256": "c74a03bd4e2ae5c61e650f3062d4226b8e9c199ec7a0abb16b2424d8f3ac115b",
-          "build_date": "2026-04-20T05:41:59.821066+00:00"
+          "size_bytes": 8383692,
+          "sha256": "2c4f8d826d096ab56049a134c496e4309352a2352b6781b4e160891cc2d5b119",
+          "build_date": "2026-04-27T05:51:06.336575+00:00"
         }
       },
       "el9": {
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/alertmanager-0.32.0-1.el9.aarch64.rpm",
-          "size_bytes": 8447850,
-          "sha256": "e853c3b692810253868cd41866a6126d66f01b6529b67331565a4045c367b15c",
-          "build_date": "2026-04-20T05:39:50.777079+00:00"
+          "size_bytes": 8447852,
+          "sha256": "05f69d5c645bfeb92a8e522815c1d0ccee6196913b4f1034f078a7ec10171d71",
+          "build_date": "2026-04-27T05:50:57.883042+00:00"
         },
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/alertmanager-0.32.0-1.el9.x86_64.rpm",
-          "size_bytes": 9354980,
-          "sha256": "fe339f5e47eeb8d780a24e0614b6266859adf7bc3b85f54e0a565c66b16dfa6d",
-          "build_date": "2026-04-20T05:33:37.152155+00:00"
+          "size_bytes": 9354982,
+          "sha256": "fb64ae412e8a33b81287491af9198fb091fca9bce6600e20ffcca4133fa1b933",
+          "build_date": "2026-04-27T05:28:06.156971+00:00"
         }
       }
     },
@@ -61,16 +61,16 @@
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/alertmanager_0.32.0-1_amd64.deb",
-          "size_bytes": 34579114,
-          "sha256": "88c3d95f07c8cf79927324376f0f0a2c593e64ccac09151b9a92d0aae309b642",
-          "build_date": "2026-04-20T05:19:31.891771+00:00"
+          "size_bytes": 34579116,
+          "sha256": "ee11ef80dfd7764f4dfb6206a905841607501ad0fd5d255232fb16196105c294",
+          "build_date": "2026-04-27T05:36:26.719262+00:00"
         },
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/alertmanager_0.32.0-1_arm64.deb",
-          "size_bytes": 31814686,
-          "sha256": "e8f3b4e1b7c71a5ccdc0e39305ee04790ae496550f731384c156bbb186c43c90",
-          "build_date": "2026-04-20T05:24:37.676331+00:00"
+          "size_bytes": 31814702,
+          "sha256": "b14ffc1bebf5b31dd6113461b4cbfdf4b7eb22c2f496ba618abb98571e9cbb19",
+          "build_date": "2026-04-27T05:35:40.708344+00:00"
         }
       }
     },

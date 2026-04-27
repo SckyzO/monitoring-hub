@@ -5,12 +5,12 @@
   "version": "0.1.4",
   "arch": "arm64",
   "dist": "el8",
-  "build_date": "2026-04-20T06:00:29.544402+00:00",
+  "build_date": "2026-04-27T06:12:55.911967+00:00",
   "status": "success",
   "package": {
     "filename": "textfile_exporter-0.1.4-1.el8.aarch64.rpm",
     "url": "",
-    "sha256": "b801ac58916491c70ba20e9ec264f46136ceb8b9d459e1bcaf355ebde30ade69",
+    "sha256": "8000a4ca6ccebb0f2bc0811f41f864b24282855dfa8431674babfdcffe010a14",
     "size_bytes": 2695932
   },
   "rpm_metadata": {}

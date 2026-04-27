@@ -5,12 +5,12 @@
   "version": "1.82.0",
   "arch": "amd64",
   "dist": "debian-12",
-  "build_date": "2026-04-20T05:16:51.873902+00:00",
+  "build_date": "2026-04-27T05:33:23.998596+00:00",
   "status": "success",
   "package": {
     "filename": "redis-exporter_1.82.0-1_amd64.deb",
     "url": "",
-    "sha256": "50b43784c6d41824c4467a60a4df9080a8e9aff4c4dd473308b277c05487669e",
+    "sha256": "0cdc6be1a850aa922415ea3a5daa93e05c46c32f66d225be44c8d66df44c95e7",
     "size_bytes": 4393140
   },
   "deb_metadata": {}

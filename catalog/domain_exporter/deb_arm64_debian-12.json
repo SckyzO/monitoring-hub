@@ -5,13 +5,13 @@
   "version": "1.25.0",
   "arch": "arm64",
   "dist": "debian-12",
-  "build_date": "2026-04-20T05:31:19.272740+00:00",
+  "build_date": "2026-04-27T05:35:36.809262+00:00",
   "status": "success",
   "package": {
     "filename": "domain-exporter_1.25.0-1_arm64.deb",
     "url": "",
-    "sha256": "0a3496aecbcb5cde25fbea152dc3366dfbed0a5fbd3cb22ad241589221fb0d74",
-    "size_bytes": 5424282
+    "sha256": "a245790822159da8fd6ae34bb3561b79313382305956863f31da915a0653a726",
+    "size_bytes": 5424270
   },
   "deb_metadata": {}
 }

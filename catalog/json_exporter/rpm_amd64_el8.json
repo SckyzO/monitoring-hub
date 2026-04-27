@@ -5,12 +5,12 @@
   "version": "0.7.0",
   "arch": "amd64",
   "dist": "el8",
-  "build_date": "2026-04-20T05:39:45.311622+00:00",
+  "build_date": "2026-04-27T05:53:57.516017+00:00",
   "status": "success",
   "package": {
     "filename": "json_exporter-0.7.0-1.el8.x86_64.rpm",
     "url": "",
-    "sha256": "b6fd6d0f71b7a9c21939a2c0420430451a1033448917859a1d1f9572fe39a846",
+    "sha256": "fb3d15114029c818f1efac98ba455d915ad337682d9d15ba0887e7dd0609b69d",
     "size_bytes": 4531084
   },
   "rpm_metadata": {}

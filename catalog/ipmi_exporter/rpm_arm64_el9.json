@@ -5,13 +5,13 @@
   "version": "1.10.1",
   "arch": "arm64",
   "dist": "el9",
-  "build_date": "2026-04-20T05:46:24.408053+00:00",
+  "build_date": "2026-04-27T06:01:40.618191+00:00",
   "status": "success",
   "package": {
     "filename": "ipmi_exporter-1.10.1-1.el9.aarch64.rpm",
     "url": "",
-    "sha256": "9669e6e9921bfcab95090577dd61783be2ec7e35794a127d266405d69d9f4940",
-    "size_bytes": 3650853
+    "sha256": "6dbfb5986bde5b533515ddede55de3130ee0f34ad6d4de3e84279f2f7c0f9f39",
+    "size_bytes": 3650863
   },
   "rpm_metadata": {}
 }

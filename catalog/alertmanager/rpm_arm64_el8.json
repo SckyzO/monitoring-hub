@@ -5,13 +5,13 @@
   "version": "0.32.0",
   "arch": "arm64",
   "dist": "el8",
-  "build_date": "2026-04-20T05:41:59.821066+00:00",
+  "build_date": "2026-04-27T05:51:06.336575+00:00",
   "status": "success",
   "package": {
     "filename": "alertmanager-0.32.0-1.el8.aarch64.rpm",
     "url": "",
-    "sha256": "c74a03bd4e2ae5c61e650f3062d4226b8e9c199ec7a0abb16b2424d8f3ac115b",
-    "size_bytes": 8383696
+    "sha256": "2c4f8d826d096ab56049a134c496e4309352a2352b6781b4e160891cc2d5b119",
+    "size_bytes": 8383692
   },
   "rpm_metadata": {}
 }

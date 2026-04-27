@@ -4,7 +4,7 @@
   "version": "1.4.0",
   "category": "Infrastructure",
   "description": "Prometheus exporter for High Availability clusters (Pacemaker, Corosync)",
-  "last_updated": "2026-04-20T05:46:25.491035+00:00",
+  "last_updated": "2026-04-27T06:03:40.341148+00:00",
   "artifacts": {
     "rpm": {
       "el10": {
@@ -12,15 +12,15 @@
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/ha_cluster_exporter-1.4.0-1.el10.x86_64.rpm",
           "size_bytes": 4308495,
-          "sha256": "91f3b0dac7c0dd5523ac459046f2b102a61b700c6499692d65ef00c399e80d48",
-          "build_date": "2026-04-20T05:40:44.119154+00:00"
+          "sha256": "f4ae8dfd0f0a3ac98a5d2b2080f303357402c6457efbf3b72cd8ee3fd2505cc9",
+          "build_date": "2026-04-27T05:51:32.881456+00:00"
         },
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/ha_cluster_exporter-1.4.0-1.el10.aarch64.rpm",
           "size_bytes": 3870562,
-          "sha256": "6af7a8265029f4aeb3083eb268cf9b877df5282bf9e752bb530d6df710c9ab34",
-          "build_date": "2026-04-20T05:38:38.526570+00:00"
+          "sha256": "620a2df6de8c136e6ce89e26111a593c1c8615ad299c7b8631432daa2812f462",
+          "build_date": "2026-04-27T05:55:53.169395+00:00"
         }
       },
       "el8": {
@@ -28,31 +28,31 @@
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/ha_cluster_exporter-1.4.0-1.el8.x86_64.rpm",
           "size_bytes": 4420696,
-          "sha256": "a75581bb082760636aff56c2a9c747054c2b5a61a0661494100456f55b3450f6",
-          "build_date": "2026-04-20T05:43:20.774437+00:00"
+          "sha256": "ca0ca996ad652e5619e5dcd0bb2d961d209a2f364795a403080773c477ef8df9",
+          "build_date": "2026-04-27T05:55:56.998787+00:00"
         },
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/ha_cluster_exporter-1.4.0-1.el8.aarch64.rpm",
           "size_bytes": 3838252,
-          "sha256": "93f82612da4d74d4e4b385b76ef9f926bf153f2d1d5135a3a5c7140eb1722ffd",
-          "build_date": "2026-04-20T05:46:25.491035+00:00"
+          "sha256": "9193f1a43dead7b55785f6ab2fa41d7323fc19677489c109549518858bc97978",
+          "build_date": "2026-04-27T06:03:40.341148+00:00"
         }
       },
       "el9": {
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/ha_cluster_exporter-1.4.0-1.el9.aarch64.rpm",
-          "size_bytes": 3870444,
-          "sha256": "19b321d3bcd4f9edbc808a32b1db6c4036a4546d4e27c0a2aae8fe09131a8f34",
-          "build_date": "2026-04-20T05:45:42.260580+00:00"
+          "size_bytes": 3870447,
+          "sha256": "cad903dc5064dd3a2f93ef11055718312e7bb4bc3d167c2b718f3d96cac34f94",
+          "build_date": "2026-04-27T05:59:01.930923+00:00"
         },
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/ha_cluster_exporter-1.4.0-1.el9.x86_64.rpm",
-          "size_bytes": 4307880,
-          "sha256": "953768d013ea8a679e09d06f387eed785811c04031b4ff5b905bdd0e3f7d19f0",
-          "build_date": "2026-04-20T05:37:59.723649+00:00"
+          "size_bytes": 4308142,
+          "sha256": "5a9dd647c976f47334ddd7353f1448ba7fe0ab09ea08635aa43eb3ce4c29f6e2",
+          "build_date": "2026-04-27T05:52:09.512544+00:00"
         }
       }
     },
@@ -61,16 +61,16 @@
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/ha-cluster-exporter_1.4.0-1_amd64.deb",
-          "size_bytes": 9892044,
-          "sha256": "c4d0fd61c3cc97bc6c0296bfcdd30d72d46722d310685fa255c8d2f46c03a449",
-          "build_date": "2026-04-20T05:16:47.591282+00:00"
+          "size_bytes": 9892050,
+          "sha256": "bccefa3568c085efba378d8f0d951dbc1540e4fb02cab06b1c5fad2958360a8c",
+          "build_date": "2026-04-27T05:28:04.820429+00:00"
         },
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/ha-cluster-exporter_1.4.0-1_arm64.deb",
-          "size_bytes": 9257312,
-          "sha256": "f4bf13ff1ea26b6373dc9779158509d98dc4deee348c9f3461d1bb000d9d0dad",
-          "build_date": "2026-04-20T05:23:16.436635+00:00"
+          "size_bytes": 9257352,
+          "sha256": "8316d59d495473781bcb19e07e99c952df32bd2ce43f7f57cb733f0919614c78",
+          "build_date": "2026-04-27T05:38:41.392625+00:00"
         }
       }
     },

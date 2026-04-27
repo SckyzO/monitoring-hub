@@ -5,13 +5,13 @@
   "version": "0.19.2",
   "arch": "amd64",
   "dist": "el9",
-  "build_date": "2026-04-20T05:43:54.987384+00:00",
+  "build_date": "2026-04-27T05:57:55.611389+00:00",
   "status": "success",
   "package": {
     "filename": "nats_exporter-0.19.2-1.el9.x86_64.rpm",
     "url": "",
-    "sha256": "a0bd2df6916c91599de13d80b359ad65f6be53ffeb0d95a97a2f93ed3d58d250",
-    "size_bytes": 3467807
+    "sha256": "73f1ce9818dd3c2307364d48d89f3ab6b9fb1747b739f54e30b9ffb3f18d4896",
+    "size_bytes": 3467837
   },
   "rpm_metadata": {}
 }

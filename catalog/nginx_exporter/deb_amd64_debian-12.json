@@ -5,13 +5,13 @@
   "version": "1.5.1",
   "arch": "amd64",
   "dist": "debian-12",
-  "build_date": "2026-04-20T05:25:35.911430+00:00",
+  "build_date": "2026-04-27T05:36:55.685349+00:00",
   "status": "success",
   "package": {
     "filename": "nginx-exporter_1.5.1-1_amd64.deb",
     "url": "",
-    "sha256": "ba1abbbcefeef169b90615fb2a61a24dcb3b9faeec05ee4908ccc2f9c2527c89",
-    "size_bytes": 4930282
+    "sha256": "a4011608dc5addbd3e1806052fc23cb3ddb10c334fec396da97e0b8300235916",
+    "size_bytes": 4930306
   },
   "deb_metadata": {}
 }

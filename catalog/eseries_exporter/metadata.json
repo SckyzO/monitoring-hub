@@ -4,7 +4,7 @@
   "version": "2.1.0",
   "category": "Storage",
   "description": "Prometheus exporter for NetApp/Lenovo E-Series storage systems",
-  "last_updated": "2026-04-20T05:47:04.708872+00:00",
+  "last_updated": "2026-04-27T05:55:14.607645+00:00",
   "artifacts": {
     "rpm": {
       "el10": {
@@ -12,47 +12,47 @@
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/eseries_exporter-2.1.0-1.el10.x86_64.rpm",
           "size_bytes": 4037760,
-          "sha256": "8943f2bc6fa93b4307b47c0e7bf93b5091e79edc125c3f6effba04a439fdea5d",
-          "build_date": "2026-04-20T05:41:04.436590+00:00"
+          "sha256": "184e2f027a5b199643ffb1d8b292fee3101a50dc066684e6dba8f0be514e4aa6",
+          "build_date": "2026-04-27T05:46:10.669860+00:00"
         },
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/eseries_exporter-2.1.0-1.el10.aarch64.rpm",
           "size_bytes": 3613225,
-          "sha256": "5c85f4a406f38eaff5d3fabb67c94c2950444f2ac39a61eec0925a0dfacb1222",
-          "build_date": "2026-04-20T05:43:13.048163+00:00"
+          "sha256": "d3d5321d2bc490c6d511c65369df71ded6333692919d287540a6873c5b82bbee",
+          "build_date": "2026-04-27T05:41:00.433958+00:00"
         }
       },
       "el8": {
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/eseries_exporter-2.1.0-1.el8.x86_64.rpm",
-          "size_bytes": 4079624,
-          "sha256": "c46c7d6ee2f801e85faabc260c10b5edcbb1332c8d4772307d62fd8588494484",
-          "build_date": "2026-04-20T05:37:33.931925+00:00"
+          "size_bytes": 4079620,
+          "sha256": "fbe96f8186578468d852cb517ad86bb444e0d8a7d136ae076d5d5c898fd00c89",
+          "build_date": "2026-04-27T05:50:05.191524+00:00"
         },
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/eseries_exporter-2.1.0-1.el8.aarch64.rpm",
           "size_bytes": 3513256,
-          "sha256": "4985987600f3f723147b1107f0cd0d3b55587404b65b36813bc56c83677a9b4e",
-          "build_date": "2026-04-20T05:38:07.092011+00:00"
+          "sha256": "afebe903b18c7a89f86bee58f22b109a69d0d9d5a59f31621ae0194960807e4a",
+          "build_date": "2026-04-27T05:55:14.607645+00:00"
         }
       },
       "el9": {
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/eseries_exporter-2.1.0-1.el9.aarch64.rpm",
-          "size_bytes": 3613086,
-          "sha256": "24235e186f5245c589f1fe840307dd4dd6902baefbd0bc98b4d6dac6f6cafecf",
-          "build_date": "2026-04-20T05:47:04.708872+00:00"
+          "size_bytes": 3613171,
+          "sha256": "1c9c034d1054246443aff61cafe94f285a8b5cc35e9cf854fa2f5ebc9e3ab1e4",
+          "build_date": "2026-04-27T05:52:40.458656+00:00"
         },
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/eseries_exporter-2.1.0-1.el9.x86_64.rpm",
-          "size_bytes": 4036780,
-          "sha256": "ec021fc38e20ac69c2351780ce9f92e52172ac0b814d6ebd3ad27a5b455c8dae",
-          "build_date": "2026-04-20T05:38:35.486516+00:00"
+          "size_bytes": 4036782,
+          "sha256": "7f524b629d3c9aa17d36549825fdd6699fbe0e0469497826b05fb40ada18f689",
+          "build_date": "2026-04-27T05:53:37.082576+00:00"
         }
       }
     },
@@ -61,16 +61,16 @@
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/eseries-exporter_2.1.0-1_amd64.deb",
-          "size_bytes": 4838252,
-          "sha256": "d9a0a4be4784c1ebb019fdbc40a6c805912610cd9bff9bf5dae2b88a6784fad9",
-          "build_date": "2026-04-20T05:20:40.629771+00:00"
+          "size_bytes": 4838260,
+          "sha256": "637cf263cc35d097b0ebc43a7c867f17acd8c753268b0bcce842b9858602f8c7",
+          "build_date": "2026-04-27T05:28:05.093913+00:00"
         },
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/eseries-exporter_2.1.0-1_arm64.deb",
-          "size_bytes": 4414328,
-          "sha256": "ac1823c0496b37ab3933e33ae0e9081fa08001151cdbe0ecd5f21fdf008802a3",
-          "build_date": "2026-04-20T05:26:48.445449+00:00"
+          "size_bytes": 4414326,
+          "sha256": "27b19c02912502487f924a6b6ae1091a6cbdc096636228fcd0218082d61634a4",
+          "build_date": "2026-04-27T05:35:32.396442+00:00"
         }
       }
     },
