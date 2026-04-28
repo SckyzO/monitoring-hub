@@ -5,205 +5,205 @@
       "name": "alertmanager",
       "version": "0.32.0",
       "category": "Infrastructure",
-      "last_updated": "2026-04-27T05:51:06.336575+00:00"
+      "last_updated": null
     },
     {
       "name": "apache_exporter",
       "version": "1.0.12",
       "category": "Web",
-      "last_updated": "2026-04-27T05:47:48.822592+00:00"
+      "last_updated": null
     },
     {
       "name": "artifactory_exporter",
       "version": "1.16.1",
       "category": "Infrastructure",
-      "last_updated": "2026-04-27T05:47:27.473315+00:00"
+      "last_updated": null
     },
     {
       "name": "bind_exporter",
       "version": "0.8.0",
       "category": "Network",
-      "last_updated": "2026-04-27T05:53:37.750655+00:00"
+      "last_updated": null
     },
     {
       "name": "blackbox_exporter",
       "version": "0.28.0",
       "category": "Network",
-      "last_updated": "2026-04-27T05:46:56.048588+00:00"
+      "last_updated": null
     },
     {
       "name": "collectd_exporter",
       "version": "0.7.1",
       "category": "System",
-      "last_updated": "2026-04-27T05:54:13.191922+00:00"
+      "last_updated": null
     },
     {
       "name": "dellhw_exporter",
       "version": "2.0.0",
       "category": "Infrastructure",
-      "last_updated": "2026-04-27T05:55:39.476941+00:00"
+      "last_updated": null
     },
     {
       "name": "domain_exporter",
       "version": "1.25.0",
       "category": "Web",
-      "last_updated": "2026-04-27T05:54:44.036617+00:00"
+      "last_updated": null
     },
     {
       "name": "ebpf_exporter",
       "version": "2.5.1",
       "category": "System",
-      "last_updated": "2026-04-27T06:00:59.081499+00:00"
+      "last_updated": null
     },
     {
       "name": "elasticsearch_exporter",
       "version": "1.10.0",
       "category": "Database",
-      "last_updated": "2026-04-27T05:56:47.020422+00:00"
+      "last_updated": null
     },
     {
       "name": "eseries_exporter",
       "version": "2.1.0",
       "category": "Storage",
-      "last_updated": "2026-04-27T05:55:14.607645+00:00"
+      "last_updated": null
     },
     {
       "name": "exim_exporter",
       "version": "1.6.2",
       "category": "Messaging",
-      "last_updated": "2026-04-27T05:56:25.851973+00:00"
+      "last_updated": null
     },
     {
       "name": "frr_exporter",
       "version": "1.11.0",
       "category": "Network",
-      "last_updated": "2026-04-27T06:07:21.346091+00:00"
+      "last_updated": null
     },
     {
       "name": "gpfs_exporter",
       "version": "3.3.0",
       "category": "Storage",
-      "last_updated": "2026-04-27T05:55:02.818775+00:00"
+      "last_updated": null
     },
     {
       "name": "ha_cluster_exporter",
       "version": "1.4.0",
       "category": "Infrastructure",
-      "last_updated": "2026-04-27T06:03:40.341148+00:00"
+      "last_updated": null
     },
     {
       "name": "iperf3_exporter",
       "version": "1.3.1",
       "category": "Network",
-      "last_updated": "2026-04-27T06:05:36.301782+00:00"
+      "last_updated": null
     },
     {
       "name": "ipmi_exporter",
       "version": "1.10.1",
       "category": "Infrastructure",
-      "last_updated": "2026-04-27T06:01:40.618191+00:00"
+      "last_updated": null
     },
     {
       "name": "json_exporter",
       "version": "0.7.0",
       "category": "Messaging",
-      "last_updated": "2026-04-27T05:57:42.678505+00:00"
+      "last_updated": null
     },
     {
       "name": "keepalived_exporter",
       "version": "1.7.0",
       "category": "Network",
-      "last_updated": "2026-04-27T06:07:55.175113+00:00"
+      "last_updated": null
     },
     {
       "name": "memcached_exporter",
       "version": "0.16.0",
       "category": "Database",
-      "last_updated": "2026-04-27T06:06:38.199802+00:00"
+      "last_updated": null
     },
     {
       "name": "mongodb_exporter",
       "version": "0.49.0",
       "category": "Database",
-      "last_updated": "2026-04-27T06:13:21.334591+00:00"
+      "last_updated": null
     },
     {
       "name": "mysqld_exporter",
       "version": "0.19.0",
       "category": "Database",
-      "last_updated": "2026-04-27T06:15:15.179416+00:00"
+      "last_updated": null
     },
     {
       "name": "nats_exporter",
       "version": "0.19.2",
       "category": "Messaging",
-      "last_updated": "2026-04-27T06:13:05.512128+00:00"
+      "last_updated": null
     },
     {
       "name": "nginx_exporter",
       "version": "1.5.1",
       "category": "Web",
-      "last_updated": "2026-04-27T06:09:06.531365+00:00"
+      "last_updated": null
     },
     {
       "name": "node_exporter",
       "version": "1.11.0",
       "category": "System",
-      "last_updated": "2026-04-27T06:10:03.723633+00:00"
+      "last_updated": null
     },
     {
       "name": "ping_exporter",
       "version": "1.2.0",
       "category": "Network",
-      "last_updated": "2026-04-27T06:04:25.479139+00:00"
+      "last_updated": null
     },
     {
       "name": "podman_exporter",
       "version": "1.20.0",
       "category": "System",
-      "last_updated": "2026-04-27T06:12:26.893261+00:00"
+      "last_updated": null
     },
     {
       "name": "process_exporter",
       "version": "0.8.7",
       "category": "System",
-      "last_updated": "2026-04-27T06:11:40.442535+00:00"
+      "last_updated": null
     },
     {
       "name": "prometheus",
       "version": "3.11.0",
       "category": "Infrastructure",
-      "last_updated": "2026-04-27T06:15:37.988046+00:00"
+      "last_updated": null
     },
     {
       "name": "redis_exporter",
       "version": "1.82.0",
       "category": "Database",
-      "last_updated": "2026-04-27T06:15:42.845700+00:00"
+      "last_updated": null
     },
     {
       "name": "slurm_exporter",
-      "version": "1.8.0",
+      "version": "1.8.1",
       "category": "Infrastructure",
-      "last_updated": "2026-04-27T06:13:14.082320+00:00"
+      "last_updated": "2026-04-28T10:18:11.343192+00:00"
     },
     {
       "name": "smartctl_exporter",
       "version": "0.14.0",
       "category": "Storage",
-      "last_updated": "2026-04-27T06:12:49.740242+00:00"
+      "last_updated": null
     },
     {
       "name": "snmp_exporter",
       "version": "0.30.1",
       "category": "Network",
-      "last_updated": "2026-04-27T06:17:16.177315+00:00"
+      "last_updated": null
     },
     {
       "name": "textfile_exporter",
       "version": "0.1.4",
       "category": "System",
-      "last_updated": "2026-04-27T06:13:07.348170+00:00"
+      "last_updated": null
     }
   ]
 }
