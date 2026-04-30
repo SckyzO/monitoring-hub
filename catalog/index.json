@@ -3,9 +3,9 @@
   "exporters": [
     {
       "name": "alertmanager",
-      "version": "0.32.0",
+      "version": "0.32.1",
       "category": "Infrastructure",
-      "last_updated": null
+      "last_updated": "2026-04-30T10:12:14.130147+00:00"
     },
     {
       "name": "apache_exporter",
@@ -185,7 +185,7 @@
       "name": "slurm_exporter",
       "version": "1.8.1",
       "category": "Infrastructure",
-      "last_updated": "2026-04-28T10:18:11.343192+00:00"
+      "last_updated": null
     },
     {
       "name": "smartctl_exporter",

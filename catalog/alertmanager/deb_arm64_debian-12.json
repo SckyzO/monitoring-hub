@@ -2,16 +2,16 @@
   "format_version": "3.0",
   "artifact_type": "deb",
   "exporter": "alertmanager",
-  "version": "0.32.0",
+  "version": "0.32.1",
   "arch": "arm64",
   "dist": "debian-12",
-  "build_date": "2026-04-27T05:35:40.708344+00:00",
+  "build_date": "2026-04-30T10:12:14.130147+00:00",
   "status": "success",
   "package": {
-    "filename": "alertmanager_0.32.0-1_arm64.deb",
+    "filename": "alertmanager_0.32.1-1_arm64.deb",
     "url": "",
-    "sha256": "b14ffc1bebf5b31dd6113461b4cbfdf4b7eb22c2f496ba618abb98571e9cbb19",
-    "size_bytes": 31814702
+    "sha256": "3005729e9a4a0fc25345c3f949defaa35d0786e533cd7e0357565932df4bcbc3",
+    "size_bytes": 31814994
   },
   "deb_metadata": {}
 }
