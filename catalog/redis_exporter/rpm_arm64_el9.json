@@ -2,16 +2,16 @@
   "format_version": "3.0",
   "artifact_type": "rpm",
   "exporter": "redis_exporter",
-  "version": "1.82.0",
+  "version": "1.83.0",
   "arch": "arm64",
   "dist": "el9",
-  "build_date": "2026-04-27T06:15:42.845700+00:00",
+  "build_date": "2026-05-01T09:36:09.013727+00:00",
   "status": "success",
   "package": {
-    "filename": "redis_exporter-1.82.0-1.el9.aarch64.rpm",
+    "filename": "redis_exporter-1.83.0-1.el9.aarch64.rpm",
     "url": "",
-    "sha256": "d4ba82e4629a9d8386cd847fa333882f30f351861befe18a87d3b16b26121cfb",
-    "size_bytes": 3310374
+    "sha256": "27d575fe654b5868e5b68d092a79fd5af98b29f821ebcab7bf8ade1a510ba3be",
+    "size_bytes": 3311532
   },
   "rpm_metadata": {}
 }

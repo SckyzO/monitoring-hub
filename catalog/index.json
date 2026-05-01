@@ -5,7 +5,7 @@
       "name": "alertmanager",
       "version": "0.32.1",
       "category": "Infrastructure",
-      "last_updated": "2026-04-30T10:12:14.130147+00:00"
+      "last_updated": null
     },
     {
       "name": "apache_exporter",
@@ -177,9 +177,9 @@
     },
     {
       "name": "redis_exporter",
-      "version": "1.82.0",
+      "version": "1.83.0",
       "category": "Database",
-      "last_updated": null
+      "last_updated": "2026-05-01T09:37:58.297480+00:00"
     },
     {
       "name": "slurm_exporter",
