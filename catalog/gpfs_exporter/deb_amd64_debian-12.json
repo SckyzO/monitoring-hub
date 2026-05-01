@@ -2,16 +2,16 @@
   "format_version": "3.0",
   "artifact_type": "deb",
   "exporter": "gpfs_exporter",
-  "version": "3.3.0",
+  "version": "3.4.0",
   "arch": "amd64",
   "dist": "debian-12",
-  "build_date": "2026-04-27T05:36:41.422888+00:00",
+  "build_date": "2026-05-01T09:40:06.075677+00:00",
   "status": "success",
   "package": {
-    "filename": "gpfs-exporter_3.3.0-1_amd64.deb",
+    "filename": "gpfs-exporter_3.4.0-1_amd64.deb",
     "url": "",
-    "sha256": "ae817c85df388c3fdae8b8e6ea04d162caca9eaf959a2671f4b4e6f41754881c",
-    "size_bytes": 9219998
+    "sha256": "18108421639b612ab8782d70c1b7a30a572fe61656fdaaa7a8a1192ffe7137c7",
+    "size_bytes": 9229484
   },
   "deb_metadata": {}
 }

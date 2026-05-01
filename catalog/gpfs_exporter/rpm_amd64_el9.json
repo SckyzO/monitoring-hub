@@ -2,16 +2,16 @@
   "format_version": "3.0",
   "artifact_type": "rpm",
   "exporter": "gpfs_exporter",
-  "version": "3.3.0",
+  "version": "3.4.0",
   "arch": "amd64",
   "dist": "el9",
-  "build_date": "2026-04-27T05:55:02.818775+00:00",
+  "build_date": "2026-05-01T09:39:51.206711+00:00",
   "status": "success",
   "package": {
-    "filename": "gpfs_exporter-3.3.0-1.el9.x86_64.rpm",
+    "filename": "gpfs_exporter-3.4.0-1.el9.x86_64.rpm",
     "url": "",
-    "sha256": "d49571464f68addbbfe3d68111226bc85d0cf0de9f10ba88e600fef2d0bc3deb",
-    "size_bytes": 4155300
+    "sha256": "81ca73cc9e70574bb55a45e9799a2bea6d17e0f51a23cfec5c01b329d12a8007",
+    "size_bytes": 4160755
   },
   "rpm_metadata": {}
 }
