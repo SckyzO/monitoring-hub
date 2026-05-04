@@ -113,7 +113,7 @@ jobs:
 
       - name: Set up Docker Buildx
         if: steps.check-arch.outputs.supported == 'true'
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
 
       - name: Set up Python
         if: steps.check-arch.outputs.supported == 'true'
@@ -283,7 +283,7 @@ jobs:
 
       - name: Set up Docker Buildx
         if: steps.check-arch.outputs.supported == 'true'
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
 
       - name: Set up Python
         if: steps.check-arch.outputs.supported == 'true'
@@ -431,7 +431,7 @@ jobs:
         uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
 
       - name: Set up Python
         uses: actions/setup-python@v6
