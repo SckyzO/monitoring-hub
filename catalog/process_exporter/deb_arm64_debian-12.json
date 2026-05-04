@@ -5,13 +5,13 @@
   "version": "0.8.7",
   "arch": "arm64",
   "dist": "debian-12",
-  "build_date": "2026-04-27T05:38:02.229202+00:00",
+  "build_date": "2026-05-04T05:54:06.410015+00:00",
   "status": "success",
   "package": {
     "filename": "process-exporter_0.8.7-1_arm64.deb",
     "url": "",
-    "sha256": "051043c3e101b9fbd948e70347151218272ff460dffda9d9d275070fae9c2372",
-    "size_bytes": 4016210
+    "sha256": "f3841bb4f9bc0610a48354ef3e05c65ec38cc6d95d8f48d30c0df81d2a5fa2a6",
+    "size_bytes": 4016214
   },
   "deb_metadata": {}
 }

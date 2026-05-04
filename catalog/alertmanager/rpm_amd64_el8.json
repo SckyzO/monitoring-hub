@@ -5,13 +5,13 @@
   "version": "0.32.1",
   "arch": "amd64",
   "dist": "el8",
-  "build_date": "2026-04-30T10:05:22.806493+00:00",
+  "build_date": "2026-05-04T05:51:50.678933+00:00",
   "status": "success",
   "package": {
     "filename": "alertmanager-0.32.1-1.el8.x86_64.rpm",
     "url": "",
-    "sha256": "0c6e4d8d802e751a4bbcf4ea747aa8f759f3a1822bc6832676d36a7515637fa9",
-    "size_bytes": 9597200
+    "sha256": "c23050e0e4eb55de020884dd198a53a134bcc711554512819085584fee0aa416",
+    "size_bytes": 9597208
   },
   "rpm_metadata": {}
 }

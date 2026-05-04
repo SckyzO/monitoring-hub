@@ -5,12 +5,12 @@
   "version": "1.83.0",
   "arch": "arm64",
   "dist": "el8",
-  "build_date": "2026-05-01T09:45:49.809256+00:00",
+  "build_date": "2026-05-04T06:26:04.323153+00:00",
   "status": "success",
   "package": {
     "filename": "redis_exporter-1.83.0-1.el8.aarch64.rpm",
     "url": "",
-    "sha256": "b8d79676dba90f4f762f1c3b776bbbb0b519599293522fd88f6754095e817ece",
+    "sha256": "277231349ceb5b361e2c68f1e6de2fdf64b6f8d6c73ee16a0817234d7717dbaf",
     "size_bytes": 3214300
   },
   "rpm_metadata": {}

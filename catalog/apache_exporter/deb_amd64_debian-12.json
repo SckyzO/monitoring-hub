@@ -5,13 +5,13 @@
   "version": "1.0.12",
   "arch": "amd64",
   "dist": "debian-12",
-  "build_date": "2026-04-27T05:28:40.076484+00:00",
+  "build_date": "2026-05-04T05:41:18.942549+00:00",
   "status": "success",
   "package": {
     "filename": "apache-exporter_1.0.12-1_amd64.deb",
     "url": "",
-    "sha256": "20f7d32965e8a35ced9989e50b550942ac3d8053a2e7c1ecf25b9aca528e21c7",
-    "size_bytes": 9255426
+    "sha256": "05a3af499eaa2a10389775e4d6413b9fc61b7d2c1e2f7ad8e228fb74db085423",
+    "size_bytes": 9255424
   },
   "deb_metadata": {}
 }

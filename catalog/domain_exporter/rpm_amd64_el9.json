@@ -5,13 +5,13 @@
   "version": "1.25.0",
   "arch": "amd64",
   "dist": "el9",
-  "build_date": "2026-04-27T05:51:09.288651+00:00",
+  "build_date": "2026-05-04T05:53:16.536381+00:00",
   "status": "success",
   "package": {
     "filename": "domain_exporter-1.25.0-1.el9.x86_64.rpm",
     "url": "",
-    "sha256": "041da85fcfcedd79a9f1fa964ecf6b145c32f48d4dbb3c3a0d04eae2a609af92",
-    "size_bytes": 5256564
+    "sha256": "4206d57151d7282203006fff10a7c01fae4de18dd7f90457e5172f57df577290",
+    "size_bytes": 5256563
   },
   "rpm_metadata": {}
 }

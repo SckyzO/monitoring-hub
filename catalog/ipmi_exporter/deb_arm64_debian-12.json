@@ -5,13 +5,13 @@
   "version": "1.10.1",
   "arch": "arm64",
   "dist": "debian-12",
-  "build_date": "2026-04-27T05:34:31.366450+00:00",
+  "build_date": "2026-05-04T05:53:46.597834+00:00",
   "status": "success",
   "package": {
     "filename": "ipmi-exporter_1.10.1-1_arm64.deb",
     "url": "",
-    "sha256": "15d5c9e799b2fbcea0fd5f72477c7cadd1119a5c23b09c5db7898fbe108ec01f",
-    "size_bytes": 8655016
+    "sha256": "94af046c9b81b7665e1dc593580cc9bee62588567a0da3e8bbe3fc7ea0c5018e",
+    "size_bytes": 8655000
   },
   "deb_metadata": {}
 }

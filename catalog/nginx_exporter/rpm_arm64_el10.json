@@ -5,12 +5,12 @@
   "version": "1.5.1",
   "arch": "arm64",
   "dist": "el10",
-  "build_date": "2026-04-27T06:04:42.565836+00:00",
+  "build_date": "2026-05-04T06:10:59.728923+00:00",
   "status": "success",
   "package": {
     "filename": "nginx_exporter-1.5.1-1.el10.aarch64.rpm",
     "url": "",
-    "sha256": "7a75760878b6e13debbbae26f47116f9608623db335aec1094e4be8718111d5a",
+    "sha256": "a101039cfd31ff1081b4c732ef7d1d13307a4c8683a1cbcc1f058e29d084945d",
     "size_bytes": 3683233
   },
   "rpm_metadata": {}

@@ -5,13 +5,13 @@
   "version": "2.5.1",
   "arch": "arm64",
   "dist": "debian-12",
-  "build_date": "2026-04-27T05:34:55.156428+00:00",
+  "build_date": "2026-05-04T05:43:59.566590+00:00",
   "status": "success",
   "package": {
     "filename": "ebpf-exporter_2.5.1-1_arm64.deb",
     "url": "",
-    "sha256": "8025cf028e3e8e5cb69ca370e59e0763533a890e10140f9badd11745a61c6fd1",
-    "size_bytes": 12707112
+    "sha256": "569e7a87d1621f909580230e24cb665e1fa92565c41d8fb02e19fcf2cd07d8dd",
+    "size_bytes": 12707124
   },
   "deb_metadata": {}
 }

@@ -5,12 +5,12 @@
   "version": "1.4.0",
   "arch": "amd64",
   "dist": "el8",
-  "build_date": "2026-04-27T05:55:56.998787+00:00",
+  "build_date": "2026-05-04T05:55:28.553526+00:00",
   "status": "success",
   "package": {
     "filename": "ha_cluster_exporter-1.4.0-1.el8.x86_64.rpm",
     "url": "",
-    "sha256": "ca0ca996ad652e5619e5dcd0bb2d961d209a2f364795a403080773c477ef8df9",
+    "sha256": "aebf5e269a5774f72368f613af237f82d17dd92840e9ed515677b443108b8885",
     "size_bytes": 4420696
   },
   "rpm_metadata": {}

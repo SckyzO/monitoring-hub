@@ -4,7 +4,7 @@
   "version": "0.7.1",
   "category": "System",
   "description": "Relay metrics from collectd to Prometheus.",
-  "last_updated": "2026-04-27T05:54:13.191922+00:00",
+  "last_updated": "2026-05-04T06:01:09.145047+00:00",
   "artifacts": {
     "rpm": {
       "el10": {
@@ -12,15 +12,15 @@
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/collectd_exporter-0.7.1-1.el10.x86_64.rpm",
           "size_bytes": 4134328,
-          "sha256": "0673fdb8d464c5b5233120439129b5737ec0f8f3f5ad0c33102e95667926a472",
-          "build_date": "2026-04-27T05:41:31.661196+00:00"
+          "sha256": "a3d4db736d426b645bcfadc8582f6c51a9bfcf226f92e71099fbbc8f482a4c85",
+          "build_date": "2026-05-04T05:55:48.964413+00:00"
         },
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/collectd_exporter-0.7.1-1.el10.aarch64.rpm",
           "size_bytes": 3676829,
-          "sha256": "cb07c8c4364e32c6407a519595ee06b958e57d187310f6772f884facf56e9299",
-          "build_date": "2026-04-27T05:54:13.191922+00:00"
+          "sha256": "637b3aea2217d32e5d4357262a260c1db38ba76b6c511b4bde57f4df1e1716a9",
+          "build_date": "2026-05-04T05:55:21.420936+00:00"
         }
       },
       "el8": {
@@ -28,31 +28,31 @@
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/collectd_exporter-0.7.1-1.el8.x86_64.rpm",
           "size_bytes": 4235084,
-          "sha256": "33b26dd501cf578847c83225f037c7f837591dd65b5189437a9c5fb3c255b915",
-          "build_date": "2026-04-27T05:44:54.627964+00:00"
+          "sha256": "4b5b3de0e45ca1521c4a735496824527ccc13195197200f41ed45b4c13b019ef",
+          "build_date": "2026-05-04T05:55:26.649060+00:00"
         },
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/collectd_exporter-0.7.1-1.el8.aarch64.rpm",
-          "size_bytes": 3642720,
-          "sha256": "16ce0464bf021567ca0a215f97494952c770aa666d656701539678030842b214",
-          "build_date": "2026-04-27T05:48:50.204209+00:00"
+          "size_bytes": 3642716,
+          "sha256": "15d0c0d121de5d3da48566bdc1f0946e3e38bb33cc1ab8b485517d240b65ab50",
+          "build_date": "2026-05-04T06:01:09.145047+00:00"
         }
       },
       "el9": {
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/collectd_exporter-0.7.1-1.el9.aarch64.rpm",
-          "size_bytes": 3676709,
-          "sha256": "b6e5fa4e5026250ba52a24b2fbdd54c8a16e11e633eace7170d89707622feb0f",
-          "build_date": "2026-04-27T05:45:44.945380+00:00"
+          "size_bytes": 3676692,
+          "sha256": "23e8c20b263198b9abeb2bdb7ea0743ef8612c09edc0148ed06f9b25b9c8974a",
+          "build_date": "2026-05-04T05:54:54.032652+00:00"
         },
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/collectd_exporter-0.7.1-1.el9.x86_64.rpm",
-          "size_bytes": 4134170,
-          "sha256": "b6f125a0d15d0782b3b53374658ef28a52a522eee78dc3c9ec08a21309af1ad0",
-          "build_date": "2026-04-27T05:53:58.044430+00:00"
+          "size_bytes": 4134133,
+          "sha256": "9556dd34f8fd28b0bfa1e45d7135b3ef4d96243bd08c4288ea0b7861b5b3c240",
+          "build_date": "2026-05-04T05:53:55.383272+00:00"
         }
       }
     },
@@ -61,16 +61,16 @@
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/collectd-exporter_0.7.1-1_amd64.deb",
-          "size_bytes": 9193442,
-          "sha256": "88111a4cf1ac69de6b9bb3e20bb4746221bfdbe086c6f0715c04d8e2096ee585",
-          "build_date": "2026-04-27T05:28:05.711404+00:00"
+          "size_bytes": 9193460,
+          "sha256": "1226861405c4c765b16324fd0ed419646228681ffd8db1b02928ae23f788035f",
+          "build_date": "2026-05-04T05:39:06.964259+00:00"
         },
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/collectd-exporter_0.7.1-1_arm64.deb",
-          "size_bytes": 8419860,
-          "sha256": "b6b2fe86f382ae419e885462409e6ae1792ef720d44b42a4475b96beaab127db",
-          "build_date": "2026-04-27T05:43:09.264308+00:00"
+          "size_bytes": 8419856,
+          "sha256": "dc8d64e85679e25511b25d48a53a2b12cdcfe16d1b97f77e5b358992696a88a3",
+          "build_date": "2026-05-04T05:45:20.167199+00:00"
         }
       }
     },

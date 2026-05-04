@@ -4,7 +4,7 @@
   "version": "1.11.0",
   "category": "Network",
   "description": "Prometheus exporter for FRR metrics.",
-  "last_updated": "2026-04-27T06:07:21.346091+00:00",
+  "last_updated": "2026-05-04T06:08:43.091903+00:00",
   "artifacts": {
     "rpm": {
       "el10": {
@@ -12,47 +12,47 @@
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/frr_exporter-1.11.0-1.el10.x86_64.rpm",
           "size_bytes": 4240514,
-          "sha256": "1d81f4fbd6a3b439deff0b2d552cf11f53a9f6ea08b7ac68429f751d11aa9749",
-          "build_date": "2026-04-27T06:07:21.346091+00:00"
+          "sha256": "57e621875c0bd8907d85c4be2cb632eaf74b15ab0762132b2f73329571bbf49d",
+          "build_date": "2026-05-04T06:02:42.868481+00:00"
         },
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/frr_exporter-1.11.0-1.el10.aarch64.rpm",
           "size_bytes": 3771403,
-          "sha256": "735eeb102da7212142a53dcebc096f70e18628651b0e20e921186c64ad096014",
-          "build_date": "2026-04-27T05:57:49.328075+00:00"
+          "sha256": "5174b8789fe23d322b6906966d4fa5838b5b9526d4650a6c4446a7e35b7de35d",
+          "build_date": "2026-05-04T06:03:45.023724+00:00"
         }
       },
       "el8": {
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/frr_exporter-1.11.0-1.el8.x86_64.rpm",
-          "size_bytes": 4346160,
-          "sha256": "47781eb9d383bbe4ef9b0640547a404820bed0367593585d0581be0d825a32cc",
-          "build_date": "2026-04-27T05:54:18.570931+00:00"
+          "size_bytes": 4346164,
+          "sha256": "cb15de4e5b49bfcb77bfb9134f3cb975ea1e4afd2f2ff8a911cf42c54c6a7a25",
+          "build_date": "2026-05-04T05:55:21.105149+00:00"
         },
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/frr_exporter-1.11.0-1.el8.aarch64.rpm",
           "size_bytes": 3733616,
-          "sha256": "fa1adb2474e019c88fe6e800b5c2b787eaf0f85b8d2f0163b6355ffb69adf798",
-          "build_date": "2026-04-27T05:54:16.263042+00:00"
+          "sha256": "4c18ebd3550572bfc7750b38322d70cf480eb9180942856479d66911581efcf7",
+          "build_date": "2026-05-04T06:08:43.091903+00:00"
         }
       },
       "el9": {
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/frr_exporter-1.11.0-1.el9.aarch64.rpm",
-          "size_bytes": 3771407,
-          "sha256": "990a906994a0399cea23398b36cf68b07cdef5e7bf3c8ab8b08c40858774fe7f",
-          "build_date": "2026-04-27T05:52:54.561625+00:00"
+          "size_bytes": 3771393,
+          "sha256": "fbb0e13427061e91994923f9baabe004e9935920142decf2b5777268863724d3",
+          "build_date": "2026-05-04T06:04:20.110553+00:00"
         },
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/frr_exporter-1.11.0-1.el9.x86_64.rpm",
-          "size_bytes": 4240225,
-          "sha256": "f991313bb47a953bc511d43f91aca5ee206f9336d4690db42a5b44d9193c0a37",
-          "build_date": "2026-04-27T05:53:38.308463+00:00"
+          "size_bytes": 4240090,
+          "sha256": "21c4cbd4f0751ec80d56bb89b656afe294746ba20d1a2e22d9b2d6fd983f63fc",
+          "build_date": "2026-05-04T06:04:02.065693+00:00"
         }
       }
     },
@@ -61,16 +61,16 @@
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/frr-exporter_1.11.0-1_amd64.deb",
-          "size_bytes": 9417560,
-          "sha256": "0266a38e22542847b4834d754f0e4953a10295d4669c895957424ed402f80291",
-          "build_date": "2026-04-27T05:30:37.496296+00:00"
+          "size_bytes": 9417568,
+          "sha256": "e6d057ddd9355a781a46c207fce083e12c45bf2f1782ff01447c4b236cafc25e",
+          "build_date": "2026-05-04T05:41:56.047970+00:00"
         },
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/frr-exporter_1.11.0-1_arm64.deb",
-          "size_bytes": 8631060,
-          "sha256": "c99e7cee39e1ec05b47bd71d0ed336c59ecf49e3933b4f60ed9e7b06003353a4",
-          "build_date": "2026-04-27T05:34:29.856001+00:00"
+          "size_bytes": 8631072,
+          "sha256": "f4abf6d0b820ae8d460bc01e67bc6743aa8c2074bb0cc02639815350c439e412",
+          "build_date": "2026-05-04T05:45:07.193135+00:00"
         }
       }
     },

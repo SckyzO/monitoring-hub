@@ -5,12 +5,12 @@
   "version": "0.8.7",
   "arch": "arm64",
   "dist": "el10",
-  "build_date": "2026-04-27T06:10:31.963718+00:00",
+  "build_date": "2026-05-04T06:18:59.481598+00:00",
   "status": "success",
   "package": {
     "filename": "process_exporter-0.8.7-1.el10.aarch64.rpm",
     "url": "",
-    "sha256": "046e6a1297ba15f06c65dbb46d884824580b88f0d1fdfdbe72fb23627f57ad3c",
+    "sha256": "5a04ea545921d07972c0f255b126c5f44bcc96924c8f9cbde13cd144fa3d7ed3",
     "size_bytes": 3323406
   },
   "rpm_metadata": {}

@@ -4,7 +4,7 @@
   "version": "0.16.0",
   "category": "Database",
   "description": "Prometheus exporter for Memcached metrics.",
-  "last_updated": "2026-04-27T06:06:38.199802+00:00",
+  "last_updated": "2026-05-04T06:14:44.535658+00:00",
   "artifacts": {
     "rpm": {
       "el10": {
@@ -12,47 +12,47 @@
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/memcached_exporter-0.16.0-1.el10.x86_64.rpm",
           "size_bytes": 4136967,
-          "sha256": "4f0e8fc496d4f87c3735292ca016139599b421e79e5712dc800c7b10992648dd",
-          "build_date": "2026-04-27T05:54:33.819585+00:00"
+          "sha256": "e79c6bf3619225de4122590e5c0401a69cf1bc8b3c2f0ba9f25625818dd59da8",
+          "build_date": "2026-05-04T06:11:53.996148+00:00"
         },
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/memcached_exporter-0.16.0-1.el10.aarch64.rpm",
           "size_bytes": 3681214,
-          "sha256": "2513c48639c593731615e2641dfda564e3ed3565a7d1d0671f00289064dbeacd",
-          "build_date": "2026-04-27T05:51:02.335398+00:00"
+          "sha256": "ed4683cbc5aa71724ca9f16971d7e162c49d929a4ae3a016cc783221fd143259",
+          "build_date": "2026-05-04T06:10:52.679103+00:00"
         }
       },
       "el8": {
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/memcached_exporter-0.16.0-1.el8.x86_64.rpm",
-          "size_bytes": 4235572,
-          "sha256": "af1abc952b2ed0a2e1be149ad08c7cf9a596227064652a61690458ead5ddbc97",
-          "build_date": "2026-04-27T05:50:48.716081+00:00"
+          "size_bytes": 4235576,
+          "sha256": "7167cf5727a87cb1636a4a8e5d5278f9d919d0927855a67bc4f43325f81ac9aa",
+          "build_date": "2026-05-04T06:07:16.780565+00:00"
         },
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/memcached_exporter-0.16.0-1.el8.aarch64.rpm",
           "size_bytes": 3642412,
-          "sha256": "68646788e9e645928654e0213c81a916ee9d1bc46c60cf43832a9e2c712efd61",
-          "build_date": "2026-04-27T06:06:38.199802+00:00"
+          "sha256": "769b4deaf75139470e8139705e7618582d5e014ea767d507174fbe62cbfd9d52",
+          "build_date": "2026-05-04T06:08:59.417678+00:00"
         }
       },
       "el9": {
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/memcached_exporter-0.16.0-1.el9.aarch64.rpm",
-          "size_bytes": 3681261,
-          "sha256": "e1d15180359562b842b9b9e5c4be97a6442db30b08e4bdd1f718495d0636d110",
-          "build_date": "2026-04-27T06:03:28.642897+00:00"
+          "size_bytes": 3681187,
+          "sha256": "725665d3ec56ee52d7573b53391c907daa202b8ca36099f8ec0b01a3b01c90c5",
+          "build_date": "2026-05-04T06:14:44.535658+00:00"
         },
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/memcached_exporter-0.16.0-1.el9.x86_64.rpm",
-          "size_bytes": 4137222,
-          "sha256": "d14641fa359dab9c730f0878b8289367c610848440b531a7dd8f8b96247ec98b",
-          "build_date": "2026-04-27T06:02:04.085794+00:00"
+          "size_bytes": 4137493,
+          "sha256": "bfed2d9efa0e3d3f0e6417155c77c51b6663532049fe5ad2cd60b045362dbd1f",
+          "build_date": "2026-05-04T06:09:30.652665+00:00"
         }
       }
     },
@@ -62,15 +62,15 @@
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/memcached-exporter_0.16.0-1_amd64.deb",
           "size_bytes": 9198954,
-          "sha256": "124700b7322b7c06bc273d0f343c435264444824e735f1280d77348096d32acd",
-          "build_date": "2026-04-27T05:30:18.322456+00:00"
+          "sha256": "0e1af8208817d5d166becf9d15f7f7ae38f25abe7e0a1336c5bafb1987a81037",
+          "build_date": "2026-05-04T05:41:12.988984+00:00"
         },
         "arm64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/memcached-exporter_0.16.0-1_arm64.deb",
-          "size_bytes": 8424730,
-          "sha256": "1dd3923cadb50ac2cf0a1e826b35889a4d45af003e1e505d7d08f27b6a68a892",
-          "build_date": "2026-04-27T05:44:50.492467+00:00"
+          "size_bytes": 8424734,
+          "sha256": "d7a095d5a5a58adf70c1694395507416f9b9d77eda05f8e382096ea9d07d94ce",
+          "build_date": "2026-05-04T05:50:02.988951+00:00"
         }
       }
     },

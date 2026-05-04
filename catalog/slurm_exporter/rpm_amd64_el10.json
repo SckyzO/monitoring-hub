@@ -5,12 +5,12 @@
   "version": "1.8.1",
   "arch": "amd64",
   "dist": "el10",
-  "build_date": "2026-04-28T10:11:20.039086+00:00",
+  "build_date": "2026-05-04T06:20:22.671988+00:00",
   "status": "success",
   "package": {
     "filename": "slurm_exporter-1.8.1-1.el10.x86_64.rpm",
     "url": "",
-    "sha256": "d1f7259b1d5f6945a7951db9cfb3e3db3656480e79c265146d9d65c7678ad1b5",
+    "sha256": "7864ffff1b12de772a7dc46cb371286efa163b9e1e048d7f04da8d15b11c6156",
     "size_bytes": 4019853
   },
   "rpm_metadata": {}

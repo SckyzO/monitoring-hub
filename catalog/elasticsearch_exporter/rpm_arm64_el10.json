@@ -5,12 +5,12 @@
   "version": "1.10.0",
   "arch": "arm64",
   "dist": "el10",
-  "build_date": "2026-04-27T05:56:47.020422+00:00",
+  "build_date": "2026-05-04T06:06:09.646172+00:00",
   "status": "success",
   "package": {
     "filename": "elasticsearch_exporter-1.10.0-1.el10.aarch64.rpm",
     "url": "",
-    "sha256": "8341adb6912db4f8bff82d31f326ee6c2fe6e3e09b7b04fb69e6d918ea7c99a4",
+    "sha256": "9abab4947e085f6e9cf9bfc32c6aa55b909b3ea952e6f8ecc506dbff1a7f65c5",
     "size_bytes": 4502438
   },
   "rpm_metadata": {}

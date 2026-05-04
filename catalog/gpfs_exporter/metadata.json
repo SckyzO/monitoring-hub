@@ -4,7 +4,7 @@
   "version": "3.4.0",
   "category": "Storage",
   "description": "Prometheus exporter for IBM GPFS (Spectrum Scale) metrics",
-  "last_updated": "2026-05-01T09:40:31.003600+00:00",
+  "last_updated": "2026-05-04T06:05:53.693353+00:00",
   "artifacts": {
     "rpm": {
       "el10": {
@@ -12,8 +12,8 @@
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/gpfs_exporter-3.4.0-1.el10.x86_64.rpm",
           "size_bytes": 4158500,
-          "sha256": "5ed2eaeaf9d923dd5698692da77c819273842fbe96c408af953bda529868363c",
-          "build_date": "2026-05-01T09:39:48.884594+00:00"
+          "sha256": "9c2b67086c43ae7213a2b35aa19c9981c9457010ff75ab59a129ca596e44c2ce",
+          "build_date": "2026-05-04T06:03:31.496961+00:00"
         }
       },
       "el8": {
@@ -21,17 +21,17 @@
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/gpfs_exporter-3.4.0-1.el8.x86_64.rpm",
           "size_bytes": 4258868,
-          "sha256": "5a315ca387e194823cd0f23622a67f493525184f5aa0880851b0dff8b4c20f32",
-          "build_date": "2026-05-01T09:40:31.003600+00:00"
+          "sha256": "40dd38744313418d496cf5be45e331583d56c4529ffd744d2e3d7971c4dea8ce",
+          "build_date": "2026-05-04T06:05:53.693353+00:00"
         }
       },
       "el9": {
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/gpfs_exporter-3.4.0-1.el9.x86_64.rpm",
-          "size_bytes": 4160755,
-          "sha256": "81ca73cc9e70574bb55a45e9799a2bea6d17e0f51a23cfec5c01b329d12a8007",
-          "build_date": "2026-05-01T09:39:51.206711+00:00"
+          "size_bytes": 4160726,
+          "sha256": "aa7ea569f6fec1c3d41004ccdbc032936f9b207b49636b0b15b87b97c378b2da",
+          "build_date": "2026-05-04T06:05:09.795291+00:00"
         }
       }
     },
@@ -40,9 +40,9 @@
         "amd64": {
           "status": "success",
           "url": "https://github.com/sckyzo/monitoring-hub/releases/latest/download/gpfs-exporter_3.4.0-1_amd64.deb",
-          "size_bytes": 9229484,
-          "sha256": "18108421639b612ab8782d70c1b7a30a572fe61656fdaaa7a8a1192ffe7137c7",
-          "build_date": "2026-05-01T09:40:06.075677+00:00"
+          "size_bytes": 9229508,
+          "sha256": "c4d88c16b6fae25d867385296d2874a3fd96172dfff86faaefcff274dc52eebb",
+          "build_date": "2026-05-04T05:39:19.275455+00:00"
         }
       }
     },

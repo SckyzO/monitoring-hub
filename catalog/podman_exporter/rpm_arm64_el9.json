@@ -5,13 +5,13 @@
   "version": "1.20.0",
   "arch": "arm64",
   "dist": "el9",
-  "build_date": "2026-04-27T06:05:03.019634+00:00",
+  "build_date": "2026-05-04T06:13:47.512689+00:00",
   "status": "success",
   "package": {
     "filename": "podman_exporter-1.20.0-1.el9.aarch64.rpm",
     "url": "",
-    "sha256": "d4ef4cb51dcd76e2ada097e699f367e33a9cf9af79f87fd2acae4085dde7894e",
-    "size_bytes": 7670612
+    "sha256": "7decfc7f6d2b75264ed3b6f71915085fee120ad15ca364934c58f055aa3e4d87",
+    "size_bytes": 7670611
   },
   "rpm_metadata": {}
 }

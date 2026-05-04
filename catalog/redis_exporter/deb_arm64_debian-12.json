@@ -5,13 +5,13 @@
   "version": "1.83.0",
   "arch": "arm64",
   "dist": "debian-12",
-  "build_date": "2026-05-01T09:46:08.549940+00:00",
+  "build_date": "2026-05-04T05:52:31.675463+00:00",
   "status": "success",
   "package": {
     "filename": "redis-exporter_1.83.0-1_arm64.deb",
     "url": "",
-    "sha256": "05061024ba6cda20b08243dd109048b3f0c9bc85fe9591864b44aded6e52adab",
-    "size_bytes": 3961986
+    "sha256": "5da62c1d42d84f2a6728df6c04aa111dbc6aefabda56c8a963b9c7cc6edf3d62",
+    "size_bytes": 3961988
   },
   "deb_metadata": {}
 }

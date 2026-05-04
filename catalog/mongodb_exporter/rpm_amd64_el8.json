@@ -5,13 +5,13 @@
   "version": "0.49.0",
   "arch": "amd64",
   "dist": "el8",
-  "build_date": "2026-04-27T05:58:54.755038+00:00",
+  "build_date": "2026-05-04T06:07:56.697786+00:00",
   "status": "success",
   "package": {
     "filename": "mongodb_exporter-0.49.0-1.el8.x86_64.rpm",
     "url": "",
-    "sha256": "490b392972b2a35f713cbc5e0c75f0438d4f2b86a7410135512f92c224ba8ebc",
-    "size_bytes": 9380568
+    "sha256": "43e057904b396c52d6d2b3c1f1d6b941f7d6aabbe942cd52e1c3217a6fffe0be",
+    "size_bytes": 9380572
   },
   "rpm_metadata": {}
 }

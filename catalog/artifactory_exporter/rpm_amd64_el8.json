@@ -5,12 +5,12 @@
   "version": "1.16.1",
   "arch": "amd64",
   "dist": "el8",
-  "build_date": "2026-04-27T05:47:27.473315+00:00",
+  "build_date": "2026-05-04T05:51:44.865286+00:00",
   "status": "success",
   "package": {
     "filename": "artifactory_exporter-1.16.1-1.el8.x86_64.rpm",
     "url": "",
-    "sha256": "5d968835146c2696c83d10b0a976c92c1fea8f4f4038abb7774c58a7681e8e79",
+    "sha256": "f7bee4ed0e07bcb895f4ddd4b954ec3aedb0fdd81b3f3bf0b3dadacaa44d8d3c",
     "size_bytes": 3838496
   },
   "rpm_metadata": {}
