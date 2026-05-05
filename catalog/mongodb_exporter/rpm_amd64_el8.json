@@ -2,16 +2,16 @@
   "format_version": "3.0",
   "artifact_type": "rpm",
   "exporter": "mongodb_exporter",
-  "version": "0.49.0",
+  "version": "0.51.0",
   "arch": "amd64",
   "dist": "el8",
-  "build_date": "2026-05-04T06:07:56.697786+00:00",
+  "build_date": "2026-05-05T00:41:10.425305+00:00",
   "status": "success",
   "package": {
-    "filename": "mongodb_exporter-0.49.0-1.el8.x86_64.rpm",
+    "filename": "mongodb_exporter-0.51.0-1.el8.x86_64.rpm",
     "url": "",
-    "sha256": "43e057904b396c52d6d2b3c1f1d6b941f7d6aabbe942cd52e1c3217a6fffe0be",
-    "size_bytes": 9380572
+    "sha256": "997079963ef5001ab568769f524fe3cb26b42286e0963cfe962a62631b035f3b",
+    "size_bytes": 9424796
   },
   "rpm_metadata": {}
 }

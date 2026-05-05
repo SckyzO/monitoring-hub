@@ -2,16 +2,16 @@
   "format_version": "3.0",
   "artifact_type": "deb",
   "exporter": "mongodb_exporter",
-  "version": "0.49.0",
+  "version": "0.51.0",
   "arch": "arm64",
   "dist": "debian-12",
-  "build_date": "2026-05-04T05:47:41.685876+00:00",
+  "build_date": "2026-05-05T00:47:45.895898+00:00",
   "status": "success",
   "package": {
-    "filename": "mongodb-exporter_0.49.0-1_arm64.deb",
+    "filename": "mongodb-exporter_0.51.0-1_arm64.deb",
     "url": "",
-    "sha256": "1cb89b9e07f54a906649059e69cad72d46f431a6efdcac24a750f6dc293941bb",
-    "size_bytes": 10537060
+    "sha256": "aaa3ed4062ef20c6925b2a8868ce09c2a796bc8dc3660ce8450074a31f575e55",
+    "size_bytes": 10585044
   },
   "deb_metadata": {}
 }
