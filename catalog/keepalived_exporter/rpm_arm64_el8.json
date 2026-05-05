@@ -2,16 +2,16 @@
   "format_version": "3.0",
   "artifact_type": "rpm",
   "exporter": "keepalived_exporter",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "arch": "arm64",
   "dist": "el8",
-  "build_date": "2026-05-04T06:18:04.698194+00:00",
+  "build_date": "2026-05-05T00:58:19.320412+00:00",
   "status": "success",
   "package": {
-    "filename": "keepalived_exporter-1.7.0-1.el8.aarch64.rpm",
+    "filename": "keepalived_exporter-1.7.1-1.el8.aarch64.rpm",
     "url": "",
-    "sha256": "fc1839e736ca5c6bae58df21e410a0f1c4619d19519e468d31498810c3071391",
-    "size_bytes": 3001760
+    "sha256": "62b3c0b8eab412716d905667e287f6536c3fe76538ff433ad3cdf5493586e3ff",
+    "size_bytes": 3525580
   },
   "rpm_metadata": {}
 }

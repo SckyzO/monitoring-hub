@@ -111,9 +111,9 @@
     },
     {
       "name": "keepalived_exporter",
-      "version": "1.7.0",
+      "version": "1.7.1",
       "category": "Network",
-      "last_updated": null
+      "last_updated": "2026-05-05T00:58:19.320412+00:00"
     },
     {
       "name": "memcached_exporter",
@@ -125,7 +125,7 @@
       "name": "mongodb_exporter",
       "version": "0.51.0",
       "category": "Database",
-      "last_updated": "2026-05-05T00:47:45.895898+00:00"
+      "last_updated": "2026-05-05T00:57:27.713285+00:00"
     },
     {
       "name": "mysqld_exporter",
@@ -149,7 +149,7 @@
       "name": "node_exporter",
       "version": "1.11.1",
       "category": "System",
-      "last_updated": null
+      "last_updated": "2026-05-05T01:02:00.184354+00:00"
     },
     {
       "name": "ping_exporter",
@@ -173,7 +173,7 @@
       "name": "prometheus",
       "version": "3.11.3",
       "category": "Infrastructure",
-      "last_updated": null
+      "last_updated": "2026-05-05T01:05:52.470134+00:00"
     },
     {
       "name": "redis_exporter",

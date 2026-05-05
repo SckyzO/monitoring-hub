@@ -5,12 +5,12 @@
   "version": "0.51.0",
   "arch": "arm64",
   "dist": "el10",
-  "build_date": "2026-05-05T00:43:25.363960+00:00",
+  "build_date": "2026-05-05T00:52:18.925095+00:00",
   "status": "success",
   "package": {
     "filename": "mongodb_exporter-0.51.0-1.el10.aarch64.rpm",
     "url": "",
-    "sha256": "6498a66fca8269ace490f69f062968c90c836da15596be80ed25ef6a0c561d32",
+    "sha256": "d4c08035afd37505e0763a5562c20175e09ef5350285d0db58a3450f469433c4",
     "size_bytes": 8216017
   },
   "rpm_metadata": {}

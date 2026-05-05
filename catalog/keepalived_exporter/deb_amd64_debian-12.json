@@ -2,16 +2,16 @@
   "format_version": "3.0",
   "artifact_type": "deb",
   "exporter": "keepalived_exporter",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "arch": "amd64",
   "dist": "debian-12",
-  "build_date": "2026-05-04T05:41:07.674229+00:00",
+  "build_date": "2026-05-05T00:49:52.854648+00:00",
   "status": "success",
   "package": {
-    "filename": "keepalived-exporter_1.7.0-1_amd64.deb",
+    "filename": "keepalived-exporter_1.7.1-1_amd64.deb",
     "url": "",
-    "sha256": "4b8eb433f3fc946f6350725f47f0ae3b2ca6f89e50c81247449e564f482d407d",
-    "size_bytes": 4088728
+    "sha256": "e6f5e3f65d6dcadfc5066d1131bece55c53697444aee375e6c4cb440bf0825c6",
+    "size_bytes": 4861158
   },
   "deb_metadata": {}
 }

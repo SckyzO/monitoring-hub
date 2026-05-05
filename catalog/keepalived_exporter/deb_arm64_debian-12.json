@@ -2,16 +2,16 @@
   "format_version": "3.0",
   "artifact_type": "deb",
   "exporter": "keepalived_exporter",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "arch": "arm64",
   "dist": "debian-12",
-  "build_date": "2026-05-04T05:49:05.304098+00:00",
+  "build_date": "2026-05-05T00:56:13.099479+00:00",
   "status": "success",
   "package": {
-    "filename": "keepalived-exporter_1.7.0-1_arm64.deb",
+    "filename": "keepalived-exporter_1.7.1-1_arm64.deb",
     "url": "",
-    "sha256": "acbe8e16ca2154a03ff9aaaaf67b718f689c280ac93553a599d1b38c1a9b32d7",
-    "size_bytes": 3729700
+    "sha256": "eff3f66b1fa34503154a2a59e4496cb9ec3eff928366c3b1396377a5771f09ce",
+    "size_bytes": 4390186
   },
   "deb_metadata": {}
 }
