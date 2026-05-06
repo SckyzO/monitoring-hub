@@ -1,0 +1,136 @@
+# Pre-commit hooks configuration.
+#
+# Setup (one time per machine):
+#   pipx install pre-commit
+#   cd monitoring-hub && pre-commit install
+#
+# Manual run on all files:
+#   pre-commit run --all-files
+#
+# Update hook versions:
+#   pre-commit autoupdate
+#
+# Hook stages: each hook runs on `git commit` against the staged files,
+# unless `pass_filenames: false` (then it runs against the whole repo).
+
+minimum_pre_commit_version: "3.7.0"
+
+default_install_hook_types:
+  - pre-commit
+  - commit-msg
+
+repos:
+  # ---------------------------------------------------------------------------
+  # Generic file hygiene
+  # ---------------------------------------------------------------------------
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+        exclude: ^(.*\.md|core/templates/.*)$
+      - id: end-of-file-fixer
+        exclude: ^core/templates/.*$
+      - id: check-yaml
+        args: ["--allow-multiple-documents"]
+        exclude: ^core/templates/.*\.j2$
+      - id: check-added-large-files
+        args: ["--maxkb=500"]
+      - id: check-merge-conflict
+      - id: check-executables-have-shebangs
+      - id: check-shebang-scripts-are-executable
+      - id: mixed-line-ending
+        args: ["--fix=lf"]
+      - id: detect-private-key
+
+  # ---------------------------------------------------------------------------
+  # Secrets scanning
+  # ---------------------------------------------------------------------------
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.21.2
+    hooks:
+      - id: gitleaks
+
+  # ---------------------------------------------------------------------------
+  # Python: ruff (lint + format) + mypy
+  # ---------------------------------------------------------------------------
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.8.4
+    hooks:
+      - id: ruff
+        args: ["--fix"]
+      - id: ruff-format
+
+  # mypy intentionally NOT enabled yet — current codebase does not pass
+  # mypy --strict. Will be enabled in Phase 1 PR 3 (typed manifest with
+  # pydantic) once src/monitoring_hub/ is fully typed.
+
+  # ---------------------------------------------------------------------------
+  # YAML lint
+  # ---------------------------------------------------------------------------
+  - repo: https://github.com/adrienverge/yamllint
+    rev: v1.35.1
+    hooks:
+      - id: yamllint
+        args: ["-c", ".yamllint.yml"]
+
+  # ---------------------------------------------------------------------------
+  # GitHub Actions workflows lint
+  # ---------------------------------------------------------------------------
+  - repo: https://github.com/rhysd/actionlint
+    rev: v1.7.4
+    hooks:
+      - id: actionlint
+        # Catches typos, expression mistakes, missing permissions, etc.
+
+  # ---------------------------------------------------------------------------
+  # Dockerfile lint
+  # ---------------------------------------------------------------------------
+  - repo: https://github.com/hadolint/hadolint
+    rev: v2.12.1-beta
+    hooks:
+      - id: hadolint-docker
+        # Runs hadolint inside its official Docker image.
+
+  # ---------------------------------------------------------------------------
+  # Shell scripts: shellcheck (lint) + shfmt (format)
+  # ---------------------------------------------------------------------------
+  - repo: https://github.com/koalaman/shellcheck-precommit
+    rev: v0.10.0
+    hooks:
+      - id: shellcheck
+
+  - repo: https://github.com/scop/pre-commit-shfmt
+    rev: v3.10.0-2
+    hooks:
+      - id: shfmt
+        args: ["-i", "2", "-ci", "-bn", "-w"]
+
+  # ---------------------------------------------------------------------------
+  # Markdown lint
+  # ---------------------------------------------------------------------------
+  - repo: https://github.com/igorshubovych/markdownlint-cli
+    rev: v0.43.0
+    hooks:
+      - id: markdownlint
+        args: ["--config", ".markdownlint.yaml", "--ignore", "CHANGELOG.md"]
+
+  # ---------------------------------------------------------------------------
+  # Conventional Commits enforcement
+  # ---------------------------------------------------------------------------
+  - repo: https://github.com/compilerla/conventional-pre-commit
+    rev: v3.6.0
+    hooks:
+      - id: conventional-pre-commit
+        stages: [commit-msg]
+        args:
+          - feat
+          - fix
+          - chore
+          - docs
+          - refactor
+          - perf
+          - test
+          - build
+          - ci
+          - style
+          - revert

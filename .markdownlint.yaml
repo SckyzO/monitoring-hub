@@ -1,0 +1,17 @@
+# markdownlint config — relaxed for monitoring-hub
+# Full rules list: https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md
+
+default: true
+
+# MD013: Line length — disabled. Markdown reflows naturally.
+MD013: false
+
+# MD024: Multiple headings with same content — allowed (CHANGELOG style).
+MD024:
+  siblings_only: true
+
+# MD033: Inline HTML — allowed (badges, details/summary blocks).
+MD033: false
+
+# MD041: First line in file should be a top-level heading — allowed exceptions.
+MD041: false
