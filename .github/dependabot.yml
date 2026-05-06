@@ -1,22 +1,105 @@
+# Dependabot configuration.
+#
+# Maintains versioned dependencies across the repo. Security updates are
+# handled separately by Dependabot Security Updates (enabled at repo level).
+# This file covers regular version bumps.
+#
+# https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+
 version: 2
+
 updates:
-  # Maintain dependencies for pip (core engine)
+  # ---------------------------------------------------------------------------
+  # Python deps (requirements/*.txt)
+  # ---------------------------------------------------------------------------
   - package-ecosystem: "pip"
-    directory: "/core"
+    directory: "/requirements"
     schedule:
       interval: "weekly"
-    groups:
-      python-dependencies:
-        patterns:
-          - "*"
+      day: "monday"
+    open-pull-requests-limit: 5
     commit-message:
       prefix: "chore(deps)"
+      prefix-development: "chore(deps-dev)"
       include: "scope"
+    groups:
+      # Group all minor + patch bumps in a single PR per group to reduce noise.
+      # Major bumps still come as individual PRs (default).
+      python-runtime:
+        patterns:
+          - "click"
+          - "jinja2"
+          - "marshmallow"
+          - "pyyaml"
+          - "requests"
+          - "tenacity"
+        update-types:
+          - "minor"
+          - "patch"
+      python-dev:
+        patterns:
+          - "ruff"
+          - "mypy"
+          - "pytest*"
+          - "pre-commit"
+        update-types:
+          - "minor"
+          - "patch"
+      python-docs:
+        patterns:
+          - "mkdocs*"
+          - "docusaurus*"
+        update-types:
+          - "minor"
+          - "patch"
 
-  # Maintain dependencies for GitHub Actions
+  # ---------------------------------------------------------------------------
+  # GitHub Actions (workflow pins by SHA)
+  # ---------------------------------------------------------------------------
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
     commit-message:
       prefix: "chore(ci)"
+      include: "scope"
+    groups:
+      # Group all GitHub-maintained actions together.
+      github-actions:
+        patterns:
+          - "actions/*"
+          - "github/*"
+        update-types:
+          - "minor"
+          - "patch"
+      docker-actions:
+        patterns:
+          - "docker/*"
+        update-types:
+          - "minor"
+          - "patch"
+
+  # ---------------------------------------------------------------------------
+  # Docker base images (Dockerfile.dev, Dockerfile.test)
+  # ---------------------------------------------------------------------------
+  - package-ecosystem: "docker"
+    directory: "/config/docker"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 3
+    commit-message:
+      prefix: "chore(docker)"
+      include: "scope"
+
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 3
+    commit-message:
+      prefix: "chore(docker)"
+      include: "scope"
