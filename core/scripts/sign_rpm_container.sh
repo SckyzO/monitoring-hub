@@ -1,18 +1,22 @@
 #!/bin/bash
 # Sign an RPM package with GPG key inside a Docker container
-# Usage: sign_rpm_container.sh <rpm_file> <gpg_key_base64> <passphrase> <key_id>
+# Usage: sign_rpm_container.sh <rpm_file>
+# Required env: GPG_PRIVATE_KEY, GPG_PASSPHRASE, GPG_KEY_ID
 
 set -euo pipefail
 
-if [ $# -lt 4 ]; then
-    echo "Usage: $0 <rpm_file> <gpg_key_base64> <passphrase> <key_id>"
+if [ $# -lt 1 ]; then
+    echo "Usage: $0 <rpm_file>"
+    echo "Required env vars: GPG_PRIVATE_KEY, GPG_PASSPHRASE, GPG_KEY_ID"
     exit 1
 fi
 
+# Validate required env vars without exposing values
+: "${GPG_PRIVATE_KEY:?Missing required env var: GPG_PRIVATE_KEY}"
+: "${GPG_PASSPHRASE:?Missing required env var: GPG_PASSPHRASE}"
+: "${GPG_KEY_ID:?Missing required env var: GPG_KEY_ID}"
+
 RPM_FILE="$1"
-GPG_KEY_BASE64="$2"
-GPG_PASSPHRASE="$3"
-GPG_KEY_ID="$4"
 
 if [ ! -f "$RPM_FILE" ]; then
     echo "Error: RPM file not found: $RPM_FILE"
@@ -45,7 +49,7 @@ echo ""
 docker run --rm \
     -v "$RPM_DIR:/rpms:rw" \
     -v "$SCRIPT_DIR:/scripts:ro" \
-    -e "GPG_KEY_BASE64=$GPG_KEY_BASE64" \
+    -e "GPG_PRIVATE_KEY=$GPG_PRIVATE_KEY" \
     -e "GPG_PASSPHRASE=$GPG_PASSPHRASE" \
     -e "GPG_KEY_ID=$GPG_KEY_ID" \
     "$CONTAINER_IMAGE" \
@@ -60,8 +64,8 @@ docker run --rm \
         cp /rpms/$RPM_NAME /tmp/$RPM_NAME
         chmod 644 /tmp/$RPM_NAME
 
-        # Run signing script
-        /scripts/sign_rpm.sh /tmp/$RPM_NAME \"\$GPG_KEY_BASE64\" \"\$GPG_PASSPHRASE\" \"\$GPG_KEY_ID\"
+        # Run signing script (secrets come from env vars passed via -e on docker run)
+        /scripts/sign_rpm.sh /tmp/$RPM_NAME
 
         # Copy signed RPM back
         cp /tmp/$RPM_NAME /rpms/$RPM_NAME
