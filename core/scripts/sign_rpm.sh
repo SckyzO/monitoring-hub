@@ -1,18 +1,23 @@
 #!/bin/bash
 # Sign an RPM package with GPG key
-# Usage: sign_rpm.sh <rpm_file> <gpg_key_base64> <passphrase> <key_id>
+# Usage: sign_rpm.sh <rpm_file>
+# Required env: GPG_PRIVATE_KEY, GPG_PASSPHRASE, GPG_KEY_ID
 
 set -euo pipefail
 
-if [ $# -lt 4 ]; then
-    echo "Usage: $0 <rpm_file> <gpg_key_base64> <passphrase> <key_id>"
+if [ $# -lt 1 ]; then
+    echo "Usage: $0 <rpm_file>"
+    echo "Required env vars: GPG_PRIVATE_KEY, GPG_PASSPHRASE, GPG_KEY_ID"
     exit 1
 fi
 
+# Validate required env vars without exposing values (the ${VAR:?MSG} form
+# fails fast with the message but never prints the value).
+: "${GPG_PRIVATE_KEY:?Missing required env var: GPG_PRIVATE_KEY}"
+: "${GPG_PASSPHRASE:?Missing required env var: GPG_PASSPHRASE}"
+: "${GPG_KEY_ID:?Missing required env var: GPG_KEY_ID}"
+
 RPM_FILE="$1"
-GPG_KEY_BASE64="$2"
-GPG_PASSPHRASE="$3"
-GPG_KEY_ID="$4"
 
 if [ ! -f "$RPM_FILE" ]; then
     echo "Error: RPM file not found: $RPM_FILE"
@@ -31,7 +36,7 @@ trap 'rm -rf "$GPG_HOME"' EXIT
 
 # Import GPG key
 echo "Importing GPG key..."
-echo "$GPG_KEY_BASE64" | base64 -d | gpg --batch --import 2>&1
+echo "$GPG_PRIVATE_KEY" | base64 -d | gpg --batch --import 2>&1
 
 # List imported keys for debugging
 echo "Imported keys:"

@@ -321,13 +321,11 @@ cmd_test_rpm_sign() {
     info "Testing RPM signature in container..."
     info "RPM file: $rpm_file"
 
-    # Read secrets
-    local gpg_key=$(cat secrets/GPG_PRIVATE_KEY)
-    local gpg_passphrase=$(cat secrets/GPG_PASSPHRASE)
-    local gpg_key_id=$(cat secrets/GPG_KEY_ID)
-
-    # Sign the RPM in container
-    ./core/scripts/sign_rpm_container.sh "$rpm_file" "$gpg_key" "$gpg_passphrase" "$gpg_key_id"
+    # Pass secrets via env (never argv — visible in ps/history)
+    GPG_PRIVATE_KEY="$(cat secrets/GPG_PRIVATE_KEY)" \
+    GPG_PASSPHRASE="$(cat secrets/GPG_PASSPHRASE)" \
+    GPG_KEY_ID="$(cat secrets/GPG_KEY_ID)" \
+    ./core/scripts/sign_rpm_container.sh "$rpm_file"
 
     success "RPM signed successfully in container!"
     info "Verify with: docker run --rm -v \$(pwd):/work:ro almalinux:9 rpm -qpi /work/$rpm_file"
@@ -360,13 +358,11 @@ cmd_test_deb_sign() {
     info "Testing DEB signature in container..."
     info "DEB file: $deb_file"
 
-    # Read secrets
-    local gpg_key=$(cat secrets/GPG_PRIVATE_KEY)
-    local gpg_key_id=$(cat secrets/GPG_KEY_ID)
-    local gpg_passphrase=$(cat secrets/GPG_PASSPHRASE)
-
-    # Sign the DEB in container
-    ./core/scripts/sign_deb_container.sh "$deb_file" "$gpg_key" "$gpg_passphrase" "$gpg_key_id"
+    # Pass secrets via env (never argv — visible in ps/history)
+    GPG_PRIVATE_KEY="$(cat secrets/GPG_PRIVATE_KEY)" \
+    GPG_PASSPHRASE="$(cat secrets/GPG_PASSPHRASE)" \
+    GPG_KEY_ID="$(cat secrets/GPG_KEY_ID)" \
+    ./core/scripts/sign_deb_container.sh "$deb_file"
 
     success "DEB signed successfully in container!"
     success "Signature file: ${deb_file}.asc"

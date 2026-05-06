@@ -463,7 +463,8 @@ jobs:
 
           echo "::group::🔐 Signing RPM"
           chmod +x core/scripts/sign_rpm_container.sh
-          ./core/scripts/sign_rpm_container.sh "$rpm_file" "$GPG_PRIVATE_KEY" "$GPG_PASSPHRASE" "$GPG_KEY_ID"
+          # Secrets passed via env: block at step level (never argv)
+          ./core/scripts/sign_rpm_container.sh "$rpm_file"
           echo "::endgroup::"
 
       - name: ⬆️  Upload to GitHub Releases
@@ -635,7 +636,8 @@ jobs:
 
           echo "::group::🔐 Signing DEB"
           chmod +x core/scripts/sign_deb_container.sh
-          ./core/scripts/sign_deb_container.sh "$deb_file" "$GPG_PRIVATE_KEY" "$GPG_PASSPHRASE" "$GPG_KEY_ID" "$dist"
+          # Secrets passed via env: block at step level (never argv)
+          ./core/scripts/sign_deb_container.sh "$deb_file" "$dist"
           echo "✓ DEB signed successfully"
           echo "::endgroup::"
 
