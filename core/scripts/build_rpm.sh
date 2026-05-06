@@ -5,12 +5,23 @@ set -e
 # Example: ./core/build_rpm.sh build/node_exporter/node_exporter.spec build/node_exporter/rpms
 
 SPEC_PATH_REL=$(realpath --relative-to="$(pwd)" "$1")
-OUTPUT_DIR=$(realpath "$2")
+RAW_OUTPUT_DIR=$(realpath "$2")
 TARGET_ARCH=${3:-amd64}
 DOCKER_IMAGE=${4:-almalinux:9} # New argument for distribution image
 SCRIPT_DIR=$(dirname "$(realpath "$0")")
 
-mkdir -p "$OUTPUT_DIR"
+# Use HOST_PWD if set (for Docker-in-Docker scenarios)
+DOCKER_MOUNT_ROOT="${HOST_PWD:-$(pwd)}"
+
+# Adjust OUTPUT_DIR for Docker mount if running inside a container
+if [ -n "${HOST_PWD:-}" ]; then
+    # Convert /workspace/... to $HOST_PWD/...
+    OUTPUT_DIR="${RAW_OUTPUT_DIR//\/workspace/$HOST_PWD}"
+else
+    OUTPUT_DIR="$RAW_OUTPUT_DIR"
+fi
+
+mkdir -p "$RAW_OUTPUT_DIR"
 
 echo "Starting RPM build for $SPEC_PATH_REL on arch $TARGET_ARCH using $DOCKER_IMAGE..."
 echo "Output directory: $OUTPUT_DIR"
@@ -25,9 +36,12 @@ fi
 # We map the project root to /workspace to access files
 # We run as root in the container to allow dnf install
 # Note: We pass the path relative to /workspace inside the container
+# Use HOST_PWD if set (for Docker-in-Docker scenarios)
+DOCKER_MOUNT_ROOT="${HOST_PWD:-$(pwd)}"
+
 docker run --rm \
     --platform "$DOCKER_PLATFORM" \
-    -v "$(pwd):/workspace" \
+    -v "$DOCKER_MOUNT_ROOT:/workspace" \
     -v "$OUTPUT_DIR:/output" \
     -w /workspace \
     "$DOCKER_IMAGE" \

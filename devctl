@@ -13,8 +13,8 @@ set -euo pipefail
 # --- Configuration ---
 DEV_IMAGE="monitoring-hub-dev:latest"
 WORKSPACE="/workspace"
-DOCKER_RUN="docker run --rm -v $(pwd):${WORKSPACE} -w ${WORKSPACE}"
-DOCKER_RUN_IT="docker run -it --rm -v $(pwd):${WORKSPACE} -w ${WORKSPACE}"
+DOCKER_RUN="docker run --rm -v /var/run/docker.sock:/var/run/docker.sock -v $(pwd):${WORKSPACE} -w ${WORKSPACE} -e HOST_PWD=$(pwd)"
+DOCKER_RUN_IT="docker run -it --rm -v /var/run/docker.sock:/var/run/docker.sock -v $(pwd):${WORKSPACE} -w ${WORKSPACE} -e HOST_PWD=$(pwd)"
 
 # Colors for output
 RED='\033[0;31m'

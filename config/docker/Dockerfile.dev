@@ -6,27 +6,33 @@ WORKDIR /workspace
 RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     curl \
+    ca-certificates \
+    gnupg \
+    lsb-release \
     nodejs \
     npm \
     rpm \
     dpkg-dev \
     && rm -rf /var/lib/apt/lists/*
 
+# Install Docker CLI
+RUN curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg && \
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list && \
+    apt-get update && apt-get install -y docker-ce-cli && \
+    rm -rf /var/lib/apt/lists/*
+
 # Install global JS tools
 RUN npm install -g stylelint stylelint-config-standard postcss-html
 
-# Copy requirements first for better caching
-COPY requirements/base.txt /tmp/requirements-base.txt
-COPY requirements/dev.txt /tmp/requirements-dev.txt
-COPY requirements/docs.txt /tmp/requirements-docs.txt
-COPY requirements/test.txt /tmp/requirements-test.txt
+# Copy requirements
+COPY requirements/ requirements/
 
 # Install all dependencies
 RUN pip install --no-cache-dir \
-    -r /tmp/requirements-base.txt \
-    -r /tmp/requirements-dev.txt \
-    -r /tmp/requirements-docs.txt \
-    -r /tmp/requirements-test.txt
+    -r requirements/base.txt \
+    -r requirements/dev.txt \
+    -r requirements/docs.txt \
+    -r requirements/test.txt
 
 # Set PYTHONPATH to include the workspace root
 ENV PYTHONPATH=/workspace
