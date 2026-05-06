@@ -51,7 +51,7 @@ gha-creds-*.json
 ARCHITECTURE/
 
 # --- AI Assistant Files ---
-CLAUDE.md
+.claude/
 .gemini/
 
 # --- Local Custom Exporters ---
