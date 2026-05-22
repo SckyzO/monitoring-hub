@@ -60,16 +60,16 @@ jobs:
           ' | jq -s '.')
 
           if [ "$(echo "$updates" | jq 'length')" -gt 0 ]; then
-            echo "has_updates=true" >> $GITHUB_OUTPUT
+            echo "has_updates=true" >> "$GITHUB_OUTPUT"
             # Compact JSON to single line for GitHub Actions output
-            echo "updates=$(echo "$updates" | jq -c '.')" >> $GITHUB_OUTPUT
+            echo "updates=$(echo "$updates" | jq -c '.')" >> "$GITHUB_OUTPUT"
 
             echo ""
             echo "📦 Updates detected:"
             echo "$updates" | jq -r '.[] | "  - \(.name): \(.version)"'
           else
-            echo "has_updates=false" >> $GITHUB_OUTPUT
-            echo "updates=[]" >> $GITHUB_OUTPUT
+            echo "has_updates=false" >> "$GITHUB_OUTPUT"
+            echo "updates=[]" >> "$GITHUB_OUTPUT"
             echo "✓ All exporters are up to date"
           fi
 
@@ -87,9 +87,16 @@ jobs:
       matrix:
         exporter: ${{ fromJson(needs.detect-updates.outputs.updates) }}
     steps:
+      - name: 🔑 Generate app token
+        uses: actions/create-github-app-token@v2
+        id: app-token
+        with:
+          app-id: ${{ secrets.BOT_APP_ID }}
+          private-key: ${{ secrets.BOT_PRIVATE_KEY }}
+
       - uses: actions/checkout@v6
         with:
-          token: ${{ secrets.GH_PAT }}
+          token: ${{ steps.app-token.outputs.token }}
 
       - name: 📝 Update Manifest for ${{ matrix.exporter.name }}
         env:
@@ -116,7 +123,8 @@ jobs:
         id: cpr
         uses: peter-evans/create-pull-request@v8
         with:
-          token: ${{ secrets.GH_PAT }}
+          token: ${{ steps.app-token.outputs.token }}
+          sign-commits: true
           commit-message: "chore(deps): update ${{ matrix.exporter.name }} to ${{ matrix.exporter.version }}"
           title: "chore(deps): update ${{ matrix.exporter.name }} to ${{ matrix.exporter.version }}"
           body: |
@@ -142,13 +150,12 @@ jobs:
           labels: |
             dependencies
             automated
-          author: SckyzO <683678+SckyzO@users.noreply.github.com>
 
       - name: ✅ Enable Auto-merge
         if: steps.cpr.outputs.pull-request-operation == 'created'
         env:
-          GH_TOKEN: ${{ secrets.GH_PAT }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
           PR_NUMBER: ${{ steps.cpr.outputs.pull-request-number }}
         run: |
           echo "Enabling auto-merge for PR #$PR_NUMBER"
-          gh pr merge "$PR_NUMBER" --auto --squash --repo ${{ github.repository }}
+          gh pr merge "$PR_NUMBER" --auto --merge --repo ${{ github.repository }}
