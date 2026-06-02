@@ -4,5 +4,5 @@ click==8.3.3
 requests==2.33.1
 semver==3.0.4
 marshmallow==4.3.0
-packaging==26.0
+packaging==26.2
 tenacity==9.1.4
