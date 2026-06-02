@@ -1,6 +1,6 @@
 name: keepalived_exporter
 description: Prometheus exporter for Keepalived metrics.
-version: v1.7.0
+version: "v1.7.1"
 category: Network
 new: true
 updated: false
