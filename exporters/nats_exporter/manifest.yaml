@@ -1,6 +1,6 @@
 name: nats_exporter
 description: NATS metrics exporter for Prometheus.
-version: "v0.19.2"
+version: "v0.20.1"
 category: Messaging
 new: true
 updated: false
