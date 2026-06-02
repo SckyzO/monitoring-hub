@@ -2,4 +2,4 @@
 -r base.txt
 pytest==8.3.4
 pytest-cov==6.0.0
-pytest-mock==3.14.0
+pytest-mock==3.15.1
