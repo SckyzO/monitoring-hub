@@ -76,7 +76,7 @@ class Upstream(BaseModel):
     local_archive: str | None = None
 
     @model_validator(mode="after")
-    def _check_type_specific(self) -> "Upstream":
+    def _check_type_specific(self) -> Upstream:
         if self.type == "github":
             if not self.repo:
                 raise ValueError("'repo' is required for upstream type 'github'")

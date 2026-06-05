@@ -5,13 +5,23 @@ from __future__ import annotations
 import pytest
 from pydantic import ValidationError
 
+from forge.domain.errors import ManifestError
 from forge.domain.manifest import (
     Build,
+    DashboardManifest,
+    DashboardSpec,
+    DebTarget,
     Directory,
+    DockerTarget,
+    ExporterArtifacts,
+    ExporterManifest,
+    ExporterSpec,
     FileInstall,
+    RpmTarget,
     Systemd,
     Upstream,
     Validation,
+    parse_manifest,
 )
 
 
@@ -54,8 +64,13 @@ def test_upstream_github_requires_repo() -> None:
 
 
 def test_upstream_archive_name_accepts_str_or_dict() -> None:
-    assert Upstream(type="github", repo="a/b", archive_name="x-{arch}.tgz").archive_name == "x-{arch}.tgz"
-    d = Upstream(type="github", repo="a/b", archive_name={"amd64": "x.tgz", "arm64": "y.tgz"})
+    str_result = Upstream(
+        type="github", repo="a/b", archive_name="x-{arch}.tgz"
+    ).archive_name
+    assert str_result == "x-{arch}.tgz"
+    d = Upstream(
+        type="github", repo="a/b", archive_name={"amd64": "x.tgz", "arm64": "y.tgz"}
+    )
     assert d.archive_name == {"amd64": "x.tgz", "arm64": "y.tgz"}
 
 
@@ -68,14 +83,6 @@ def test_upstream_local_requires_one_source() -> None:
 
 
 def test_exporter_spec_packaging_defaults() -> None:
-    from forge.domain.manifest import (
-        DebTarget,
-        DockerTarget,
-        ExporterArtifacts,
-        ExporterSpec,
-        RpmTarget,
-    )
-
     rpm = RpmTarget(enabled=True)
     assert rpm.targets == ["el9", "el10"]
     assert rpm.systemd.enabled is False
@@ -99,21 +106,18 @@ def test_exporter_spec_packaging_defaults() -> None:
 def test_dropped_distros_still_accepted_explicitly() -> None:
     # el8 / ubuntu-22.04 are out of the AUTO defaults but remain valid manual
     # targets: the field accepts any string (spec: manual builds unaffected).
-    from forge.domain.manifest import DebTarget, RpmTarget
-
     assert RpmTarget(enabled=True, targets=["el8"]).targets == ["el8"]
     assert DebTarget(enabled=True, targets=["ubuntu-22.04"]).targets == ["ubuntu-22.04"]
 
 
 def test_dashboard_source_discriminated_union() -> None:
-    from forge.domain.manifest import DashboardSpec
-
+    grafana_id = 1860
     spec = DashboardSpec(
-        source={"type": "grafana", "id": 1860, "revision": 39},
+        source={"type": "grafana", "id": grafana_id, "revision": 39},
         datasource="prometheus",
     )
     assert spec.source.type == "grafana"
-    assert spec.source.id == 1860  # type: ignore[union-attr]
+    assert spec.source.id == grafana_id  # type: ignore[union-attr]
     assert spec.tags == []
 
     git_spec = DashboardSpec(
@@ -123,7 +127,61 @@ def test_dashboard_source_discriminated_union() -> None:
 
 
 def test_dashboard_source_rejects_unknown_type() -> None:
-    from forge.domain.manifest import DashboardSpec
-
     with pytest.raises(ValidationError):
         DashboardSpec(source={"type": "ftp", "url": "ftp://x"})
+
+
+def test_parse_exporter_manifest() -> None:
+    data = {
+        "kind": "exporter",
+        "name": "node_exporter",
+        "description": "Hardware and OS metrics",
+        "category": "System",
+        "version": "1.11.1",
+        "spec": {
+            "upstream": {"type": "github", "repo": "prometheus/node_exporter"},
+            "build": {"method": "binary_repack", "binary_name": "node_exporter"},
+            "artifacts": {"rpm": {"enabled": True}, "docker": {"enabled": True}},
+        },
+    }
+    m = parse_manifest(data)
+    assert isinstance(m, ExporterManifest)
+    assert m.spec.artifacts.rpm is not None
+    assert m.spec.artifacts.rpm.enabled is True
+
+
+def test_parse_dashboard_manifest() -> None:
+    grafana_id = 1860
+    data = {
+        "kind": "dashboard",
+        "name": "node-overview",
+        "description": "Node Exporter Full",
+        "category": "System",
+        "version": "39",
+        "spec": {
+            "source": {"type": "grafana", "id": grafana_id, "revision": 39},
+            "datasource": "prometheus",
+        },
+    }
+    m = parse_manifest(data)
+    assert isinstance(m, DashboardManifest)
+    assert m.spec.source.type == "grafana"
+
+
+def test_parse_unknown_kind_raises_manifest_error() -> None:
+    with pytest.raises(ManifestError):
+        parse_manifest({"kind": "widget", "name": "x", "description": "y", "version": "1"})
+
+
+def test_parse_unknown_field_raises_manifest_error() -> None:
+    with pytest.raises(ManifestError):
+        parse_manifest(
+            {
+                "kind": "dashboard",
+                "name": "x",
+                "description": "y",
+                "version": "1",
+                "spec": {"source": {"type": "url", "url": "https://a"}},
+                "bogus": 1,
+            }
+        )
