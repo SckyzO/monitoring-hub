@@ -65,3 +65,41 @@ def test_upstream_local_requires_one_source() -> None:
     with pytest.raises(ValidationError):
         Upstream(type="local", local_binary="/a", local_archive="/b.tgz")
     assert Upstream(type="local", local_binary="/usr/bin/x").type == "local"
+
+
+def test_exporter_spec_packaging_defaults() -> None:
+    from forge.domain.manifest import (
+        DebTarget,
+        DockerTarget,
+        ExporterArtifacts,
+        ExporterSpec,
+        RpmTarget,
+    )
+
+    rpm = RpmTarget(enabled=True)
+    assert rpm.targets == ["el9", "el10"]
+    assert rpm.systemd.enabled is False
+
+    deb = DebTarget(enabled=True)
+    assert deb.targets == ["ubuntu-24.04", "ubuntu-26.04", "debian-12", "debian-13"]
+    assert deb.section == "utils"
+
+    docker = DockerTarget(enabled=True)
+    assert docker.base_image == "registry.access.redhat.com/ubi9/ubi-minimal"
+
+    spec = ExporterSpec(
+        upstream={"type": "github", "repo": "prometheus/node_exporter"},
+        build={"method": "binary_repack", "binary_name": "node_exporter"},
+        artifacts=ExporterArtifacts(rpm=rpm, deb=deb, docker=docker),
+    )
+    assert spec.artifacts.rpm is not None
+    assert spec.artifacts.rpm.targets == ["el9", "el10"]
+
+
+def test_dropped_distros_still_accepted_explicitly() -> None:
+    # el8 / ubuntu-22.04 are out of the AUTO defaults but remain valid manual
+    # targets: the field accepts any string (spec: manual builds unaffected).
+    from forge.domain.manifest import DebTarget, RpmTarget
+
+    assert RpmTarget(enabled=True, targets=["el8"]).targets == ["el8"]
+    assert DebTarget(enabled=True, targets=["ubuntu-22.04"]).targets == ["ubuntu-22.04"]
