@@ -60,9 +60,7 @@ def test_get_unknown_kind_raises() -> None:
         get_producer("nope")
 
 
-def test_discover_imports_submodules(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
+def test_discover_imports_submodules(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     pkg = tmp_path / "fakekinds"
     pkg.mkdir()
     (pkg / "__init__.py").write_text("")

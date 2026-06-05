@@ -64,13 +64,9 @@ def test_upstream_github_requires_repo() -> None:
 
 
 def test_upstream_archive_name_accepts_str_or_dict() -> None:
-    str_result = Upstream(
-        type="github", repo="a/b", archive_name="x-{arch}.tgz"
-    ).archive_name
+    str_result = Upstream(type="github", repo="a/b", archive_name="x-{arch}.tgz").archive_name
     assert str_result == "x-{arch}.tgz"
-    d = Upstream(
-        type="github", repo="a/b", archive_name={"amd64": "x.tgz", "arm64": "y.tgz"}
-    )
+    d = Upstream(type="github", repo="a/b", archive_name={"amd64": "x.tgz", "arm64": "y.tgz"})
     assert d.archive_name == {"amd64": "x.tgz", "arm64": "y.tgz"}
 
 
@@ -117,7 +113,7 @@ def test_dashboard_source_discriminated_union() -> None:
         datasource="prometheus",
     )
     assert spec.source.type == "grafana"
-    assert spec.source.id == grafana_id  # type: ignore[union-attr]
+    assert spec.source.id == grafana_id
     assert spec.tags == []
 
     git_spec = DashboardSpec(
