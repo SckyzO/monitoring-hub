@@ -15,3 +15,15 @@ MD033: false
 
 # MD041: First line in file should be a top-level heading — allowed exceptions.
 MD041: false
+
+# MD010: Hard tabs — allowed inside code blocks (Makefile snippets need tabs).
+MD010:
+  code_blocks: false
+
+# MD040: Fenced code language — disabled. Design docs use plain fences for
+# ASCII diagrams and tree layouts.
+MD040: false
+
+# MD032: Blanks around lists — disabled. Design docs use a compact
+# "**Label:**" line directly followed by its list, which is intentional.
+MD032: false

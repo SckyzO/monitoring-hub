@@ -12,6 +12,8 @@ __pycache__/
 *.py[cod]
 *.so
 .venv/
+.uv-cache/
+.pre-commit-cache/
 venv/
 env/
 .pytest_cache/

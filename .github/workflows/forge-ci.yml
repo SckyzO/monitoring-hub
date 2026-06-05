@@ -1,0 +1,39 @@
+name: forge-ci
+
+on:
+  pull_request:
+    paths:
+      - "pyproject.toml"
+      - "uv.lock"
+      - "src/forge/**"
+      - "tests/**"
+      - "Dockerfile.dev"
+      - "dev"
+      - "Makefile"
+      - ".github/workflows/forge-ci.yml"
+  push:
+    branches: [main]
+    paths:
+      - "pyproject.toml"
+      - "uv.lock"
+      - "src/forge/**"
+      - "tests/**"
+      - "Dockerfile.dev"
+      - "dev"
+      - "Makefile"
+      - ".github/workflows/forge-ci.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Build dev image
+        run: ./dev build
+      - name: Sync dependencies
+        run: make sync
+      - name: Run CI gate (lint, format, typecheck, test, security)
+        run: make ci
