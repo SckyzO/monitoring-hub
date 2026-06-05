@@ -1,0 +1,51 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "monitoring-hub-forge"
+version = "0.0.0"
+description = "Kind-extensible engine that turns monitoring manifests into distributable artifacts"
+requires-python = ">=3.12"
+license = "Apache-2.0"
+dependencies = [
+    "click>=8.1",
+]
+
+[project.scripts]
+mh = "forge.cli.main:cli"
+
+[dependency-groups]
+dev = [
+    "ruff>=0.8",
+    "mypy>=1.13",
+    "pytest>=8.3",
+    "pytest-xdist>=3.6",
+    "pytest-cov>=6.0",
+    "bandit>=1.8",
+    "pip-audit>=2.7",
+    "pre-commit>=4.0",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/forge"]
+
+[tool.bandit]
+exclude_dirs = ["tests"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "PL"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+files = ["src", "tests"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers --cov=forge --cov-report=term-missing"
