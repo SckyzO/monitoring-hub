@@ -103,3 +103,27 @@ def test_dropped_distros_still_accepted_explicitly() -> None:
 
     assert RpmTarget(enabled=True, targets=["el8"]).targets == ["el8"]
     assert DebTarget(enabled=True, targets=["ubuntu-22.04"]).targets == ["ubuntu-22.04"]
+
+
+def test_dashboard_source_discriminated_union() -> None:
+    from forge.domain.manifest import DashboardSpec
+
+    spec = DashboardSpec(
+        source={"type": "grafana", "id": 1860, "revision": 39},
+        datasource="prometheus",
+    )
+    assert spec.source.type == "grafana"
+    assert spec.source.id == 1860  # type: ignore[union-attr]
+    assert spec.tags == []
+
+    git_spec = DashboardSpec(
+        source={"type": "git", "repo": "you/rules", "ref": "v1.8.0", "path": "node.json"}
+    )
+    assert git_spec.source.type == "git"
+
+
+def test_dashboard_source_rejects_unknown_type() -> None:
+    from forge.domain.manifest import DashboardSpec
+
+    with pytest.raises(ValidationError):
+        DashboardSpec(source={"type": "ftp", "url": "ftp://x"})
