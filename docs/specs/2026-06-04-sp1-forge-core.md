@@ -137,6 +137,11 @@ monitoring-hub/
 The installable `mh` comes from `console_scripts` → eliminates the
 `PYTHONPATH`/`python3 -m core.engine.X` hack. CI calls the same `mh` as local.
 
+> Naming note: `catalog/` is used in two distinct namespaces — the repo-root
+> `catalog/` holds manifest **data** (the public catalogue source), while the
+> package module `src/forge/catalog/` builds `catalog.json`. Same word,
+> different layers; intentional.
+
 ---
 
 ## 6. Domain model
