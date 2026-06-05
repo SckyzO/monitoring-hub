@@ -1,6 +1,7 @@
 .git
 .venv
 .uv-cache
+.pre-commit-cache
 **/__pycache__
 **/.pytest_cache
 **/.mypy_cache

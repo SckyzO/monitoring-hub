@@ -7,10 +7,12 @@ ARG USER_UID=1000
 ARG USER_GID=1000
 
 # git is required by pre-commit (hook repos + commit-msg stage);
-# ca-certificates for HTTPS fetches by uv and pre-commit hooks.
+# ca-certificates for HTTPS fetches by uv and pre-commit hooks;
+# libatomic1 is required by the Node runtime that pre-commit downloads for the
+# markdownlint hook.
 # hadolint ignore=DL3008
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends git ca-certificates \
+    && apt-get install -y --no-install-recommends git ca-certificates libatomic1 \
     && rm -rf /var/lib/apt/lists/* \
     && groupadd --gid "${USER_GID}" dev \
     && useradd --uid "${USER_UID}" --gid "${USER_GID}" --create-home --shell /bin/bash dev
@@ -25,6 +27,7 @@ WORKDIR /workspace
 ENV UV_LINK_MODE=copy \
     UV_PROJECT_ENVIRONMENT=/workspace/.venv \
     UV_CACHE_DIR=/workspace/.uv-cache \
+    PRE_COMMIT_HOME=/workspace/.pre-commit-cache \
     PATH="/workspace/.venv/bin:/usr/local/bin:${PATH}"
 
 USER dev
