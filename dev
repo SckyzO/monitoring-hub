@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+IMAGE="forge-dev"
+UID_GID="$(id -u):$(id -g)"
+
+case "${1:-}" in
+  build)
+    docker build \
+      --build-arg "USER_UID=$(id -u)" \
+      --build-arg "USER_GID=$(id -g)" \
+      -f Dockerfile.dev -t "${IMAGE}" .
+    ;;
+  shell)
+    docker run --rm -it -u "${UID_GID}" \
+      -v "$(pwd):/workspace" "${IMAGE}" bash
+    ;;
+  run)
+    shift
+    docker run --rm -u "${UID_GID}" \
+      -v "$(pwd):/workspace" "${IMAGE}" "$@"
+    ;;
+  *)
+    echo "usage: ./dev {build|shell|run <cmd...>}" >&2
+    exit 2
+    ;;
+esac
