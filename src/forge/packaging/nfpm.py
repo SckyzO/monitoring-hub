@@ -8,11 +8,22 @@ writes the config, and invokes the ``nfpm`` binary via the runner.
 
 from __future__ import annotations
 
+import shutil
+from pathlib import Path
 from typing import Any, Literal
 
+import yaml
+
+from forge.domain.artifact import Artifact
+from forge.domain.errors import BuildError
 from forge.domain.manifest import DebTarget, ExporterManifest, RpmTarget
+from forge.packaging.checksum import file_sha256
+from forge.packaging.runner import CommandRunner
+from forge.packaging.scriptlets import render_postinstall, render_preremove
+from forge.packaging.systemd import render_systemd_unit
 
 _MAINTAINER = "Monitoring Hub <noreply@users.noreply.github.com>"
+_RPM = "rpm"
 
 
 def _clean_version(version: str) -> str:
@@ -26,7 +37,7 @@ def _file_content(dst: str, *, config: bool, mode: int) -> dict[str, Any]:
     return entry
 
 
-def build_nfpm_config(
+def build_nfpm_config(  # noqa: PLR0913 — locked keyword-only contract (spec §16)
     manifest: ExporterManifest,
     *,
     packager: Literal["rpm", "deb"],
@@ -74,9 +85,12 @@ def build_nfpm_config(
         config["license"] = manifest.license
 
     for extra_file in art.extra_files:
-        config["contents"].append(
-            _file_content(extra_file.dest, config=extra_file.config, mode=int(extra_file.mode, 8))
+        entry = _file_content(
+            extra_file.dest, config=extra_file.config, mode=int(extra_file.mode, 8)
         )
+        # nfpm needs a source to read the file from; resolved relative to its cwd.
+        entry["src"] = extra_file.source
+        config["contents"].append(entry)
     config["contents"].extend(contents_extra)
 
     if isinstance(art, RpmTarget):
@@ -86,3 +100,101 @@ def build_nfpm_config(
         config["priority"] = art.priority
 
     return config
+
+
+class NfpmPackager:
+    """Render unit + scriptlets, write the nfpm config, invoke ``nfpm``."""
+
+    def __init__(self, runner: CommandRunner) -> None:
+        self._runner = runner
+
+    def package(  # noqa: PLR0913 — locked keyword-only contract (spec §7.1)
+        self,
+        manifest: ExporterManifest,
+        *,
+        packager: Literal["rpm", "deb"],
+        target: str,
+        arch: str,
+        binary_src: Path,
+        work_dir: Path,
+    ) -> Artifact:
+        art = manifest.spec.artifacts.rpm if packager == _RPM else manifest.spec.artifacts.deb
+        if art is None:
+            raise BuildError(f"manifest {manifest.name!r} has no {packager} target")
+
+        install_path = getattr(art, "install_path", None) or "/usr/bin"
+        binary_dst = f"{install_path.rstrip('/')}/{manifest.spec.build.binary_name}"
+
+        contents_extra: list[dict[str, Any]] = []
+        scripts: dict[str, str] = {}
+        unit_name = manifest.name if art.systemd.enabled else None
+
+        if art.systemd.enabled:
+            unit = render_systemd_unit(
+                description=manifest.description,
+                exec_start=binary_dst,
+                user=art.system_user,
+                systemd=art.systemd,
+            )
+            unit_file = work_dir / f"{manifest.name}.service"
+            unit_file.write_text(unit, encoding="utf-8")
+            contents_extra.append(
+                {"src": str(unit_file), "dst": f"/lib/systemd/system/{manifest.name}.service"}
+            )
+
+        if art.systemd.enabled or art.system_user:
+            post = work_dir / "postinstall.sh"
+            post.write_text(
+                render_postinstall(unit_name=unit_name, system_user=art.system_user),
+                encoding="utf-8",
+            )
+            scripts["postinstall"] = str(post)
+        if unit_name:
+            pre = work_dir / "preremove.sh"
+            pre.write_text(render_preremove(unit_name=unit_name), encoding="utf-8")
+            scripts["preremove"] = str(pre)
+
+        for directory in art.directories:
+            contents_extra.append(
+                {
+                    "dst": directory.path,
+                    "type": "dir",
+                    "file_info": {"mode": int(directory.mode, 8)},
+                }
+            )
+
+        config = build_nfpm_config(
+            manifest,
+            packager=packager,
+            target=target,
+            arch=arch,
+            binary_dst=binary_dst,
+            contents_extra=contents_extra,
+            scripts=scripts,
+        )
+        # nfpm reads the binary from the config "src"; point it at the staged file.
+        config["contents"][0]["src"] = str(binary_src)
+
+        config_path = work_dir / "nfpm.yaml"
+        config_path.write_text(yaml.safe_dump(config, sort_keys=False), encoding="utf-8")
+
+        nfpm_bin = shutil.which("nfpm") or "nfpm"
+        result = self._runner.run(
+            [nfpm_bin, "package", "-f", str(config_path), "-p", packager, "-t", str(work_dir)],
+            cwd=work_dir,
+        )
+        if result.returncode != 0:
+            raise BuildError(f"nfpm {packager} build failed for {manifest.name}: {result.stderr}")
+
+        produced = sorted(work_dir.glob(f"*.{packager}"))
+        if not produced:
+            raise BuildError(f"nfpm reported success but produced no .{packager} in {work_dir}")
+        output = produced[-1]
+
+        return Artifact(
+            type=packager,
+            target=target,
+            arch=arch,
+            sha256=file_sha256(output),
+            signed=False,
+        )
