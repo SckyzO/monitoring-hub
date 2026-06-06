@@ -26,3 +26,7 @@ class BuildError(ForgeError):
 
 class SigningError(ForgeError):
     """Signing an artifact failed."""
+
+
+class CommandError(ForgeError):
+    """A subprocess could not be launched (missing binary, OS-level error)."""
