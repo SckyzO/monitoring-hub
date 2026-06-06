@@ -38,7 +38,7 @@ repos:
     rev: v1.13.0
     hooks:
       - id: mypy
-        additional_dependencies: ["click", "pydantic>=2.9"]
+        additional_dependencies: ["click", "pydantic>=2.9", "types-PyYAML>=6"]
         args: ["--strict"]
 
   - repo: https://github.com/PyCQA/bandit
