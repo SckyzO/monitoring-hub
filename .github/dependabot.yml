@@ -10,10 +10,10 @@ version: 2
 
 updates:
   # ---------------------------------------------------------------------------
-  # Python deps (requirements/*.txt)
+  # Python deps — uv (pyproject.toml + uv.lock at the repo root)
   # ---------------------------------------------------------------------------
-  - package-ecosystem: "pip"
-    directory: "/requirements"
+  - package-ecosystem: "uv"
+    directory: "/"
     schedule:
       interval: "weekly"
       day: "monday"
@@ -23,16 +23,13 @@ updates:
       prefix-development: "chore(deps-dev)"
       include: "scope"
     groups:
-      # Group all minor + patch bumps in a single PR per group to reduce noise.
-      # Major bumps still come as individual PRs (default).
+      # Group minor + patch bumps per area to reduce noise. Major bumps still
+      # come as individual PRs (default).
       python-runtime:
         patterns:
           - "click"
-          - "jinja2"
-          - "marshmallow"
+          - "pydantic"
           - "pyyaml"
-          - "requests"
-          - "tenacity"
         update-types:
           - "minor"
           - "patch"
@@ -41,20 +38,16 @@ updates:
           - "ruff"
           - "mypy"
           - "pytest*"
+          - "bandit"
+          - "pip-audit"
           - "pre-commit"
-        update-types:
-          - "minor"
-          - "patch"
-      python-docs:
-        patterns:
-          - "mkdocs*"
-          - "docusaurus*"
+          - "types-*"
         update-types:
           - "minor"
           - "patch"
 
   # ---------------------------------------------------------------------------
-  # GitHub Actions (workflow pins by SHA)
+  # GitHub Actions — workflow pins (bumped weekly; pin by SHA, see workspace rule)
   # ---------------------------------------------------------------------------
   - package-ecosystem: "github-actions"
     directory: "/"
@@ -66,34 +59,17 @@ updates:
       prefix: "chore(ci)"
       include: "scope"
     groups:
-      # Group all GitHub-maintained actions together.
-      github-actions:
+      actions:
         patterns:
-          - "actions/*"
-          - "github/*"
-        update-types:
-          - "minor"
-          - "patch"
-      docker-actions:
-        patterns:
-          - "docker/*"
+          - "*"
         update-types:
           - "minor"
           - "patch"
 
   # ---------------------------------------------------------------------------
-  # Docker base images (Dockerfile.dev, Dockerfile.test)
+  # Docker base image — Dockerfile.dev (matched: the docker ecosystem fetches
+  # any filename containing "dockerfile", case-insensitive)
   # ---------------------------------------------------------------------------
-  - package-ecosystem: "docker"
-    directory: "/config/docker"
-    schedule:
-      interval: "weekly"
-      day: "monday"
-    open-pull-requests-limit: 3
-    commit-message:
-      prefix: "chore(docker)"
-      include: "scope"
-
   - package-ecosystem: "docker"
     directory: "/"
     schedule:
