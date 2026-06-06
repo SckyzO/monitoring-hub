@@ -2,12 +2,15 @@
 
 from __future__ import annotations
 
+from collections.abc import Sequence
 from pathlib import Path
 from typing import Any
 
 import yaml
 
 from forge.domain.errors import SourceResolutionError
+from forge.domain.manifest import Manifest, parse_manifest
+from forge.sources.overlay import apply_set_overrides, deep_merge
 
 _MANIFEST_FILENAME = "manifest.yaml"
 _KIND_DIRS = ("exporters", "dashboards")
@@ -64,3 +67,25 @@ def resolve_manifest_path(ref: str, *, catalog_root: Path) -> Path:
         case _:
             joined = ", ".join(str(m) for m in matches)
             raise SourceResolutionError(f"ambiguous item {ref!r}: found in {joined}")
+
+
+def resolve_manifest(
+    ref: str,
+    *,
+    catalog_root: Path,
+    overlay_path: Path | None = None,
+    sets: Sequence[str] = (),
+) -> Manifest:
+    """Resolve an item reference into a validated, typed ``Manifest``.
+
+    Loads the base manifest, deep-merges the optional overlay file then the
+    ``--set`` overrides, and validates the **effective** manifest via
+    ``parse_manifest`` (spec §8, §13). An override that introduces an unknown
+    field fails loudly through ``parse_manifest`` (``extra="forbid"``).
+    """
+    effective = load_yaml_mapping(resolve_manifest_path(ref, catalog_root=catalog_root))
+    if overlay_path is not None:
+        effective = deep_merge(effective, load_yaml_mapping(overlay_path))
+    if sets:
+        effective = apply_set_overrides(effective, sets)
+    return parse_manifest(effective)

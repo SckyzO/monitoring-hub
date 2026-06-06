@@ -6,8 +6,13 @@ from pathlib import Path
 
 import pytest
 
-from forge.domain.errors import SourceResolutionError
-from forge.sources.resolver import load_yaml_mapping, resolve_manifest_path
+from forge.domain.errors import ManifestError, SourceResolutionError
+from forge.domain.manifest import DashboardManifest, ExporterManifest
+from forge.sources.resolver import (
+    load_yaml_mapping,
+    resolve_manifest,
+    resolve_manifest_path,
+)
 
 
 def test_load_yaml_mapping_reads_mapping(tmp_path: Path) -> None:
@@ -79,3 +84,79 @@ def test_resolve_path_ambiguous_name_raises(tmp_path: Path) -> None:
 def test_resolve_path_unknown_name_raises(tmp_path: Path) -> None:
     with pytest.raises(SourceResolutionError, match="not found"):
         resolve_manifest_path("ghost", catalog_root=tmp_path)
+
+
+_VALID_EXPORTER = """\
+kind: exporter
+name: node_exporter
+description: Hardware and OS metrics
+category: System
+version: "1.11.1"
+spec:
+  upstream: {type: github, repo: prometheus/node_exporter}
+  build: {method: binary_repack, binary_name: node_exporter}
+  artifacts:
+    rpm: {enabled: true}
+"""
+
+_VALID_DASHBOARD = """\
+kind: dashboard
+name: node-overview
+description: Node Exporter Full
+category: System
+version: "39"
+spec:
+  source: {type: grafana, id: 1860, revision: 39}
+  datasource: prometheus
+"""
+
+
+def test_resolve_manifest_returns_typed_exporter(tmp_path: Path) -> None:
+    path = tmp_path / "manifest.yaml"
+    path.write_text(_VALID_EXPORTER, encoding="utf-8")
+    manifest = resolve_manifest(str(path), catalog_root=tmp_path)
+    assert isinstance(manifest, ExporterManifest)
+    assert manifest.name == "node_exporter"
+
+
+def test_resolve_manifest_returns_typed_dashboard(tmp_path: Path) -> None:
+    path = tmp_path / "manifest.yaml"
+    path.write_text(_VALID_DASHBOARD, encoding="utf-8")
+    manifest = resolve_manifest(str(path), catalog_root=tmp_path)
+    assert isinstance(manifest, DashboardManifest)
+
+
+def test_resolve_manifest_applies_overlay_file(tmp_path: Path) -> None:
+    base = tmp_path / "manifest.yaml"
+    base.write_text(_VALID_EXPORTER, encoding="utf-8")
+    overlay = tmp_path / "node_exporter.override.yaml"
+    overlay.write_text('version: "2.0.0"\n', encoding="utf-8")
+    manifest = resolve_manifest(str(base), catalog_root=tmp_path, overlay_path=overlay)
+    assert manifest.version == "2.0.0"
+
+
+def test_resolve_manifest_applies_set_overrides(tmp_path: Path) -> None:
+    base = tmp_path / "manifest.yaml"
+    base.write_text(_VALID_EXPORTER, encoding="utf-8")
+    manifest = resolve_manifest(
+        str(base),
+        catalog_root=tmp_path,
+        sets=["version=3.0.0"],
+    )
+    assert manifest.version == "3.0.0"
+
+
+def test_resolve_manifest_validates_effective_not_base(tmp_path: Path) -> None:
+    # Base is valid; the overlay introduces an unknown field. Validating the
+    # EFFECTIVE manifest (extra=forbid) must fail loudly (spec §8).
+    base = tmp_path / "manifest.yaml"
+    base.write_text(_VALID_EXPORTER, encoding="utf-8")
+    with pytest.raises(ManifestError):
+        resolve_manifest(str(base), catalog_root=tmp_path, sets=["spec.bogus=1"])
+
+
+def test_resolve_manifest_invalid_base_raises_manifest_error(tmp_path: Path) -> None:
+    path = tmp_path / "manifest.yaml"
+    path.write_text("kind: widget\nname: x\n", encoding="utf-8")
+    with pytest.raises(ManifestError):
+        resolve_manifest(str(path), catalog_root=tmp_path)
