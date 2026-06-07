@@ -12,8 +12,11 @@ from forge import __version__
 from forge.cli._context import iter_manifest_paths, resolve_catalog_root
 from forge.domain.errors import ForgeError
 from forge.domain.manifest import parse_manifest
+from forge.fetch.http import HttpxDownloader
+from forge.kinds.base import BuildContext
 from forge.kinds.registry import discover, get_producer
-from forge.sources.resolver import load_yaml_mapping, resolve_manifest_path
+from forge.packaging.runner import SubprocessRunner
+from forge.sources.resolver import load_yaml_mapping, resolve_manifest, resolve_manifest_path
 
 _catalog_root_option = click.option(
     "--catalog-root",
@@ -108,6 +111,67 @@ def validate(
 
     if failures:
         sys.exit(1)
+
+
+_set_option = click.option(
+    "--set",
+    "sets",
+    multiple=True,
+    metavar="PATH=VALUE",
+    help="Override a manifest field by path (repeatable).",
+)
+_overlay_option = click.option(
+    "--overlay",
+    "overlay",
+    type=click.Path(exists=True, dir_okay=False, path_type=Path),
+    default=None,
+    help="Partial overlay YAML deep-merged over the manifest.",
+)
+
+
+def _build_context(work_dir: Path, sign_key: str | None) -> BuildContext:
+    return BuildContext(
+        work_dir=work_dir,
+        downloader=HttpxDownloader(),
+        runner=SubprocessRunner(),
+        signing_key_id=sign_key,
+    )
+
+
+@cli.command()
+@click.argument("ref")
+@_catalog_root_option
+@_set_option
+@_overlay_option
+@click.option("--sign-key", "sign_key", default=None, help="GPG key id to sign packages.")
+@click.option(
+    "--work-dir",
+    "work_dir",
+    type=click.Path(file_okay=False, path_type=Path),
+    default=Path("build"),
+    show_default=True,
+    help="Working directory for downloads and produced artifacts.",
+)
+def build(
+    ref: str,
+    catalog_root: str | None,
+    sets: tuple[str, ...],
+    overlay: Path | None,
+    sign_key: str | None,
+    work_dir: Path,
+) -> None:
+    """Build one item's artifacts locally (REF = catalogue name or manifest path)."""
+    discover()
+    root = resolve_catalog_root(catalog_root)
+    manifest = resolve_manifest(ref, catalog_root=root, overlay_path=overlay, sets=sets)
+    ctx = _build_context(work_dir, sign_key)
+    result = get_producer(manifest.kind).build(manifest, ctx)
+    for art in result.artifacts:
+        click.echo(
+            f"{art.type}\t{art.target or '-'}\t{art.arch or '-'}\t"
+            f"{art.sha256[:12]}\tsigned={art.signed}"
+        )
+    click.echo(f"built {len(result.artifacts)} artifact(s) for {manifest.name}")
 
 
 if __name__ == "__main__":
