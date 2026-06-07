@@ -4,8 +4,32 @@ from __future__ import annotations
 
 from typing import Any
 
-from forge.domain.manifest import ExporterManifest
+import pytest
+
+from forge.domain.manifest import (
+    Build,
+    DebTarget,
+    ExporterArtifacts,
+    ExporterManifest,
+    ExporterSpec,
+    RpmTarget,
+    Upstream,
+)
 from forge.packaging.nfpm import build_nfpm_config
+
+
+def _minimal(*, rpm: RpmTarget | None = None, deb: DebTarget | None = None) -> ExporterManifest:
+    return ExporterManifest(
+        kind="exporter",
+        name="x_exp",
+        description="d",
+        version="1.0.0",
+        spec=ExporterSpec(
+            upstream=Upstream(type="github", repo="o/r"),
+            build=Build(method="binary_repack", binary_name="x_exp"),
+            artifacts=ExporterArtifacts(rpm=rpm, deb=deb),
+        ),
+    )
 
 
 def _cfg(manifest: ExporterManifest, packager: str, target: str, arch: str) -> dict[str, Any]:
@@ -78,3 +102,31 @@ def test_maintainer_and_homepage_present(manifest: ExporterManifest) -> None:
     cfg = _cfg(manifest, "deb", "debian-12", "amd64")
     assert cfg["maintainer"]
     assert cfg["description"].startswith("Prometheus exporter")
+
+
+def test_build_config_raises_without_rpm_target() -> None:
+    manifest = _minimal(deb=DebTarget(enabled=True))
+    with pytest.raises(ValueError, match="no rpm"):
+        build_nfpm_config(
+            manifest,
+            packager="rpm",
+            target="el9",
+            arch="amd64",
+            binary_dst="/usr/bin/x_exp",
+            contents_extra=[],
+            scripts={},
+        )
+
+
+def test_build_config_raises_without_deb_target() -> None:
+    manifest = _minimal(rpm=RpmTarget(enabled=True))
+    with pytest.raises(ValueError, match="no deb"):
+        build_nfpm_config(
+            manifest,
+            packager="deb",
+            target="ubuntu-24.04",
+            arch="amd64",
+            binary_dst="/usr/bin/x_exp",
+            contents_extra=[],
+            scripts={},
+        )

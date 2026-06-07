@@ -7,14 +7,42 @@ from pathlib import Path
 from typing import Any, cast
 
 import pytest
+import yaml
 
 from forge.domain.artifact import Artifact
 from forge.domain.errors import BuildError
-from forge.domain.manifest import ExporterManifest
+from forge.domain.manifest import (
+    Build,
+    Directory,
+    ExporterArtifacts,
+    ExporterManifest,
+    ExporterSpec,
+    RpmTarget,
+    Upstream,
+)
 from forge.packaging.checksum import file_sha256
 from forge.packaging.nfpm import NfpmPackager
 from forge.packaging.runner import CommandResult, SubprocessRunner
 from tests.packaging.conftest import FakeRunner
+
+
+class _WritingRunner(FakeRunner):
+    """FakeRunner that materializes a file so the post-build glob finds output."""
+
+    def __init__(self, output: Path) -> None:
+        super().__init__()
+        self._output = output
+
+    def run(
+        self,
+        args: Any,
+        *,
+        cwd: Any = None,
+        env: Any = None,
+        stdin: Any = None,
+    ) -> CommandResult:
+        self._output.write_bytes(b"pkgdata")
+        return super().run(args, cwd=cwd, env=env, stdin=stdin)
 
 
 def _binary(tmp_path: Path) -> Path:
@@ -114,6 +142,77 @@ def test_package_deb_uses_normalized_name(manifest: ExporterManifest, tmp_path: 
     )
     assert artifact.type == "deb"
     assert artifact.target == "ubuntu-24.04"
+
+
+def test_package_threads_directories(tmp_path: Path) -> None:
+    work = tmp_path / "work"
+    work.mkdir()
+    manifest = ExporterManifest(
+        kind="exporter",
+        name="x_exp",
+        description="d",
+        version="1.0.0",
+        spec=ExporterSpec(
+            upstream=Upstream(type="github", repo="o/r"),
+            build=Build(method="binary_repack", binary_name="x_exp"),
+            artifacts=ExporterArtifacts(
+                rpm=RpmTarget(enabled=True, directories=[Directory(path="/var/lib/x_exp")])
+            ),
+        ),
+    )
+    out = work / "x_exp-1.0.0-1.el9.x86_64.rpm"
+    NfpmPackager(_WritingRunner(out)).package(
+        manifest,
+        packager="rpm",
+        target="el9",
+        arch="amd64",
+        binary_src=_binary(tmp_path),
+        work_dir=work,
+    )
+    cfg = yaml.safe_load((work / "nfpm.yaml").read_text(encoding="utf-8"))
+    assert any(c.get("type") == "dir" and c["dst"] == "/var/lib/x_exp" for c in cfg["contents"])
+
+
+def test_package_missing_target_raises(tmp_path: Path) -> None:
+    work = tmp_path / "work"
+    work.mkdir()
+    manifest = ExporterManifest(
+        kind="exporter",
+        name="x_exp",
+        description="d",
+        version="1.0.0",
+        spec=ExporterSpec(
+            upstream=Upstream(type="github", repo="o/r"),
+            build=Build(method="binary_repack", binary_name="x_exp"),
+            artifacts=ExporterArtifacts(rpm=RpmTarget(enabled=True)),
+        ),
+    )
+    with pytest.raises(BuildError, match="no deb target"):
+        NfpmPackager(FakeRunner()).package(
+            manifest,
+            packager="deb",
+            target="ubuntu-24.04",
+            arch="amd64",
+            binary_src=_binary(tmp_path),
+            work_dir=work,
+        )
+
+
+def test_package_raises_when_nfpm_produces_nothing(
+    manifest: ExporterManifest, tmp_path: Path
+) -> None:
+    work = tmp_path / "work"
+    work.mkdir()
+    # FakeRunner returns rc=0 but writes no package; the post-build glob is empty.
+    with pytest.raises(BuildError, match="produced no"):
+        NfpmPackager(FakeRunner()).package(
+            manifest,
+            packager="rpm",
+            target="el9",
+            arch="amd64",
+            binary_src=_binary(tmp_path),
+            work_dir=work,
+        )
 
 
 @pytest.mark.skipif(shutil.which("nfpm") is None, reason="nfpm not installed")

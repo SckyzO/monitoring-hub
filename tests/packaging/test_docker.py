@@ -51,6 +51,29 @@ def test_build_image_raises_on_failure(manifest: ExporterManifest, tmp_path: Pat
         )
 
 
+def test_render_dockerfile_includes_cmd(manifest: ExporterManifest) -> None:
+    docker_target = cast(Any, manifest.spec.artifacts.docker)
+    docker_target.cmd = ["--log.level=debug"]
+    df = render_dockerfile(manifest)
+    assert 'CMD ["--log.level=debug"]' in df
+
+
+def test_build_image_stages_binary_from_other_dir(
+    manifest: ExporterManifest, tmp_path: Path
+) -> None:
+    src_dir = tmp_path / "src"
+    src_dir.mkdir()
+    binary = src_dir / "node_exporter"
+    binary.write_bytes(b"bin")
+    work = tmp_path / "work"
+    work.mkdir()
+    DockerBuilder(FakeRunner()).build_image(
+        manifest, arch="amd64", binary_src=binary, work_dir=work
+    )
+    # binary_src lives outside work_dir, so it must be copied next to the Dockerfile.
+    assert (work / "node_exporter").is_file()
+
+
 def test_build_image_skipped_when_docker_target_disabled(
     manifest: ExporterManifest, tmp_path: Path
 ) -> None:
