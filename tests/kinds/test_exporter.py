@@ -54,6 +54,16 @@ def _manifest(
     )
 
 
+def test_build_context_carries_manifest_dir(tmp_path: Path) -> None:
+    ctx = BuildContext(
+        work_dir=tmp_path,
+        downloader=FakeDownloader(),
+        runner=FakeRunner(),
+        manifest_dir=tmp_path / "src",
+    )
+    assert ctx.manifest_dir == tmp_path / "src"
+
+
 def test_validate_accepts_one_enabled_target() -> None:
     ExporterProducer().validate(_manifest(rpm=RpmTarget(enabled=True)))
 

@@ -23,7 +23,11 @@ class BuildContext(BaseModel):
     """Per-build context with the injected I/O seams (spec §15): the network
     ``Downloader``, the subprocess ``CommandRunner`` used by the packaging
     adapters, an optional GPG ``signing_key_id`` (signing is skipped when None),
-    and the working directory."""
+    and the working directory.
+
+    ``manifest_dir`` is the directory the manifest was loaded from; it resolves a
+    manifest's committed ``assets/`` and a custom ``docker.dockerfile`` template.
+    ``None`` for manifests built programmatically (e.g. in unit tests)."""
 
     model_config = ConfigDict(extra="forbid", arbitrary_types_allowed=True)
 
@@ -31,6 +35,7 @@ class BuildContext(BaseModel):
     downloader: Downloader
     runner: CommandRunner
     signing_key_id: str | None = None
+    manifest_dir: Path | None = None
 
 
 class BuildResult(BaseModel):

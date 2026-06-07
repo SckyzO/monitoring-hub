@@ -23,6 +23,7 @@ from forge.kinds.registry import register
 from forge.packaging.docker import DockerBuilder
 from forge.packaging.nfpm import NfpmPackager
 from forge.packaging.sign import GpgSigner
+from forge.packaging.staging import stage_assets
 
 
 @register("exporter")
@@ -138,4 +139,7 @@ class ExporterProducer:
     def _workdir(ctx: BuildContext, kind: str, arch: str) -> Path:
         work = ctx.work_dir / kind / arch
         work.mkdir(parents=True, exist_ok=True)
+        # Stage the manifest's committed assets/ so nfpm extra_files.source
+        # (assets/<file>) and custom Dockerfile COPYs resolve from the work dir.
+        stage_assets(ctx.manifest_dir, work)
         return work
