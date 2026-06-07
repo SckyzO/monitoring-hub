@@ -80,6 +80,23 @@ def test_oci_publisher_single_arch_skips_missing(tmp_path: Path) -> None:
     assert not any("--arch arm64" in c for c in flat)
 
 
+def test_oci_publisher_insecure_disables_tls(tmp_path: Path) -> None:
+    staging = tmp_path / "docker"
+    _context(staging, "node_exporter", ("amd64",))
+    runner = RecordingRunner()
+
+    OciPublisher(
+        registry="localhost:5000/mh",
+        versions={"node_exporter": "1.9.1"},
+        runner=runner,
+        tls_verify=False,
+    ).publish(staging)
+
+    flat = [" ".join(c) for c in runner.calls]
+    assert any("buildah manifest push --all --tls-verify=false" in c for c in flat)
+    assert any("skopeo copy --src-tls-verify=false --dest-tls-verify=false" in c for c in flat)
+
+
 def test_oci_publisher_raises_on_failure(tmp_path: Path) -> None:
     staging = tmp_path / "docker"
     _context(staging, "node_exporter", ("amd64",))

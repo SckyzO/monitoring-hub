@@ -21,11 +21,17 @@ _ARCHES = ("amd64", "arm64")
 
 class OciPublisher:
     def __init__(
-        self, *, registry: str, versions: Mapping[str, str], runner: CommandRunner
+        self,
+        *,
+        registry: str,
+        versions: Mapping[str, str],
+        runner: CommandRunner,
+        tls_verify: bool = True,
     ) -> None:
         self._registry = registry
         self._versions = versions
         self._runner = runner
+        self._tls_verify = tls_verify
 
     def publish(self, staging: Path) -> None:
         for context in sorted(p for p in staging.iterdir() if p.is_dir()):
@@ -43,8 +49,16 @@ class OciPublisher:
         self._run(["buildah", "manifest", "create", ref])
         for arch in arches:
             self._run(["buildah", "manifest", "add", ref, f"{ref}-{arch}"])
-        self._run(["buildah", "manifest", "push", "--all", ref, f"docker://{ref}"])
-        self._run(["skopeo", "copy", f"docker://{ref}", f"docker://{image}:latest"])
+
+        push = ["buildah", "manifest", "push", "--all"]
+        if not self._tls_verify:
+            push.append("--tls-verify=false")
+        self._run([*push, ref, f"docker://{ref}"])
+
+        copy = ["skopeo", "copy"]
+        if not self._tls_verify:
+            copy += ["--src-tls-verify=false", "--dest-tls-verify=false"]
+        self._run([*copy, f"docker://{ref}", f"docker://{image}:latest"])
 
     def _run(self, args: Sequence[str]) -> None:
         result = self._runner.run(args)
