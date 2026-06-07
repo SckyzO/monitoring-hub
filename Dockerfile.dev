@@ -8,17 +8,33 @@ ARG USER_GID=1000
 
 # git is required by pre-commit (hook repos + commit-msg stage);
 # ca-certificates for HTTPS fetches by uv and pre-commit hooks;
+# curl downloads the pinned nfpm release tarball below;
 # libatomic1 is required by the Node runtime that pre-commit downloads for the
 # markdownlint hook.
 # hadolint ignore=DL3008
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends git ca-certificates libatomic1 \
+    && apt-get install -y --no-install-recommends git ca-certificates curl libatomic1 \
     && rm -rf /var/lib/apt/lists/* \
     && groupadd --gid "${USER_GID}" dev \
     && useradd --uid "${USER_UID}" --gid "${USER_GID}" --create-home --shell /bin/bash dev
 
 # uv: the package manager.
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
+
+# nfpm — RPM/DEB packager (replaces ~650 lines of Jinja). Pinned by version;
+# tracked by scripts/check_update.py against goreleaser/nfpm releases.
+ARG NFPM_VERSION=2.46.3
+RUN set -eux; \
+    arch="$(dpkg --print-architecture)"; \
+    case "$arch" in \
+    amd64) nfpm_arch=x86_64 ;; \
+    arm64) nfpm_arch=arm64 ;; \
+    *) echo "unsupported arch $arch" >&2; exit 1 ;; \
+    esac; \
+    curl -fsSL "https://github.com/goreleaser/nfpm/releases/download/v${NFPM_VERSION}/nfpm_${NFPM_VERSION}_Linux_${nfpm_arch}.tar.gz" -o /tmp/nfpm.tgz; \
+    tar -xzf /tmp/nfpm.tgz -C /usr/local/bin nfpm; \
+    rm /tmp/nfpm.tgz; \
+    nfpm --version
 
 WORKDIR /workspace
 

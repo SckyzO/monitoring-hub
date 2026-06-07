@@ -44,6 +44,11 @@ src = ["src", "tests"]
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM", "PL"]
 
+[tool.ruff.lint.per-file-ignores]
+# Test assertions routinely compare against literal values (modes, exit codes,
+# digests); PLR2004 "magic value" is noise in that context.
+"tests/**" = ["PLR2004"]
+
 [tool.mypy]
 plugins = ["pydantic.mypy"]
 python_version = "3.12"
