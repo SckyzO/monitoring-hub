@@ -90,24 +90,32 @@ def test_validate_accepts_extra_sources() -> None:
     ExporterProducer().validate(_manifest(rpm=RpmTarget(enabled=True), build=build))
 
 
-def test_build_rejects_extra_binaries(tmp_path: Path) -> None:
+def test_build_packs_extra_binary(tmp_path: Path) -> None:
     build = Build(method="binary_repack", binary_name="x_exp", extra_binaries=["amtool"])
-    ctx = BuildContext(work_dir=tmp_path, downloader=FakeDownloader(), runner=FakeRunner())
-    with pytest.raises(BuildError, match="extra_binaries"):
-        ExporterProducer().build(_manifest(rpm=RpmTarget(enabled=True), build=build), ctx)
+    ctx = BuildContext(
+        work_dir=tmp_path,
+        downloader=FakeDownloader(payload=_targz_bytes("x_exp", "amtool")),
+        runner=_BuildRunner(),
+    )
+    result = ExporterProducer().build(_manifest(rpm=RpmTarget(enabled=True), build=build), ctx)
+    # the extra binary is staged into the rpm work dir for nfpm to pick up
+    nfpm_cfg = next(tmp_path.rglob("nfpm.yaml"))
+    assert "amtool" in nfpm_cfg.read_text(encoding="utf-8")
+    assert result.artifacts
 
 
-def test_build_rejects_extra_sources(tmp_path: Path) -> None:
+def test_build_fetches_extra_sources(tmp_path: Path) -> None:
     build = Build(
         method="binary_repack",
         binary_name="x_exp",
-        extra_sources=[
-            ExtraSource(url="https://example.test/extra.tar.gz", filename="extra.tar.gz")
-        ],
+        extra_sources=[ExtraSource(url="https://example.test/snmp.yml", filename="snmp.yml")],
     )
-    ctx = BuildContext(work_dir=tmp_path, downloader=FakeDownloader(), runner=FakeRunner())
-    with pytest.raises(BuildError, match="extra_sources"):
-        ExporterProducer().build(_manifest(rpm=RpmTarget(enabled=True), build=build), ctx)
+    downloader = FakeDownloader(payload=_targz_bytes("x_exp"))
+    ctx = BuildContext(work_dir=tmp_path, downloader=downloader, runner=_BuildRunner())
+    ExporterProducer().build(_manifest(rpm=RpmTarget(enabled=True), build=build), ctx)
+    # the source URL was requested and the file landed in a package work dir root
+    assert "https://example.test/snmp.yml" in downloader.urls
+    assert next(tmp_path.rglob("rpm/**/snmp.yml"), None) is not None
 
 
 def test_validate_rejects_non_exporter_manifest() -> None:
@@ -129,13 +137,14 @@ def test_producer_registered_for_exporter_kind() -> None:
     assert isinstance(producer, ExporterProducer)
 
 
-def _targz_bytes(member: str) -> bytes:
+def _targz_bytes(*members: str) -> bytes:
     buf = io.BytesIO()
     with tarfile.open(fileobj=buf, mode="w:gz") as tar:
-        info = tarfile.TarInfo(member)
-        data = b"ELF-fake"
-        info.size = len(data)
-        tar.addfile(info, io.BytesIO(data))
+        for member in members:
+            info = tarfile.TarInfo(member)
+            data = b"ELF-fake"
+            info.size = len(data)
+            tar.addfile(info, io.BytesIO(data))
     return buf.getvalue()
 
 

@@ -8,6 +8,7 @@ extracted once, then repacked into every RPM/DEB target and a Docker image.
 
 from __future__ import annotations
 
+import shutil
 from pathlib import Path
 from typing import cast
 
@@ -33,10 +34,8 @@ class ExporterProducer:
     def validate(self, manifest: Manifest) -> None:
         """Check the manifest is well-formed for this kind (spec §11).
 
-        Validates manifest semantics only — not engine build capability. Features
-        the builder cannot yet produce (``extra_binaries``/``extra_sources``,
-        SP1.4b) are rejected at build time, not here, so a schema-valid manifest
-        stays valid in the catalogue.
+        Validates manifest semantics only (spec §11): the manifest is the right
+        kind and has at least one enabled artifact target.
         """
         if not isinstance(manifest, ExporterManifest):
             raise BuildError(f"exporter producer got a {manifest.kind!r} manifest")
@@ -45,37 +44,41 @@ class ExporterProducer:
         if not any(t is not None and t.enabled for t in targets):
             raise BuildError(f"{manifest.name}: no enabled artifact target to build")
 
-    @staticmethod
-    def _reject_unsupported(manifest: ExporterManifest) -> None:
-        """Reject manifest features the builder cannot yet produce (SP1.4b)."""
-        build = manifest.spec.build
-        if build.extra_binaries:
-            raise BuildError(f"{manifest.name}: build.extra_binaries is not supported yet (SP1.4b)")
-        if build.extra_sources:
-            raise BuildError(f"{manifest.name}: build.extra_sources is not supported yet (SP1.4b)")
-
     def build(self, manifest: Manifest, ctx: BuildContext) -> BuildResult:
         self.validate(manifest)
         manifest = cast("ExporterManifest", manifest)  # validate guarantees the kind
-        self._reject_unsupported(manifest)
         artifacts_spec = manifest.spec.artifacts
         nfpm = NfpmPackager(ctx.runner)
         docker_builder = DockerBuilder(ctx.runner)
         signer = GpgSigner(ctx.runner) if ctx.signing_key_id else None
 
+        # extra_sources are config files (arch-independent); fetch once.
+        extra_sources = self._download_extra_sources(manifest, ctx)
+
         artifacts: list[Artifact] = []
         for arch in manifest.spec.build.archs:
-            binary = self._fetch_binary(manifest, ctx, arch)
+            extracted = self._extract(manifest, ctx, arch)
+            binary = find_binary(extracted, manifest.spec.build.binary_name)
+            extra_binaries = {
+                name: find_binary(extracted, name)
+                for name in manifest.spec.build.extra_binaries
+            }
 
             if artifacts_spec.rpm is not None and artifacts_spec.rpm.enabled:
                 for target in artifacts_spec.rpm.targets:
                     artifacts.append(
-                        self._package(nfpm, signer, manifest, ctx, "rpm", target, arch, binary)
+                        self._package(
+                            nfpm, signer, manifest, ctx, "rpm", target, arch,
+                            binary, extra_binaries, extra_sources,
+                        )
                     )
             if artifacts_spec.deb is not None and artifacts_spec.deb.enabled:
                 for target in artifacts_spec.deb.targets:
                     artifacts.append(
-                        self._package(nfpm, signer, manifest, ctx, "deb", target, arch, binary)
+                        self._package(
+                            nfpm, signer, manifest, ctx, "deb", target, arch,
+                            binary, extra_binaries, extra_sources,
+                        )
                     )
             if artifacts_spec.docker is not None and artifacts_spec.docker.enabled:
                 work = self._workdir(ctx, "docker", arch)
@@ -99,7 +102,8 @@ class ExporterProducer:
         )
         return BuildResult(artifacts=artifacts, entry=entry)
 
-    def _fetch_binary(self, manifest: ExporterManifest, ctx: BuildContext, arch: str) -> Path:
+    def _extract(self, manifest: ExporterManifest, ctx: BuildContext, arch: str) -> Path:
+        """Download the upstream archive for ``arch`` and return its extracted dir."""
         url = resolve_download_url(
             manifest.spec.upstream,
             name=manifest.name,
@@ -108,8 +112,17 @@ class ExporterProducer:
         )
         arch_dir = ctx.work_dir / "src" / arch
         archive = ctx.downloader.download(url, arch_dir / Path(url).name)
-        extracted = extract_archive(archive, arch_dir / "x")
-        return find_binary(extracted, manifest.spec.build.binary_name)
+        return extract_archive(archive, arch_dir / "x")
+
+    def _download_extra_sources(
+        self, manifest: ExporterManifest, ctx: BuildContext
+    ) -> dict[str, Path]:
+        """Fetch ``build.extra_sources`` (e.g. snmp.yml) once, keyed by filename."""
+        base = ctx.work_dir / "extra_sources"
+        return {
+            es.filename: ctx.downloader.download(es.url, base / es.filename)
+            for es in manifest.spec.build.extra_sources
+        }
 
     def _package(  # noqa: PLR0913 — locked keyword-positional contract (matches adapters)
         self,
@@ -121,8 +134,14 @@ class ExporterProducer:
         target: str,
         arch: str,
         binary: Path,
+        extra_binaries: dict[str, Path],
+        extra_sources: dict[str, Path],
     ) -> Artifact:
         work = self._workdir(ctx, f"{fmt}/{target}", arch)
+        # Stage downloaded extra sources at the work-dir root so an
+        # extra_files.source: <filename> entry resolves (snmp_exporter pattern).
+        for filename, src in extra_sources.items():
+            shutil.copy2(src, work / filename)
         artifact = nfpm.package(
             manifest,
             packager=fmt,  # type: ignore[arg-type]  # fmt is "rpm"|"deb" by construction
@@ -130,6 +149,7 @@ class ExporterProducer:
             arch=arch,
             binary_src=binary,
             work_dir=work,
+            extra_binaries=extra_binaries,
         )
         if signer is not None and ctx.signing_key_id is not None:
             produced = sorted(work.glob(f"*.{fmt}"))
