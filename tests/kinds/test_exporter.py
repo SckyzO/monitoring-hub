@@ -14,20 +14,33 @@ from forge.domain.catalog import CatalogEntry
 from forge.domain.errors import BuildError
 from forge.domain.manifest import (
     Build,
+    DashboardManifest,
+    DashboardSpec,
+    DebTarget,
+    DockerTarget,
     ExporterArtifacts,
     ExporterManifest,
     ExporterSpec,
+    ExtraSource,
     RpmTarget,
     Upstream,
+    UrlSource,
 )
 from forge.kinds.base import BuildContext
 from forge.kinds.exporter import ExporterProducer
+from forge.kinds.registry import discover, get_producer
 from forge.packaging.runner import CommandResult
 from tests.fetch.conftest import FakeDownloader
 from tests.packaging.conftest import FakeRunner
 
 
-def _manifest(*, rpm=None, deb=None, docker=None, build=None) -> ExporterManifest:
+def _manifest(
+    *,
+    rpm: RpmTarget | None = None,
+    deb: DebTarget | None = None,
+    docker: DockerTarget | None = None,
+    build: Build | None = None,
+) -> ExporterManifest:
     return ExporterManifest(
         kind="exporter",
         name="x_exp",
@@ -56,9 +69,31 @@ def test_validate_rejects_extra_binaries() -> None:
         ExporterProducer().validate(_manifest(rpm=RpmTarget(enabled=True), build=build))
 
 
-def test_producer_registered_for_exporter_kind() -> None:
-    from forge.kinds.registry import discover, get_producer
+def test_validate_rejects_extra_sources() -> None:
+    build = Build(
+        method="binary_repack",
+        binary_name="x_exp",
+        extra_sources=[
+            ExtraSource(url="https://example.test/extra.tar.gz", filename="extra.tar.gz")
+        ],
+    )
+    with pytest.raises(BuildError, match="extra_sources"):
+        ExporterProducer().validate(_manifest(rpm=RpmTarget(enabled=True), build=build))
 
+
+def test_validate_rejects_non_exporter_manifest() -> None:
+    dashboard = DashboardManifest(
+        kind="dashboard",
+        name="d",
+        description="d",
+        version="1.0.0",
+        spec=DashboardSpec(source=UrlSource(type="url", url="https://example.test/d.json")),
+    )
+    with pytest.raises(BuildError, match="manifest"):
+        ExporterProducer().validate(dashboard)
+
+
+def test_producer_registered_for_exporter_kind() -> None:
     discover()
     producer = get_producer("exporter")
     assert producer.kind == "exporter"
@@ -116,9 +151,7 @@ def test_build_produces_full_matrix_and_catalog_entry(
     assert len(downloader.urls) == 2
 
 
-def test_build_signs_rpm_deb_when_key_present(
-    manifest: ExporterManifest, tmp_path: Path
-) -> None:
+def test_build_signs_rpm_deb_when_key_present(manifest: ExporterManifest, tmp_path: Path) -> None:
     ctx = BuildContext(
         work_dir=tmp_path,
         downloader=FakeDownloader(payload=_targz_bytes("node_exporter")),
@@ -127,8 +160,7 @@ def test_build_signs_rpm_deb_when_key_present(
     )
     result = ExporterProducer().build(manifest, ctx)
     by_type = {
-        t: [a for a in result.artifacts if a.type == t]
-        for t in ("rpm", "deb", "docker-image")
+        t: [a for a in result.artifacts if a.type == t] for t in ("rpm", "deb", "docker-image")
     }
     assert all(a.signed for a in by_type["rpm"])
     assert all(a.signed for a in by_type["deb"])

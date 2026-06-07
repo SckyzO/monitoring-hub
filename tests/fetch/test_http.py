@@ -32,10 +32,7 @@ def test_download_bad_url_raises_source_error(tmp_path: Path) -> None:
     reason="set FORGE_NETWORK_TESTS=1 to run network tests",
 )
 def test_real_download_writes_file(tmp_path: Path) -> None:
-    url = (
-        "https://github.com/prometheus/node_exporter/releases/download/"
-        "v1.9.1/sha256sums.txt"
-    )
+    url = "https://github.com/prometheus/node_exporter/releases/download/v1.9.1/sha256sums.txt"
     dest = HttpxDownloader().download(url, tmp_path / "sha256sums.txt")
     assert dest.is_file()
     assert dest.stat().st_size > 0

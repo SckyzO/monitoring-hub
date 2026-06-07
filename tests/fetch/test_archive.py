@@ -53,3 +53,18 @@ def test_find_binary_missing_raises(tmp_path: Path) -> None:
     (tmp_path / "a" / "other").write_bytes(b"x")
     with pytest.raises(BuildError, match="binary 'node_exporter' not found"):
         find_binary(tmp_path, "node_exporter")
+
+
+def test_extract_zip_rejects_path_traversal(tmp_path: Path) -> None:
+    archive = tmp_path / "evil.zip"
+    with zipfile.ZipFile(archive, "w") as zf:
+        zf.writestr("../escape", b"pwned")
+    with pytest.raises(BuildError, match="unsafe path in zip archive"):
+        extract_archive(archive, tmp_path / "out")
+
+
+def test_extract_corrupt_archive_raises(tmp_path: Path) -> None:
+    archive = tmp_path / "broken.tar.gz"
+    archive.write_bytes(b"this is not a gzip stream")
+    with pytest.raises(BuildError, match="failed to extract"):
+        extract_archive(archive, tmp_path / "out")

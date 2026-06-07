@@ -60,9 +60,7 @@ def _canary_manifest() -> ExporterManifest:
 
 
 def test_canary_builds_real_rpm(tmp_path: Path) -> None:
-    ctx = BuildContext(
-        work_dir=tmp_path, downloader=HttpxDownloader(), runner=SubprocessRunner()
-    )
+    ctx = BuildContext(work_dir=tmp_path, downloader=HttpxDownloader(), runner=SubprocessRunner())
     result = ExporterProducer().build(_canary_manifest(), ctx)
     rpms = [a for a in result.artifacts if a.type == "rpm"]
     assert len(rpms) == 1
