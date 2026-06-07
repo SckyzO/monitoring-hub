@@ -7,8 +7,10 @@ import pytest
 from forge.domain.errors import (
     BuildError,
     CommandError,
+    DistributionError,
     ForgeError,
     ManifestError,
+    PublishError,
     SigningError,
     SourceResolutionError,
 )
@@ -16,7 +18,15 @@ from forge.domain.errors import (
 
 @pytest.mark.parametrize(
     "subclass",
-    [ManifestError, SourceResolutionError, BuildError, SigningError, CommandError],
+    [
+        ManifestError,
+        SourceResolutionError,
+        BuildError,
+        SigningError,
+        CommandError,
+        DistributionError,
+        PublishError,
+    ],
 )
 def test_all_errors_subclass_forge_error(subclass: type[ForgeError]) -> None:
     assert issubclass(subclass, ForgeError)
