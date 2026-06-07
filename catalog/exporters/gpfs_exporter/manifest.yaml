@@ -1,0 +1,43 @@
+kind: exporter
+name: gpfs_exporter
+description: Prometheus exporter for IBM GPFS (Spectrum Scale) metrics
+category: Storage
+version: v3.4.0
+spec:
+  upstream:
+    type: github
+    repo: treydock/gpfs_exporter
+    strategy: latest_release
+  build:
+    method: binary_repack
+    binary_name: gpfs_exporter
+    archs:
+    - amd64
+  artifacts:
+    rpm:
+      enabled: true
+      targets:
+      - el8
+      - el9
+      - el10
+      summary: Prometheus exporter for IBM GPFS
+      systemd:
+        enabled: true
+      system_user: prometheus
+    deb:
+      enabled: true
+      targets:
+      - debian-12
+      summary: Prometheus exporter for IBM GPFS (Spectrum Scale) metrics
+      systemd:
+        enabled: true
+      section: net
+      priority: optional
+      system_user: prometheus
+    docker:
+      enabled: true
+      base_image: registry.access.redhat.com/ubi9/ubi-minimal
+      entrypoint:
+      - /usr/bin/gpfs_exporter
+      validation:
+        enabled: false
