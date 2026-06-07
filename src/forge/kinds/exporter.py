@@ -60,24 +60,39 @@ class ExporterProducer:
             extracted = self._extract(manifest, ctx, arch)
             binary = find_binary(extracted, manifest.spec.build.binary_name)
             extra_binaries = {
-                name: find_binary(extracted, name)
-                for name in manifest.spec.build.extra_binaries
+                name: find_binary(extracted, name) for name in manifest.spec.build.extra_binaries
             }
 
             if artifacts_spec.rpm is not None and artifacts_spec.rpm.enabled:
                 for target in artifacts_spec.rpm.targets:
                     artifacts.append(
                         self._package(
-                            nfpm, signer, manifest, ctx, "rpm", target, arch,
-                            binary, extra_binaries, extra_sources,
+                            nfpm,
+                            signer,
+                            manifest,
+                            ctx,
+                            "rpm",
+                            target,
+                            arch,
+                            binary,
+                            extra_binaries,
+                            extra_sources,
                         )
                     )
             if artifacts_spec.deb is not None and artifacts_spec.deb.enabled:
                 for target in artifacts_spec.deb.targets:
                     artifacts.append(
                         self._package(
-                            nfpm, signer, manifest, ctx, "deb", target, arch,
-                            binary, extra_binaries, extra_sources,
+                            nfpm,
+                            signer,
+                            manifest,
+                            ctx,
+                            "deb",
+                            target,
+                            arch,
+                            binary,
+                            extra_binaries,
+                            extra_sources,
                         )
                     )
             if artifacts_spec.docker is not None and artifacts_spec.docker.enabled:

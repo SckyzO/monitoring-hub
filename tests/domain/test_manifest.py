@@ -63,9 +63,7 @@ def test_docker_target_accepts_dockerfile_override() -> None:
             "spec": {
                 "upstream": {"type": "github", "repo": "o/r"},
                 "build": {"method": "binary_repack", "binary_name": "x"},
-                "artifacts": {
-                    "docker": {"enabled": True, "dockerfile": "templates/Dockerfile.j2"}
-                },
+                "artifacts": {"docker": {"enabled": True, "dockerfile": "templates/Dockerfile.j2"}},
             },
         }
     )

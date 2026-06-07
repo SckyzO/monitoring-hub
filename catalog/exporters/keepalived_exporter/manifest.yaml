@@ -38,6 +38,7 @@ spec:
       priority: optional
     docker:
       enabled: true
+      dockerfile: templates/Dockerfile.j2
       entrypoint:
       - /usr/bin/keepalived-exporter
       validation:

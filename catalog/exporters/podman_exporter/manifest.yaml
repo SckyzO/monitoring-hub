@@ -42,6 +42,7 @@ spec:
         mode: '0755'
     docker:
       enabled: true
+      dockerfile: templates/Dockerfile.j2
       entrypoint:
       - /usr/bin/podman_exporter
       cmd:

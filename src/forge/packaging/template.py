@@ -26,7 +26,9 @@ def render_template(template_path: Path, context: dict[str, Any]) -> str:
         raise BuildError(f"custom Dockerfile template not found: {template_path}")
     try:
         source = template_path.read_text(encoding="utf-8")
-        env = Environment(  # noqa: S701 — Dockerfile, not HTML
+        # nosec B701 — renders Dockerfiles (not HTML/web output); templates are
+        # repo-controlled, not network input, so HTML autoescape would corrupt them.
+        env = Environment(  # nosec B701
             undefined=StrictUndefined, autoescape=False, keep_trailing_newline=True
         )
         return env.from_string(source).render(**context)

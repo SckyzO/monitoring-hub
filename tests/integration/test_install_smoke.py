@@ -85,9 +85,17 @@ def _build(tmp_path: Path, *, rpm: bool = False, deb: bool = False) -> Path:
 def _docker_run(image: str, pkg: Path, install_cmd: str) -> subprocess.CompletedProcess[str]:
     return subprocess.run(  # noqa: S603 — fixed argv, no shell at the python layer
         [
-            "docker", "run", "--rm", "--platform", "linux/amd64",
-            "-v", f"{pkg.parent}:/pkg:ro", image,
-            "sh", "-c", install_cmd,
+            "docker",
+            "run",
+            "--rm",
+            "--platform",
+            "linux/amd64",
+            "-v",
+            f"{pkg.parent}:/pkg:ro",
+            image,
+            "sh",
+            "-c",
+            install_cmd,
         ],
         capture_output=True,
         text=True,
