@@ -7,12 +7,30 @@ from pathlib import Path
 from forge.domain.artifact import Artifact
 from forge.domain.catalog import CatalogEntry
 from forge.domain.manifest import Manifest
+from forge.fetch.http import HttpxDownloader
 from forge.kinds.base import BuildContext, BuildResult, Producer
+from forge.packaging.runner import SubprocessRunner
 
 
-def test_build_context_holds_work_dir() -> None:
-    ctx = BuildContext(work_dir=Path("/tmp/build"))
-    assert ctx.work_dir == Path("/tmp/build")
+def test_build_context_holds_injected_seams(tmp_path: Path) -> None:
+    ctx = BuildContext(
+        work_dir=tmp_path,
+        downloader=HttpxDownloader(),
+        runner=SubprocessRunner(),
+    )
+    assert ctx.work_dir == tmp_path
+    assert ctx.signing_key_id is None
+    assert isinstance(ctx.runner, SubprocessRunner)
+
+
+def test_build_context_accepts_signing_key(tmp_path: Path) -> None:
+    ctx = BuildContext(
+        work_dir=tmp_path,
+        downloader=HttpxDownloader(),
+        runner=SubprocessRunner(),
+        signing_key_id="ABCD1234",
+    )
+    assert ctx.signing_key_id == "ABCD1234"
 
 
 def test_build_result_carries_artifacts_and_entry() -> None:
