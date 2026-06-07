@@ -19,11 +19,13 @@ from forge.fetch.http import HttpxDownloader
 from forge.kinds.base import BuildContext
 from forge.kinds.registry import discover, get_producer
 from forge.packaging.runner import SubprocessRunner
+from forge.publish.oci import OciPublisher
 from forge.repo.builder import build_distribution
 from forge.sources.resolver import load_yaml_mapping, resolve_manifest, resolve_manifest_path
 
 _DEFAULT_PACKAGE_BASE_URL = "https://github.com/SckyzO/monitoring-hub/releases/download"
 _DEFAULT_PAGES_BASE_URL = "https://sckyzo.github.io/monitoring-hub"
+_DEFAULT_OCI_REGISTRY = "ghcr.io/sckyzo/monitoring-hub"
 
 _catalog_root_option = click.option(
     "--catalog-root",
@@ -370,6 +372,45 @@ def repo_build(  # noqa: PLR0913 — Click options map one-to-one to parameters
         runner=SubprocessRunner(),
     )
     click.echo(f"assembled {len(result.items)} item(s) into {public_out} and {release_out}")
+
+
+@cli.command()
+@click.option("--oci", "oci", is_flag=True, help="Build + push multi-arch OCI images.")
+@click.option(
+    "--registry",
+    "registry",
+    default=_DEFAULT_OCI_REGISTRY,
+    show_default=True,
+    help="OCI registry namespace to push images to.",
+)
+@click.option(
+    "--contexts",
+    "contexts_dir",
+    type=click.Path(file_okay=False, path_type=Path),
+    default=Path("dist/docker"),
+    show_default=True,
+    help="Directory of <name>/ docker build contexts (from mh build).",
+)
+@click.option(
+    "--catalog",
+    "catalog_path",
+    type=click.Path(dir_okay=False, path_type=Path),
+    default=Path("catalog.json"),
+    show_default=True,
+    help="catalog.json supplying each image's version.",
+)
+def publish(oci: bool, registry: str, contexts_dir: Path, catalog_path: Path) -> None:
+    """Publish built artifacts to remote hosts (OCI now; releases in SP2.5)."""
+    if not oci:
+        raise click.UsageError("nothing to publish: pass --oci")
+    catalog = load_catalog(catalog_path)
+    if catalog is None:
+        raise click.ClickException(f"catalog not found: {catalog_path}")
+    versions = {item.name: item.version for item in catalog.items}
+    OciPublisher(registry=registry, versions=versions, runner=SubprocessRunner()).publish(
+        contexts_dir
+    )
+    click.echo(f"published {len(versions)} image(s) to {registry}")
 
 
 if __name__ == "__main__":
