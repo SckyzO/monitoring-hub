@@ -21,7 +21,7 @@ from forge.fetch.archive import extract_archive, find_binary
 from forge.fetch.upstream import resolve_download_url
 from forge.kinds.base import BuildContext, BuildResult
 from forge.kinds.registry import register
-from forge.packaging.docker import DockerBuilder
+from forge.packaging.docker import emit_docker_context
 from forge.packaging.nfpm import NfpmPackager
 from forge.packaging.sign import GpgSigner
 from forge.packaging.staging import stage_assets
@@ -49,13 +49,15 @@ class ExporterProducer:
         manifest = cast("ExporterManifest", manifest)  # validate guarantees the kind
         artifacts_spec = manifest.spec.artifacts
         nfpm = NfpmPackager(ctx.runner)
-        docker_builder = DockerBuilder(ctx.runner)
         signer = GpgSigner(ctx.runner) if ctx.signing_key_id else None
 
         # extra_sources are config files (arch-independent); fetch once.
         extra_sources = self._download_extra_sources(manifest, ctx)
 
         artifacts: list[Artifact] = []
+        # Docker images are multi-arch: collect each arch's binary across the loop
+        # and emit a single daemonless build context afterwards (no docker at build).
+        docker_binaries: dict[str, Path] = {}
         for arch in manifest.spec.build.archs:
             extracted = self._extract(manifest, ctx, arch)
             binary = find_binary(extracted, manifest.spec.build.binary_name)
@@ -96,16 +98,17 @@ class ExporterProducer:
                         )
                     )
             if artifacts_spec.docker is not None and artifacts_spec.docker.enabled:
-                work = self._workdir(ctx, "docker", arch)
-                artifacts.append(
-                    docker_builder.build_image(
-                        manifest,
-                        arch=arch,
-                        binary_src=binary,
-                        work_dir=work,
-                        manifest_dir=ctx.manifest_dir,
-                    )
+                docker_binaries[arch] = binary
+
+        if docker_binaries:
+            artifacts.append(
+                emit_docker_context(
+                    manifest,
+                    binaries=docker_binaries,
+                    out_dir=ctx.work_dir / "docker" / manifest.name,
+                    manifest_dir=ctx.manifest_dir,
                 )
+            )
 
         entry = CatalogEntry(
             kind=manifest.kind,

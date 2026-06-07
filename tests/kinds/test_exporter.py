@@ -5,7 +5,7 @@ from __future__ import annotations
 import io
 import tarfile
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 import pytest
 
@@ -166,16 +166,27 @@ def test_build_produces_full_matrix_and_catalog_entry(
     manifest: ExporterManifest, tmp_path: Path
 ) -> None:
     downloader = FakeDownloader(payload=_targz_bytes("node_exporter"))
-    ctx = BuildContext(work_dir=tmp_path, downloader=downloader, runner=_BuildRunner())
+    runner = _BuildRunner()
+    ctx = BuildContext(work_dir=tmp_path, downloader=downloader, runner=runner)
 
     result = ExporterProducer().build(manifest, ctx)
 
-    # archs = [amd64, arm64]; rpm [el9, el10] -> 4; deb [ubuntu-24.04, debian-12] -> 4; docker -> 2
-    assert len(result.artifacts) == 10
+    # archs = [amd64, arm64]; rpm [el9, el10] -> 4; deb [ubuntu-24.04, debian-12] -> 4;
+    # docker -> 1 (one multi-arch context per image)
+    assert len(result.artifacts) == 9
     types = sorted({a.type for a in result.artifacts})
     assert types == ["deb", "docker-image", "rpm"]
     assert all(isinstance(a, Artifact) for a in result.artifacts)
     assert all(a.signed is False for a in result.artifacts)
+
+    # one daemonless docker context emitted; no docker/buildah command invoked
+    docker_arts = [a for a in result.artifacts if a.type == "docker-image"]
+    assert len(docker_arts) == 1
+    assert docker_arts[0].arch is None
+    assert docker_arts[0].target == "node_exporter:1.9.1"
+    assert (ctx.work_dir / "docker" / "node_exporter" / "Dockerfile").is_file()
+    invoked = [cast("list[str]", c["args"])[0] for c in runner.calls]
+    assert not any(exe in {"docker", "buildah"} for exe in invoked)
 
     entry = result.entry
     assert isinstance(entry, CatalogEntry)
@@ -183,7 +194,7 @@ def test_build_produces_full_matrix_and_catalog_entry(
     assert entry.name == "node_exporter"
     assert entry.version == "1.9.1"  # clean
     assert entry.category == "System"
-    assert len(entry.artifacts) == 10
+    assert len(entry.artifacts) == 9
 
     # one download per arch (not per target)
     assert len(downloader.urls) == 2
