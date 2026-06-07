@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import json as jsonlib
+import sys
+from pathlib import Path
 
 import click
 
@@ -10,7 +12,8 @@ from forge import __version__
 from forge.cli._context import iter_manifest_paths, resolve_catalog_root
 from forge.domain.errors import ForgeError
 from forge.domain.manifest import parse_manifest
-from forge.sources.resolver import load_yaml_mapping
+from forge.kinds.registry import discover, get_producer
+from forge.sources.resolver import load_yaml_mapping, resolve_manifest_path
 
 _catalog_root_option = click.option(
     "--catalog-root",
@@ -49,6 +52,62 @@ def list_items(catalog_root: str | None, kind: str | None, as_json: bool) -> Non
         return
     for row in rows:
         click.echo(f"{row['name']}\t{row['kind']}\t{row['version']}\t{row['category']}")
+
+
+def _validate_path(path: Path) -> str | None:
+    """Validate one manifest file: schema then producer semantics.
+
+    Returns ``None`` on success or a human-readable error string. Producers must
+    be discovered (registered) before calling.
+    """
+    try:
+        manifest = parse_manifest(load_yaml_mapping(path))
+        get_producer(manifest.kind).validate(manifest)
+    except ForgeError as exc:
+        return str(exc)
+    return None
+
+
+@cli.command()
+@click.argument("ref", required=False)
+@_catalog_root_option
+@click.option("--all", "validate_all", is_flag=True, help="Validate every catalogue item.")
+@click.option("--json", "as_json", is_flag=True, help="Emit machine-readable JSON.")
+def validate(
+    ref: str | None, catalog_root: str | None, validate_all: bool, as_json: bool
+) -> None:
+    """Validate one item (REF) or the whole catalogue (--all).
+
+    Aggregates every failure rather than stopping at the first (spec §14) and
+    exits non-zero if any item is invalid.
+    """
+    discover()
+    root = resolve_catalog_root(catalog_root)
+
+    targets: list[tuple[str, Path]]
+    if validate_all:
+        targets = [(p.parent.name, p) for p in iter_manifest_paths(root)]
+    elif ref:
+        targets = [(ref, resolve_manifest_path(ref, catalog_root=root))]
+    else:
+        raise click.UsageError("provide an item REF or --all")
+
+    results = [(name, _validate_path(path)) for name, path in targets]
+    failures = [(name, err) for name, err in results if err is not None]
+
+    if as_json:
+        click.echo(
+            jsonlib.dumps(
+                [{"item": n, "ok": e is None, "error": e} for n, e in results], indent=2
+            )
+        )
+    else:
+        for name, err in failures:
+            click.echo(f"FAIL {name}: {err}")
+        click.echo(f"{len(results) - len(failures)}/{len(results)} valid")
+
+    if failures:
+        sys.exit(1)
 
 
 if __name__ == "__main__":
