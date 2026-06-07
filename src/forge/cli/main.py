@@ -9,7 +9,9 @@ from pathlib import Path
 import click
 
 from forge import __version__
+from forge.catalog.builder import build_catalog, load_catalog, write_catalog
 from forge.cli._context import iter_manifest_paths, resolve_catalog_root
+from forge.domain.catalog import CatalogEntry
 from forge.domain.errors import ForgeError
 from forge.domain.manifest import parse_manifest
 from forge.fetch.http import HttpxDownloader
@@ -172,6 +174,70 @@ def build(
             f"{art.sha256[:12]}\tsigned={art.signed}"
         )
     click.echo(f"built {len(result.artifacts)} artifact(s) for {manifest.name}")
+
+
+@cli.group()
+def catalog() -> None:
+    """Catalogue operations (assemble catalog.json)."""
+
+
+@catalog.command(name="build")
+@click.argument("refs", nargs=-1)
+@_catalog_root_option
+@click.option("--all", "build_all", is_flag=True, help="Build every catalogue item.")
+@click.option(
+    "--previous",
+    "previous",
+    type=click.Path(dir_okay=False, path_type=Path),
+    default=None,
+    help="Previous catalog.json to diff for new/updated flags.",
+)
+@click.option(
+    "--output",
+    "output",
+    type=click.Path(dir_okay=False, path_type=Path),
+    default=Path("catalog.json"),
+    show_default=True,
+    help="Where to write the assembled catalog.json.",
+)
+@click.option("--sign-key", "sign_key", default=None, help="GPG key id to sign packages.")
+@click.option(
+    "--work-dir",
+    "work_dir",
+    type=click.Path(file_okay=False, path_type=Path),
+    default=Path("build"),
+    show_default=True,
+    help="Working directory for downloads and produced artifacts.",
+)
+def catalog_build(
+    refs: tuple[str, ...],
+    catalog_root: str | None,
+    build_all: bool,
+    previous: Path | None,
+    output: Path,
+    sign_key: str | None,
+    work_dir: Path,
+) -> None:
+    """Build items then assemble their CatalogEntry objects into catalog.json."""
+    discover()
+    root = resolve_catalog_root(catalog_root)
+    if build_all:
+        item_refs = [str(p) for p in iter_manifest_paths(root)]
+    elif refs:
+        item_refs = list(refs)
+    else:
+        raise click.UsageError("provide one or more REFS or --all")
+
+    ctx = _build_context(work_dir, sign_key)
+    entries: list[CatalogEntry] = []
+    for ref in item_refs:
+        manifest = resolve_manifest(ref, catalog_root=root)
+        entries.append(get_producer(manifest.kind).build(manifest, ctx).entry)
+
+    prior = load_catalog(previous) if previous is not None else None
+    result = build_catalog(entries, previous=prior)
+    write_catalog(result, output)
+    click.echo(f"wrote {len(result.items)} item(s) to {output}")
 
 
 if __name__ == "__main__":
