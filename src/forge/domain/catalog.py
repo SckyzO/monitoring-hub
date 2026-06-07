@@ -22,3 +22,18 @@ class CatalogEntry(BaseModel):
     artifacts: list[Artifact] = Field(default_factory=list)
     new: bool = False
     updated: bool = False
+
+
+class Catalog(BaseModel):
+    """The kind-agnostic catalog.json envelope (spec §10).
+
+    ``generated_at`` is a plain ISO-8601 UTC string (injectable by the builder so
+    golden snapshots stay deterministic). ``schema_version`` guards forward
+    compatibility for the website and the offline bundler.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+    schema_version: int = 1
+    generated_at: str
+    items: list[CatalogEntry] = Field(default_factory=list)

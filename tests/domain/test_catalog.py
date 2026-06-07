@@ -5,8 +5,11 @@ new/updated are catalog-build state, NOT manifest fields — they live here.
 
 from __future__ import annotations
 
+import pytest
+from pydantic import ValidationError
+
 from forge.domain.artifact import Artifact
-from forge.domain.catalog import CatalogEntry
+from forge.domain.catalog import Catalog, CatalogEntry
 
 
 def test_state_flags_default_false_and_artifacts_empty() -> None:
@@ -34,3 +37,17 @@ def test_entry_carries_artifacts() -> None:
     )
     assert entry.new is True
     assert entry.artifacts[0].type == "rpm"
+
+
+def test_catalog_envelope_round_trips() -> None:
+    entry = CatalogEntry(kind="exporter", name="x", version="1", category="System", description="d")
+    cat = Catalog(generated_at="2026-06-07T00:00:00Z", items=[entry])
+    assert cat.schema_version == 1
+    dumped = cat.model_dump(mode="json")
+    assert dumped["schema_version"] == 1
+    assert dumped["items"][0]["name"] == "x"
+
+
+def test_catalog_rejects_unknown_field() -> None:
+    with pytest.raises(ValidationError):
+        Catalog(generated_at="t", items=[], oops=1)  # type: ignore[call-arg]
