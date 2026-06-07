@@ -74,6 +74,39 @@ def test_build_image_stages_binary_from_other_dir(
     assert (work / "node_exporter").is_file()
 
 
+def test_build_image_uses_custom_dockerfile(manifest: ExporterManifest, tmp_path: Path) -> None:
+    manifest_dir = tmp_path / "exp"
+    (manifest_dir / "templates").mkdir(parents=True)
+    (manifest_dir / "templates" / "Dockerfile.j2").write_text(
+        "FROM {{ artifacts.docker.base_image }}\nRUN echo {{ name }}\n", encoding="utf-8"
+    )
+    cast(Any, manifest.spec.artifacts.docker).dockerfile = "templates/Dockerfile.j2"
+    work = tmp_path / "work"
+    work.mkdir()
+    binary = work / "node_exporter"
+    binary.write_bytes(b"bin")
+
+    DockerBuilder(FakeRunner()).build_image(
+        manifest, arch="amd64", binary_src=binary, work_dir=work, manifest_dir=manifest_dir
+    )
+
+    rendered = (work / "Dockerfile").read_text(encoding="utf-8")
+    assert "RUN echo node_exporter" in rendered
+    assert "FROM registry.access.redhat.com/ubi9/ubi-minimal" in rendered
+
+
+def test_build_image_custom_dockerfile_without_manifest_dir_raises(
+    manifest: ExporterManifest, tmp_path: Path
+) -> None:
+    cast(Any, manifest.spec.artifacts.docker).dockerfile = "templates/Dockerfile.j2"
+    binary = tmp_path / "node_exporter"
+    binary.write_bytes(b"bin")
+    with pytest.raises(BuildError, match="manifest_dir"):
+        DockerBuilder(FakeRunner()).build_image(
+            manifest, arch="amd64", binary_src=binary, work_dir=tmp_path
+        )
+
+
 def test_build_image_skipped_when_docker_target_disabled(
     manifest: ExporterManifest, tmp_path: Path
 ) -> None:

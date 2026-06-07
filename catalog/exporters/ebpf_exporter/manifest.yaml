@@ -42,6 +42,7 @@ spec:
       - hwdata
     docker:
       enabled: true
+      dockerfile: templates/Dockerfile.j2
       entrypoint:
       - /usr/bin/ebpf_exporter
       validation:

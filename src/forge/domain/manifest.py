@@ -146,6 +146,10 @@ class DockerTarget(BaseModel):
     base_image: str = "registry.access.redhat.com/ubi9/ubi-minimal"
     entrypoint: list[str] = Field(default_factory=list)
     cmd: list[str] = Field(default_factory=list)
+    # Opt-in path (relative to the manifest dir) to a Jinja2 Dockerfile template.
+    # None = the generic renderer (FROM/COPY/ENTRYPOINT). Set it for exporters
+    # whose image needs custom layers (OS packages, multi-stage, ENV, COPY config).
+    dockerfile: str | None = None
     validation: Validation = Field(default_factory=Validation)
 
 

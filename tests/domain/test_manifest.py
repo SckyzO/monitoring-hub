@@ -49,6 +49,29 @@ def test_validation_defaults() -> None:
     assert v.port is None
 
 
+def test_docker_target_dockerfile_defaults_none() -> None:
+    assert DockerTarget().dockerfile is None
+
+
+def test_docker_target_accepts_dockerfile_override() -> None:
+    m = parse_manifest(
+        {
+            "kind": "exporter",
+            "name": "x",
+            "description": "d",
+            "version": "1.0.0",
+            "spec": {
+                "upstream": {"type": "github", "repo": "o/r"},
+                "build": {"method": "binary_repack", "binary_name": "x"},
+                "artifacts": {"docker": {"enabled": True, "dockerfile": "templates/Dockerfile.j2"}},
+            },
+        }
+    )
+    assert isinstance(m, ExporterManifest)
+    assert m.spec.artifacts.docker is not None
+    assert m.spec.artifacts.docker.dockerfile == "templates/Dockerfile.j2"
+
+
 def test_build_requires_method_and_binary_name() -> None:
     with pytest.raises(ValidationError):
         Build()  # type: ignore[call-arg]
