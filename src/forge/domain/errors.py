@@ -30,3 +30,11 @@ class SigningError(ForgeError):
 
 class CommandError(ForgeError):
     """A subprocess could not be launched (missing binary, OS-level error)."""
+
+
+class DistributionError(ForgeError):
+    """Generating a repository tree (rpm/apt metadata, signing) failed."""
+
+
+class PublishError(ForgeError):
+    """Publishing artifacts to a remote (GitHub Releases, OCI registry) failed."""
