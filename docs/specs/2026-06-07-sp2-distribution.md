@@ -52,7 +52,9 @@ Consequences:
 
 - **RPM**: `repodata/` (small) on **Pages**, `.rpm` on **Releases** via
   `createrepo_c --location-prefix <releases-base-url>`. DNF reads metadata from
-  Pages and fetches packages from Releases.
+  Pages and fetches packages from Releases. Because `--location-prefix` is a
+  single prefix per `repodata/`, all `.rpm` of one `(target, arch)` share **one**
+  release tag `rpm-<target>-<arch>` (not one tag per package).
 - **APT**: the whole repo must sit on one host. We use the **flat repository
   format** (no `dists/` hierarchy; `InRelease` / `Release` / `Packages` and the
   `.deb` side by side) hosted entirely on **GitHub Releases**, one release tag
@@ -71,7 +73,7 @@ GitHub Pages (sckyzo.github.io/monitoring-hub, metadata only — MB)
 └── dashboards/<name>.json                    # downloadable (pillar 4)
 
 GitHub Releases (blobs — GB)
-├── tag rpm-<name>-<version> : *.rpm          # RPM packages
+├── tag rpm-<target>-<arch>  : *.rpm          # RPM packages, one tag per (target, arch)
 └── tag apt-<codename>       : InRelease + Release + Release.gpg
                                + Packages(.gz) + *.deb   (flat repo)
 

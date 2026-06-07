@@ -19,7 +19,11 @@ from forge.fetch.http import HttpxDownloader
 from forge.kinds.base import BuildContext
 from forge.kinds.registry import discover, get_producer
 from forge.packaging.runner import SubprocessRunner
+from forge.repo.builder import build_distribution
 from forge.sources.resolver import load_yaml_mapping, resolve_manifest, resolve_manifest_path
+
+_DEFAULT_PACKAGE_BASE_URL = "https://github.com/SckyzO/monitoring-hub/releases/download"
+_DEFAULT_PAGES_BASE_URL = "https://sckyzo.github.io/monitoring-hub"
 
 _catalog_root_option = click.option(
     "--catalog-root",
@@ -264,6 +268,108 @@ def catalog_build(  # noqa: PLR0913 — Click options map one-to-one to paramete
     result = build_catalog(entries, previous=prior)
     write_catalog(result, output)
     click.echo(f"wrote {len(result.items)} item(s) to {output}")
+
+
+@cli.group()
+def repo() -> None:
+    """Repository operations (assemble signed apt/yum trees)."""
+
+
+@repo.command(name="build")
+@click.option(
+    "--catalog",
+    "catalog_path",
+    type=click.Path(dir_okay=False, path_type=Path),
+    default=Path("catalog.json"),
+    show_default=True,
+    help="catalog.json to read (and re-emit with populated Artifact.url).",
+)
+@click.option(
+    "--packages",
+    "packages_dir",
+    type=click.Path(file_okay=False, path_type=Path),
+    default=Path("dist"),
+    show_default=True,
+    help="Directory tree holding the built .rpm/.deb (from mh build).",
+)
+@click.option(
+    "--dashboards",
+    "dashboards_dir",
+    type=click.Path(file_okay=False, path_type=Path),
+    default=Path("dist/dashboards"),
+    show_default=True,
+    help="Directory holding the built dashboard JSON files.",
+)
+@click.option(
+    "--out",
+    "public_out",
+    type=click.Path(file_okay=False, path_type=Path),
+    default=Path("public"),
+    show_default=True,
+    help="Pages metadata tree to assemble (repodata, dashboards, catalog.json).",
+)
+@click.option(
+    "--release-out",
+    "release_out",
+    type=click.Path(file_okay=False, path_type=Path),
+    default=Path("release"),
+    show_default=True,
+    help="Releases staging tree (rpm-* / apt-* asset dirs).",
+)
+@click.option(
+    "--package-base-url",
+    "package_base_url",
+    default=_DEFAULT_PACKAGE_BASE_URL,
+    show_default=True,
+    help="Base URL where package blobs are hosted (GitHub Releases by default).",
+)
+@click.option(
+    "--pages-base-url",
+    "pages_base_url",
+    default=_DEFAULT_PAGES_BASE_URL,
+    show_default=True,
+    help="Base URL of the Pages site (for dashboard download URLs).",
+)
+@click.option("--sign", "sign", is_flag=True, help="Sign repo metadata (requires --key-id).")
+@click.option("--key-id", "key_id", default=None, help="GPG key id used to sign metadata.")
+@click.option(
+    "--public-key",
+    "public_key",
+    type=click.Path(exists=True, dir_okay=False, path_type=Path),
+    default=None,
+    help="GPG public key to publish on Pages (RPM-GPG-KEY + apt/monitoring-hub.asc).",
+)
+def repo_build(  # noqa: PLR0913 — Click options map one-to-one to parameters
+    catalog_path: Path,
+    packages_dir: Path,
+    dashboards_dir: Path,
+    public_out: Path,
+    release_out: Path,
+    package_base_url: str,
+    pages_base_url: str,
+    sign: bool,
+    key_id: str | None,
+    public_key: Path | None,
+) -> None:
+    """Assemble the Pages (--out) and Releases (--release-out) distribution trees."""
+    if sign and key_id is None:
+        raise click.UsageError("--sign requires --key-id")
+    catalog = load_catalog(catalog_path)
+    if catalog is None:
+        raise click.ClickException(f"catalog not found: {catalog_path}")
+    result = build_distribution(
+        catalog=catalog,
+        packages_dir=packages_dir,
+        dashboards_dir=dashboards_dir,
+        public_out=public_out,
+        release_out=release_out,
+        package_base_url=package_base_url,
+        pages_base_url=pages_base_url,
+        key_id=key_id if sign else None,
+        public_key=public_key,
+        runner=SubprocessRunner(),
+    )
+    click.echo(f"assembled {len(result.items)} item(s) into {public_out} and {release_out}")
 
 
 if __name__ == "__main__":
