@@ -324,14 +324,92 @@ Permissions: explicit minimum per job, never `write-all`. Actions pinned by SHA.
 
 ## 9. Testing strategy
 
-- **Unit (in `make ci`, no daemon/network):** a fake `CommandRunner` asserts the
-  exact `createrepo_c` / `apt-ftparchive` / `gpg` / `buildah` / `skopeo`
-  command lines and the generated tree structure. Golden tests for the assembled
-  `./public` and `./release` layouts and for `Artifact.url` population.
-- **Gated integration (outside `make ci`, `FORGE_DOCKER_TESTS=1` + tools):**
-  real `createrepo_c` + `apt-ftparchive` produce a real signed repo; an
-  L3-style consume test installs from it (`dnf install` from local repodata,
-  `apt install` from a local flat repo). Extends the SP1 smoke harness.
+**Discipline: TDD, test-first, per increment.** Every module below is written
+test-first (red → green → refactor), matching SP1. No production code lands
+without a failing test that motivated it. Coverage target ≥ 95% on new modules
+(SP1 baseline), enforced by `pytest-cov` in `make ci`.
+
+Three layers, in order of cost:
+
+### 9.1 Unit — pure logic, no runner (in `make ci`)
+
+Pure functions get plain assertion tests, no fakes:
+
+- `repo/rpm.py` grouping helper: packages → `{(target, arch): [paths]}`.
+- `repo/deb.py` grouping helper: packages → `{codename: [paths]}`.
+- `repo/builder.py` URL mapping: `(artifact, package_base_url)` →
+  expected `Artifact.url` (rpm tag URL, apt flat URL, dashboard Pages URL).
+- `repo/builder.py` Pages-vs-Releases routing: which file lands in `./public`
+  vs `./release` (a table-driven test over artifact types).
+
+### 9.2 Unit — command construction & tree assembly via a fake runner (in `make ci`)
+
+Reuses the SP1 `FakeRunner`. Each adapter is verified by the **exact argv** it
+emits and the **tree it materializes** (the fake runner writes sentinel output
+files so the builder's assembly logic is exercised end-to-end without the real
+tools). Concrete cases:
+
+- `repo/rpm.py`
+  - emits `createrepo_c --location-prefix <url> <workdir>` with the prefix
+    threaded from the parameter (the anti-lock-in guarantee, asserted).
+  - one invocation per `(target, arch)`; output `repodata/` lands under
+    `el9/x86_64/` etc.
+- `repo/deb.py`
+  - emits `apt-ftparchive packages .` then `apt-ftparchive ... release .` with
+    `Codename`/`Origin` options set from parameters.
+  - `.deb` copied flat (no `pool/` path) next to `Packages`/`Release`.
+  - one repo per codename.
+- `repo/metadata_sign.py`
+  - `sign_repomd` emits `gpg --batch --detach-sign --armor -u <key_id>` →
+    `repomd.xml.asc` next to `repomd.xml`.
+  - `sign_apt_release` emits `--clearsign` → `InRelease` and
+    `--detach-sign --armor` → `Release.gpg`.
+  - **passphrase never in argv** — asserted by scanning the emitted argv for any
+    secret-shaped token (regression guard for the SP1 secrets rule).
+  - `key_id=None` → no gpg call, metadata left unsigned (the gating path).
+- `repo/builder.py` (golden)
+  - golden snapshot of the full `./public` tree and the full `./release` tree
+    for a 2-item catalog (one exporter with rpm+deb+docker, one dashboard):
+    asserts every expected path exists and nothing extra.
+  - golden snapshot of the returned `Catalog` with all `Artifact.url` populated.
+- `publish/releases.py`
+  - emits the expected `gh`/API calls to ensure-tag + upload-asset
+    (`--clobber` semantics) for each `rpm-*` / `apt-*` staging subdir; idempotent
+    re-run asserted (same calls, clobber).
+- `publish/oci.py`
+  - emits `buildah bud --arch amd64`, `--arch arm64`, `buildah manifest
+    create/add`, `skopeo copy`/`manifest push` with the right `<name>:<version>`
+    and `:latest` tags and registry from the parameter.
+- `mh build` rebalance
+  - asserts a Docker **context** is emitted to `./dist/docker/<name>/`
+    (Dockerfile + staged binary present) and that **no docker/buildah command is
+    invoked** during `mh build` (the daemonless guarantee).
+- CLI wiring (`mh repo build`, `mh publish`)
+  - Click `CliRunner` tests: option parsing, exit codes, that `--package-base-url`
+    reaches `repo/rpm.py`, that `--sign` without `--key-id` errors clearly, that
+    `mh publish --oci`/`--releases` dispatch to the right `Publisher`.
+
+### 9.3 Gated integration — real tools, real consume (outside `make ci`)
+
+Gated by `FORGE_DOCKER_TESTS=1` + presence of the tools, run on the CI runner /
+host like the SP1 L3 smoke-test (never in `make ci`):
+
+- **Real repo generation:** real `createrepo_c` + `apt-ftparchive` + `gpg`
+  produce a real **signed** repo from a real node_exporter rpm/deb built by the
+  SP1 path.
+- **RPM consume (almalinux:9):** drop a yum source pointing `baseurl` at the
+  generated `repodata/` (served locally) with the package `location` resolved,
+  `gpgcheck=1` against the generated key → `dnf -y install node_exporter` →
+  `node_exporter --version`.
+- **APT consume (ubuntu:24.04):** add the generated flat repo with
+  `signed-by` the generated key → `apt-get update && apt-get install -y
+  node-exporter` → run the binary. Asserts the **signature verifies** (the whole
+  point of signed metadata) and the flat-on-one-host layout actually works in apt.
+- **OCI (gated):** `buildah` build of one image from an emitted context + `skopeo`
+  inspect of the multi-arch manifest (push to a local registry, no GHCR creds in
+  tests).
+
+This extends `tests/integration/` and the `forge-smoke.yml` harness from SP1.
 
 ---
 
