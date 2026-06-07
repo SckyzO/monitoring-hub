@@ -75,3 +75,23 @@ def test_publish_missing_catalog_errors(tmp_path: Path) -> None:
     )
     assert result.exit_code != 0
     assert "catalog" in result.output.lower()
+
+
+class _SpyReleases:
+    last: dict[str, Any] = {}
+
+    def __init__(self, *, repo: str, runner: Any) -> None:
+        _SpyReleases.last = {"repo": repo}
+
+    def publish(self, staging: Path) -> None:
+        _SpyReleases.last["staging"] = staging
+
+
+def test_publish_releases_dispatches(tmp_path: Path, monkeypatch: Any) -> None:
+    release_dir = tmp_path / "release"
+    release_dir.mkdir()
+    monkeypatch.setattr("forge.cli.main.GitHubReleasesPublisher", _SpyReleases)
+    result = CliRunner().invoke(cli, ["publish", "--releases", str(release_dir), "--repo", "o/r"])
+    assert result.exit_code == 0, result.output
+    assert _SpyReleases.last["repo"] == "o/r"
+    assert _SpyReleases.last["staging"] == release_dir
