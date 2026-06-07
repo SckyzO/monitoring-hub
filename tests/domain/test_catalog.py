@@ -40,9 +40,7 @@ def test_entry_carries_artifacts() -> None:
 
 
 def test_catalog_envelope_round_trips() -> None:
-    entry = CatalogEntry(
-        kind="exporter", name="x", version="1", category="System", description="d"
-    )
+    entry = CatalogEntry(kind="exporter", name="x", version="1", category="System", description="d")
     cat = Catalog(generated_at="2026-06-07T00:00:00Z", items=[entry])
     assert cat.schema_version == 1
     dumped = cat.model_dump(mode="json")

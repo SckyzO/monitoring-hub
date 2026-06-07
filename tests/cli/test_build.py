@@ -19,9 +19,7 @@ def test_build_invokes_producer(catalog_root: Path, monkeypatch: pytest.MonkeyPa
     assert "el9" in res.output
 
 
-def test_build_applies_set_override(
-    catalog_root: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
+def test_build_applies_set_override(catalog_root: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     captured: dict[str, str] = {}
 
     class Capturing(FakeProducer):

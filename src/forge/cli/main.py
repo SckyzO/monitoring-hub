@@ -79,9 +79,7 @@ def _validate_path(path: Path) -> str | None:
 @_catalog_root_option
 @click.option("--all", "validate_all", is_flag=True, help="Validate every catalogue item.")
 @click.option("--json", "as_json", is_flag=True, help="Emit machine-readable JSON.")
-def validate(
-    ref: str | None, catalog_root: str | None, validate_all: bool, as_json: bool
-) -> None:
+def validate(ref: str | None, catalog_root: str | None, validate_all: bool, as_json: bool) -> None:
     """Validate one item (REF) or the whole catalogue (--all).
 
     Aggregates every failure rather than stopping at the first (spec §14) and
@@ -103,9 +101,7 @@ def validate(
 
     if as_json:
         click.echo(
-            jsonlib.dumps(
-                [{"item": n, "ok": e is None, "error": e} for n, e in results], indent=2
-            )
+            jsonlib.dumps([{"item": n, "ok": e is None, "error": e} for n, e in results], indent=2)
         )
     else:
         for name, err in failures:
@@ -155,7 +151,7 @@ def _build_context(work_dir: Path, sign_key: str | None) -> BuildContext:
     show_default=True,
     help="Working directory for downloads and produced artifacts.",
 )
-def build(
+def build(  # noqa: PLR0913 — Click options map one-to-one to parameters
     ref: str,
     catalog_root: str | None,
     sets: tuple[str, ...],
@@ -239,7 +235,7 @@ def catalog() -> None:
     show_default=True,
     help="Working directory for downloads and produced artifacts.",
 )
-def catalog_build(
+def catalog_build(  # noqa: PLR0913 — Click options map one-to-one to parameters
     refs: tuple[str, ...],
     catalog_root: str | None,
     build_all: bool,
