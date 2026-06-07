@@ -81,7 +81,11 @@ class ExporterProducer:
                 work = self._workdir(ctx, "docker", arch)
                 artifacts.append(
                     docker_builder.build_image(
-                        manifest, arch=arch, binary_src=binary, work_dir=work
+                        manifest,
+                        arch=arch,
+                        binary_src=binary,
+                        work_dir=work,
+                        manifest_dir=ctx.manifest_dir,
                     )
                 )
 

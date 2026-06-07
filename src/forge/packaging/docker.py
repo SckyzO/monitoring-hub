@@ -18,6 +18,17 @@ from forge.domain.manifest import ExporterManifest
 from forge.domain.version import clean_version
 from forge.packaging.checksum import file_sha256
 from forge.packaging.runner import CommandRunner
+from forge.packaging.template import render_template
+
+
+def _template_context(manifest: ExporterManifest) -> dict[str, object]:
+    """Build the Jinja2 context for a custom Dockerfile.
+
+    Hoists ``spec`` fields (``upstream``/``build``/``artifacts``) to the top level
+    so templates read ``{{ name }}``, ``{{ build.binary_name }}`` and
+    ``{{ artifacts.docker.base_image }}`` — the legacy template namespace.
+    """
+    return {**manifest.model_dump(), **manifest.spec.model_dump()}
 
 
 def render_dockerfile(manifest: ExporterManifest) -> str:
@@ -39,14 +50,28 @@ class DockerBuilder:
         self._runner = runner
 
     def build_image(
-        self, manifest: ExporterManifest, *, arch: str, binary_src: Path, work_dir: Path
+        self,
+        manifest: ExporterManifest,
+        *,
+        arch: str,
+        binary_src: Path,
+        work_dir: Path,
+        manifest_dir: Path | None = None,
     ) -> Artifact:
         docker = manifest.spec.artifacts.docker
         if docker is None or not docker.enabled:
             raise BuildError(f"manifest {manifest.name!r} has no enabled docker target")
 
         dockerfile = work_dir / "Dockerfile"
-        dockerfile.write_text(render_dockerfile(manifest), encoding="utf-8")
+        if docker.dockerfile is not None:
+            if manifest_dir is None:
+                raise BuildError(
+                    f"{manifest.name!r}: docker.dockerfile is set but no manifest_dir to resolve it"
+                )
+            content = render_template(manifest_dir / docker.dockerfile, _template_context(manifest))
+        else:
+            content = render_dockerfile(manifest)
+        dockerfile.write_text(content, encoding="utf-8")
         staged = work_dir / manifest.spec.build.binary_name
         if binary_src.resolve() != staged.resolve():
             shutil.copy2(binary_src, staged)
