@@ -9,6 +9,7 @@ extracted once, then repacked into every RPM/DEB target and a Docker image.
 from __future__ import annotations
 
 from pathlib import Path
+from typing import cast
 
 from forge.domain.artifact import Artifact
 from forge.domain.catalog import CatalogEntry
@@ -37,17 +38,13 @@ class ExporterProducer:
             raise BuildError(f"{manifest.name}: no enabled artifact target to build")
         build = manifest.spec.build
         if build.extra_binaries:
-            raise BuildError(
-                f"{manifest.name}: build.extra_binaries is not supported yet (SP1.4b)"
-            )
+            raise BuildError(f"{manifest.name}: build.extra_binaries is not supported yet (SP1.4b)")
         if build.extra_sources:
-            raise BuildError(
-                f"{manifest.name}: build.extra_sources is not supported yet (SP1.4b)"
-            )
+            raise BuildError(f"{manifest.name}: build.extra_sources is not supported yet (SP1.4b)")
 
     def build(self, manifest: Manifest, ctx: BuildContext) -> BuildResult:
         self.validate(manifest)
-        assert isinstance(manifest, ExporterManifest)  # narrowed by validate
+        manifest = cast("ExporterManifest", manifest)  # validate guarantees the kind
         artifacts_spec = manifest.spec.artifacts
         nfpm = NfpmPackager(ctx.runner)
         docker_builder = DockerBuilder(ctx.runner)
