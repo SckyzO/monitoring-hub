@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json as jsonlib
+import shutil
 import sys
 from pathlib import Path
 
@@ -174,6 +175,35 @@ def build(
             f"{art.sha256[:12]}\tsigned={art.signed}"
         )
     click.echo(f"built {len(result.artifacts)} artifact(s) for {manifest.name}")
+
+
+@cli.command()
+@click.argument("item")
+@_catalog_root_option
+@click.option(
+    "--dest",
+    "dest",
+    type=click.Path(file_okay=False, path_type=Path),
+    default=Path("."),
+    show_default=True,
+    help="Directory to copy the manifest into (as <dest>/<item>/manifest.yaml).",
+)
+def pull(item: str, catalog_root: str | None, dest: Path) -> None:
+    """Copy a catalogue manifest locally for customization.
+
+    Fetching from a remote published catalogue is deferred to SP2; for now this
+    copies from the in-repo catalogue root.
+    """
+    root = resolve_catalog_root(catalog_root)
+    try:
+        source = resolve_manifest_path(item, catalog_root=root)
+    except ForgeError as exc:
+        raise click.ClickException(str(exc)) from exc
+    target_dir = dest / source.parent.name
+    target_dir.mkdir(parents=True, exist_ok=True)
+    target = target_dir / source.name
+    shutil.copy2(source, target)
+    click.echo(f"pulled {item} to {target}")
 
 
 @cli.group()
