@@ -1,0 +1,14 @@
+kind: dashboard
+name: node-overview
+description: Node Exporter Full — host metrics overview (CPU, memory, disk, network)
+category: System
+version: "39"
+spec:
+  source:
+    type: grafana
+    id: 1860
+    revision: 39
+  datasource: prometheus
+  tags:
+    - node-exporter
+    - system
