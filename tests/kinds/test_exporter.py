@@ -63,13 +63,13 @@ def test_validate_rejects_no_enabled_target() -> None:
         ExporterProducer().validate(_manifest(rpm=RpmTarget(enabled=False)))
 
 
-def test_validate_rejects_extra_binaries() -> None:
+def test_validate_accepts_extra_binaries() -> None:
+    # SP1.4b features are schema-valid; they are rejected at build, not validate.
     build = Build(method="binary_repack", binary_name="x_exp", extra_binaries=["amtool"])
-    with pytest.raises(BuildError, match="extra_binaries"):
-        ExporterProducer().validate(_manifest(rpm=RpmTarget(enabled=True), build=build))
+    ExporterProducer().validate(_manifest(rpm=RpmTarget(enabled=True), build=build))
 
 
-def test_validate_rejects_extra_sources() -> None:
+def test_validate_accepts_extra_sources() -> None:
     build = Build(
         method="binary_repack",
         binary_name="x_exp",
@@ -77,8 +77,27 @@ def test_validate_rejects_extra_sources() -> None:
             ExtraSource(url="https://example.test/extra.tar.gz", filename="extra.tar.gz")
         ],
     )
+    ExporterProducer().validate(_manifest(rpm=RpmTarget(enabled=True), build=build))
+
+
+def test_build_rejects_extra_binaries(tmp_path: Path) -> None:
+    build = Build(method="binary_repack", binary_name="x_exp", extra_binaries=["amtool"])
+    ctx = BuildContext(work_dir=tmp_path, downloader=FakeDownloader(), runner=FakeRunner())
+    with pytest.raises(BuildError, match="extra_binaries"):
+        ExporterProducer().build(_manifest(rpm=RpmTarget(enabled=True), build=build), ctx)
+
+
+def test_build_rejects_extra_sources(tmp_path: Path) -> None:
+    build = Build(
+        method="binary_repack",
+        binary_name="x_exp",
+        extra_sources=[
+            ExtraSource(url="https://example.test/extra.tar.gz", filename="extra.tar.gz")
+        ],
+    )
+    ctx = BuildContext(work_dir=tmp_path, downloader=FakeDownloader(), runner=FakeRunner())
     with pytest.raises(BuildError, match="extra_sources"):
-        ExporterProducer().validate(_manifest(rpm=RpmTarget(enabled=True), build=build))
+        ExporterProducer().build(_manifest(rpm=RpmTarget(enabled=True), build=build), ctx)
 
 
 def test_validate_rejects_non_exporter_manifest() -> None:

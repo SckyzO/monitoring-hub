@@ -30,12 +30,23 @@ class ExporterProducer:
     kind = "exporter"
 
     def validate(self, manifest: Manifest) -> None:
+        """Check the manifest is well-formed for this kind (spec §11).
+
+        Validates manifest semantics only — not engine build capability. Features
+        the builder cannot yet produce (``extra_binaries``/``extra_sources``,
+        SP1.4b) are rejected at build time, not here, so a schema-valid manifest
+        stays valid in the catalogue.
+        """
         if not isinstance(manifest, ExporterManifest):
             raise BuildError(f"exporter producer got a {manifest.kind!r} manifest")
         artifacts = manifest.spec.artifacts
         targets = [artifacts.rpm, artifacts.deb, artifacts.docker]
         if not any(t is not None and t.enabled for t in targets):
             raise BuildError(f"{manifest.name}: no enabled artifact target to build")
+
+    @staticmethod
+    def _reject_unsupported(manifest: ExporterManifest) -> None:
+        """Reject manifest features the builder cannot yet produce (SP1.4b)."""
         build = manifest.spec.build
         if build.extra_binaries:
             raise BuildError(f"{manifest.name}: build.extra_binaries is not supported yet (SP1.4b)")
@@ -45,6 +56,7 @@ class ExporterProducer:
     def build(self, manifest: Manifest, ctx: BuildContext) -> BuildResult:
         self.validate(manifest)
         manifest = cast("ExporterManifest", manifest)  # validate guarantees the kind
+        self._reject_unsupported(manifest)
         artifacts_spec = manifest.spec.artifacts
         nfpm = NfpmPackager(ctx.runner)
         docker_builder = DockerBuilder(ctx.runner)
