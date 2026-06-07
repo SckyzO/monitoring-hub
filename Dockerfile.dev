@@ -18,6 +18,19 @@ RUN apt-get update \
     && groupadd --gid "${USER_GID}" dev \
     && useradd --uid "${USER_UID}" --gid "${USER_GID}" --create-home --shell /bin/bash dev
 
+# SP2 distribution tooling, all from Debian packages:
+#   createrepo-c   -> yum/RPM repo metadata (repodata/, repomd.xml)
+#   apt-utils      -> apt-ftparchive, the stateless flat APT repo generator
+#   buildah        -> daemonless, rootless OCI image build (no docker socket)
+#   skopeo         -> copy/push OCI images + multi-arch manifests
+#   gnupg          -> sign repo metadata (repomd.xml.asc, InRelease, Release.gpg)
+#   qemu-user-static + binfmt-support -> cross-arch (arm64) emulation for buildah
+# hadolint ignore=DL3008
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+    createrepo-c apt-utils buildah skopeo gnupg qemu-user-static binfmt-support \
+    && rm -rf /var/lib/apt/lists/*
+
 # uv: the package manager.
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
