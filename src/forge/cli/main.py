@@ -20,12 +20,14 @@ from forge.kinds.base import BuildContext
 from forge.kinds.registry import discover, get_producer
 from forge.packaging.runner import SubprocessRunner
 from forge.publish.oci import OciPublisher
+from forge.publish.releases import GitHubReleasesPublisher
 from forge.repo.builder import build_distribution
 from forge.sources.resolver import load_yaml_mapping, resolve_manifest, resolve_manifest_path
 
 _DEFAULT_PACKAGE_BASE_URL = "https://github.com/SckyzO/monitoring-hub/releases/download"
 _DEFAULT_PAGES_BASE_URL = "https://sckyzo.github.io/monitoring-hub"
 _DEFAULT_OCI_REGISTRY = "ghcr.io/sckyzo/monitoring-hub"
+_DEFAULT_RELEASES_REPO = "SckyzO/monitoring-hub"
 
 _catalog_root_option = click.option(
     "--catalog-root",
@@ -399,18 +401,42 @@ def repo_build(  # noqa: PLR0913 — Click options map one-to-one to parameters
     show_default=True,
     help="catalog.json supplying each image's version.",
 )
-def publish(oci: bool, registry: str, contexts_dir: Path, catalog_path: Path) -> None:
-    """Publish built artifacts to remote hosts (OCI now; releases in SP2.5)."""
-    if not oci:
-        raise click.UsageError("nothing to publish: pass --oci")
-    catalog = load_catalog(catalog_path)
-    if catalog is None:
-        raise click.ClickException(f"catalog not found: {catalog_path}")
-    versions = {item.name: item.version for item in catalog.items}
-    OciPublisher(registry=registry, versions=versions, runner=SubprocessRunner()).publish(
-        contexts_dir
-    )
-    click.echo(f"published {len(versions)} image(s) to {registry}")
+@click.option(
+    "--releases",
+    "releases_dir",
+    type=click.Path(file_okay=False, path_type=Path),
+    default=None,
+    help="Staging tree of rpm-*/apt-* tag dirs to upload to GitHub Releases.",
+)
+@click.option(
+    "--repo",
+    "repo",
+    default=_DEFAULT_RELEASES_REPO,
+    show_default=True,
+    help="owner/name of the GitHub repo whose Releases receive the assets.",
+)
+def publish(  # noqa: PLR0913 — Click options map one-to-one to parameters
+    oci: bool,
+    registry: str,
+    contexts_dir: Path,
+    catalog_path: Path,
+    releases_dir: Path | None,
+    repo: str,
+) -> None:
+    """Publish built artifacts to remote hosts (OCI → GHCR, releases → GitHub)."""
+    if not oci and releases_dir is None:
+        raise click.UsageError("nothing to publish: pass --oci and/or --releases")
+    runner = SubprocessRunner()
+    if oci:
+        catalog = load_catalog(catalog_path)
+        if catalog is None:
+            raise click.ClickException(f"catalog not found: {catalog_path}")
+        versions = {item.name: item.version for item in catalog.items}
+        OciPublisher(registry=registry, versions=versions, runner=runner).publish(contexts_dir)
+        click.echo(f"published {len(versions)} image(s) to {registry}")
+    if releases_dir is not None:
+        GitHubReleasesPublisher(repo=repo, runner=runner).publish(releases_dir)
+        click.echo(f"published release assets from {releases_dir} to {repo}")
 
 
 if __name__ == "__main__":
