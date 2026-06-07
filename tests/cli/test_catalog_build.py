@@ -91,3 +91,8 @@ def test_catalog_build_single_ref(
     )
     assert res.exit_code == 0
     assert json.loads(out.read_text())["items"][0]["name"] == "node_exporter"
+
+
+def test_catalog_build_requires_refs_or_all(catalog_root: Path) -> None:
+    res = CliRunner().invoke(cli, ["catalog", "build", "--catalog-root", str(catalog_root)])
+    assert res.exit_code != 0

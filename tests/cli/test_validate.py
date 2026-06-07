@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 
 from click.testing import CliRunner
@@ -44,3 +45,13 @@ def test_validate_aggregates_not_fail_fast(catalog_root: Path) -> None:
 def test_validate_requires_ref_or_all(catalog_root: Path) -> None:
     res = CliRunner().invoke(cli, ["validate", "--catalog-root", str(catalog_root)])
     assert res.exit_code != 0
+
+
+def test_validate_json_output(catalog_root: Path) -> None:
+    res = CliRunner().invoke(
+        cli, ["validate", "--all", "--json", "--catalog-root", str(catalog_root)]
+    )
+    assert res.exit_code == 0
+    payload = json.loads(res.output)
+    assert payload[0]["item"] == "node_exporter"
+    assert payload[0]["ok"] is True

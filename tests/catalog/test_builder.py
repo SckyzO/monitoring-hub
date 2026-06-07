@@ -4,8 +4,11 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import pytest
+
 from forge.catalog.builder import build_catalog, load_catalog, write_catalog
 from forge.domain.catalog import Catalog, CatalogEntry
+from forge.domain.errors import ForgeError
 
 
 def _entry(name: str, version: str) -> CatalogEntry:
@@ -43,6 +46,13 @@ def test_build_catalog_generated_at_defaults_to_utc() -> None:
 
 def test_load_catalog_missing_returns_none(tmp_path: Path) -> None:
     assert load_catalog(tmp_path / "nope.json") is None
+
+
+def test_load_catalog_corrupt_raises(tmp_path: Path) -> None:
+    bad = tmp_path / "catalog.json"
+    bad.write_text("{ not json", encoding="utf-8")
+    with pytest.raises(ForgeError, match="cannot read catalog"):
+        load_catalog(bad)
 
 
 def test_write_then_load_round_trips(tmp_path: Path) -> None:
