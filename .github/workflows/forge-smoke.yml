@@ -1,0 +1,40 @@
+name: forge-smoke
+
+# L3 install smoke-test (spec §15): build real RPM/DEB, install on the target
+# distro container, run the binary. Needs docker + nfpm + network, so it runs on
+# the runner (NOT in the dev image / make ci). Gated tests skip without the env.
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "pyproject.toml"
+      - "uv.lock"
+      - "src/forge/**"
+      - "tests/integration/**"
+      - ".github/workflows/forge-smoke.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: astral-sh/setup-uv@v6
+      - name: Install nfpm (matches the dev image pin)
+        run: |
+          version=2.46.3
+          curl -fsSL \
+            "https://github.com/goreleaser/nfpm/releases/download/v${version}/nfpm_${version}_Linux_x86_64.tar.gz" \
+            -o /tmp/nfpm.tgz
+          sudo tar -xzf /tmp/nfpm.tgz -C /usr/local/bin nfpm
+          nfpm --version
+      - name: Sync dependencies
+        run: uv sync
+      - name: L3 install smoke-test
+        env:
+          FORGE_NETWORK_TESTS: "1"
+          FORGE_DOCKER_TESTS: "1"
+        run: uv run pytest tests/integration -v
