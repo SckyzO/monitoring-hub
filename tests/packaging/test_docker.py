@@ -1,4 +1,4 @@
-"""Docker image adapter: pure Dockerfile rendering + DockerBuilder."""
+"""Docker image adapter: pure Dockerfile rendering + daemonless context emit."""
 
 from __future__ import annotations
 
@@ -7,48 +7,17 @@ from typing import Any, cast
 
 import pytest
 
-from forge.domain.artifact import Artifact
 from forge.domain.errors import BuildError
 from forge.domain.manifest import ExporterManifest
-from forge.packaging.docker import DockerBuilder, render_dockerfile
-from forge.packaging.runner import CommandResult
-from tests.packaging.conftest import FakeRunner
+from forge.packaging.docker import emit_docker_context, render_dockerfile
 
 
-def test_render_dockerfile_uses_base_and_entrypoint(manifest: ExporterManifest) -> None:
+def test_render_dockerfile_targetarch(manifest: ExporterManifest) -> None:
     df = render_dockerfile(manifest)
     assert "FROM registry.access.redhat.com/ubi9/ubi-minimal" in df
-    assert "COPY node_exporter /usr/bin/node_exporter" in df
+    assert "ARG TARGETARCH" in df
+    assert "COPY node_exporter-${TARGETARCH} /usr/bin/node_exporter" in df
     assert 'ENTRYPOINT ["/usr/bin/node_exporter"]' in df
-
-
-def test_build_image_invokes_docker_build(manifest: ExporterManifest, tmp_path: Path) -> None:
-    binary = tmp_path / "node_exporter"
-    binary.write_bytes(b"bin")
-    runner = FakeRunner()
-    artifact = DockerBuilder(runner).build_image(
-        manifest, arch="amd64", binary_src=binary, work_dir=tmp_path
-    )
-    assert isinstance(artifact, Artifact)
-    assert artifact.type == "docker-image"
-    assert artifact.arch == "amd64"
-    assert (tmp_path / "Dockerfile").is_file()
-    call = cast("list[str]", runner.calls[0]["args"])
-    assert call[0] == "docker" and "build" in call
-    assert "-t" in call
-    assert any("node_exporter:1.9.1" in part for part in call)
-
-
-def test_build_image_raises_on_failure(manifest: ExporterManifest, tmp_path: Path) -> None:
-    binary = tmp_path / "node_exporter"
-    binary.write_bytes(b"bin")
-    runner = FakeRunner(
-        [CommandResult(args=["docker"], returncode=1, stdout="", stderr="no daemon")]
-    )
-    with pytest.raises(BuildError, match="no daemon"):
-        DockerBuilder(runner).build_image(
-            manifest, arch="amd64", binary_src=binary, work_dir=tmp_path
-        )
 
 
 def test_render_dockerfile_includes_cmd(manifest: ExporterManifest) -> None:
@@ -58,63 +27,63 @@ def test_render_dockerfile_includes_cmd(manifest: ExporterManifest) -> None:
     assert 'CMD ["--log.level=debug"]' in df
 
 
-def test_build_image_stages_binary_from_other_dir(
+def _make_binary(path: Path) -> Path:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_bytes(b"bin")
+    return path
+
+
+def test_emit_docker_context_stages_per_arch_binaries(
     manifest: ExporterManifest, tmp_path: Path
 ) -> None:
-    src_dir = tmp_path / "src"
-    src_dir.mkdir()
-    binary = src_dir / "node_exporter"
-    binary.write_bytes(b"bin")
-    work = tmp_path / "work"
-    work.mkdir()
-    DockerBuilder(FakeRunner()).build_image(
-        manifest, arch="amd64", binary_src=binary, work_dir=work
-    )
-    # binary_src lives outside work_dir, so it must be copied next to the Dockerfile.
-    assert (work / "node_exporter").is_file()
+    amd = _make_binary(tmp_path / "amd64" / "node_exporter")
+    arm = _make_binary(tmp_path / "arm64" / "node_exporter")
+    out = tmp_path / "ctx"
+    art = emit_docker_context(manifest, binaries={"amd64": amd, "arm64": arm}, out_dir=out)
+
+    assert art.type == "docker-image"
+    assert art.target == "node_exporter:1.9.1"
+    assert art.arch is None
+    assert art.url is None
+    assert not art.signed
+    assert (out / "Dockerfile").is_file()
+    assert (out / "node_exporter-amd64").is_file()
+    assert (out / "node_exporter-arm64").is_file()
 
 
-def test_build_image_uses_custom_dockerfile(manifest: ExporterManifest, tmp_path: Path) -> None:
+def test_emit_docker_context_uses_custom_dockerfile(
+    manifest: ExporterManifest, tmp_path: Path
+) -> None:
     manifest_dir = tmp_path / "exp"
     (manifest_dir / "templates").mkdir(parents=True)
     (manifest_dir / "templates" / "Dockerfile.j2").write_text(
         "FROM {{ artifacts.docker.base_image }}\nRUN echo {{ name }}\n", encoding="utf-8"
     )
     cast(Any, manifest.spec.artifacts.docker).dockerfile = "templates/Dockerfile.j2"
-    work = tmp_path / "work"
-    work.mkdir()
-    binary = work / "node_exporter"
-    binary.write_bytes(b"bin")
+    out = tmp_path / "ctx"
+    binary = _make_binary(tmp_path / "amd64" / "node_exporter")
 
-    DockerBuilder(FakeRunner()).build_image(
-        manifest, arch="amd64", binary_src=binary, work_dir=work, manifest_dir=manifest_dir
+    emit_docker_context(
+        manifest, binaries={"amd64": binary}, out_dir=out, manifest_dir=manifest_dir
     )
 
-    rendered = (work / "Dockerfile").read_text(encoding="utf-8")
+    rendered = (out / "Dockerfile").read_text(encoding="utf-8")
     assert "RUN echo node_exporter" in rendered
     assert "FROM registry.access.redhat.com/ubi9/ubi-minimal" in rendered
 
 
-def test_build_image_custom_dockerfile_without_manifest_dir_raises(
+def test_emit_docker_context_custom_without_manifest_dir_raises(
     manifest: ExporterManifest, tmp_path: Path
 ) -> None:
     cast(Any, manifest.spec.artifacts.docker).dockerfile = "templates/Dockerfile.j2"
-    binary = tmp_path / "node_exporter"
-    binary.write_bytes(b"bin")
+    binary = _make_binary(tmp_path / "amd64" / "node_exporter")
     with pytest.raises(BuildError, match="manifest_dir"):
-        DockerBuilder(FakeRunner()).build_image(
-            manifest, arch="amd64", binary_src=binary, work_dir=tmp_path
-        )
+        emit_docker_context(manifest, binaries={"amd64": binary}, out_dir=tmp_path / "ctx")
 
 
-def test_build_image_skipped_when_docker_target_disabled(
+def test_emit_docker_context_raises_when_disabled(
     manifest: ExporterManifest, tmp_path: Path
 ) -> None:
-    docker_target = cast(Any, manifest.spec.artifacts.docker)
-    docker_target.enabled = False
-    binary = tmp_path / "node_exporter"
-    binary.write_bytes(b"bin")
+    cast(Any, manifest.spec.artifacts.docker).enabled = False
     with pytest.raises(BuildError, match="docker target"):
-        DockerBuilder(FakeRunner()).build_image(
-            manifest, arch="amd64", binary_src=binary, work_dir=tmp_path
-        )
+        emit_docker_context(manifest, binaries={}, out_dir=tmp_path / "ctx")

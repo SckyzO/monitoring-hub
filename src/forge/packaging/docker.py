@@ -1,15 +1,17 @@
-"""Docker image adapter (spec §7.1).
+"""Docker image adapter (spec §5.8).
 
-``render_dockerfile`` is pure (golden-tested); ``DockerBuilder`` stages the
-binary + Dockerfile and shells ``docker build`` via the injected runner. The
-sha256 in the artifact is the local image digest stand-in (the staged
-Dockerfile) until SP2 wires registry digests.
+``render_dockerfile`` is pure (golden-tested); ``emit_docker_context`` stages a
+daemonless multi-arch build context — the rendered Dockerfile plus one binary per
+arch (``<binary>-<arch>``) — for ``mh publish --oci`` (buildah/skopeo) to build
+later. No docker/buildah command runs at ``mh build`` time, so the whole path is
+testable in ``make ci``.
 """
 
 from __future__ import annotations
 
 import json
 import shutil
+from collections.abc import Mapping
 from pathlib import Path
 
 from forge.domain.artifact import Artifact
@@ -17,7 +19,6 @@ from forge.domain.errors import BuildError
 from forge.domain.manifest import ExporterManifest
 from forge.domain.version import clean_version
 from forge.packaging.checksum import file_sha256
-from forge.packaging.runner import CommandRunner
 from forge.packaging.template import render_template
 
 
@@ -37,7 +38,13 @@ def render_dockerfile(manifest: ExporterManifest) -> str:
         docker.base_image if docker is not None else "registry.access.redhat.com/ubi9/ubi-minimal"
     )
     binary = manifest.spec.build.binary_name
-    lines = [f"FROM {base}", f"COPY {binary} /usr/bin/{binary}"]
+    # ``TARGETARCH`` is buildah's automatic per-arch build arg; declaring it lets
+    # one context build every arch by copying the matching ``<binary>-<arch>``.
+    lines = [
+        f"FROM {base}",
+        "ARG TARGETARCH",
+        f"COPY {binary}-${{TARGETARCH}} /usr/bin/{binary}",
+    ]
     if docker is not None and docker.entrypoint:
         lines.append(f"ENTRYPOINT {json.dumps(docker.entrypoint)}")
     if docker is not None and docker.cmd:
@@ -45,59 +52,45 @@ def render_dockerfile(manifest: ExporterManifest) -> str:
     return "\n".join(lines) + "\n"
 
 
-class DockerBuilder:
-    def __init__(self, runner: CommandRunner) -> None:
-        self._runner = runner
+def emit_docker_context(
+    manifest: ExporterManifest,
+    *,
+    binaries: Mapping[str, Path],
+    out_dir: Path,
+    manifest_dir: Path | None = None,
+) -> Artifact:
+    """Write the multi-arch build context to ``out_dir`` and return its artifact.
 
-    def build_image(
-        self,
-        manifest: ExporterManifest,
-        *,
-        arch: str,
-        binary_src: Path,
-        work_dir: Path,
-        manifest_dir: Path | None = None,
-    ) -> Artifact:
-        docker = manifest.spec.artifacts.docker
-        if docker is None or not docker.enabled:
-            raise BuildError(f"manifest {manifest.name!r} has no enabled docker target")
+    ``binaries`` maps each arch to its extracted binary; each is staged as
+    ``<binary_name>-<arch>`` next to the Dockerfile. Returns a single
+    ``docker-image`` artifact (``arch`` is ``None`` — the image is multi-arch);
+    its ``url`` is populated at publish time.
+    """
+    docker = manifest.spec.artifacts.docker
+    if docker is None or not docker.enabled:
+        raise BuildError(f"manifest {manifest.name!r} has no enabled docker target")
 
-        dockerfile = work_dir / "Dockerfile"
-        if docker.dockerfile is not None:
-            if manifest_dir is None:
-                raise BuildError(
-                    f"{manifest.name!r}: docker.dockerfile is set but no manifest_dir to resolve it"
-                )
-            content = render_template(manifest_dir / docker.dockerfile, _template_context(manifest))
-        else:
-            content = render_dockerfile(manifest)
-        dockerfile.write_text(content, encoding="utf-8")
-        staged = work_dir / manifest.spec.build.binary_name
-        if binary_src.resolve() != staged.resolve():
-            shutil.copy2(binary_src, staged)
+    if docker.dockerfile is not None:
+        if manifest_dir is None:
+            raise BuildError(
+                f"{manifest.name!r}: docker.dockerfile is set but no manifest_dir to resolve it"
+            )
+        content = render_template(manifest_dir / docker.dockerfile, _template_context(manifest))
+    else:
+        content = render_dockerfile(manifest)
 
-        tag = f"{manifest.name}:{clean_version(manifest.version)}"
-        result = self._runner.run(
-            [
-                "docker",
-                "build",
-                "--platform",
-                f"linux/{arch}",
-                "-t",
-                tag,
-                "-f",
-                str(dockerfile),
-                str(work_dir),
-            ],
-            cwd=work_dir,
-        )
-        if result.returncode != 0:
-            raise BuildError(f"docker build failed for {manifest.name}: {result.stderr}")
+    out_dir.mkdir(parents=True, exist_ok=True)
+    dockerfile = out_dir / "Dockerfile"
+    dockerfile.write_text(content, encoding="utf-8")
 
-        return Artifact(
-            type="docker-image",
-            target=tag,
-            arch=arch,
-            sha256=file_sha256(dockerfile),
-            signed=False,
-        )
+    binary_name = manifest.spec.build.binary_name
+    for arch, src in binaries.items():
+        shutil.copy2(src, out_dir / f"{binary_name}-{arch}")
+
+    return Artifact(
+        type="docker-image",
+        target=f"{manifest.name}:{clean_version(manifest.version)}",
+        arch=None,
+        sha256=file_sha256(dockerfile),
+        signed=False,
+    )
