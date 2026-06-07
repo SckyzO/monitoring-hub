@@ -15,16 +15,22 @@ from pydantic import BaseModel, ConfigDict, Field
 from forge.domain.artifact import Artifact
 from forge.domain.catalog import CatalogEntry
 from forge.domain.manifest import Manifest
+from forge.fetch.http import Downloader
+from forge.packaging.runner import CommandRunner
 
 
 class BuildContext(BaseModel):
-    """Per-build context. Injected adapters (httpx client, nfpm/docker runners)
-    are added in SP1.2 when producers become real; for now it carries the
-    working directory."""
+    """Per-build context with the injected I/O seams (spec §15): the network
+    ``Downloader``, the subprocess ``CommandRunner`` used by the packaging
+    adapters, an optional GPG ``signing_key_id`` (signing is skipped when None),
+    and the working directory."""
 
     model_config = ConfigDict(extra="forbid", arbitrary_types_allowed=True)
 
     work_dir: Path
+    downloader: Downloader
+    runner: CommandRunner
+    signing_key_id: str | None = None
 
 
 class BuildResult(BaseModel):

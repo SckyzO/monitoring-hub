@@ -15,8 +15,8 @@ from pathlib import Path
 from forge.domain.artifact import Artifact
 from forge.domain.errors import BuildError
 from forge.domain.manifest import ExporterManifest
+from forge.domain.version import clean_version
 from forge.packaging.checksum import file_sha256
-from forge.packaging.nfpm import _clean_version
 from forge.packaging.runner import CommandRunner
 
 
@@ -51,7 +51,7 @@ class DockerBuilder:
         if binary_src.resolve() != staged.resolve():
             shutil.copy2(binary_src, staged)
 
-        tag = f"{manifest.name}:{_clean_version(manifest.version)}"
+        tag = f"{manifest.name}:{clean_version(manifest.version)}"
         result = self._runner.run(
             [
                 "docker",

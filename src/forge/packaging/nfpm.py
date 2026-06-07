@@ -17,6 +17,7 @@ import yaml
 from forge.domain.artifact import Artifact
 from forge.domain.errors import BuildError
 from forge.domain.manifest import DebTarget, ExporterManifest, RpmTarget
+from forge.domain.version import clean_version
 from forge.packaging.checksum import file_sha256
 from forge.packaging.runner import CommandRunner
 from forge.packaging.scriptlets import render_postinstall, render_preremove
@@ -24,10 +25,6 @@ from forge.packaging.systemd import render_systemd_unit
 
 _MAINTAINER = "Monitoring Hub <noreply@users.noreply.github.com>"
 _RPM = "rpm"
-
-
-def _clean_version(version: str) -> str:
-    return version[1:] if version.startswith("v") else version
 
 
 def _file_content(dst: str, *, config: bool, mode: int) -> dict[str, Any]:
@@ -72,7 +69,7 @@ def build_nfpm_config(  # noqa: PLR0913 â€” locked keyword-only contract (spec Â
         "name": name,
         "arch": arch,
         "platform": "linux",
-        "version": _clean_version(manifest.version),
+        "version": clean_version(manifest.version),
         "release": release,
         "maintainer": _MAINTAINER,
         "description": manifest.description,
