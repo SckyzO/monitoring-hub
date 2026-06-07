@@ -35,3 +35,44 @@ def sign_repomd(repomd: Path, *, key_id: str, runner: CommandRunner) -> Path:
     if result.returncode != 0:
         raise SigningError(f"signing {repomd.name} failed: {result.stderr}")
     return signature
+
+
+def sign_apt_release(release: Path, *, key_id: str, runner: CommandRunner) -> tuple[Path, Path]:
+    """Sign a flat ``Release`` → ``(InRelease, Release.gpg)`` (both returned)."""
+    inrelease = release.with_name("InRelease")
+    release_gpg = release.with_name("Release.gpg")
+
+    clearsign = runner.run(
+        [
+            "gpg",
+            "--batch",
+            "--yes",
+            "--clearsign",
+            "-u",
+            key_id,
+            "--output",
+            str(inrelease),
+            str(release),
+        ]
+    )
+    if clearsign.returncode != 0:
+        raise SigningError(f"clearsigning {release.name} failed: {clearsign.stderr}")
+
+    detached = runner.run(
+        [
+            "gpg",
+            "--batch",
+            "--yes",
+            "--detach-sign",
+            "--armor",
+            "-u",
+            key_id,
+            "--output",
+            str(release_gpg),
+            str(release),
+        ]
+    )
+    if detached.returncode != 0:
+        raise SigningError(f"detach-signing {release.name} failed: {detached.stderr}")
+
+    return inrelease, release_gpg
