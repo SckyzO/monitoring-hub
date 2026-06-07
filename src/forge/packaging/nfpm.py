@@ -43,12 +43,15 @@ def build_nfpm_config(  # noqa: PLR0913 â€” locked keyword-only contract (spec Â
     binary_dst: str,
     contents_extra: list[dict[str, Any]],
     scripts: dict[str, str],
+    extra_binary_dsts: list[str] | None = None,
 ) -> dict[str, Any]:
     """Map a manifest + target/arch into an nfpm config mapping.
 
     The caller (``NfpmPackager``) supplies ``binary_dst`` (resolved install
-    path), ``contents_extra`` (e.g. the rendered systemd unit) and ``scripts``
-    (paths to rendered scriptlets); this function does no I/O.
+    path), ``contents_extra`` (e.g. the rendered systemd unit), ``scripts``
+    (paths to rendered scriptlets) and ``extra_binary_dsts`` (install paths for
+    ``build.extra_binaries`` shipped in the same archive); this function does no
+    I/O. The packager fills the ``src`` of the binary entries afterwards.
     """
     spec = manifest.spec.artifacts
     art: RpmTarget | DebTarget
@@ -80,6 +83,10 @@ def build_nfpm_config(  # noqa: PLR0913 â€” locked keyword-only contract (spec Â
     }
     if manifest.license is not None:
         config["license"] = manifest.license
+
+    for dst in extra_binary_dsts or []:
+        # src is filled by the packager (it holds the staged paths); pure here.
+        config["contents"].append(_file_content(dst, config=False, mode=0o755))
 
     for extra_file in art.extra_files:
         entry = _file_content(
@@ -114,6 +121,7 @@ class NfpmPackager:
         arch: str,
         binary_src: Path,
         work_dir: Path,
+        extra_binaries: dict[str, Path] | None = None,
     ) -> Artifact:
         art = manifest.spec.artifacts.rpm if packager == _RPM else manifest.spec.artifacts.deb
         if art is None:
@@ -121,6 +129,12 @@ class NfpmPackager:
 
         install_path = getattr(art, "install_path", None) or "/usr/bin"
         binary_dst = f"{install_path.rstrip('/')}/{manifest.spec.build.binary_name}"
+        # build.extra_binaries (e.g. amtool, promtool) ship in the same archive;
+        # install them next to the main binary, keyed by dst for src fill-in.
+        extra_src_by_dst = {
+            f"{install_path.rstrip('/')}/{name}": src
+            for name, src in (extra_binaries or {}).items()
+        }
 
         contents_extra: list[dict[str, Any]] = []
         scripts: dict[str, str] = {}
@@ -168,9 +182,14 @@ class NfpmPackager:
             binary_dst=binary_dst,
             contents_extra=contents_extra,
             scripts=scripts,
+            extra_binary_dsts=list(extra_src_by_dst),
         )
         # nfpm reads the binary from the config "src"; point it at the staged file.
         config["contents"][0]["src"] = str(binary_src)
+        for entry in config["contents"]:
+            src = extra_src_by_dst.get(entry.get("dst", ""))
+            if src is not None and "src" not in entry:
+                entry["src"] = str(src)
 
         config_path = work_dir / "nfpm.yaml"
         config_path.write_text(yaml.safe_dump(config, sort_keys=False), encoding="utf-8")

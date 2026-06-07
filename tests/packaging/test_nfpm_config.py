@@ -98,6 +98,23 @@ def test_contents_extra_and_scripts_are_threaded(manifest: ExporterManifest) -> 
     assert cfg["scripts"]["preremove"] == "/w/preremove.sh"
 
 
+def test_extra_binary_dsts_become_executable_contents(manifest: ExporterManifest) -> None:
+    cfg = build_nfpm_config(
+        manifest,
+        packager="rpm",
+        target="el9",
+        arch="amd64",
+        binary_dst="/usr/bin/alertmanager",
+        contents_extra=[],
+        scripts={},
+        extra_binary_dsts=["/usr/bin/amtool"],
+    )
+    amtool = next(c for c in cfg["contents"] if c["dst"] == "/usr/bin/amtool")
+    assert amtool["file_info"]["mode"] == 0o755
+    # the main binary stays first
+    assert cfg["contents"][0]["dst"] == "/usr/bin/alertmanager"
+
+
 def test_maintainer_and_homepage_present(manifest: ExporterManifest) -> None:
     cfg = _cfg(manifest, "deb", "debian-12", "amd64")
     assert cfg["maintainer"]
