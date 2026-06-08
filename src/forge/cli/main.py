@@ -5,12 +5,15 @@ from __future__ import annotations
 import json as jsonlib
 import shutil
 import sys
+import tempfile
 from pathlib import Path
 
 import click
 
 from forge import __version__
-from forge.bundle.resolver import load_recipe
+from forge.bundle.builder import build_bundle
+from forge.bundle.resolver import load_recipe, recipe_from_selection
+from forge.bundle.source import ArtifactSource, LocalDirSource, ReleasesFetcher
 from forge.catalog.builder import build_catalog, load_catalog, write_catalog
 from forge.cli._context import iter_manifest_paths, resolve_catalog_root
 from forge.domain.catalog import CatalogEntry
@@ -440,21 +443,128 @@ def publish(  # noqa: PLR0913 — Click options map one-to-one to parameters
         click.echo(f"published release assets from {releases_dir} to {repo}")
 
 
+def _split_csv(value: str | None) -> list[str] | None:
+    return [v.strip() for v in value.split(",") if v.strip()] if value else None
+
+
 @cli.command()
 @click.option(
     "--recipe",
     "recipe_path",
-    required=True,
     type=click.Path(exists=True, dir_okay=False, path_type=Path),
+    default=None,
     help="Bundle recipe (YAML or JSON) describing the items to bundle.",
 )
-def bundle(recipe_path: Path) -> None:
-    """Build an offline bundle from a recipe (SP3.0: load + validate only)."""
+@click.option(
+    "--item",
+    "items",
+    multiple=True,
+    metavar="[KIND:]NAME[@VERSION]",
+    help="Catalogue item to bundle (repeatable); synthesises a recipe.",
+)
+@click.option(
+    "--target", "target", default=None, help="Comma-separated targets (e.g. el9,ubuntu-24.04)."
+)
+@click.option("--arch", "arch", default=None, help="Comma-separated arches (e.g. amd64,arm64).")
+@click.option(
+    "--catalog",
+    "catalog_path",
+    type=click.Path(dir_okay=False, path_type=Path),
+    default=Path("catalog.json"),
+    show_default=True,
+    help="catalog.json resolving item versions and artefacts.",
+)
+@click.option(
+    "--packages",
+    "packages_dir",
+    type=click.Path(exists=True, file_okay=False, path_type=Path),
+    default=None,
+    help="Local mh-build tree to source blobs from (default: GitHub Releases).",
+)
+@click.option(
+    "--repo",
+    "repo",
+    default=_DEFAULT_RELEASES_REPO,
+    show_default=True,
+    help="owner/name of the GitHub repo whose Releases hold the blobs.",
+)
+@click.option(
+    "--sign", "sign", is_flag=True, help="Sign repo metadata + recipe (requires --key-id)."
+)
+@click.option("--key-id", "key_id", default=None, help="GPG key id used to sign.")
+@click.option(
+    "--public-key",
+    "public_key",
+    type=click.Path(exists=True, dir_okay=False, path_type=Path),
+    default=None,
+    help="GPG public key to ship in the bundle (RPM-GPG-KEY-monitoring-hub).",
+)
+@click.option(
+    "-o",
+    "--output",
+    "output",
+    type=click.Path(dir_okay=False, path_type=Path),
+    default=Path("bundle.tar.gz"),
+    show_default=True,
+    help="Output archive path.",
+)
+def bundle(  # noqa: PLR0913 — Click options map one-to-one to parameters
+    recipe_path: Path | None,
+    items: tuple[str, ...],
+    target: str | None,
+    arch: str | None,
+    catalog_path: Path,
+    packages_dir: Path | None,
+    repo: str,
+    sign: bool,
+    key_id: str | None,
+    public_key: Path | None,
+    output: Path,
+) -> None:
+    """Build a self-contained offline bundle (.tar.gz) for air-gapped installs."""
+    if bool(recipe_path) == bool(items):
+        raise click.UsageError("exactly one of --recipe / --item must be given")
+    if sign and key_id is None:
+        raise click.UsageError("--sign requires --key-id")
+    if recipe_path is not None and (target or arch):
+        raise click.UsageError("--target/--arch only apply to --item; the recipe is authoritative")
+
+    catalog = load_catalog(catalog_path)
+    if catalog is None:
+        raise click.ClickException(f"catalog not found: {catalog_path}")
+
     try:
-        recipe = load_recipe(recipe_path)
+        if recipe_path is not None:
+            recipe = load_recipe(recipe_path)
+        else:
+            recipe = recipe_from_selection(
+                list(items), catalog, targets=_split_csv(target), arches=_split_csv(arch)
+            )
     except ForgeError as exc:
         raise click.ClickException(str(exc)) from exc
-    click.echo(f"recipe ok: {len(recipe.items)} item(s)")
+
+    runner = SubprocessRunner()
+    source: ArtifactSource = (
+        LocalDirSource(packages_dir)
+        if packages_dir is not None
+        else ReleasesFetcher(repo=repo, runner=runner, downloader=HttpxDownloader())
+    )
+
+    try:
+        with tempfile.TemporaryDirectory(prefix="mh-bundle-") as staging:
+            build_bundle(
+                recipe=recipe,
+                catalog=catalog,
+                source=source,
+                staging=Path(staging),
+                out=output,
+                key_id=key_id if sign else None,
+                public_key=public_key,
+                runner=runner,
+            )
+    except ForgeError as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(f"wrote {output} ({len(recipe.items)} item(s))")
 
 
 if __name__ == "__main__":
