@@ -38,3 +38,7 @@ class DistributionError(ForgeError):
 
 class PublishError(ForgeError):
     """Publishing artifacts to a remote (GitHub Releases, OCI registry) failed."""
+
+
+class BundleError(ForgeError):
+    """Building an offline bundle failed (recipe load, item resolution, fetch)."""

@@ -6,6 +6,7 @@ import pytest
 
 from forge.domain.errors import (
     BuildError,
+    BundleError,
     CommandError,
     DistributionError,
     ForgeError,
@@ -26,10 +27,17 @@ from forge.domain.errors import (
         CommandError,
         DistributionError,
         PublishError,
+        BundleError,
     ],
 )
 def test_all_errors_subclass_forge_error(subclass: type[ForgeError]) -> None:
     assert issubclass(subclass, ForgeError)
+
+
+def test_bundle_error_is_forge_error() -> None:
+    err = BundleError("recipe not found")
+    assert isinstance(err, ForgeError)
+    assert str(err) == "recipe not found"
 
 
 def test_forge_error_is_an_exception() -> None:
