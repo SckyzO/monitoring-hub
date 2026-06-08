@@ -94,7 +94,7 @@ def assemble_bundle(  # noqa: PLR0913 — orchestrator with explicit keyword-onl
         sign_detached(recipe_json, key_id=key_id, runner=runner)
 
     _render_readme(staging, rpm_groups=rpm_groups, deb_groups=deb_groups, signed=key_id is not None)
-    _write_sha256sums(staging)
+    write_sha256sums(staging)
     return staging
 
 
@@ -113,7 +113,7 @@ def _render_readme(
     (staging / "README.md").write_text(render_template(_README_TEMPLATE, context), encoding="utf-8")
 
 
-def _write_sha256sums(staging: Path) -> None:
+def write_sha256sums(staging: Path) -> None:
     lines: list[str] = []
     for path in sorted(p for p in staging.rglob("*") if p.is_file()):
         rel = path.relative_to(staging).as_posix()

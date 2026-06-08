@@ -7,7 +7,7 @@ from typing import cast
 
 import pytest
 
-from forge.bundle.images import LocalImageSource, RegistryImageSource
+from forge.bundle.images import LocalImageSource, RegistryImageSource, save_images
 from forge.bundle.resolver import ResolvedArtifact
 from forge.domain.artifact import Artifact
 from forge.domain.errors import BundleError
@@ -90,3 +90,26 @@ def test_local_source_missing_context_raises(tmp_path: Path) -> None:
         LocalImageSource(contexts_root=tmp_path, runner=FakeRunner()).save(
             _img(), tmp_path / "o", arches=["amd64"]
         )
+
+
+class _RecordingSource:
+    def __init__(self) -> None:
+        self.seen: list[tuple[str, list[str]]] = []
+
+    def save(self, artifact: ResolvedArtifact, dest_dir: Path, *, arches: list[str]) -> list[Path]:
+        self.seen.append((artifact.name, arches))
+        return [dest_dir / f"{artifact.name}.tar"]
+
+
+def test_save_images_only_docker_and_defaults_arches(tmp_path: Path) -> None:
+    rpm = ResolvedArtifact(
+        kind="exporter",
+        name="node_exporter",
+        version="1.9.1",
+        artifact=Artifact(type="rpm", target="el9", arch="amd64", sha256="b" * 64),
+        filename="node_exporter-1.9.1-1.el9.x86_64.rpm",
+    )
+    src = _RecordingSource()
+    written = save_images([rpm, _img()], dest_dir=tmp_path, source=src, arches=None)
+    assert src.seen == [("node_exporter", ["amd64", "arm64"])]
+    assert written == [tmp_path / "node_exporter.tar"]

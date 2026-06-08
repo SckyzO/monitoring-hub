@@ -87,3 +87,19 @@ class LocalImageSource:
         if not written:
             raise BundleError(f"no arch binaries in {context} for {arches}")
         return written
+
+
+def save_images(
+    resolved: list[ResolvedArtifact],
+    *,
+    dest_dir: Path,
+    source: ImageSource,
+    arches: list[str] | None,
+) -> list[Path]:
+    """Save every ``docker-image`` artefact in ``resolved`` via ``source``."""
+    selected = arches if arches is not None else list(_DEFAULT_ARCHES)
+    written: list[Path] = []
+    for art in resolved:
+        if art.artifact.type == "docker-image":
+            written.extend(source.save(art, dest_dir, arches=selected))
+    return written
