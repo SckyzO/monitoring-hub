@@ -9,7 +9,7 @@ import pytest
 
 from forge.domain.errors import SigningError
 from forge.packaging.runner import CommandResult
-from forge.repo.metadata_sign import sign_apt_release, sign_repomd
+from forge.repo.metadata_sign import sign_apt_release, sign_detached, sign_repomd
 from tests.packaging.conftest import FakeRunner
 
 
@@ -111,3 +111,23 @@ def test_sign_apt_release_raises_on_detach_failure(tmp_path: Path) -> None:
     )
     with pytest.raises(SigningError, match="detach boom"):
         sign_apt_release(release, key_id="ABCD1234", runner=runner)
+
+
+def test_sign_detached_generic(tmp_path: Path) -> None:
+    target = tmp_path / "recipe.json"
+    target.write_text("{}", encoding="utf-8")
+    runner = FakeRunner()
+    sig = sign_detached(target, key_id="KID", runner=runner)
+    assert sig == tmp_path / "recipe.json.asc"
+    args = cast("list[str]", runner.calls[0]["args"])
+    assert args[:6] == ["gpg", "--batch", "--yes", "--detach-sign", "--armor", "-u"]
+    assert "KID" in args
+    assert "PASS" not in " ".join(args)
+
+
+def test_sign_detached_failure_raises(tmp_path: Path) -> None:
+    target = tmp_path / "recipe.json"
+    target.write_text("{}", encoding="utf-8")
+    runner = FakeRunner([CommandResult(args=["gpg"], returncode=2, stdout="", stderr="boom")])
+    with pytest.raises(SigningError, match="signing recipe.json failed"):
+        sign_detached(target, key_id="KID", runner=runner)
