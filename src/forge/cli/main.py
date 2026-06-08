@@ -12,6 +12,7 @@ import click
 
 from forge import __version__
 from forge.bundle.builder import build_bundle
+from forge.bundle.images import ImageSource, LocalImageSource, RegistryImageSource
 from forge.bundle.resolver import load_recipe, recipe_from_selection
 from forge.bundle.source import ArtifactSource, LocalDirSource, ReleasesFetcher
 from forge.catalog.builder import build_catalog, load_catalog, write_catalog
@@ -489,6 +490,33 @@ def _split_csv(value: str | None) -> list[str] | None:
     help="owner/name of the GitHub repo whose Releases hold the blobs.",
 )
 @click.option(
+    "--images", "images", is_flag=True, help="Ship each item's OCI image (docker-archive)."
+)
+@click.option(
+    "--build-images",
+    "build_images",
+    is_flag=True,
+    help="Build images locally from contexts (buildah) instead of pulling the registry.",
+)
+@click.option(
+    "--contexts",
+    "contexts_dir",
+    type=click.Path(file_okay=False, path_type=Path),
+    default=Path("dist/docker"),
+    show_default=True,
+    help="Directory of <name>/ docker build contexts (for --build-images).",
+)
+@click.option(
+    "--image-arch", "image_arch", default=None, help="Comma-separated image arches (default: all)."
+)
+@click.option(
+    "--registry",
+    "registry",
+    default=_DEFAULT_OCI_REGISTRY,
+    show_default=True,
+    help="OCI registry namespace to pull images from (for --images).",
+)
+@click.option(
     "--sign", "sign", is_flag=True, help="Sign repo metadata + recipe (requires --key-id)."
 )
 @click.option("--key-id", "key_id", default=None, help="GPG key id used to sign.")
@@ -516,6 +544,11 @@ def bundle(  # noqa: PLR0913 — Click options map one-to-one to parameters
     catalog_path: Path,
     packages_dir: Path | None,
     repo: str,
+    images: bool,
+    build_images: bool,
+    contexts_dir: Path,
+    image_arch: str | None,
+    registry: str,
     sign: bool,
     key_id: str | None,
     public_key: Path | None,
@@ -528,6 +561,9 @@ def bundle(  # noqa: PLR0913 — Click options map one-to-one to parameters
         raise click.UsageError("--sign requires --key-id")
     if recipe_path is not None and (target or arch):
         raise click.UsageError("--target/--arch only apply to --item; the recipe is authoritative")
+    want_images = images or build_images
+    if image_arch and not want_images:
+        raise click.UsageError("--image-arch requires --images")
 
     catalog = load_catalog(catalog_path)
     if catalog is None:
@@ -549,6 +585,13 @@ def bundle(  # noqa: PLR0913 — Click options map one-to-one to parameters
         if packages_dir is not None
         else ReleasesFetcher(repo=repo, runner=runner, downloader=HttpxDownloader())
     )
+    image_source: ImageSource | None = None
+    if want_images:
+        image_source = (
+            LocalImageSource(contexts_root=contexts_dir, runner=runner)
+            if build_images
+            else RegistryImageSource(registry=registry, runner=runner)
+        )
 
     try:
         with tempfile.TemporaryDirectory(prefix="mh-bundle-") as staging:
@@ -560,6 +603,8 @@ def bundle(  # noqa: PLR0913 — Click options map one-to-one to parameters
                 out=output,
                 key_id=key_id if sign else None,
                 public_key=public_key,
+                image_source=image_source,
+                image_arches=_split_csv(image_arch),
                 runner=runner,
             )
     except ForgeError as exc:
