@@ -10,6 +10,7 @@ from pathlib import Path
 import click
 
 from forge import __version__
+from forge.bundle.resolver import load_recipe
 from forge.catalog.builder import build_catalog, load_catalog, write_catalog
 from forge.cli._context import iter_manifest_paths, resolve_catalog_root
 from forge.domain.catalog import CatalogEntry
@@ -437,6 +438,23 @@ def publish(  # noqa: PLR0913 — Click options map one-to-one to parameters
     if releases_dir is not None:
         GitHubReleasesPublisher(repo=repo, runner=runner).publish(releases_dir)
         click.echo(f"published release assets from {releases_dir} to {repo}")
+
+
+@cli.command()
+@click.option(
+    "--recipe",
+    "recipe_path",
+    required=True,
+    type=click.Path(exists=True, dir_okay=False, path_type=Path),
+    help="Bundle recipe (YAML or JSON) describing the items to bundle.",
+)
+def bundle(recipe_path: Path) -> None:
+    """Build an offline bundle from a recipe (SP3.0: load + validate only)."""
+    try:
+        recipe = load_recipe(recipe_path)
+    except ForgeError as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(f"recipe ok: {len(recipe.items)} item(s)")
 
 
 if __name__ == "__main__":
