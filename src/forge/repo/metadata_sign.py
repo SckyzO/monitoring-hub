@@ -15,9 +15,13 @@ from forge.domain.errors import SigningError
 from forge.packaging.runner import CommandRunner
 
 
-def sign_repomd(repomd: Path, *, key_id: str, runner: CommandRunner) -> Path:
-    """Detached-sign ``repomd.xml`` → ``repomd.xml.asc`` (returned)."""
-    signature = repomd.with_name(repomd.name + ".asc")
+def sign_detached(path: Path, *, key_id: str, runner: CommandRunner) -> Path:
+    """Detached-armored-sign ``path`` → ``path.asc`` (returned).
+
+    Generic over what is signed (``repomd.xml``, ``recipe.json``, …); the
+    passphrase flows through gpg-agent/env, never argv.
+    """
+    signature = path.with_name(path.name + ".asc")
     result = runner.run(
         [
             "gpg",
@@ -29,12 +33,17 @@ def sign_repomd(repomd: Path, *, key_id: str, runner: CommandRunner) -> Path:
             key_id,
             "--output",
             str(signature),
-            str(repomd),
+            str(path),
         ]
     )
     if result.returncode != 0:
-        raise SigningError(f"signing {repomd.name} failed: {result.stderr}")
+        raise SigningError(f"signing {path.name} failed: {result.stderr}")
     return signature
+
+
+def sign_repomd(repomd: Path, *, key_id: str, runner: CommandRunner) -> Path:
+    """Detached-sign ``repomd.xml`` → ``repomd.xml.asc`` (returned)."""
+    return sign_detached(repomd, key_id=key_id, runner=runner)
 
 
 def sign_apt_release(release: Path, *, key_id: str, runner: CommandRunner) -> tuple[Path, Path]:

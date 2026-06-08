@@ -1,0 +1,45 @@
+# monitoring-hub offline bundle
+
+Self-contained package repository. Copy this directory to the air-gapped host,
+then add the local repo and install — no network required.
+
+Verify integrity first: `sha256sum -c SHA256SUMS`
+{% if signed %}
+The repository metadata is GPG-signed; import the bundled key before installing.
+{% endif %}
+{% if rpm_targets %}
+## RHEL / EL (dnf)
+{% for t in rpm_targets %}
+### {{ t.target }} ({{ t.arch }})
+
+```sh
+cd "$(dirname "$0")"
+{% if signed %}sudo rpm --import RPM-GPG-KEY-monitoring-hub
+{% endif %}sudo tee /etc/yum.repos.d/mh-offline.repo >/dev/null <<EOF
+[mh-offline]
+name=mh-offline
+baseurl=file://$PWD/yum/{{ t.target }}/{{ t.arch }}
+enabled=1
+gpgcheck=0
+repo_gpgcheck={{ 1 if signed else 0 }}
+{% if signed %}gpgkey=file://$PWD/RPM-GPG-KEY-monitoring-hub
+{% endif %}EOF
+sudo dnf -y install <package>
+```
+{% endfor %}
+{% endif %}
+{% if deb_codenames %}
+## Debian / Ubuntu (apt)
+{% for c in deb_codenames %}
+### {{ c }}
+
+```sh
+cd "$(dirname "$0")"
+{% if signed %}sudo install -d /etc/apt/keyrings
+sudo cp RPM-GPG-KEY-monitoring-hub /etc/apt/keyrings/mh.asc
+{% endif %}echo "deb [{{ 'signed-by=/etc/apt/keyrings/mh.asc' if signed else 'trusted=yes' }}] file://$PWD/apt/{{ c }} ./" \
+  | sudo tee /etc/apt/sources.list.d/mh-offline.list
+sudo apt-get update && sudo apt-get install -y <package>
+```
+{% endfor %}
+{% endif %}
