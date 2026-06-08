@@ -1,0 +1,141 @@
+name: forge-release
+
+# Release pipeline (spec §8): build daemonless -> assemble signed repo ->
+# deploy Pages (metadata) || publish Releases (blobs) || publish OCI (GHCR).
+# All tooling runs in the dev image via ./dev run; secrets reach the container
+# through the env allowlist in ./dev (never argv). Actions pinned by SHA.
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - name: Build dev image
+        run: ./dev build
+      - name: Sync dependencies
+        run: make sync
+      - name: Build all artifacts (daemonless)
+        run: ./dev run uv run mh build --all --out ./dist
+      - name: Upload dist
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: dist
+          path: dist/
+          retention-days: 1
+
+  repo:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - name: Download dist
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: dist
+          path: dist/
+      - name: Build dev image
+        run: ./dev build
+      - name: Sync dependencies
+        run: make sync
+      - name: Assemble signed distribution trees
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+        run: |
+          ./dev run bash -c '
+            set -euo pipefail
+            export GNUPGHOME="$PWD/.gnupg-ci"
+            install -d -m 700 "$GNUPGHOME"
+            echo "allow-preset-passphrase" > "$GNUPGHOME/gpg-agent.conf"
+            gpg-connect-agent reloadagent /bye
+            printf "%s" "$GPG_PRIVATE_KEY" | gpg --batch --import
+            key_id=$(gpg --list-secret-keys --with-colons | awk -F: "/^sec/{print \$5; exit}")
+            grip=$(gpg --list-secret-keys --with-keygrip --with-colons \
+              | awk -F: "/^grp/{print \$10; exit}")
+            preset=$(command -v gpg-preset-passphrase \
+              || echo /usr/libexec/gpg-preset-passphrase)
+            "$preset" --preset --passphrase "$GPG_PASSPHRASE" "$grip"
+            gpg --armor --export "$key_id" > public.asc
+            uv run mh repo build \
+              --catalog dist/catalog.json --packages dist --dashboards dist/dashboards \
+              --out ./public --release-out ./release \
+              --sign --key-id "$key_id" --public-key public.asc
+          '
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: public/
+      - name: Upload release staging
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: release
+          path: release/
+          retention-days: 1
+
+  deploy-pages:
+    needs: repo
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
+      - id: deploy
+        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0
+
+  publish-releases:
+    needs: repo
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - name: Download release staging
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: release
+          path: release/
+      - name: Build dev image
+        run: ./dev build
+      - name: Publish assets to GitHub Releases
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./dev run uv run mh publish --releases ./release --repo "${{ github.repository }}"
+
+  publish-oci:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - name: Download dist
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: dist
+          path: dist/
+      - name: Set up qemu/binfmt (cross-arch buildah)
+        run: docker run --privileged --rm tonistiigi/binfmt --install arm64
+      - name: Build dev image
+        run: ./dev build
+      - name: Publish multi-arch images to GHCR
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ACTOR: ${{ github.actor }}
+        run: |
+          ./dev run bash -c '
+            set -euo pipefail
+            echo "$GITHUB_TOKEN" | buildah login -u "$ACTOR" --password-stdin ghcr.io
+            uv run mh publish --oci --contexts dist/docker --catalog dist/catalog.json
+          '
