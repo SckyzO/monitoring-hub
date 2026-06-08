@@ -35,26 +35,41 @@ def build_rpm_repo(
     *,
     packages: list[Path],
     repodata_dir: Path,
-    location_prefix: str,
+    location_prefix: str | None,
     runner: CommandRunner,
+    keep_packages: bool = False,
 ) -> Path:
     """Generate ``repodata/`` for one ``(target, arch)`` group of ``.rpm``.
 
-    The blobs are staged next to the output dir only so ``createrepo_c`` can read
-    their headers, then removed: the Pages tree keeps the metadata, never the
-    packages (those go to Releases). Returns ``repodata_dir``.
+    Split topology (Pages): blobs are staged next to the output dir only so
+    ``createrepo_c`` can read their headers, then removed; an absolute
+    ``location_prefix`` points the hrefs at the blob host (Releases). Offline
+    topology: pass ``location_prefix=""`` (the flag is omitted → relative hrefs)
+    and ``keep_packages=True`` so the ``.rpm`` stay co-located with ``repodata/``
+    for a ``file://`` repo. A package already inside the work dir is left in place
+    (never copied onto itself, never removed). Returns ``repodata_dir``.
     """
     if not packages:
         raise DistributionError("no rpm packages to index")
 
     work = repodata_dir.parent
     work.mkdir(parents=True, exist_ok=True)
-    staged = [Path(shutil.copy2(pkg, work / pkg.name)) for pkg in packages]
+    staged: list[Path] = []
+    for pkg in packages:
+        target = work / pkg.name
+        if pkg.resolve() != target.resolve():
+            shutil.copy2(pkg, target)
+            staged.append(target)
 
-    result = runner.run(["createrepo_c", "--location-prefix", location_prefix, str(work)])
+    cmd = ["createrepo_c"]
+    if location_prefix:
+        cmd += ["--location-prefix", location_prefix]
+    cmd.append(str(work))
+    result = runner.run(cmd)
     if result.returncode != 0:
         raise DistributionError(f"createrepo_c failed: {result.stderr}")
 
-    for blob in staged:
-        blob.unlink()
+    if not keep_packages:
+        for blob in staged:
+            blob.unlink()
     return repodata_dir

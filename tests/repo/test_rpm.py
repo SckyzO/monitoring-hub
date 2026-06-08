@@ -98,3 +98,45 @@ def test_build_rpm_repo_raises_on_createrepo_failure(tmp_path: Path) -> None:
             location_prefix="https://example/releases",
             runner=runner,
         )
+
+
+def test_build_rpm_repo_offline_omits_prefix_and_keeps(tmp_path: Path) -> None:
+    work = tmp_path / "yum" / "el9" / "x86_64"
+    work.mkdir(parents=True)
+    rpm = work / "node_exporter-1.9.1-1.el9.x86_64.rpm"
+    rpm.write_text("RPM", encoding="utf-8")
+    runner = FakeRunner()
+
+    build_rpm_repo(
+        packages=[rpm],
+        repodata_dir=work / "repodata",
+        location_prefix="",
+        keep_packages=True,
+        runner=runner,
+    )
+    assert cast("list[str]", runner.calls[0]["args"]) == ["createrepo_c", str(work)]
+    assert rpm.is_file()
+
+
+def test_build_rpm_repo_split_still_removes_blobs(tmp_path: Path) -> None:
+    src = tmp_path / "src"
+    src.mkdir()
+    rpm = src / "node_exporter-1.9.1-1.el9.x86_64.rpm"
+    rpm.write_text("RPM", encoding="utf-8")
+    out = tmp_path / "public" / "el9" / "x86_64"
+    runner = FakeRunner()
+
+    build_rpm_repo(
+        packages=[rpm],
+        repodata_dir=out / "repodata",
+        location_prefix="https://x/rpm-el9-x86_64/",
+        runner=runner,
+    )
+    assert cast("list[str]", runner.calls[0]["args"]) == [
+        "createrepo_c",
+        "--location-prefix",
+        "https://x/rpm-el9-x86_64/",
+        str(out),
+    ]
+    assert not (out / rpm.name).exists()
+    assert rpm.is_file()
