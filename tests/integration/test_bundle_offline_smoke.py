@@ -188,7 +188,9 @@ _RPM_INSTALL = (
     "printf '[mh]\\nname=mh\\nbaseurl=file:///b/yum/el9/x86_64\\n"
     "enabled=1\\ngpgcheck=0\\nrepo_gpgcheck={repo_gpgcheck}\\n{gpgkey}' "
     "> /etc/yum.repos.d/mh.repo; "
-    "dnf -y install node_exporter; node_exporter --version"
+    # air-gapped: only the bundle repo is reachable; dnf must not touch the
+    # distro defaults (mirrors.almalinux.org) which cannot resolve under --network none
+    "dnf -y --disablerepo='*' --enablerepo=mh install node_exporter; node_exporter --version"
 )
 
 _DEB_INSTALL = (

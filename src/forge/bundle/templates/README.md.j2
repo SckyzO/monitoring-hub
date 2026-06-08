@@ -24,7 +24,8 @@ gpgcheck=0
 repo_gpgcheck={{ 1 if signed else 0 }}
 {% if signed %}gpgkey=file://$PWD/RPM-GPG-KEY-monitoring-hub
 {% endif %}EOF
-sudo dnf -y install <package>
+# air-gapped: consult ONLY the bundle repo (the distro's default repos are offline)
+sudo dnf -y --disablerepo='*' --enablerepo=mh-offline install <package>
 ```
 {% endfor %}
 {% endif %}
