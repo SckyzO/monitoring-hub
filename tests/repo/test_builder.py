@@ -12,7 +12,8 @@ from forge.domain.artifact import Artifact
 from forge.domain.catalog import Catalog, CatalogEntry
 from forge.domain.errors import DistributionError
 from forge.packaging.runner import CommandResult
-from forge.repo.builder import artifact_hosted_url, build_distribution, codename_for
+from forge.repo.builder import artifact_hosted_url, build_distribution
+from forge.repo.naming import codename_for
 
 PB = "https://github.com/SckyzO/monitoring-hub/releases/download"
 PG = "https://sckyzo.github.io/monitoring-hub"
