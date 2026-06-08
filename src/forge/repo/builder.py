@@ -23,41 +23,10 @@ from forge.domain.errors import DistributionError
 from forge.packaging.runner import CommandRunner
 from forge.repo.deb import build_apt_repo
 from forge.repo.metadata_sign import sign_apt_release, sign_repomd
+from forge.repo.naming import codename_for, deb_filename, rpm_arch, rpm_filename
 from forge.repo.rpm import build_rpm_repo
 
 _ORIGIN = "monitoring-hub"
-# Artifact.arch is GOARCH (manifest build.archs); the rpm filename + Pages path
-# use the rpm arch. DEB filenames keep GOARCH (amd64/arm64).
-_RPM_ARCH = {"amd64": "x86_64", "arm64": "aarch64"}
-_DEB_CODENAMES = {
-    "ubuntu-22.04": "jammy",
-    "ubuntu-24.04": "noble",
-    "ubuntu-26.04": "resolute",
-    "debian-12": "bookworm",
-    "debian-13": "trixie",
-}
-
-
-def codename_for(target: str) -> str:
-    """Map a deb target (``ubuntu-24.04``) to its apt codename (``noble``)."""
-    try:
-        return _DEB_CODENAMES[target]
-    except KeyError as exc:
-        raise DistributionError(f"no apt codename for deb target {target!r}") from exc
-
-
-def _rpm_arch(arch: str | None) -> str:
-    if arch not in _RPM_ARCH:
-        raise DistributionError(f"no rpm arch mapping for {arch!r}")
-    return _RPM_ARCH[arch]
-
-
-def _rpm_filename(name: str, version: str, target: str, rpm_arch: str) -> str:
-    return f"{name}-{version}-1.{target}.{rpm_arch}.rpm"
-
-
-def _deb_filename(name: str, version: str, arch: str) -> str:
-    return f"{name.replace('_', '-')}_{version}-1_{arch}.deb"
 
 
 def artifact_hosted_url(
@@ -75,12 +44,12 @@ def artifact_hosted_url(
     at publish time (SP2.4).
     """
     if artifact.type == "rpm":
-        rpm_arch = _rpm_arch(artifact.arch)
-        fn = _rpm_filename(name, version, str(artifact.target), rpm_arch)
-        return f"{package_base_url}/rpm-{artifact.target}-{rpm_arch}/{fn}"
+        arch = rpm_arch(artifact.arch)
+        fn = rpm_filename(name, version, str(artifact.target), arch)
+        return f"{package_base_url}/rpm-{artifact.target}-{arch}/{fn}"
     if artifact.type == "deb":
         codename = codename_for(str(artifact.target))
-        fn = _deb_filename(name, version, str(artifact.arch))
+        fn = deb_filename(name, version, str(artifact.arch))
         return f"{package_base_url}/apt-{codename}/{fn}"
     if artifact.type == "grafana-dashboard":
         return f"{pages_base_url}/dashboards/{name}.json"
@@ -117,14 +86,14 @@ def _stage_artifacts(  # noqa: PLR0913 — staging helper; params mirror build_d
             pages_base_url=pages_base_url,
         )
         if art.type == "rpm":
-            rpm_arch = _rpm_arch(art.arch)
-            fn = _rpm_filename(item.name, item.version, str(art.target), rpm_arch)
-            tag_dir = release_out / f"rpm-{art.target}-{rpm_arch}"
+            arch = rpm_arch(art.arch)
+            fn = rpm_filename(item.name, item.version, str(art.target), arch)
+            tag_dir = release_out / f"rpm-{art.target}-{arch}"
             tag_dir.mkdir(parents=True, exist_ok=True)
             staged = Path(shutil.copy2(_locate(packages_dir, fn), tag_dir / fn))
-            rpm_groups.setdefault((str(art.target), rpm_arch), []).append(staged)
+            rpm_groups.setdefault((str(art.target), arch), []).append(staged)
         elif art.type == "deb":
-            fn = _deb_filename(item.name, item.version, str(art.arch))
+            fn = deb_filename(item.name, item.version, str(art.arch))
             deb_groups.setdefault(codename_for(str(art.target)), []).append(
                 _locate(packages_dir, fn)
             )
@@ -176,12 +145,12 @@ def build_distribution(  # noqa: PLR0913 — orchestrator with explicit I/O para
         for item in catalog.items
     ]
 
-    for (target, rpm_arch), pkgs in rpm_groups.items():
-        repodata_dir = public_out / target / rpm_arch / "repodata"
+    for (target, arch), pkgs in rpm_groups.items():
+        repodata_dir = public_out / target / arch / "repodata"
         build_rpm_repo(
             packages=pkgs,
             repodata_dir=repodata_dir,
-            location_prefix=f"{package_base_url}/rpm-{target}-{rpm_arch}/",
+            location_prefix=f"{package_base_url}/rpm-{target}-{arch}/",
             runner=runner,
         )
         if key_id is not None:
