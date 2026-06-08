@@ -33,10 +33,11 @@ jobs:
             -o /tmp/nfpm.tgz
           sudo tar -xzf /tmp/nfpm.tgz -C /usr/local/bin nfpm
           nfpm --version
-      - name: Install repo tooling (createrepo_c, apt-ftparchive, gpg)
+      - name: Install repo + image tooling (createrepo_c, apt-ftparchive, gpg, buildah, skopeo)
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y -qq createrepo-c apt-utils gnupg
+          sudo apt-get install -y -qq \
+            createrepo-c apt-utils gnupg buildah skopeo busybox-static
       - name: Set up qemu/binfmt (cross-arch OCI build)
         run: docker run --privileged --rm tonistiigi/binfmt --install arm64
       - name: Sync dependencies
