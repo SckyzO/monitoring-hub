@@ -7,7 +7,7 @@ from typing import cast
 
 import pytest
 
-from forge.bundle.images import RegistryImageSource
+from forge.bundle.images import LocalImageSource, RegistryImageSource
 from forge.bundle.resolver import ResolvedArtifact
 from forge.domain.artifact import Artifact
 from forge.domain.errors import BundleError
@@ -52,4 +52,41 @@ def test_registry_source_nonzero_raises(tmp_path: Path) -> None:
     with pytest.raises(BundleError, match="skopeo copy"):
         RegistryImageSource(registry="ghcr.io/x/mh", runner=runner).save(
             _img(), tmp_path, arches=["amd64"]
+        )
+
+
+def test_local_source_builds_and_pushes_present_arches(tmp_path: Path) -> None:
+    contexts = tmp_path / "ctx"
+    (contexts / "node_exporter").mkdir(parents=True)
+    (contexts / "node_exporter" / "node_exporter-amd64").write_text("bin", encoding="utf-8")
+    runner = FakeRunner()
+    out_dir = tmp_path / "images"
+
+    written = LocalImageSource(contexts_root=contexts, runner=runner).save(
+        _img(), out_dir, arches=["amd64", "arm64"]
+    )
+
+    assert written == [out_dir / "node_exporter-1.9.1-amd64.tar"]  # arm64 has no binary → skipped
+    ctx = contexts / "node_exporter"
+    assert cast("list[str]", runner.calls[0]["args"]) == [
+        "buildah",
+        "bud",
+        "--arch",
+        "amd64",
+        "-t",
+        "node_exporter:1.9.1-amd64",
+        str(ctx),
+    ]
+    assert cast("list[str]", runner.calls[1]["args"]) == [
+        "buildah",
+        "push",
+        "node_exporter:1.9.1-amd64",
+        f"docker-archive:{out_dir / 'node_exporter-1.9.1-amd64.tar'}:node_exporter:1.9.1",
+    ]
+
+
+def test_local_source_missing_context_raises(tmp_path: Path) -> None:
+    with pytest.raises(BundleError, match="context not found"):
+        LocalImageSource(contexts_root=tmp_path, runner=FakeRunner()).save(
+            _img(), tmp_path / "o", arches=["amd64"]
         )

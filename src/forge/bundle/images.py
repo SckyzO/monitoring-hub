@@ -55,3 +55,35 @@ class RegistryImageSource:
                 raise BundleError(f"skopeo copy {ref} ({arch}) failed: {result.stderr}")
             written.append(out)
         return written
+
+
+class LocalImageSource:
+    """Build an image from its ``mh build`` context (buildah, daemonless) and write
+    per-arch ``docker-archive`` tarballs. Only arches with a staged binary build."""
+
+    def __init__(self, *, contexts_root: Path, runner: CommandRunner) -> None:
+        self._contexts_root = contexts_root
+        self._runner = runner
+
+    def save(self, artifact: ResolvedArtifact, dest_dir: Path, *, arches: list[str]) -> list[Path]:
+        context = self._contexts_root / artifact.name
+        if not context.is_dir():
+            raise BundleError(f"docker context not found: {context}")
+        dest_dir.mkdir(parents=True, exist_ok=True)
+        tag = str(artifact.artifact.target)  # "<name>:<version>"
+        written: list[Path] = []
+        for arch in arches:
+            if not any(context.glob(f"*-{arch}")):
+                continue
+            tagged = f"{tag}-{arch}"
+            bud = self._runner.run(["buildah", "bud", "--arch", arch, "-t", tagged, str(context)])
+            if bud.returncode != 0:
+                raise BundleError(f"buildah bud {tag} ({arch}) failed: {bud.stderr}")
+            out = _archive_path(artifact, dest_dir, arch)
+            push = self._runner.run(["buildah", "push", tagged, f"docker-archive:{out}:{tag}"])
+            if push.returncode != 0:
+                raise BundleError(f"buildah push {tag} ({arch}) failed: {push.stderr}")
+            written.append(out)
+        if not written:
+            raise BundleError(f"no arch binaries in {context} for {arches}")
+        return written
