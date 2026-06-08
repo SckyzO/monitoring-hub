@@ -65,7 +65,12 @@ def _passes(value: str | None, allowed: list[str] | None) -> bool:
 
 
 def _resolve_one(
-    entry: CatalogEntry, art: Artifact, *, targets: list[str] | None, arches: list[str] | None
+    entry: CatalogEntry,
+    art: Artifact,
+    *,
+    targets: list[str] | None,
+    arches: list[str] | None,
+    include_images: bool,
 ) -> ResolvedArtifact | None:
     if art.type == "rpm":
         if not (_passes(art.target, targets) and _passes(art.arch, arches)):
@@ -77,20 +82,28 @@ def _resolve_one(
         filename = deb_filename(entry.name, entry.version, str(art.arch))
     elif art.type == "grafana-dashboard":
         filename = f"{entry.name}.json"
+    elif art.type == "docker-image":
+        # arch=None (multi-arch index); not arch-filtered — the save step picks arches.
+        if not include_images:
+            return None
+        filename = f"{entry.name}-{entry.version}.tar"
     else:
-        return None  # docker (and any future non-offline type) → SP3.5 --images
+        return None  # any future non-offline type
     return ResolvedArtifact(
         kind=entry.kind, name=entry.name, version=entry.version, artifact=art, filename=filename
     )
 
 
-def resolve_artifacts(recipe: BundleRecipe, catalog: Catalog) -> list[ResolvedArtifact]:
+def resolve_artifacts(
+    recipe: BundleRecipe, catalog: Catalog, *, include_images: bool = False
+) -> list[ResolvedArtifact]:
     """Expand each recipe item into the catalogue artefacts to bundle.
 
     Looks each item up by ``(kind, name)``; the pinned version must equal the
     catalogue version (else ``BundleError``). Filters rpm/deb by the effective
     ``(targets, arches)`` (per-item, falling back to the bundle-wide ``arches``);
-    dashboards are always included; docker images are skipped (SP3.5).
+    dashboards are always included; docker images are included only when
+    ``include_images`` (SP3.5 ``--images``), regardless of the arch filter.
     """
     index = {(e.kind, e.name): e for e in catalog.items}
     resolved: list[ResolvedArtifact] = []
@@ -105,7 +118,9 @@ def resolve_artifacts(recipe: BundleRecipe, catalog: Catalog) -> list[ResolvedAr
             )
         arches = item.arches if item.arches is not None else recipe.arches
         for art in entry.artifacts:
-            one = _resolve_one(entry, art, targets=item.targets, arches=arches)
+            one = _resolve_one(
+                entry, art, targets=item.targets, arches=arches, include_images=include_images
+            )
             if one is not None:
                 resolved.append(one)
     return resolved
