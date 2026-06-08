@@ -17,7 +17,11 @@ case "${1:-}" in
     ;;
   run)
     shift
+    # Forward an env allowlist (value-less so secrets stay off argv; unset vars
+    # are no-ops). Lets forge-release.yml sign + publish inside the container.
     docker run --rm -u "${UID_GID}" \
+      -e GH_TOKEN -e GITHUB_TOKEN -e GNUPGHOME \
+      -e GPG_PRIVATE_KEY -e GPG_PASSPHRASE \
       -v "$(pwd):/workspace" "${IMAGE}" "$@"
     ;;
   *)
