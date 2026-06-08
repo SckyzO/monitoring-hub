@@ -29,6 +29,18 @@ sudo dnf -y --disablerepo='*' --enablerepo=mh-offline install <package>
 ```
 {% endfor %}
 {% endif %}
+{% if images %}
+## Container images (docker / podman)
+
+Per-arch OCI archives live under `images/`. Load the one matching your host:
+
+```sh
+cd "$(dirname "$0")"
+sudo docker load -i images/<name>-<version>-<arch>.tar
+# or, rootless:
+podman load -i images/<name>-<version>-<arch>.tar
+```
+{% endif %}
 {% if deb_codenames %}
 ## Debian / Ubuntu (apt)
 {% for c in deb_codenames %}

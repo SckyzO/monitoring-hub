@@ -9,6 +9,7 @@ from typing import cast
 import pytest
 from click.testing import CliRunner
 
+from forge.bundle.images import LocalImageSource, RegistryImageSource
 from forge.bundle.source import LocalDirSource, ReleasesFetcher
 from forge.cli.main import cli
 from forge.domain.recipe import BundleRecipe
@@ -34,6 +35,21 @@ def _write_catalog(tmp_path: Path) -> Path:
     p = tmp_path / "catalog.json"
     p.write_text(json.dumps(_CATALOG), encoding="utf-8")
     return p
+
+
+def _patch_build_bundle(monkeypatch: pytest.MonkeyPatch) -> dict[str, object]:
+    """Replace build_bundle with a stub that records its kwargs and writes the output."""
+    captured: dict[str, object] = {}
+
+    def fake_build_bundle(**kwargs: object) -> Path:
+        captured.update(kwargs)
+        out = kwargs["out"]
+        assert isinstance(out, Path)
+        out.write_bytes(b"")
+        return out
+
+    monkeypatch.setattr("forge.cli.main.build_bundle", fake_build_bundle)
+    return captured
 
 
 def test_recipe_and_item_are_mutually_exclusive(tmp_path: Path) -> None:
@@ -139,6 +155,69 @@ def test_item_default_source_is_releases(tmp_path: Path, monkeypatch: pytest.Mon
     )
     assert result.exit_code == 0, result.output
     assert isinstance(captured["source"], ReleasesFetcher)
+    assert captured["image_source"] is None  # no --images → no image source
+
+
+def test_bundle_images_default_uses_registry_source(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    captured = _patch_build_bundle(monkeypatch)
+    result = CliRunner().invoke(
+        cli,
+        [
+            "bundle",
+            "--item",
+            "node_exporter",
+            "--images",
+            "--catalog",
+            str(_write_catalog(tmp_path)),
+            "-o",
+            str(tmp_path / "b.tgz"),
+        ],
+    )
+    assert result.exit_code == 0, result.output
+    assert isinstance(captured["image_source"], RegistryImageSource)
+
+
+def test_bundle_build_images_uses_local_source(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    captured = _patch_build_bundle(monkeypatch)
+    (tmp_path / "dist" / "docker").mkdir(parents=True)
+    result = CliRunner().invoke(
+        cli,
+        [
+            "bundle",
+            "--item",
+            "node_exporter",
+            "--build-images",
+            "--contexts",
+            str(tmp_path / "dist" / "docker"),
+            "--catalog",
+            str(_write_catalog(tmp_path)),
+            "-o",
+            str(tmp_path / "b.tgz"),
+        ],
+    )
+    assert result.exit_code == 0, result.output
+    assert isinstance(captured["image_source"], LocalImageSource)
+
+
+def test_bundle_image_arch_requires_images(tmp_path: Path) -> None:
+    result = CliRunner().invoke(
+        cli,
+        [
+            "bundle",
+            "--item",
+            "node_exporter",
+            "--image-arch",
+            "amd64",
+            "--catalog",
+            str(_write_catalog(tmp_path)),
+        ],
+    )
+    assert result.exit_code != 0
+    assert "--image-arch requires --images" in result.output
 
 
 def test_recipe_path_loads_recipe_and_reports(

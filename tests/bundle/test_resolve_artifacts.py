@@ -22,7 +22,7 @@ def _entry() -> CatalogEntry:
             Artifact(type="rpm", target="el9", arch="amd64", sha256="a"),
             Artifact(type="rpm", target="el9", arch="arm64", sha256="b"),
             Artifact(type="deb", target="ubuntu-24.04", arch="amd64", sha256="c"),
-            Artifact(type="docker", target="node_exporter:1.9.1", arch=None, sha256="d"),
+            Artifact(type="docker-image", target="node_exporter:1.9.1", arch=None, sha256="d"),
         ],
     )
 
@@ -43,6 +43,25 @@ def test_resolve_expands_and_skips_docker() -> None:
     ]
     assert resolved[0].filename == "node_exporter-1.9.1-1.el9.x86_64.rpm"
     assert resolved[2].filename == "node-exporter_1.9.1-1_amd64.deb"
+
+
+def test_resolve_includes_docker_image_only_when_requested() -> None:
+    recipe = BundleRecipe(
+        items=[RecipeItem(kind="exporter", name="node_exporter", version="1.9.1")]
+    )
+    out = resolve_artifacts(recipe, _catalog(_entry()), include_images=True)
+    image = [r for r in out if r.artifact.type == "docker-image"]
+    assert [r.artifact.type for r in image] == ["docker-image"]
+    assert image[0].filename == "node_exporter-1.9.1.tar"
+
+
+def test_resolve_image_unaffected_by_arch_filter() -> None:
+    # docker-image has arch=None (multi-arch); the recipe arch filter must not drop it.
+    recipe = BundleRecipe(
+        items=[RecipeItem(kind="exporter", name="node_exporter", version="1.9.1", arches=["amd64"])]
+    )
+    out = resolve_artifacts(recipe, _catalog(_entry()), include_images=True)
+    assert any(r.artifact.type == "docker-image" for r in out)
 
 
 def test_resolve_item_arch_filter() -> None:

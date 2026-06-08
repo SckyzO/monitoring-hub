@@ -8,7 +8,7 @@ from typing import cast
 
 import pytest
 
-from forge.bundle.assemble import assemble_bundle
+from forge.bundle.assemble import assemble_bundle, write_sha256sums
 from forge.bundle.resolver import ResolvedArtifact
 from forge.domain.artifact import Artifact
 from forge.domain.errors import BundleError
@@ -174,3 +174,12 @@ def test_assemble_idempotent_excludes_prior_sha256sums(tmp_path: Path) -> None:
         for line in (staging / "SHA256SUMS").read_text(encoding="utf-8").splitlines()
     }
     assert "SHA256SUMS" not in rels
+
+
+def test_write_sha256sums_is_idempotent(tmp_path: Path) -> None:
+    (tmp_path / "a.txt").write_text("x", encoding="utf-8")
+    write_sha256sums(tmp_path)
+    first = (tmp_path / "SHA256SUMS").read_text(encoding="utf-8")
+    write_sha256sums(tmp_path)
+    assert (tmp_path / "SHA256SUMS").read_text(encoding="utf-8") == first
+    assert "SHA256SUMS" not in first

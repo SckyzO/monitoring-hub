@@ -43,6 +43,7 @@ def assemble_bundle(  # noqa: PLR0913 — orchestrator with explicit keyword-onl
     recipe: BundleRecipe,
     key_id: str | None = None,
     public_key: Path | None = None,
+    with_images: bool = False,
     runner: CommandRunner,
 ) -> Path:
     """Build the bundle tree under ``staging`` from blobs in ``inputs_dir``."""
@@ -93,8 +94,14 @@ def assemble_bundle(  # noqa: PLR0913 — orchestrator with explicit keyword-onl
     if key_id is not None:
         sign_detached(recipe_json, key_id=key_id, runner=runner)
 
-    _render_readme(staging, rpm_groups=rpm_groups, deb_groups=deb_groups, signed=key_id is not None)
-    _write_sha256sums(staging)
+    _render_readme(
+        staging,
+        rpm_groups=rpm_groups,
+        deb_groups=deb_groups,
+        signed=key_id is not None,
+        with_images=with_images,
+    )
+    write_sha256sums(staging)
     return staging
 
 
@@ -104,16 +111,18 @@ def _render_readme(
     rpm_groups: dict[tuple[str, str], list[Path]],
     deb_groups: dict[str, list[Path]],
     signed: bool,
+    with_images: bool = False,
 ) -> None:
     context = {
         "signed": signed,
         "rpm_targets": [{"target": t, "arch": a} for (t, a) in sorted(rpm_groups)],
         "deb_codenames": sorted(deb_groups),
+        "images": with_images,
     }
     (staging / "README.md").write_text(render_template(_README_TEMPLATE, context), encoding="utf-8")
 
 
-def _write_sha256sums(staging: Path) -> None:
+def write_sha256sums(staging: Path) -> None:
     lines: list[str] = []
     for path in sorted(p for p in staging.rglob("*") if p.is_file()):
         rel = path.relative_to(staging).as_posix()
