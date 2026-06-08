@@ -9,6 +9,7 @@ from typing import cast
 import pytest
 from click.testing import CliRunner
 
+from forge.bundle.images import LocalImageSource, RegistryImageSource
 from forge.bundle.source import LocalDirSource, ReleasesFetcher
 from forge.cli.main import cli
 from forge.domain.recipe import BundleRecipe
@@ -175,8 +176,6 @@ def test_bundle_images_default_uses_registry_source(
         ],
     )
     assert result.exit_code == 0, result.output
-    from forge.bundle.images import RegistryImageSource
-
     assert isinstance(captured["image_source"], RegistryImageSource)
 
 
@@ -201,8 +200,6 @@ def test_bundle_build_images_uses_local_source(
         ],
     )
     assert result.exit_code == 0, result.output
-    from forge.bundle.images import LocalImageSource
-
     assert isinstance(captured["image_source"], LocalImageSource)
 
 
