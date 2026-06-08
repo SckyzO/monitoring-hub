@@ -303,7 +303,7 @@ Gated by `FORGE_DOCKER_TESTS=1` + tools, in `forge-smoke.yml`:
 | **SP3.2** | `source.py`: `ArtifactSource` + `ReleasesFetcher` (`gh`) + `LocalDirSource` |
 | **SP3.3** | `assemble.py`: offline co-located repos + dashboards + key + README + `SHA256SUMS` + recipe signing |
 | **SP3.4** | `archive.py` + `mh bundle` end-to-end + gated L3 offline-consume smoke + full gate + PR |
-| **SP3.5** | (optional) `--images` `docker save` into the bundle |
+| **SP3.5** | (optional) `--images`: ship OCI images as per-arch `docker-archive` tarballs. Daemonless (`docker save` has no daemon here): default `RegistryImageSource` (`skopeo copy`), opt-in `LocalImageSource` (`buildah bud`); multi-arch default, `--image-arch` narrows |
 
 Each increment is its own branch → signed commits → PR merged `--merge`. The
 per-increment plan is committed to `docs/plans/` at Task 0.
@@ -318,6 +318,7 @@ per-increment plan is committed to `docs/plans/` at Task 0.
 | Nothing published to Releases yet | L3 smoke uses `--packages` from a local `mh build`; `ReleasesFetcher` covered by FakeRunner unit tests; real-Releases path exercised once a release exists. |
 | Signing key absent where `mh bundle` runs | Repo signing optional (`--sign`); default integrity via `SHA256SUMS` + optional recipe signature. |
 | zstd missing on air-gapped target | `.tar.gz` default (gzip universal); zstd is a future opt-in. |
-| Bundle size (docker images) | `docker save` deferred to opt-in SP3.5; default bundle is repo + metadata + small JSON/YAML. |
+| Bundle size (docker images) | Images opt-in (`--images`); default bundle is repo + metadata + small JSON/YAML. |
+| `docker-archive` can't hold a multi-arch index | One `<name>-<version>-<arch>.tar` per arch (each `docker load`-able); `--image-arch` narrows the set. |
 | Passphrase leak via argv | gpg via agent/env, never argv (asserted), same as SP2. |
 ```
