@@ -18,10 +18,14 @@ class RecipeItem(BaseModel):
     version: str
     overlay: str | None = None
     sha256: str | None = None
+    targets: list[str] | None = None
+    arches: list[str] | None = None
 
 
 class BundleRecipe(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     schema_version: int = 1
+    generated_at: str | None = None
+    arches: list[str] | None = None
     items: list[RecipeItem] = Field(default_factory=list)
