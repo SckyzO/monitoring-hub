@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 
-from forge.catalog.builder import build_catalog, load_catalog, write_catalog
+from forge.catalog.builder import assemble_catalog, build_catalog, load_catalog, write_catalog
 from forge.domain.catalog import Catalog, CatalogEntry
 from forge.domain.errors import ForgeError
 
@@ -89,3 +89,33 @@ def test_write_catalog_failure_preserves_existing(tmp_path: Path, monkeypatch) -
 
     assert out.read_text(encoding="utf-8") == original
     assert list(tmp_path.glob("*.tmp")) == []
+
+
+def test_assemble_keeps_unbuilt_previous_items() -> None:
+    prev = Catalog(generated_at="t0", items=[_entry("a", "1"), _entry("b", "1")])
+    cat = assemble_catalog([_entry("a", "2")], previous=prev, generated_at="t1")
+    by_name = {e.name: e for e in cat.items}
+    assert by_name["a"].version == "2"
+    assert by_name["a"].updated is True
+    assert by_name["b"].version == "1"  # carried over
+    assert by_name["b"].new is False and by_name["b"].updated is False
+
+
+def test_assemble_adds_new_item_alongside_previous() -> None:
+    prev = Catalog(generated_at="t0", items=[_entry("a", "1")])
+    cat = assemble_catalog([_entry("c", "1")], previous=prev, generated_at="t1")
+    by_name = {e.name: e for e in cat.items}
+    assert set(by_name) == {"a", "c"}
+    assert by_name["c"].new is True
+
+
+def test_assemble_no_previous_equals_build() -> None:
+    cat = assemble_catalog([_entry("a", "1")], previous=None, generated_at="t")
+    assert [e.name for e in cat.items] == ["a"]
+    assert cat.items[0].new is True
+
+
+def test_assemble_items_sorted_by_kind_name() -> None:
+    prev = Catalog(generated_at="t0", items=[_entry("b", "1")])
+    cat = assemble_catalog([_entry("a", "1")], previous=prev, generated_at="t1")
+    assert [e.name for e in cat.items] == ["a", "b"]

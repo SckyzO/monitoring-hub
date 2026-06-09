@@ -59,6 +59,30 @@ def load_catalog(path: Path) -> Catalog | None:
         raise ForgeError(f"cannot read catalog {path}: {exc}") from exc
 
 
+def assemble_catalog(
+    entries: Iterable[CatalogEntry],
+    *,
+    previous: Catalog | None = None,
+    generated_at: str | None = None,
+) -> Catalog:
+    """Merge freshly built ``entries`` over ``previous``, keeping unbuilt items.
+
+    The built entries get new/updated computed vs ``previous`` (via
+    ``build_catalog``); any previous item not rebuilt this run is carried over
+    with its flags reset. This is the self-healing join (spec §5, §7): a missing
+    build leg leaves the previously published version in place.
+    """
+    built = build_catalog(entries, previous=previous, generated_at=generated_at)
+    built_keys = {(e.kind, e.name) for e in built.items}
+    carried = [
+        item.model_copy(update={"new": False, "updated": False})
+        for item in (previous.items if previous else [])
+        if (item.kind, item.name) not in built_keys
+    ]
+    merged = sorted(built.items + carried, key=lambda e: (e.kind, e.name))
+    return Catalog(generated_at=built.generated_at, items=merged)
+
+
 def write_catalog(catalog: Catalog, path: Path) -> Path:
     """Serialize ``catalog`` to indented JSON at ``path`` atomically.
 
