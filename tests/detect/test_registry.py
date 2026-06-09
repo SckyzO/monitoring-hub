@@ -18,7 +18,7 @@ def test_register_and_get_source() -> None:
     class _FakeSourceA:
         type = "fake-source-a"
 
-        def latest(self, manifest, *, runner):  # noqa: ANN001, ANN201
+        def latest(self, manifest: object, *, runner: object) -> None:
             return None
 
     assert isinstance(get_source("fake-source-a"), _FakeSourceA)
@@ -30,7 +30,7 @@ def test_double_register_raises() -> None:
     class _FakeSourceB:
         type = "fake-source-b"
 
-        def latest(self, manifest, *, runner):  # noqa: ANN001, ANN201
+        def latest(self, manifest: object, *, runner: object) -> None:
             return None
 
     with pytest.raises(DetectRegistryError, match="already registered"):
@@ -39,7 +39,7 @@ def test_double_register_raises() -> None:
         class _Dup:
             type = "fake-source-b"
 
-            def latest(self, manifest, *, runner):  # noqa: ANN001, ANN201
+            def latest(self, manifest: object, *, runner: object) -> None:
                 return None
 
 

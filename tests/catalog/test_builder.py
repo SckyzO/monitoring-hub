@@ -73,17 +73,17 @@ def test_write_catalog_leaves_no_temp_file(tmp_path: Path) -> None:
     assert list(tmp_path.glob("*.tmp")) == []
 
 
-def test_write_catalog_failure_preserves_existing(tmp_path: Path, monkeypatch) -> None:
-    import forge.catalog.builder as builder_mod  # noqa: PLC0415
-
+def test_write_catalog_failure_preserves_existing(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     out = tmp_path / "catalog.json"
     write_catalog(build_catalog([_entry("a", "1")], generated_at="t0"), out)
     original = out.read_text(encoding="utf-8")
 
-    def boom(src, dst):
+    def boom(src: object, dst: object) -> None:
         raise OSError("disk full")
 
-    monkeypatch.setattr(builder_mod.os, "replace", boom)
+    monkeypatch.setattr("forge.catalog.builder.os.replace", boom)
     with pytest.raises(OSError, match="disk full"):
         write_catalog(build_catalog([_entry("a", "2")], generated_at="t1"), out)
 

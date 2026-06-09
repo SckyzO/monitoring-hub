@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import pytest
 from click.testing import CliRunner
 
 from forge.catalog.builder import load_catalog, write_catalog
@@ -64,8 +65,9 @@ def test_catalog_assemble_without_previous(tmp_path: Path) -> None:
     assert catalog.items[0].new is True
 
 
-def test_build_writes_entry_json_on_success(tmp_path: Path, monkeypatch) -> None:
-    import forge.cli.main as main_mod  # noqa: PLC0415
+def test_build_writes_entry_json_on_success(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     from forge.kinds.base import BuildResult  # noqa: PLC0415
 
     entry = _entry("node_exporter", "1.9.1")
@@ -73,19 +75,19 @@ def test_build_writes_entry_json_on_success(tmp_path: Path, monkeypatch) -> None
     class _FakeProducer:
         kind = "exporter"
 
-        def validate(self, manifest) -> None:  # noqa: ANN001
+        def validate(self, manifest: object) -> None:
             return None
 
-        def build(self, manifest, ctx) -> BuildResult:  # noqa: ANN001
+        def build(self, manifest: object, ctx: object) -> BuildResult:
             return BuildResult(artifacts=[], entry=entry)
 
     class _FakeManifest:
         kind = "exporter"
         name = "node_exporter"
 
-    monkeypatch.setattr(main_mod, "discover", lambda: None)
-    monkeypatch.setattr(main_mod, "get_producer", lambda kind: _FakeProducer())
-    monkeypatch.setattr(main_mod, "resolve_manifest", lambda ref, **kwargs: _FakeManifest())
+    monkeypatch.setattr("forge.cli.main.discover", lambda: None)
+    monkeypatch.setattr("forge.cli.main.get_producer", lambda kind: _FakeProducer())
+    monkeypatch.setattr("forge.cli.main.resolve_manifest", lambda ref, **kwargs: _FakeManifest())
 
     entry_out = tmp_path / "entries"
     result = CliRunner().invoke(

@@ -8,7 +8,7 @@ implementations (``github-release`` in SP4.1) register via ``detect.registry``.
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import ClassVar, Protocol, runtime_checkable
+from typing import Protocol, runtime_checkable
 
 from forge.domain.manifest import Manifest
 from forge.packaging.runner import CommandRunner
@@ -30,6 +30,6 @@ class DetectedVersion:
 class VersionSource(Protocol):
     """Resolve the latest upstream version for a manifest of a given source type."""
 
-    type: ClassVar[str]
+    type: str
 
     def latest(self, manifest: Manifest, *, runner: CommandRunner) -> str | None: ...
