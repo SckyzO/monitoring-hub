@@ -22,6 +22,7 @@ class DetectedVersion:
     kind: str
     current: str
     latest: str
+    latest_raw: str
     source_type: str
     outdated: bool
 

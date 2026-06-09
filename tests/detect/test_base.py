@@ -13,6 +13,7 @@ def test_detected_version_holds_fields() -> None:
         kind="exporter",
         current="1.9.0",
         latest="1.9.1",
+        latest_raw="v1.9.1",
         source_type="github-release",
         outdated=True,
     )
@@ -26,6 +27,7 @@ def test_detected_version_is_frozen() -> None:
         kind="exporter",
         current="1",
         latest="1",
+        latest_raw="v1",
         source_type="github-release",
         outdated=False,
     )

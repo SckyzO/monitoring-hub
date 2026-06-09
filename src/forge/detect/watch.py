@@ -47,6 +47,7 @@ def detect_one(manifest: Manifest, *, runner: CommandRunner) -> DetectedVersion 
         kind=manifest.kind,
         current=clean_version(manifest.version),
         latest=clean_version(latest_raw),
+        latest_raw=latest_raw,
         source_type=source_type,
         outdated=is_newer(latest_raw, manifest.version),
     )
