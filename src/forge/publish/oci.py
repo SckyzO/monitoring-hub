@@ -1,8 +1,11 @@
-"""OCI publisher (spec §5.7): build + push multi-arch images via buildah/skopeo.
+"""OCI publisher (spec §5.7): build a multi-arch manifest once, push to each registry.
 
 For each ``<staging>/<name>/`` build context emitted by ``mh build`` (Dockerfile +
 per-arch binaries), build one image per present arch with ``buildah bud --arch``,
-assemble a manifest list, and push ``<registry>/<name>:<version>`` plus ``:latest``.
+assemble a single manifest list tagged on the **primary** (first) registry, then
+push that one local manifest to every configured registry plus a ``:latest`` copy.
+Building once and pushing N times keeps the slow cross-arch ``buildah bud`` step
+off the critical path for mirror registries (GHCR primary, Docker Hub mirror).
 Daemonless and rootless — runs in the dev image with no docker socket. Gated in
 CI (needs qemu/binfmt for cross-arch and registry auth).
 """
@@ -23,12 +26,14 @@ class OciPublisher:
     def __init__(
         self,
         *,
-        registry: str,
+        registries: Sequence[str],
         versions: Mapping[str, str],
         runner: CommandRunner,
         tls_verify: bool = True,
     ) -> None:
-        self._registry = registry
+        if not registries:
+            raise ValueError("at least one registry is required")
+        self._registries = tuple(registries)
         self._versions = versions
         self._runner = runner
         self._tls_verify = tls_verify
@@ -40,21 +45,30 @@ class OciPublisher:
     def _publish_one(self, context: Path) -> None:
         name = context.name
         version = self._versions[name]
-        image = f"{self._registry}/{name}"
-        ref = f"{image}:{version}"
         arches = [a for a in _ARCHES if any(context.glob(f"*-{a}"))]
 
+        # Build once, tagged on the primary (first) registry.
+        local = f"{self._registries[0]}/{name}:{version}"
         for arch in arches:
-            self._run(["buildah", "bud", "--arch", arch, "-t", f"{ref}-{arch}", str(context)])
-        self._run(["buildah", "manifest", "create", ref])
+            self._run(["buildah", "bud", "--arch", arch, "-t", f"{local}-{arch}", str(context)])
+        self._run(["buildah", "manifest", "create", local])
         for arch in arches:
-            self._run(["buildah", "manifest", "add", ref, f"{ref}-{arch}"])
+            self._run(["buildah", "manifest", "add", local, f"{local}-{arch}"])
 
+        # Push the single local manifest to every registry, plus :latest.
+        for registry in self._registries:
+            image = f"{registry}/{name}"
+            ref = f"{image}:{version}"
+            self._push(local, ref)
+            self._copy_latest(ref, image)
+
+    def _push(self, local: str, ref: str) -> None:
         push = ["buildah", "manifest", "push", "--all"]
         if not self._tls_verify:
             push.append("--tls-verify=false")
-        self._run([*push, ref, f"docker://{ref}"])
+        self._run([*push, local, f"docker://{ref}"])
 
+    def _copy_latest(self, ref: str, image: str) -> None:
         copy = ["skopeo", "copy"]
         if not self._tls_verify:
             copy += ["--src-tls-verify=false", "--dest-tls-verify=false"]

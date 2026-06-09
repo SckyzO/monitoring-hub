@@ -584,7 +584,7 @@ def publish(  # noqa: PLR0913 — Click options map one-to-one to parameters
         if catalog is None:
             raise click.ClickException(f"catalog not found: {catalog_path}")
         versions = {item.name: item.version for item in catalog.items}
-        OciPublisher(registry=registry, versions=versions, runner=runner).publish(contexts_dir)
+        OciPublisher(registries=[registry], versions=versions, runner=runner).publish(contexts_dir)
         click.echo(f"published {len(versions)} image(s) to {registry}")
     if releases_dir is not None:
         GitHubReleasesPublisher(repo=repo, runner=runner).publish(releases_dir)
