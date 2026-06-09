@@ -74,7 +74,7 @@ def test_write_catalog_leaves_no_temp_file(tmp_path: Path) -> None:
 
 
 def test_write_catalog_failure_preserves_existing(tmp_path: Path, monkeypatch) -> None:
-    import forge.catalog.builder as builder_mod
+    import forge.catalog.builder as builder_mod  # noqa: PLC0415
 
     out = tmp_path / "catalog.json"
     write_catalog(build_catalog([_entry("a", "1")], generated_at="t0"), out)
