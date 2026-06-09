@@ -235,7 +235,7 @@ Check your manifest against the reference:
 
 ```bash
 # View reference manifest
-cat manifest.reference.yaml
+cat docs/user-guide/manifest.reference.yaml
 
 # Validate specific manifest
 ./devctl shell

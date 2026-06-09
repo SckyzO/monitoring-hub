@@ -127,7 +127,7 @@ make create-exporter
 
 ### 2. Customize `manifest.yaml`
 Edit the generated file to match specific needs (binary names, config files).
-See [manifest.reference.yaml](manifest.reference.yaml) for the full schema and all available options.
+See [manifest.reference.yaml](docs/user-guide/manifest.reference.yaml) for the full schema and all available options.
 
 ### 3. Add Optional Assets
 Place any configuration files or scripts in the `assets/` folder and reference them in the manifest.

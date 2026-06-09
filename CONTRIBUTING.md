@@ -127,7 +127,7 @@ The interactive tool will:
 
 ### Manifest Reference
 
-See [`manifest.reference.yaml`](manifest.reference.yaml) for complete documentation of all available fields and options.
+See [`manifest.reference.yaml`](docs/user-guide/manifest.reference.yaml) for complete documentation of all available fields and options.
 
 ## Testing
 
