@@ -28,8 +28,16 @@ def test_catalog_assemble_merges_entries_over_previous(tmp_path: Path) -> None:
 
     result = CliRunner().invoke(
         cli,
-        ["catalog", "assemble", "--entries", str(entries_dir),
-         "--previous", str(prev), "--output", str(out)],
+        [
+            "catalog",
+            "assemble",
+            "--entries",
+            str(entries_dir),
+            "--previous",
+            str(prev),
+            "--output",
+            str(out),
+        ],
     )
 
     assert result.exit_code == 0, result.output
@@ -77,15 +85,19 @@ def test_build_writes_entry_json_on_success(tmp_path: Path, monkeypatch) -> None
 
     monkeypatch.setattr(main_mod, "discover", lambda: None)
     monkeypatch.setattr(main_mod, "get_producer", lambda kind: _FakeProducer())
-    monkeypatch.setattr(
-        main_mod, "resolve_manifest", lambda ref, **kwargs: _FakeManifest()
-    )
+    monkeypatch.setattr(main_mod, "resolve_manifest", lambda ref, **kwargs: _FakeManifest())
 
     entry_out = tmp_path / "entries"
     result = CliRunner().invoke(
         cli,
-        ["build", "node_exporter", "--work-dir", str(tmp_path / "build"),
-         "--entry-out", str(entry_out)],
+        [
+            "build",
+            "node_exporter",
+            "--work-dir",
+            str(tmp_path / "build"),
+            "--entry-out",
+            str(entry_out),
+        ],
     )
 
     assert result.exit_code == 0, result.output

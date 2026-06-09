@@ -22,8 +22,12 @@ def test_detected_version_holds_fields() -> None:
 
 def test_detected_version_is_frozen() -> None:
     dv = DetectedVersion(
-        item="a", kind="exporter", current="1", latest="1",
-        source_type="github-release", outdated=False,
+        item="a",
+        kind="exporter",
+        current="1",
+        latest="1",
+        source_type="github-release",
+        outdated=False,
     )
     with pytest.raises((AttributeError, TypeError)):
         dv.latest = "2"  # type: ignore[misc]
