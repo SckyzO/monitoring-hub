@@ -20,6 +20,7 @@ def _patched(monkeypatch: pytest.MonkeyPatch) -> None:
                 kind="exporter",
                 current="1.9.0",
                 latest="1.10.0",
+                latest_raw="v1.10.0",
                 source_type="github-release",
                 outdated=True,
             )
@@ -40,6 +41,7 @@ def test_watch_json_shape() -> None:
             "kind": "exporter",
             "current": "1.9.0",
             "latest": "1.10.0",
+            "latest_raw": "v1.10.0",
             "source_type": "github-release",
             "outdated": True,
         }

@@ -152,6 +152,7 @@ def watch(catalog_root: str | None, kind: str | None, as_json: bool) -> None:
                         "kind": d.kind,
                         "current": d.current,
                         "latest": d.latest,
+                        "latest_raw": d.latest_raw,
                         "source_type": d.source_type,
                         "outdated": d.outdated,
                     }

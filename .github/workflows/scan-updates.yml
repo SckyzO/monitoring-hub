@@ -1,0 +1,88 @@
+name: scan-updates
+
+# Every 6h: detect outdated exporters (mh watch) and open one signed, auto-merging
+# bump PR per item. The PR is opened with a GitHub App token (NOT GITHUB_TOKEN) so
+# its own forge-bump-ci checks actually trigger (shift-left) and its commits are
+# API-signed (satisfy required_signatures on main). Idempotent: a fixed branch
+# bump/<item> updates the open PR instead of opening duplicates.
+
+on:
+  schedule:
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  detect:
+    runs-on: ubuntu-latest
+    outputs:
+      items: ${{ steps.scan.outputs.items }}
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - name: Build dev image
+        run: ./dev build
+      - name: Sync dependencies
+        run: make sync
+      - name: Detect outdated items
+        id: scan
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          ./dev run uv run mh watch --json > watch.json
+          items=$(jq -c '[.[] | select(.outdated) | {item, kind, latest_raw}]' watch.json)
+          echo "items=$items" >> "$GITHUB_OUTPUT"
+
+  bump:
+    needs: detect
+    if: needs.detect.outputs.items != '[]'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    strategy:
+      fail-fast: false
+      matrix:
+        target: ${{ fromJSON(needs.detect.outputs.items) }}
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+      - name: Mint GitHub App token
+        id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        with:
+          app-id: ${{ secrets.BUMP_APP_ID }}
+          private-key: ${{ secrets.BUMP_APP_PRIVATE_KEY }}
+      - name: Build dev image
+        run: ./dev build
+      - name: Sync dependencies
+        run: make sync
+      - name: Bump manifest version
+        env:
+          ITEM: ${{ matrix.target.item }}
+          TO: ${{ matrix.target.latest_raw }}
+        run: ./dev run uv run mh bump "$ITEM" --to "$TO"
+      - name: Create or update bump PR
+        id: cpr
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          branch: bump/${{ matrix.target.item }}
+          delete-branch: true
+          sign-commits: true
+          commit-message: "chore: bump ${{ matrix.target.item }} to ${{ matrix.target.latest_raw }}"
+          title: "chore: bump ${{ matrix.target.item }} to ${{ matrix.target.latest_raw }}"
+          body: |
+            Automated upstream version bump for `${{ matrix.target.item }}`.
+
+            - New version: `${{ matrix.target.latest_raw }}`
+            - Source: github-release
+
+            CI builds the package unsigned to validate the bump before merge.
+      - name: Enable auto-merge
+        if: steps.cpr.outputs.pull-request-number
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          PR: ${{ steps.cpr.outputs.pull-request-number }}
+        run: gh pr merge --merge --auto "$PR"

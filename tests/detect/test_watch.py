@@ -7,6 +7,7 @@ from pathlib import Path
 
 import pytest
 
+import forge.detect.watch as watch_mod
 from forge.detect.base import DetectedVersion
 from forge.detect.watch import detect_all, resolve_source_type
 from forge.domain.manifest import Manifest, parse_manifest
@@ -102,6 +103,7 @@ def test_detect_all_builds_detected_version(monkeypatch: pytest.MonkeyPatch) -> 
             kind="exporter",
             current="1.9.0",
             latest="1.10.0",
+            latest_raw="v1.10.0",
             source_type="github-release",
             outdated=True,
         )
@@ -119,3 +121,18 @@ def test_detect_all_skips_unwatchable_and_undetectable(monkeypatch: pytest.Monke
     monkeypatch.setattr("forge.detect.watch.get_source", lambda _t: _FakeSource(None))
     manifests = [_local_exporter(), _exporter()]
     assert detect_all(manifests, runner=_StubRunner()) == []
+
+
+def test_detect_one_keeps_raw_and_clean_tag(monkeypatch: pytest.MonkeyPatch) -> None:
+    manifest = _exporter(version="v1.9.0")
+    monkeypatch.setattr(
+        watch_mod,
+        "get_source",
+        lambda _type: type("S", (), {"latest": lambda self, m, *, runner: "v1.10.0"})(),
+    )
+    detected = watch_mod.detect_one(manifest, runner=_StubRunner())
+    assert detected is not None
+    assert detected.latest_raw == "v1.10.0"
+    assert detected.latest == "1.10.0"
+    assert detected.current == "1.9.0"
+    assert detected.outdated is True
