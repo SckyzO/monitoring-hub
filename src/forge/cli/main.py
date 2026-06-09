@@ -19,6 +19,7 @@ from forge.catalog.builder import assemble_catalog, build_catalog, load_catalog,
 from forge.catalog.entries import load_entries, write_entry
 from forge.cli._context import iter_manifest_paths, resolve_catalog_root
 from forge.detect.base import DetectedVersion
+from forge.detect.bump import bump_manifest
 from forge.detect.registry import discover as discover_sources
 from forge.detect.watch import detect_all
 from forge.domain.catalog import CatalogEntry
@@ -163,6 +164,21 @@ def watch(catalog_root: str | None, kind: str | None, as_json: bool) -> None:
     for d in detected:
         flag = "OUTDATED" if d.outdated else "ok"
         click.echo(f"{d.item}\t{d.kind}\t{d.current}\t→ {d.latest}\t{flag}")
+
+
+@cli.command()
+@click.argument("ref")
+@click.option("--to", "to", required=True, help="New version to write (verbatim upstream tag).")
+@_catalog_root_option
+def bump(ref: str, to: str, catalog_root: str | None) -> None:
+    """Set an item's manifest version (validated, atomic; REF = name or path)."""
+    root = resolve_catalog_root(catalog_root)
+    try:
+        path = resolve_manifest_path(ref, catalog_root=root)
+        manifest = bump_manifest(path, to=to)
+    except ForgeError as exc:
+        raise click.ClickException(str(exc)) from exc
+    click.echo(f"bumped {manifest.name} to {manifest.version}")
 
 
 _set_option = click.option(
