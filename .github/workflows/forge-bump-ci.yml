@@ -1,0 +1,56 @@
+name: forge-bump-ci
+
+# Shift-left validation for bump PRs: build the changed item(s) UNSIGNED to prove
+# the new upstream version packages cleanly. No secrets, no signing — artefacts are
+# throwaway. The signed rebuild runs only post-merge on main (forge-release.yml).
+# Triggers on any catalog/** change so manifest-only PRs build their package
+# instead of (uselessly) re-running the Python gate in forge-ci.yml.
+
+on:
+  pull_request:
+    paths:
+      - "catalog/**"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          fetch-depth: 0
+      - name: Identify changed items
+        id: changed
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          set -euo pipefail
+          items=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" \
+            | sed -n 's#^catalog/[^/]*/\([^/]*\)/manifest\.yaml$#\1#p' \
+            | sort -u)
+          {
+            echo "items<<EOF"
+            echo "$items"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
+      - name: Build dev image
+        if: steps.changed.outputs.items != ''
+        run: ./dev build
+      - name: Sync dependencies
+        if: steps.changed.outputs.items != ''
+        run: make sync
+      - name: Build changed items (unsigned)
+        if: steps.changed.outputs.items != ''
+        env:
+          ITEMS: ${{ steps.changed.outputs.items }}
+        run: |
+          set -euo pipefail
+          while IFS= read -r item; do
+            [ -n "$item" ] || continue
+            echo "::group::build $item"
+            ./dev run uv run mh build "$item" --out "./dist/$item"
+            echo "::endgroup::"
+          done <<< "$ITEMS"
