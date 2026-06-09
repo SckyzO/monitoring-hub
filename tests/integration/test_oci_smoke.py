@@ -1,6 +1,6 @@
-"""Gated OCI smoke (spec §9.3): build a multi-arch image from an emitted context
-with buildah, push to a throwaway insecure local registry, and assert skopeo
-resolves a multi-arch manifest list. Outside ``make ci`` (forge-smoke.yml).
+"""Gated OCI smoke (spec §9.3): build a multi-arch image once and push it to TWO
+throwaway insecure local registries; assert skopeo resolves a multi-arch manifest
+list on each. Proves build-once-push-many. Outside ``make ci`` (forge-smoke.yml).
 """
 
 from __future__ import annotations
@@ -23,7 +23,7 @@ pytestmark = pytest.mark.skipif(
     reason="set FORGE_DOCKER_TESTS=1 with buildah+skopeo+docker",
 )
 
-_PORT = 5000
+_PORTS = (5000, 5001)
 _NAME = "smoke_exporter"
 _VERSION = "0.0.1"
 
@@ -39,9 +39,9 @@ def _emit_context(staging: Path) -> None:
         (ctx / f"{_NAME}-{arch}").write_bytes(b"\x7fELF" + bytes(64))
 
 
-def _start_registry() -> str:
+def _start_registry(port: int) -> str:
     cid = subprocess.run(  # noqa: S603
-        ["docker", "run", "-d", "-p", f"{_PORT}:5000", "registry:2"],
+        ["docker", "run", "-d", "-p", f"{port}:5000", "registry:2"],
         check=True,
         capture_output=True,
         text=True,
@@ -50,34 +50,40 @@ def _start_registry() -> str:
     return cid
 
 
-def test_oci_multiarch_manifest_pushes_and_resolves(tmp_path: Path) -> None:
+def _resolve_arches(port: int) -> set[str]:
+    raw = subprocess.run(  # noqa: S603
+        [
+            "skopeo",
+            "inspect",
+            "--tls-verify=false",
+            "--raw",
+            f"docker://localhost:{port}/mh/{_NAME}:{_VERSION}",
+        ],
+        check=True,
+        capture_output=True,
+        text=True,
+    ).stdout
+    manifest = json.loads(raw)
+    return {m["platform"]["architecture"] for m in manifest.get("manifests", [])}
+
+
+def test_oci_multiarch_manifest_pushes_to_each_registry(tmp_path: Path) -> None:
     staging = tmp_path / "docker"
     _emit_context(staging)
-    cid = _start_registry()
+    cids = [_start_registry(p) for p in _PORTS]
     try:
         OciPublisher(
-            registry=f"localhost:{_PORT}/mh",
+            registries=[f"localhost:{p}/mh" for p in _PORTS],
             versions={_NAME: _VERSION},
             runner=SubprocessRunner(),
             tls_verify=False,
         ).publish(staging)
 
-        raw = subprocess.run(  # noqa: S603
-            [
-                "skopeo",
-                "inspect",
-                "--tls-verify=false",
-                "--raw",
-                f"docker://localhost:{_PORT}/mh/{_NAME}:{_VERSION}",
-            ],
-            check=True,
-            capture_output=True,
-            text=True,
-        ).stdout
-        manifest = json.loads(raw)
-        arches = {m["platform"]["architecture"] for m in manifest.get("manifests", [])}
-        assert {"amd64", "arm64"} <= arches, raw
+        for port in _PORTS:
+            arches = _resolve_arches(port)
+            assert {"amd64", "arm64"} <= arches, f"port {port}: {arches}"
     finally:
-        subprocess.run(  # noqa: S603
-            ["docker", "rm", "-f", cid], check=False, capture_output=True
-        )
+        for cid in cids:
+            subprocess.run(  # noqa: S603
+                ["docker", "rm", "-f", cid], check=False, capture_output=True
+            )
