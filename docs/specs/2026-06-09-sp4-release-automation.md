@@ -76,7 +76,7 @@ the post-merge rebuild reproducible and removes any time-of-check/time-of-use ga
 ## 3. The loop (end to end)
 
 ```
- cron (8h)                                    on PR merge to main
+ cron (every 6h, 4×/day)                      on PR merge to main
  ─────────                                    ───────────────────
  mh watch                                     forge-release (per changed item)
    │  detect latest per manifest                │  mh build <ref> (SIGNED)  ── parallel matrix
@@ -229,6 +229,23 @@ target, and it gets retried — without a manual step.
   next run. Portal renders per-target "available (vX)" / "not yet available" by
   reading `catalog.json` alone.
 
+**Visibility / notification (GitHub-native, no backend):** self-healing must not
+mean silent. A failed leg deliberately stays *visible*:
+
+- The bump PR going red on a validation failure already emails the author
+  (built-in GitHub PR-check notification) — total failures are caught before merge.
+- Post-merge and reconcile runs: the per-leg matrix is `fail-fast: false`, but the
+  `assemble`/publish jobs run with `if: always()` so good legs *publish* while the
+  **overall run is still marked failed** (a failed matrix job fails the run). That
+  triggers GitHub's native "Actions failure" email on `main` and a red run in the
+  Actions tab. A `$GITHUB_STEP_SUMMARY` step lists the `missing = expected − present`
+  set so the run page names exactly which legs failed.
+- A **persistent** failure therefore re-pings every daily reconcile until fixed; a
+  **transient** flake self-heals and the next run goes green (one mail at worst).
+  Accepted trade-off: occasional single mail for a self-healing flake is the cost
+  of "always tell me." A finer Slack/digest alert (compute `missing`, post it) is
+  a small additive step, deferred beyond SP4.
+
 **Why not store `failed` / why not an API:** a stored `failed` status turns a
 static, reproducible artefact (`catalog.json`) into a mutable state machine —
 exactly the friction we are removing — and a backend/API would reintroduce the
@@ -301,8 +318,8 @@ Gated by `FORGE_DOCKER_TESTS=1` + tools:
 | **SP4.0** | Foundation: branch; atomic `write_catalog` (temp+rename); build/assemble decoupling (`mh build --out` emits `entry.json`; `mh catalog assemble`); `forge.detect` package scaffold (`VersionSource` Protocol + registry stub); full gate |
 | **SP4.1** | Detection: `github-release` source + version policy (skip pre-release ON, optional major-pin OFF) + reconcile the `upstream.strategy` doc↔model gap; `mh watch [--json]`; pure-logic + FakeRunner tests |
 | **SP4.2** | Bump: `mh bump <ref> --to` validated atomic manifest write; `expected − present` diff helper; tests |
-| **SP4.3** | Scan workflow: scheduled `scan-updates.yml` → `mh watch` → one **signed** bump PR per outdated item (app-token, create-pull-request, sign-commits, auto-merge) → PR CI runs `mh build <ref>` **unsigned** (shift-left). Branch protection note: keep "up-to-date branch" OFF |
-| **SP4.4** | Release rework: `forge-release.yml` per-item/per-leg matrix (`fail-fast:false`) emitting `entry.json` → serial `mh catalog assemble` → serialized publish (`concurrency cancel-in-progress:false`); trigger on `main` push touching `catalog/**`; daily reconcile job; gated smoke |
+| **SP4.3** | Scan workflow: `scan-updates.yml` on a **6-hourly cron (4×/day)** → `mh watch` → one **signed** bump PR per outdated item (app-token, create-pull-request, sign-commits, auto-merge) → PR CI runs `mh build <ref>` **unsigned** (shift-left). **Idempotent per item**: fixed branch `bump/<item>` so a re-scan updates the open PR instead of opening a duplicate. Branch protection note: keep "up-to-date branch" OFF |
+| **SP4.4** | Release rework: `forge-release.yml` per-item/per-leg matrix (`fail-fast:false`) emitting `entry.json` → serial `mh catalog assemble` (`if: always()`, publishes good legs) → serialized publish (`concurrency cancel-in-progress:false`); a failed leg still fails the run (native failure email) + `$GITHUB_STEP_SUMMARY` lists `missing = expected − present`; trigger on `main` push touching `catalog/**`; daily reconcile job; gated smoke |
 | **SP4.5** | Docker Hub publisher: extend OCI publish to `docker.io` (second leg, env-only creds); FakeRunner + gated smoke |
 | **SP4.6** | `manifest.reference.yaml` rewritten in the current `kind`/`spec` schema → `docs/user-guide/manifest.reference.yaml`, validated by `mh validate`; docs; **first real end-to-end forge-published release** (unfreeze catalogue, reconcile with gh-pages mirror); full gate + PR |
 
