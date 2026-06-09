@@ -70,7 +70,13 @@ class Upstream(BaseModel):
 
     type: Literal["github", "local"]
     repo: str | None = None
-    strategy: str = "latest_release"
+    # Detection strategy → maps to a forge.detect VersionSource (SP4.1). Tightened
+    # from a free str to a Literal so `mh validate` rejects typos; extend the
+    # Literal (and register a source) to add a strategy.
+    strategy: Literal["latest_release"] = "latest_release"
+    # Optional major-version ceiling (e.g. 1 keeps the item on 1.x). None (default)
+    # = bump freely. Applied by the version policy (spec §4), source-agnostic.
+    pin_major: int | None = None
     archive_name: str | dict[str, str] | None = None
     local_binary: str | None = None
     local_archive: str | None = None

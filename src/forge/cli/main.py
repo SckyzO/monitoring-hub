@@ -18,6 +18,9 @@ from forge.bundle.source import ArtifactSource, LocalDirSource, ReleasesFetcher
 from forge.catalog.builder import assemble_catalog, build_catalog, load_catalog, write_catalog
 from forge.catalog.entries import load_entries, write_entry
 from forge.cli._context import iter_manifest_paths, resolve_catalog_root
+from forge.detect.base import DetectedVersion
+from forge.detect.registry import discover as discover_sources
+from forge.detect.watch import detect_all
 from forge.domain.catalog import CatalogEntry
 from forge.domain.errors import ForgeError
 from forge.domain.manifest import parse_manifest
@@ -124,6 +127,42 @@ def validate(ref: str | None, catalog_root: str | None, validate_all: bool, as_j
 
     if failures:
         sys.exit(1)
+
+
+@cli.command()
+@_catalog_root_option
+@click.option("--kind", default=None, help="Only watch items of this kind (e.g. exporter).")
+@click.option("--json", "as_json", is_flag=True, help="Emit machine-readable JSON.")
+def watch(catalog_root: str | None, kind: str | None, as_json: bool) -> None:
+    """Detect outdated catalogue items against their upstreams (read-only)."""
+    discover_sources()
+    root = resolve_catalog_root(catalog_root)
+    manifests = [
+        parse_manifest(load_yaml_mapping(path)) for path in iter_manifest_paths(root, kind=kind)
+    ]
+    detected: list[DetectedVersion] = detect_all(manifests, runner=SubprocessRunner())
+
+    if as_json:
+        click.echo(
+            jsonlib.dumps(
+                [
+                    {
+                        "item": d.item,
+                        "kind": d.kind,
+                        "current": d.current,
+                        "latest": d.latest,
+                        "source_type": d.source_type,
+                        "outdated": d.outdated,
+                    }
+                    for d in detected
+                ],
+                indent=2,
+            )
+        )
+        return
+    for d in detected:
+        flag = "OUTDATED" if d.outdated else "ok"
+        click.echo(f"{d.item}\t{d.kind}\t{d.current}\t→ {d.latest}\t{flag}")
 
 
 _set_option = click.option(
