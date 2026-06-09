@@ -235,7 +235,7 @@ class ManifestBase(BaseModel):
     name: str
     description: str
     category: str = "System"
-    version: str
+    version: str = Field(min_length=1)
     license: str | None = None
 
 
