@@ -532,10 +532,11 @@ def repo_build(  # noqa: PLR0913 — Click options map one-to-one to parameters
 @click.option("--oci", "oci", is_flag=True, help="Build + push multi-arch OCI images.")
 @click.option(
     "--registry",
-    "registry",
-    default=_DEFAULT_OCI_REGISTRY,
+    "registries",
+    multiple=True,
+    default=(_DEFAULT_OCI_REGISTRY,),
     show_default=True,
-    help="OCI registry namespace to push images to.",
+    help="OCI registry namespace to push images to (repeatable; pushed once-per-build).",
 )
 @click.option(
     "--contexts",
@@ -569,7 +570,7 @@ def repo_build(  # noqa: PLR0913 — Click options map one-to-one to parameters
 )
 def publish(  # noqa: PLR0913 — Click options map one-to-one to parameters
     oci: bool,
-    registry: str,
+    registries: tuple[str, ...],
     contexts_dir: Path,
     catalog_path: Path,
     releases_dir: Path | None,
@@ -584,8 +585,8 @@ def publish(  # noqa: PLR0913 — Click options map one-to-one to parameters
         if catalog is None:
             raise click.ClickException(f"catalog not found: {catalog_path}")
         versions = {item.name: item.version for item in catalog.items}
-        OciPublisher(registry=registry, versions=versions, runner=runner).publish(contexts_dir)
-        click.echo(f"published {len(versions)} image(s) to {registry}")
+        OciPublisher(registries=registries, versions=versions, runner=runner).publish(contexts_dir)
+        click.echo(f"published {len(versions)} image(s) to {', '.join(registries)}")
     if releases_dir is not None:
         GitHubReleasesPublisher(repo=repo, runner=runner).publish(releases_dir)
         click.echo(f"published release assets from {releases_dir} to {repo}")

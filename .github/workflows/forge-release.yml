@@ -313,13 +313,23 @@ jobs:
         run: docker run --privileged --rm tonistiigi/binfmt --install arm64
       - name: Build dev image
         run: ./dev build
-      - name: Publish multi-arch images to GHCR
+      - name: Publish multi-arch images (GHCR + optional Docker Hub)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ACTOR: ${{ github.actor }}
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
+          DOCKERHUB_NAMESPACE: ${{ vars.DOCKERHUB_NAMESPACE || 'docker.io/sckyzo' }}
         run: |
           ./dev run bash -c '
             set -euo pipefail
             echo "$GITHUB_TOKEN" | buildah login -u "$ACTOR" --password-stdin ghcr.io
-            uv run mh publish --oci --contexts dist/docker --catalog dist/catalog.json
+            registries=(--registry ghcr.io/sckyzo/monitoring-hub)
+            if [ -n "${DOCKERHUB_TOKEN:-}" ]; then
+              echo "$DOCKERHUB_TOKEN" | buildah login -u "$DOCKERHUB_USERNAME" --password-stdin docker.io
+              registries+=(--registry "$DOCKERHUB_NAMESPACE")
+            else
+              echo "DOCKERHUB_TOKEN unset; publishing to GHCR only" >&2
+            fi
+            uv run mh publish --oci --contexts dist/docker --catalog dist/catalog.json "${registries[@]}"
           '

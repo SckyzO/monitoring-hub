@@ -34,8 +34,8 @@ def _catalog_file(tmp_path: Path) -> Path:
 class _SpyPublisher:
     last: dict[str, Any] = {}
 
-    def __init__(self, *, registry: str, versions: Any, runner: Any) -> None:
-        _SpyPublisher.last = {"registry": registry, "versions": dict(versions)}
+    def __init__(self, *, registries: Any, versions: Any, runner: Any) -> None:
+        _SpyPublisher.last = {"registries": tuple(registries), "versions": dict(versions)}
 
     def publish(self, staging: Path) -> None:
         _SpyPublisher.last["staging"] = staging
@@ -51,6 +51,8 @@ def test_publish_oci_dispatches(tmp_path: Path, monkeypatch: Any) -> None:
             "--oci",
             "--registry",
             "ghcr.io/x/y",
+            "--registry",
+            "docker.io/x",
             "--contexts",
             str(tmp_path / "dist" / "docker"),
             "--catalog",
@@ -58,9 +60,20 @@ def test_publish_oci_dispatches(tmp_path: Path, monkeypatch: Any) -> None:
         ],
     )
     assert result.exit_code == 0, result.output
-    assert _SpyPublisher.last["registry"] == "ghcr.io/x/y"
+    assert _SpyPublisher.last["registries"] == ("ghcr.io/x/y", "docker.io/x")
     assert _SpyPublisher.last["versions"] == {"node_exporter": "1.9.1"}
     assert _SpyPublisher.last["staging"] == tmp_path / "dist" / "docker"
+
+
+def test_publish_oci_defaults_to_ghcr(tmp_path: Path, monkeypatch: Any) -> None:
+    catalog = _catalog_file(tmp_path)
+    monkeypatch.setattr("forge.cli.main.OciPublisher", _SpyPublisher)
+    result = CliRunner().invoke(
+        cli,
+        ["publish", "--oci", "--contexts", str(tmp_path / "d"), "--catalog", str(catalog)],
+    )
+    assert result.exit_code == 0, result.output
+    assert _SpyPublisher.last["registries"] == ("ghcr.io/sckyzo/monitoring-hub",)
 
 
 def test_publish_without_target_errors(tmp_path: Path) -> None:

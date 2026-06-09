@@ -22,6 +22,7 @@ case "${1:-}" in
     docker run --rm -u "${UID_GID}" \
       -e GH_TOKEN -e GITHUB_TOKEN -e GNUPGHOME \
       -e GPG_PRIVATE_KEY -e GPG_PASSPHRASE \
+      -e DOCKERHUB_USERNAME -e DOCKERHUB_TOKEN -e DOCKERHUB_NAMESPACE \
       -v "$(pwd):/workspace" "${IMAGE}" "$@"
     ;;
   *)

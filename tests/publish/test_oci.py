@@ -1,4 +1,4 @@
-"""OciPublisher: emits buildah/skopeo commands for a multi-arch manifest list."""
+"""OciPublisher: build a multi-arch manifest once, push to each registry."""
 
 from __future__ import annotations
 
@@ -47,7 +47,7 @@ def test_oci_publisher_builds_manifest_list(tmp_path: Path) -> None:
     runner = RecordingRunner()
 
     OciPublisher(
-        registry="ghcr.io/sckyzo/monitoring-hub",
+        registries=["ghcr.io/sckyzo/monitoring-hub"],
         versions={"node_exporter": "1.9.1"},
         runner=runner,
     ).publish(staging)
@@ -68,12 +68,53 @@ def test_oci_publisher_builds_manifest_list(tmp_path: Path) -> None:
     )
 
 
+def test_oci_publisher_builds_once_pushes_to_each_registry(tmp_path: Path) -> None:
+    staging = tmp_path / "docker"
+    _context(staging, "node_exporter", ("amd64", "arm64"))
+    runner = RecordingRunner()
+
+    OciPublisher(
+        registries=["ghcr.io/sckyzo/monitoring-hub", "docker.io/sckyzo"],
+        versions={"node_exporter": "1.9.1"},
+        runner=runner,
+    ).publish(staging)
+
+    flat = [" ".join(c) for c in runner.calls]
+    primary = "ghcr.io/sckyzo/monitoring-hub/node_exporter:1.9.1"
+    hub = "docker.io/sckyzo/node_exporter:1.9.1"
+
+    # Build happens ONCE, tagged on the primary registry only.
+    assert sum(1 for c in flat if "buildah bud --arch amd64" in c) == 1
+    assert sum(1 for c in flat if "buildah bud --arch arm64" in c) == 1
+    assert sum(1 for c in flat if c.startswith("buildah manifest create")) == 1
+    assert any(f"buildah manifest create {primary}" in c for c in flat)
+    assert not any("docker.io/sckyzo/node_exporter:1.9.1-amd64" in c for c in flat)
+
+    # The single local manifest is pushed to BOTH registries.
+    assert any(f"buildah manifest push --all {primary} docker://{primary}" in c for c in flat)
+    assert any(f"buildah manifest push --all {primary} docker://{hub}" in c for c in flat)
+
+    # :latest is copied within each registry.
+    assert any(
+        "skopeo copy" in c
+        and f"docker://{primary}" in c
+        and "docker://ghcr.io/sckyzo/monitoring-hub/node_exporter:latest" in c
+        for c in flat
+    )
+    assert any(
+        "skopeo copy" in c
+        and f"docker://{hub}" in c
+        and "docker://docker.io/sckyzo/node_exporter:latest" in c
+        for c in flat
+    )
+
+
 def test_oci_publisher_single_arch_skips_missing(tmp_path: Path) -> None:
     staging = tmp_path / "docker"
     _context(staging, "single", ("amd64",))
     runner = RecordingRunner()
 
-    OciPublisher(registry="r", versions={"single": "2.0.0"}, runner=runner).publish(staging)
+    OciPublisher(registries=["r"], versions={"single": "2.0.0"}, runner=runner).publish(staging)
 
     flat = [" ".join(c) for c in runner.calls]
     assert any("--arch amd64" in c for c in flat)
@@ -86,7 +127,7 @@ def test_oci_publisher_insecure_disables_tls(tmp_path: Path) -> None:
     runner = RecordingRunner()
 
     OciPublisher(
-        registry="localhost:5000/mh",
+        registries=["localhost:5000/mh"],
         versions={"node_exporter": "1.9.1"},
         runner=runner,
         tls_verify=False,
@@ -97,12 +138,17 @@ def test_oci_publisher_insecure_disables_tls(tmp_path: Path) -> None:
     assert any("skopeo copy --src-tls-verify=false --dest-tls-verify=false" in c for c in flat)
 
 
+def test_oci_publisher_requires_at_least_one_registry() -> None:
+    with pytest.raises(ValueError, match="at least one registry"):
+        OciPublisher(registries=[], versions={}, runner=RecordingRunner())
+
+
 def test_oci_publisher_raises_on_failure(tmp_path: Path) -> None:
     staging = tmp_path / "docker"
     _context(staging, "node_exporter", ("amd64",))
     runner = RecordingRunner(returncode=1, stderr="boom")
 
     with pytest.raises(PublishError, match="buildah failed: boom"):
-        OciPublisher(registry="r", versions={"node_exporter": "1.9.1"}, runner=runner).publish(
+        OciPublisher(registries=["r"], versions={"node_exporter": "1.9.1"}, runner=runner).publish(
             staging
         )
