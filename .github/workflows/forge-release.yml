@@ -1,50 +1,205 @@
 name: forge-release
 
-# Release pipeline (spec §8): build daemonless -> assemble signed repo ->
-# deploy Pages (metadata) || publish Releases (blobs) || publish OCI (GHCR).
+# Release pipeline (spec §5-§7): trigger-scoped per-item build matrix (fail-fast)
+# -> emits entry.json per item -> mh catalog assemble (merge over published
+# catalogue) -> signed repo trees -> deploy Pages || publish Releases || GHCR.
+# A failed leg still fails the run (native email); missing = expected - present
+# is listed in the step summary and self-healed by the daily reconcile run.
 # All tooling runs in the dev image via ./dev run; secrets reach the container
 # through the env allowlist in ./dev (never argv). Actions pinned by SHA.
 
 on:
+  push:
+    branches: [main]
+    paths: ["catalog/**"]
+  schedule:
+    - cron: "17 */6 * * *" # reconcile (missing legs), 4x/day
   release:
     types: [published]
   workflow_dispatch:
+    inputs:
+      mode:
+        description: "reconcile (holes only) | all (full rebuild) | item (single)"
+        type: choice
+        default: reconcile
+        options: [reconcile, all, item]
+      item:
+        description: "Single item to rebuild (required when mode=item)"
+        type: string
+        default: ""
 
 permissions:
   contents: read
 
+# Serialize publishing: never cancel (a cancelled publish could leave a partial
+# catalogue); queued runs apply in order.
+concurrency:
+  group: forge-release-publish
+  cancel-in-progress: false
+
 jobs:
-  build:
+  detect:
     runs-on: ubuntu-latest
+    outputs:
+      items: ${{ steps.pick.outputs.items }}
+    steps:
+      - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+        with:
+          fetch-depth: 0
+      - name: Build dev image
+        run: ./dev build
+      - name: Sync dependencies
+        run: make sync
+      - name: Fetch published catalogue (for reconcile diff)
+        env:
+          CATALOG_URL: ${{ vars.FORGE_PUBLISHED_CATALOG_URL || format('https://{0}.github.io/{1}/catalog.json', github.repository_owner, github.event.repository.name) }}
+        run: |
+          if curl -fsSL "$CATALOG_URL" -o published-catalog.json; then
+            echo "fetched published catalogue"
+          else
+            echo "no published catalogue yet"
+          fi
+      - name: Pick items to build (trigger-scoped)
+        id: pick
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BASE_SHA: ${{ github.event.before }}
+          HEAD_SHA: ${{ github.sha }}
+          MODE: ${{ github.event.inputs.mode }}
+          ITEM: ${{ github.event.inputs.item }}
+        run: |
+          set -euo pipefail
+          reconcile_items() {
+            if [ -f published-catalog.json ]; then
+              ./dev run uv run mh catalog reconcile \
+                --catalog published-catalog.json --json | jq -c '.items'
+            else
+              ./dev run uv run mh catalog reconcile --json | jq -c '.items'
+            fi
+          }
+          all_items() { ./dev run uv run mh list --json | jq -c '[.[].name]'; }
+          case "$EVENT_NAME" in
+            push)
+              # Changed items only (one bump PR touches one manifest path).
+              items=$(git diff --name-only "$BASE_SHA" "$HEAD_SHA" -- 'catalog/**' \
+                | sed -n 's#^catalog/[^/]*/\([^/]*\)/manifest\.yaml$#\1#p' \
+                | sort -u | jq -R . | jq -cs .)
+              ;;
+            schedule)
+              items=$(reconcile_items)
+              ;;
+            workflow_dispatch)
+              case "$MODE" in
+                all) items=$(all_items) ;;
+                item)
+                  if [ -z "$ITEM" ]; then
+                    echo "mode=item requires the 'item' input" >&2
+                    exit 1
+                  fi
+                  items=$(jq -cn --arg i "$ITEM" '[$i]')
+                  ;;
+                *) items=$(reconcile_items) ;; # reconcile (default)
+              esac
+              ;;
+            *)
+              items=$(all_items) # release -> full rebuild
+              ;;
+          esac
+          echo "items=$items" >> "$GITHUB_OUTPUT"
+          echo "selected: $items"
+
+  build:
+    needs: detect
+    if: needs.detect.outputs.items != '[]'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        item: ${{ fromJSON(needs.detect.outputs.items) }}
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
       - name: Build dev image
         run: ./dev build
       - name: Sync dependencies
         run: make sync
-      - name: Build all artifacts (daemonless)
-        run: ./dev run uv run mh build --all --out ./dist
-      - name: Upload dist
+      - name: Build + sign one item, emit entry.json
+        env:
+          GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+          ITEM: ${{ matrix.item }}
+        run: |
+          ./dev run bash -c '
+            set -euo pipefail
+            export GNUPGHOME="$PWD/.gnupg-ci"
+            install -d -m 700 "$GNUPGHOME"
+            echo "allow-preset-passphrase" > "$GNUPGHOME/gpg-agent.conf"
+            gpg-connect-agent reloadagent /bye
+            printf "%s" "$GPG_PRIVATE_KEY" | gpg --batch --import
+            key_id=$(gpg --list-secret-keys --with-colons | awk -F: "/^sec/{print \$5; exit}")
+            grip=$(gpg --list-secret-keys --with-keygrip --with-colons \
+              | awk -F: "/^grp/{print \$10; exit}")
+            preset=$(command -v gpg-preset-passphrase \
+              || echo /usr/libexec/gpg-preset-passphrase)
+            "$preset" --preset --passphrase "$GPG_PASSPHRASE" "$grip"
+            uv run mh build "$ITEM" \
+              --sign-key "$key_id" --work-dir ./dist --entry-out ./entries
+          '
+      - name: Upload entry.json
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: dist
+          name: entry-${{ matrix.item }}
+          path: entries/
+          retention-days: 1
+      - name: Upload dist (signed packages + docker contexts)
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: dist-${{ matrix.item }}
           path: dist/
           retention-days: 1
 
-  repo:
-    needs: build
+  assemble:
+    needs: [detect, build]
+    if: always() && needs.detect.outputs.items != '[]'
     runs-on: ubuntu-latest
+    outputs:
+      published: ${{ steps.summary.outputs.published }}
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
-      - name: Download dist
+      - name: Download all entry.json
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
-          name: dist
+          pattern: entry-*
+          path: entries-raw/
+          merge-multiple: true
+      - name: Download all dist
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          pattern: dist-*
           path: dist/
+          merge-multiple: true
       - name: Build dev image
         run: ./dev build
       - name: Sync dependencies
         run: make sync
+      - name: Fetch published catalogue (merge base)
+        env:
+          CATALOG_URL: ${{ vars.FORGE_PUBLISHED_CATALOG_URL || format('https://{0}.github.io/{1}/catalog.json', github.repository_owner, github.event.repository.name) }}
+        run: |
+          if curl -fsSL "$CATALOG_URL" -o previous-catalog.json; then
+            echo "PREV=previous-catalog.json" >> "$GITHUB_ENV"
+          else
+            echo "no previous catalogue; assembling fresh"
+          fi
+      - name: Assemble catalogue (merge over previous)
+        run: |
+          set -euo pipefail
+          if [ -n "${PREV:-}" ]; then
+            ./dev run uv run mh catalog assemble \
+              --entries entries-raw --previous "$PREV" --output catalog.json
+          else
+            ./dev run uv run mh catalog assemble --entries entries-raw --output catalog.json
+          fi
+          cp catalog.json dist/catalog.json
       - name: Assemble signed distribution trees
         env:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
@@ -69,6 +224,20 @@ jobs:
               --out ./public --release-out ./release \
               --sign --key-id "$key_id" --public-key public.asc
           '
+      - name: Step summary (missing = expected - present)
+        id: summary
+        run: |
+          set -euo pipefail
+          {
+            echo "## Release summary"
+            echo ""
+            echo "Built items: ${{ needs.detect.outputs.items }}"
+            echo ""
+            echo '```'
+            ./dev run uv run mh catalog reconcile --catalog catalog.json || true
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "published=true" >> "$GITHUB_OUTPUT"
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
@@ -79,9 +248,16 @@ jobs:
           name: release
           path: release/
           retention-days: 1
+      - name: Upload assembled catalogue
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: catalog
+          path: catalog.json
+          retention-days: 1
 
   deploy-pages:
-    needs: repo
+    needs: assemble
+    if: always() && needs.assemble.result == 'success'
     runs-on: ubuntu-latest
     permissions:
       pages: write
@@ -95,7 +271,8 @@ jobs:
         uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0
 
   publish-releases:
-    needs: repo
+    needs: assemble
+    if: always() && needs.assemble.result == 'success'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -114,16 +291,23 @@ jobs:
         run: ./dev run uv run mh publish --releases ./release --repo "${{ github.repository }}"
 
   publish-oci:
-    needs: build
+    needs: assemble
+    if: always() && needs.assemble.result == 'success'
     runs-on: ubuntu-latest
     permissions:
       packages: write
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
-      - name: Download dist
+      - name: Download all dist
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
-          name: dist
+          pattern: dist-*
+          path: dist/
+          merge-multiple: true
+      - name: Download assembled catalogue
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: catalog
           path: dist/
       - name: Set up qemu/binfmt (cross-arch buildah)
         run: docker run --privileged --rm tonistiigi/binfmt --install arm64
