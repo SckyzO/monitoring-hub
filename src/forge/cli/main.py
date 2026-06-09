@@ -15,7 +15,8 @@ from forge.bundle.builder import build_bundle
 from forge.bundle.images import ImageSource, LocalImageSource, RegistryImageSource
 from forge.bundle.resolver import load_recipe, recipe_from_selection
 from forge.bundle.source import ArtifactSource, LocalDirSource, ReleasesFetcher
-from forge.catalog.builder import build_catalog, load_catalog, write_catalog
+from forge.catalog.builder import assemble_catalog, build_catalog, load_catalog, write_catalog
+from forge.catalog.entries import load_entries, write_entry
 from forge.cli._context import iter_manifest_paths, resolve_catalog_root
 from forge.domain.catalog import CatalogEntry
 from forge.domain.errors import ForgeError
@@ -164,6 +165,13 @@ def _build_context(work_dir: Path, sign_key: str | None) -> BuildContext:
     show_default=True,
     help="Working directory for downloads and produced artifacts.",
 )
+@click.option(
+    "--entry-out",
+    "entry_out",
+    type=click.Path(file_okay=False, path_type=Path),
+    default=None,
+    help="Directory to write this item's entry.json (for mh catalog assemble).",
+)
 def build(  # noqa: PLR0913 — Click options map one-to-one to parameters
     ref: str,
     catalog_root: str | None,
@@ -171,6 +179,7 @@ def build(  # noqa: PLR0913 — Click options map one-to-one to parameters
     overlay: Path | None,
     sign_key: str | None,
     work_dir: Path,
+    entry_out: Path | None,
 ) -> None:
     """Build one item's artifacts locally (REF = catalogue name or manifest path)."""
     discover()
@@ -183,6 +192,8 @@ def build(  # noqa: PLR0913 — Click options map one-to-one to parameters
             f"{art.type}\t{art.target or '-'}\t{art.arch or '-'}\t"
             f"{art.sha256[:12]}\tsigned={art.signed}"
         )
+    if entry_out is not None:
+        write_entry(result.entry, entry_out)
     click.echo(f"built {len(result.artifacts)} artifact(s) for {manifest.name}")
 
 
@@ -277,6 +288,38 @@ def catalog_build(  # noqa: PLR0913 — Click options map one-to-one to paramete
     result = build_catalog(entries, previous=prior)
     write_catalog(result, output)
     click.echo(f"wrote {len(result.items)} item(s) to {output}")
+
+
+@catalog.command(name="assemble")
+@click.option(
+    "--entries",
+    "entries_dir",
+    type=click.Path(exists=True, file_okay=False, path_type=Path),
+    required=True,
+    help="Directory of per-item entry.json files (from mh build --entry-out).",
+)
+@click.option(
+    "--previous",
+    "previous",
+    type=click.Path(dir_okay=False, path_type=Path),
+    default=None,
+    help="Previous catalog.json to merge over (unbuilt items are kept).",
+)
+@click.option(
+    "--output",
+    "output",
+    type=click.Path(dir_okay=False, path_type=Path),
+    default=Path("catalog.json"),
+    show_default=True,
+    help="Where to write the assembled catalog.json.",
+)
+def catalog_assemble(entries_dir: Path, previous: Path | None, output: Path) -> None:
+    """Join per-item entry.json files into catalog.json, merging over a previous one."""
+    entries = load_entries(entries_dir)
+    prior = load_catalog(previous) if previous is not None else None
+    result = assemble_catalog(entries, previous=prior)
+    write_catalog(result, output)
+    click.echo(f"assembled {len(result.items)} item(s) into {output}")
 
 
 @cli.group()
