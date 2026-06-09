@@ -157,20 +157,49 @@ jobs:
           path: dist/
           retention-days: 1
 
-  repo:
-    needs: build
+  assemble:
+    needs: [detect, build]
+    if: always() && needs.detect.outputs.items != '[]'
     runs-on: ubuntu-latest
+    outputs:
+      published: ${{ steps.summary.outputs.published }}
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
-      - name: Download dist
+      - name: Download all entry.json
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
-          name: dist
+          pattern: entry-*
+          path: entries-raw/
+          merge-multiple: true
+      - name: Download all dist
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          pattern: dist-*
           path: dist/
+          merge-multiple: true
       - name: Build dev image
         run: ./dev build
       - name: Sync dependencies
         run: make sync
+      - name: Fetch published catalogue (merge base)
+        env:
+          CATALOG_URL: ${{ vars.FORGE_PUBLISHED_CATALOG_URL || format('https://{0}.github.io/{1}/catalog.json', github.repository_owner, github.event.repository.name) }}
+        run: |
+          if curl -fsSL "$CATALOG_URL" -o previous-catalog.json; then
+            echo "PREV=previous-catalog.json" >> "$GITHUB_ENV"
+          else
+            echo "no previous catalogue; assembling fresh"
+          fi
+      - name: Assemble catalogue (merge over previous)
+        run: |
+          set -euo pipefail
+          if [ -n "${PREV:-}" ]; then
+            ./dev run uv run mh catalog assemble \
+              --entries entries-raw --previous "$PREV" --output catalog.json
+          else
+            ./dev run uv run mh catalog assemble --entries entries-raw --output catalog.json
+          fi
+          cp catalog.json dist/catalog.json
       - name: Assemble signed distribution trees
         env:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
@@ -195,6 +224,20 @@ jobs:
               --out ./public --release-out ./release \
               --sign --key-id "$key_id" --public-key public.asc
           '
+      - name: Step summary (missing = expected - present)
+        id: summary
+        run: |
+          set -euo pipefail
+          {
+            echo "## Release summary"
+            echo ""
+            echo "Built items: ${{ needs.detect.outputs.items }}"
+            echo ""
+            echo '```'
+            ./dev run uv run mh catalog reconcile --catalog catalog.json || true
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "published=true" >> "$GITHUB_OUTPUT"
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
@@ -205,9 +248,16 @@ jobs:
           name: release
           path: release/
           retention-days: 1
+      - name: Upload assembled catalogue
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: catalog
+          path: catalog.json
+          retention-days: 1
 
   deploy-pages:
-    needs: repo
+    needs: assemble
+    if: always() && needs.assemble.result == 'success'
     runs-on: ubuntu-latest
     permissions:
       pages: write
@@ -221,7 +271,8 @@ jobs:
         uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0
 
   publish-releases:
-    needs: repo
+    needs: assemble
+    if: always() && needs.assemble.result == 'success'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -240,16 +291,23 @@ jobs:
         run: ./dev run uv run mh publish --releases ./release --repo "${{ github.repository }}"
 
   publish-oci:
-    needs: build
+    needs: assemble
+    if: always() && needs.assemble.result == 'success'
     runs-on: ubuntu-latest
     permissions:
       packages: write
     steps:
       - uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
-      - name: Download dist
+      - name: Download all dist
         uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
-          name: dist
+          pattern: dist-*
+          path: dist/
+          merge-multiple: true
+      - name: Download assembled catalogue
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: catalog
           path: dist/
       - name: Set up qemu/binfmt (cross-arch buildah)
         run: docker run --privileged --rm tonistiigi/binfmt --install arm64
