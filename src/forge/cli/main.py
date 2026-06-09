@@ -20,6 +20,7 @@ from forge.catalog.entries import load_entries, write_entry
 from forge.cli._context import iter_manifest_paths, resolve_catalog_root
 from forge.detect.base import DetectedVersion
 from forge.detect.bump import bump_manifest
+from forge.detect.reconcile import missing_legs
 from forge.detect.registry import discover as discover_sources
 from forge.detect.watch import detect_all
 from forge.domain.catalog import CatalogEntry
@@ -376,6 +377,53 @@ def catalog_assemble(entries_dir: Path, previous: Path | None, output: Path) -> 
     result = assemble_catalog(entries, previous=prior)
     write_catalog(result, output)
     click.echo(f"assembled {len(result.items)} item(s) into {output}")
+
+
+@catalog.command(name="reconcile")
+@_catalog_root_option
+@click.option(
+    "--catalog",
+    "catalog_path",
+    type=click.Path(dir_okay=False, path_type=Path),
+    default=None,
+    help="Published catalog.json to diff against (omit to treat everything as missing).",
+)
+@click.option("--json", "as_json", is_flag=True, help="Emit machine-readable JSON.")
+def catalog_reconcile(catalog_root: str | None, catalog_path: Path | None, as_json: bool) -> None:
+    """Report missing = expected(manifest matrix) - present(catalog) legs (spec §7).
+
+    ``--json`` emits ``{"missing": [{item,type,target,arch}], "items": [names]}``;
+    the reconcile workflow drives its build matrix from ``items`` and renders
+    ``missing`` into the run's step summary. No writes.
+    """
+    discover()
+    root = resolve_catalog_root(catalog_root)
+    manifests = [parse_manifest(load_yaml_mapping(p)) for p in iter_manifest_paths(root)]
+    catalog = load_catalog(catalog_path) if catalog_path is not None else None
+    legs = missing_legs(manifests, catalog)
+    items = sorted({leg.item for leg in legs})
+
+    if as_json:
+        click.echo(
+            jsonlib.dumps(
+                {
+                    "missing": [
+                        {"item": x.item, "type": x.type, "target": x.target, "arch": x.arch}
+                        for x in legs
+                    ],
+                    "items": items,
+                },
+                indent=2,
+            )
+        )
+        return
+
+    if not legs:
+        click.echo("all legs present")
+        return
+    for leg in legs:
+        click.echo(f"{leg.item}\t{leg.type}\t{leg.target or '-'}\t{leg.arch or '-'}")
+    click.echo(f"{len(legs)} missing leg(s) across {len(items)} item(s)")
 
 
 @cli.group()
