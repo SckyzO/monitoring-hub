@@ -1,0 +1,163 @@
+# =============================================================================
+# Monitoring Hub — manifest reference (kind: exporter)
+# =============================================================================
+# This file is the canonical, fully-annotated example of an exporter manifest.
+# It is a VALID manifest: the test suite parses it on every CI run, so it can
+# never drift from the schema. Every optional field is shown with its default
+# in a comment. Copy the parts you need into catalog/exporters/<name>/manifest.yaml.
+#
+# Schema rules worth knowing up front:
+#   * All objects reject unknown keys (a typo'd field fails `mh validate`).
+#   * `kind` selects the spec shape — see the dashboard kind at the bottom.
+#   * Mutually-exclusive variants (github vs local upstream) cannot coexist in
+#     one file; the alternatives are shown as comments.
+# =============================================================================
+
+# --- common envelope (every kind shares these) -------------------------------
+kind: exporter                      # required; "exporter" or "dashboard"
+name: example_exporter              # required; unique catalogue id, also the package base name
+description: Example exporter showing every manifest field   # required; one line
+category: System                    # default "System"; free text (System, Database, Network, ...)
+version: v1.2.3                     # required, non-empty; the upstream tag VERBATIM (the "v" is
+                                    # kept — the GitHub download URL uses it as-is)
+license: Apache-2.0                 # optional (default null); SPDX id of the upstream project
+
+spec:
+  # --- where the artifact comes from -----------------------------------------
+  upstream:
+    type: github                    # required; "github" or "local"
+    repo: example-org/example_exporter   # required when type=github (owner/repo)
+    strategy: latest_release        # default "latest_release"; the only strategy today.
+                                    # Drives the upstream watcher (mh watch / scan-updates).
+    pin_major: null                 # optional (default null = bump freely). Set to an int to
+                                    # cap auto-bumps, e.g. `pin_major: 1` keeps the item on 1.x.
+    # archive_name: optional. Default (when null) is the convention below. Override only if the
+    # release asset name differs. Placeholders: {name} {version} {clean_version} {arch}
+    # ({clean_version} is {version} without a leading "v"). String form:
+    archive_name: "{name}-{clean_version}.linux-{arch}.tar.gz"
+    # ...or per-arch dict form when upstream names assets inconsistently:
+    # archive_name:
+    #   amd64: example_exporter-{clean_version}.linux-amd64.tar.gz
+    #   arm64: example_exporter-{clean_version}.linux-aarch64.tar.gz
+    #
+    # For a vendored/local source instead of github, use (mutually exclusive with the above):
+    #   type: local
+    #   local_binary: assets/example_exporter        # XOR local_archive (exactly one)
+    #   local_archive: assets/example_exporter.tar.gz
+
+  # --- how the artifact is assembled -----------------------------------------
+  build:
+    method: binary_repack           # required; "binary_repack" (download + repackage a prebuilt
+                                    # binary) or "source_build" (compile from source).
+    binary_name: example_exporter   # required; the executable inside the archive → /usr/bin/<name>
+    extra_binaries: []              # default []; additional executables to ship from the archive
+    extra_sources: []               # default []; extra files fetched by URL, e.g.:
+    #   - url: https://example.org/extra-config.yml
+    #     filename: extra-config.yml
+    archs:                          # default [amd64, arm64]; build architectures
+      - amd64
+      - arm64
+
+  # --- what gets published; each artifact type is independent ----------------
+  artifacts:
+    # ---- RPM (RHEL/Alma/Rocky) ----------------------------------------------
+    rpm:
+      enabled: true                 # default false
+      targets:                      # default [el9, el10] (the auto-build set). Any string is
+        - el9                       # accepted, so el8 stays buildable by hand though it is out
+        - el10                      # of the unattended default.
+      summary: Example exporter for Prometheus   # optional (default null); RPM Summary
+      install_path: null            # optional (default null = /usr/bin); override binary dir
+      dependencies: []              # default []; extra RPM Requires
+      system_user: prometheus       # optional (default null); creates a service account
+      systemd:
+        enabled: true               # default false; ship + enable a systemd unit
+        arguments:                  # default []; flags appended to ExecStart
+          - --web.listen-address=:9100
+        after:                      # default ["network.target"]
+          - network.target
+        restart: on-failure         # default "on-failure"
+        type: simple                # default "simple"
+      extra_files:                  # default []; arbitrary files to install
+        - source: assets/example.conf   # path relative to the manifest dir
+          dest: /etc/example_exporter/example.conf
+          mode: "0644"              # default "0644"
+          config: true              # default false; mark as an RPM %config(noreplace) file
+      directories:                  # default []; directories to create with ownership
+        - path: /var/lib/example_exporter
+          mode: "0750"              # default "0755"
+          owner: prometheus         # default "root"
+          group: prometheus         # default "root"
+
+    # ---- DEB (Debian/Ubuntu) ------------------------------------------------
+    deb:
+      enabled: true                 # default false
+      targets:                      # default [ubuntu-24.04, ubuntu-26.04, debian-12, debian-13]
+        - debian-12
+        - debian-13
+        - ubuntu-24.04
+      summary: Example exporter for Prometheus   # optional (default null)
+      system_user: prometheus       # optional (default null)
+      dependencies: []              # default []; extra DEB Depends
+      systemd:
+        enabled: true               # default false
+        arguments:
+          - --web.listen-address=:9100
+        after:
+          - network.target
+        restart: on-failure
+        type: simple
+      extra_files:                  # default []
+        - source: assets/example.conf
+          dest: /etc/example_exporter/example.conf
+          mode: "0644"
+          config: true
+      directories:                  # default []
+        - path: /var/lib/example_exporter
+          mode: "0750"
+          owner: prometheus
+          group: prometheus
+      section: net                  # default "utils"; Debian archive section
+      priority: optional            # default "optional"
+
+    # ---- Docker / OCI image -------------------------------------------------
+    docker:
+      enabled: true                 # default false
+      base_image: registry.access.redhat.com/ubi9/ubi-minimal   # default UBI9 minimal
+      entrypoint:                   # default []; image ENTRYPOINT
+        - /usr/bin/example_exporter
+      cmd: []                       # default []; default CMD args
+      dockerfile: null              # optional (default null = generic FROM/COPY/ENTRYPOINT
+                                    # renderer). Set to a path (relative to the manifest dir) of
+                                    # a Jinja2 Dockerfile template for custom layers / multi-stage.
+      validation:
+        enabled: true               # default true; run an image smoke check at build time
+        port: 9100                  # optional (default null); TCP port probed after start
+        command: null               # optional (default null); custom check command instead of port
+        args: null                  # optional (default null); args for `command`
+
+# =============================================================================
+# kind: dashboard (alternative kind — shown for reference, not part of the
+# exporter example above). A dashboard manifest replaces the whole `spec`:
+#
+#   kind: dashboard
+#   name: node_exporter_full
+#   description: Node Exporter Full dashboard
+#   category: System
+#   version: "1"
+#   spec:
+#     datasource: prometheus        # optional (default null)
+#     tags: [prometheus, node]      # default []
+#     source:                       # discriminated on `type`; pick exactly one:
+#       type: grafana               #   grafana.com revision
+#       id: 1860
+#       revision: 37
+#     # type: url                   #   raw URL to a dashboard JSON
+#     #   url: https://example.org/dashboard.json
+#     # type: git                   #   a file in a git repo
+#     #   repo: https://github.com/org/repo
+#     #   ref: main
+#     #   path: dashboards/node.json
+#     # type: local                 #   a vendored file (relative to the manifest dir)
+#     #   path: assets/dashboard.json
+# =============================================================================
