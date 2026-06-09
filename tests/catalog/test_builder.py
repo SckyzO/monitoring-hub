@@ -63,3 +63,29 @@ def test_write_then_load_round_trips(tmp_path: Path) -> None:
     assert again is not None
     assert again.items[0].name == "a"
     assert again.items[0].new is True
+
+
+def test_write_catalog_leaves_no_temp_file(tmp_path: Path) -> None:
+    cat = build_catalog([_entry("a", "1")], previous=None, generated_at="t")
+    out = tmp_path / "catalog.json"
+    write_catalog(cat, out)
+    assert out.is_file()
+    assert list(tmp_path.glob("*.tmp")) == []
+
+
+def test_write_catalog_failure_preserves_existing(tmp_path: Path, monkeypatch) -> None:
+    import forge.catalog.builder as builder_mod
+
+    out = tmp_path / "catalog.json"
+    write_catalog(build_catalog([_entry("a", "1")], generated_at="t0"), out)
+    original = out.read_text(encoding="utf-8")
+
+    def boom(src, dst):
+        raise OSError("disk full")
+
+    monkeypatch.setattr(builder_mod.os, "replace", boom)
+    with pytest.raises(OSError, match="disk full"):
+        write_catalog(build_catalog([_entry("a", "2")], generated_at="t1"), out)
+
+    assert out.read_text(encoding="utf-8") == original
+    assert list(tmp_path.glob("*.tmp")) == []
