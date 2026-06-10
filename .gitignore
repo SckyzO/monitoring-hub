@@ -62,4 +62,13 @@ ARCHITECTURE/
 dev/*
 !dev/*.md
 !dev/*.yml.example
-!dev/README.mdsecrets/
+!dev/README.md
+
+# --- GPG signing material (reproducible via scripts/generate_gpg_key.sh) ---
+# secrets/ is already ignored above; these exact-name guards are defensive in case
+# key material is ever exported outside secrets/ by mistake.
+GPG_PRIVATE_KEY
+GPG_PASSPHRASE
+GPG_PUBLIC_KEY
+# ephemeral gpg home used by the release pipeline / local dry-runs
+.gnupg-ci/
