@@ -27,11 +27,15 @@ RUN apt-get update \
 #   skopeo         -> copy/push OCI images + multi-arch manifests
 #   gnupg          -> sign repo metadata (repomd.xml.asc, InRelease, Release.gpg)
 #   qemu-user-static + binfmt-support -> cross-arch (arm64) emulation for buildah
+#   uidmap         -> newuidmap/newgidmap, required for rootless buildah's
+#                     user-namespace UID/GID mapping (see subuid/subgid below)
 # hadolint ignore=DL3008
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-    createrepo-c rpm debsigs apt-utils buildah skopeo gnupg qemu-user-static binfmt-support \
-    && rm -rf /var/lib/apt/lists/*
+    createrepo-c rpm debsigs apt-utils buildah skopeo gnupg qemu-user-static binfmt-support uidmap \
+    && rm -rf /var/lib/apt/lists/* \
+    && echo "dev:100000:65536" > /etc/subuid \
+    && echo "dev:100000:65536" > /etc/subgid
 
 # uv: the package manager.
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
@@ -60,5 +64,13 @@ ENV UV_LINK_MODE=copy \
     UV_CACHE_DIR=/workspace/.uv-cache \
     PRE_COMMIT_HOME=/workspace/.pre-commit-cache \
     PATH="/workspace/.venv/bin:/usr/local/bin:${PATH}"
+
+# Rootless buildah inside an unprivileged container: chroot isolation avoids the
+# runc/cgroup setup that fails when nested, and the vfs storage driver avoids
+# needing fuse-overlayfs + /dev/fuse. Combined with the subuid/subgid above and
+# the seccomp/apparmor opts ./dev passes for `run-oci`, this lets the OCI publish
+# job build cross-arch images without a docker socket or privileged mode.
+ENV BUILDAH_ISOLATION=chroot \
+    STORAGE_DRIVER=vfs
 
 USER dev
