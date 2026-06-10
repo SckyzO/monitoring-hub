@@ -20,6 +20,7 @@ RUN apt-get update \
 
 # SP2 distribution tooling, all from Debian packages:
 #   createrepo-c   -> yum/RPM repo metadata (repodata/, repomd.xml)
+#   rpm            -> rpmsign, to GPG-sign the built .rpm packages
 #   apt-utils      -> apt-ftparchive, the stateless flat APT repo generator
 #   buildah        -> daemonless, rootless OCI image build (no docker socket)
 #   skopeo         -> copy/push OCI images + multi-arch manifests
@@ -28,7 +29,7 @@ RUN apt-get update \
 # hadolint ignore=DL3008
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-    createrepo-c apt-utils buildah skopeo gnupg qemu-user-static binfmt-support \
+    createrepo-c rpm apt-utils buildah skopeo gnupg qemu-user-static binfmt-support \
     && rm -rf /var/lib/apt/lists/*
 
 # uv: the package manager.
