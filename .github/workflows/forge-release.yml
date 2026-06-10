@@ -125,22 +125,17 @@ jobs:
       - name: Build + sign one item, emit entry.json
         env:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
-          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
           ITEM: ${{ matrix.item }}
         run: |
           ./dev run bash -c '
             set -euo pipefail
             export GNUPGHOME="$PWD/.gnupg-ci"
             install -d -m 700 "$GNUPGHOME"
-            echo "allow-preset-passphrase" > "$GNUPGHOME/gpg-agent.conf"
-            gpg-connect-agent reloadagent /bye
-            printf "%s" "$GPG_PRIVATE_KEY" | gpg --batch --import
+            # GPG_PRIVATE_KEY is the base64-encoded armored key (see
+            # scripts/generate_gpg_key.sh); decode before import. The key is
+            # passphraseless, so gpg-agent serves it without a preset.
+            printf "%s" "$GPG_PRIVATE_KEY" | base64 -d | gpg --batch --import
             key_id=$(gpg --list-secret-keys --with-colons | awk -F: "/^sec/{print \$5; exit}")
-            grip=$(gpg --list-secret-keys --with-keygrip --with-colons \
-              | awk -F: "/^grp/{print \$10; exit}")
-            preset=$(command -v gpg-preset-passphrase \
-              || echo /usr/libexec/gpg-preset-passphrase)
-            "$preset" --preset --passphrase "$GPG_PASSPHRASE" "$grip"
             uv run mh build "$ITEM" \
               --sign-key "$key_id" --work-dir ./dist --entry-out ./entries
           '
@@ -203,21 +198,15 @@ jobs:
       - name: Assemble signed distribution trees
         env:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
-          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         run: |
           ./dev run bash -c '
             set -euo pipefail
             export GNUPGHOME="$PWD/.gnupg-ci"
             install -d -m 700 "$GNUPGHOME"
-            echo "allow-preset-passphrase" > "$GNUPGHOME/gpg-agent.conf"
-            gpg-connect-agent reloadagent /bye
-            printf "%s" "$GPG_PRIVATE_KEY" | gpg --batch --import
+            # base64-encoded armored key (scripts/generate_gpg_key.sh); decode
+            # before import. Passphraseless key -> no gpg-agent preset needed.
+            printf "%s" "$GPG_PRIVATE_KEY" | base64 -d | gpg --batch --import
             key_id=$(gpg --list-secret-keys --with-colons | awk -F: "/^sec/{print \$5; exit}")
-            grip=$(gpg --list-secret-keys --with-keygrip --with-colons \
-              | awk -F: "/^grp/{print \$10; exit}")
-            preset=$(command -v gpg-preset-passphrase \
-              || echo /usr/libexec/gpg-preset-passphrase)
-            "$preset" --preset --passphrase "$GPG_PASSPHRASE" "$grip"
             gpg --armor --export "$key_id" > public.asc
             uv run mh repo build \
               --catalog dist/catalog.json --packages dist --dashboards dist/dashboards \
