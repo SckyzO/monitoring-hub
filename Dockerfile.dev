@@ -55,6 +55,22 @@ RUN set -eux; \
     rm /tmp/nfpm.tgz; \
     nfpm --version
 
+# gh — GitHub CLI, used by forge.publish.releases to create/upload GitHub
+# Releases. Pinned by version; the tarball ships gh under bin/, so strip the
+# leading version dir to land it at /usr/local/bin/gh.
+ARG GH_VERSION=2.93.0
+RUN set -eux; \
+    arch="$(dpkg --print-architecture)"; \
+    case "$arch" in \
+    amd64) gh_arch=amd64 ;; \
+    arm64) gh_arch=arm64 ;; \
+    *) echo "unsupported arch $arch" >&2; exit 1 ;; \
+    esac; \
+    curl -fsSL "https://github.com/cli/cli/releases/download/v${GH_VERSION}/gh_${GH_VERSION}_linux_${gh_arch}.tar.gz" -o /tmp/gh.tgz; \
+    tar -xzf /tmp/gh.tgz -C /usr/local --strip-components=1 "gh_${GH_VERSION}_linux_${gh_arch}/bin/gh"; \
+    rm /tmp/gh.tgz; \
+    gh --version
+
 WORKDIR /workspace
 
 # Keep the venv and uv cache inside the mounted workspace so they persist across
