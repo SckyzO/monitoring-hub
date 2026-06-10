@@ -115,6 +115,67 @@ def test_package_raises_build_error_on_nonzero(manifest: ExporterManifest, tmp_p
         )
 
 
+def test_package_resolves_src_paths_to_absolute(
+    manifest: ExporterManifest, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """nfpm runs with ``cwd=work_dir``, so every src/script path it reads must be
+    absolute; a relative ``--work-dir`` must not yield relative ``src`` entries."""
+    monkeypatch.chdir(tmp_path)
+    work = Path("work")
+    work.mkdir()
+    binary = Path("node_exporter")
+    binary.write_bytes(b"\x7fELF-fake")
+    out = work / "node_exporter-1.9.1-1.el9.x86_64.rpm"
+
+    class WritingRunner(FakeRunner):
+        def run(
+            self,
+            args: Any,
+            *,
+            cwd: Any = None,
+            env: Any = None,
+            stdin: Any = None,
+        ) -> CommandResult:
+            out.write_bytes(b"rpmdata")
+            return super().run(args, cwd=cwd, env=env, stdin=stdin)
+
+    NfpmPackager(WritingRunner()).package(
+        manifest,
+        packager="rpm",
+        target="el9",
+        arch="amd64",
+        binary_src=binary,  # relative on purpose
+        work_dir=work,  # relative on purpose
+    )
+
+    config = yaml.safe_load((work / "nfpm.yaml").read_text())
+    assert Path(config["contents"][0]["src"]).is_absolute()  # the binary
+    service = next(e for e in config["contents"] if str(e.get("dst", "")).endswith(".service"))
+    assert Path(service["src"]).is_absolute()
+    for script_path in config["scripts"].values():
+        assert Path(script_path).is_absolute()
+
+
+def test_package_build_error_includes_stdout(
+    manifest: ExporterManifest, tmp_path: Path
+) -> None:
+    """nfpm reports failures on stdout, not stderr; the BuildError must surface it."""
+    work = tmp_path / "work"
+    work.mkdir()
+    runner = FakeRunner(
+        [CommandResult(args=["nfpm"], returncode=1, stdout="matching ...: file does not exist", stderr="")]
+    )
+    with pytest.raises(BuildError, match="file does not exist"):
+        NfpmPackager(runner).package(
+            manifest,
+            packager="rpm",
+            target="el9",
+            arch="amd64",
+            binary_src=_binary(tmp_path),
+            work_dir=work,
+        )
+
+
 def test_package_deb_uses_normalized_name(manifest: ExporterManifest, tmp_path: Path) -> None:
     work = tmp_path / "work"
     work.mkdir()
