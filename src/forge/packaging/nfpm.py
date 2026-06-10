@@ -127,12 +127,18 @@ class NfpmPackager:
         if art is None:
             raise BuildError(f"manifest {manifest.name!r} has no {packager} target")
 
+        # nfpm runs with ``cwd=work_dir`` (below), so every file path it reads must
+        # be absolute — a relative ``--work-dir`` (e.g. ``./dist`` in CI) would
+        # otherwise produce src paths that resolve against the wrong directory.
+        work_dir = work_dir.resolve()
+        binary_src = binary_src.resolve()
+
         install_path = getattr(art, "install_path", None) or "/usr/bin"
         binary_dst = f"{install_path.rstrip('/')}/{manifest.spec.build.binary_name}"
         # build.extra_binaries (e.g. amtool, promtool) ship in the same archive;
         # install them next to the main binary, keyed by dst for src fill-in.
         extra_src_by_dst = {
-            f"{install_path.rstrip('/')}/{name}": src
+            f"{install_path.rstrip('/')}/{name}": src.resolve()
             for name, src in (extra_binaries or {}).items()
         }
 
@@ -200,7 +206,9 @@ class NfpmPackager:
             cwd=work_dir,
         )
         if result.returncode != 0:
-            raise BuildError(f"nfpm {packager} build failed for {manifest.name}: {result.stderr}")
+            # nfpm writes its diagnostics to stdout, not stderr; surface both.
+            detail = (result.stderr + "\n" + result.stdout).strip()
+            raise BuildError(f"nfpm {packager} build failed for {manifest.name}: {detail}")
 
         produced = sorted(work_dir.glob(f"*.{packager}"))
         if not produced:
