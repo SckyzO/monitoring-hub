@@ -156,14 +156,16 @@ def test_package_resolves_src_paths_to_absolute(
         assert Path(script_path).is_absolute()
 
 
-def test_package_build_error_includes_stdout(
-    manifest: ExporterManifest, tmp_path: Path
-) -> None:
+def test_package_build_error_includes_stdout(manifest: ExporterManifest, tmp_path: Path) -> None:
     """nfpm reports failures on stdout, not stderr; the BuildError must surface it."""
     work = tmp_path / "work"
     work.mkdir()
     runner = FakeRunner(
-        [CommandResult(args=["nfpm"], returncode=1, stdout="matching ...: file does not exist", stderr="")]
+        [
+            CommandResult(
+                args=["nfpm"], returncode=1, stdout="matching ...: file does not exist", stderr=""
+            )
+        ]
     )
     with pytest.raises(BuildError, match="file does not exist"):
         NfpmPackager(runner).package(
