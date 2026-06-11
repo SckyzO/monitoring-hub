@@ -23,6 +23,9 @@ spec:
       summary: Prometheus Alertmanager
       systemd:
         enabled: true
+        arguments:
+        - --config.file=/etc/alertmanager/alertmanager.yml
+        - --storage.path=/var/lib/alertmanager
       system_user: alertmanager
       extra_files:
       - source: assets/alertmanager.yml
