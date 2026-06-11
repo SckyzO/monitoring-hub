@@ -27,11 +27,15 @@ RUN apt-get update \
 #   skopeo         -> copy/push OCI images + multi-arch manifests
 #   gnupg          -> sign repo metadata (repomd.xml.asc, InRelease, Release.gpg)
 #   qemu-user-static + binfmt-support -> cross-arch (arm64) emulation for buildah
+#   uidmap         -> newuidmap/newgidmap, required for rootless buildah's
+#                     user-namespace UID/GID mapping (see subuid/subgid below)
 # hadolint ignore=DL3008
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-    createrepo-c rpm debsigs apt-utils buildah skopeo gnupg qemu-user-static binfmt-support \
-    && rm -rf /var/lib/apt/lists/*
+    createrepo-c rpm debsigs apt-utils buildah skopeo gnupg qemu-user-static binfmt-support uidmap \
+    && rm -rf /var/lib/apt/lists/* \
+    && echo "dev:100000:65536" > /etc/subuid \
+    && echo "dev:100000:65536" > /etc/subgid
 
 # uv: the package manager.
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
@@ -51,6 +55,22 @@ RUN set -eux; \
     rm /tmp/nfpm.tgz; \
     nfpm --version
 
+# gh — GitHub CLI, used by forge.publish.releases to create/upload GitHub
+# Releases. Pinned by version; the tarball ships gh under bin/, so strip the
+# leading version dir to land it at /usr/local/bin/gh.
+ARG GH_VERSION=2.93.0
+RUN set -eux; \
+    arch="$(dpkg --print-architecture)"; \
+    case "$arch" in \
+    amd64) gh_arch=amd64 ;; \
+    arm64) gh_arch=arm64 ;; \
+    *) echo "unsupported arch $arch" >&2; exit 1 ;; \
+    esac; \
+    curl -fsSL "https://github.com/cli/cli/releases/download/v${GH_VERSION}/gh_${GH_VERSION}_linux_${gh_arch}.tar.gz" -o /tmp/gh.tgz; \
+    tar -xzf /tmp/gh.tgz -C /usr/local --strip-components=1 "gh_${GH_VERSION}_linux_${gh_arch}/bin/gh"; \
+    rm /tmp/gh.tgz; \
+    gh --version
+
 WORKDIR /workspace
 
 # Keep the venv and uv cache inside the mounted workspace so they persist across
@@ -60,5 +80,13 @@ ENV UV_LINK_MODE=copy \
     UV_CACHE_DIR=/workspace/.uv-cache \
     PRE_COMMIT_HOME=/workspace/.pre-commit-cache \
     PATH="/workspace/.venv/bin:/usr/local/bin:${PATH}"
+
+# Rootless buildah inside an unprivileged container: chroot isolation avoids the
+# runc/cgroup setup that fails when nested, and the vfs storage driver avoids
+# needing fuse-overlayfs + /dev/fuse. Combined with the subuid/subgid above and
+# the seccomp/apparmor opts ./dev passes for `run-oci`, this lets the OCI publish
+# job build cross-arch images without a docker socket or privileged mode.
+ENV BUILDAH_ISOLATION=chroot \
+    STORAGE_DRIVER=vfs
 
 USER dev
