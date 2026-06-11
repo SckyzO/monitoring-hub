@@ -52,7 +52,14 @@ jobs:
         run: make sync
       - name: Fetch published catalogue (for reconcile diff)
         env:
-          CATALOG_URL: ${{ vars.FORGE_PUBLISHED_CATALOG_URL || format('https://{0}.github.io/{1}/catalog.json', github.repository_owner, github.event.repository.name) }}
+          # Forge "previous" catalogue, opt-in via the FORGE_PUBLISHED_CATALOG_URL
+          # repo variable. Left unset on purpose pre-cutover: the gh-pages
+          # catalog.json still served at that path is the LEGACY product's
+          # catalogue (different items/targets, e.g. dropped el8) and merging it
+          # injects packages this pipeline never builds. Unset -> fresh full
+          # assemble. Set it to the forge-owned catalogue after the Pages cutover
+          # to re-enable incremental merge.
+          CATALOG_URL: ${{ vars.FORGE_PUBLISHED_CATALOG_URL }}
         run: |
           if curl -fsSL "$CATALOG_URL" -o published-catalog.json; then
             echo "fetched published catalogue"
@@ -178,7 +185,14 @@ jobs:
         run: make sync
       - name: Fetch published catalogue (merge base)
         env:
-          CATALOG_URL: ${{ vars.FORGE_PUBLISHED_CATALOG_URL || format('https://{0}.github.io/{1}/catalog.json', github.repository_owner, github.event.repository.name) }}
+          # Forge "previous" catalogue, opt-in via the FORGE_PUBLISHED_CATALOG_URL
+          # repo variable. Left unset on purpose pre-cutover: the gh-pages
+          # catalog.json still served at that path is the LEGACY product's
+          # catalogue (different items/targets, e.g. dropped el8) and merging it
+          # injects packages this pipeline never builds. Unset -> fresh full
+          # assemble. Set it to the forge-owned catalogue after the Pages cutover
+          # to re-enable incremental merge.
+          CATALOG_URL: ${{ vars.FORGE_PUBLISHED_CATALOG_URL }}
         run: |
           if curl -fsSL "$CATALOG_URL" -o previous-catalog.json; then
             echo "PREV=previous-catalog.json" >> "$GITHUB_ENV"
