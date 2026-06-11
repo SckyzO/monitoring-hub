@@ -22,6 +22,8 @@ spec:
       summary: Prometheus exporter for ICMP ping metrics
       systemd:
         enabled: true
+        arguments:
+        - --config.path=/etc/ping_exporter/ping.yml
       system_user: prometheus
       extra_files:
       - source: assets/ping.yml
@@ -39,6 +41,8 @@ spec:
       summary: Prometheus exporter for ICMP ping metrics
       systemd:
         enabled: true
+        arguments:
+        - --config.path=/etc/ping_exporter/ping.yml
       section: net
       priority: optional
       system_user: prometheus

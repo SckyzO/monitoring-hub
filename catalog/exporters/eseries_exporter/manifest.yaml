@@ -22,6 +22,8 @@ spec:
       summary: Prometheus exporter for E-Series
       systemd:
         enabled: true
+        arguments:
+        - --config.file=/etc/eseries_exporter/eseries_exporter.yml
       system_user: prometheus
       extra_files:
       - source: assets/eseries_exporter.yml
@@ -39,6 +41,8 @@ spec:
       summary: Prometheus exporter for NetApp/Lenovo E-Series storage systems
       systemd:
         enabled: true
+        arguments:
+        - --config.file=/etc/eseries_exporter/eseries_exporter.yml
       section: net
       priority: optional
       system_user: prometheus

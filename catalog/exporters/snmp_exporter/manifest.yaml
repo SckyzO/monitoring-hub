@@ -24,6 +24,8 @@ spec:
       summary: Prometheus exporter for SNMP metrics
       systemd:
         enabled: true
+        arguments:
+        - --config.file=/etc/snmp_exporter/snmp.yml
       system_user: prometheus
       extra_files:
       - source: snmp.yml
@@ -41,6 +43,8 @@ spec:
       summary: Prometheus exporter for SNMP-enabled devices
       systemd:
         enabled: true
+        arguments:
+        - --config.file=/etc/snmp_exporter/snmp.yml
       section: net
       priority: optional
       system_user: prometheus

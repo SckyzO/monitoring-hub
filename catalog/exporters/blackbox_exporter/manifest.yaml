@@ -21,6 +21,8 @@ spec:
       system_user: blackbox_exporter
       systemd:
         enabled: true
+        arguments:
+        - --config.file=/etc/blackbox_exporter/blackbox.yml
       extra_files:
       - source: assets/blackbox.yml
         dest: /etc/blackbox_exporter/blackbox.yml
@@ -41,6 +43,8 @@ spec:
       summary: Prometheus blackbox exporter for network probing (HTTP, DNS, TCP, ICMP)
       systemd:
         enabled: true
+        arguments:
+        - --config.file=/etc/blackbox_exporter/blackbox.yml
       section: net
       priority: optional
       system_user: blackbox_exporter

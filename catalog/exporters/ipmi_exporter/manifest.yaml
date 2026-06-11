@@ -23,6 +23,8 @@ spec:
       system_user: ipmi_exporter
       systemd:
         enabled: true
+        arguments:
+        - --config.file=/etc/ipmi_exporter/ipmi_remote.yml
       extra_files:
       - source: assets/ipmi_remote.yml
         dest: /etc/ipmi_exporter/ipmi_remote.yml
@@ -43,6 +45,8 @@ spec:
       summary: Prometheus exporter for IPMI devices
       systemd:
         enabled: true
+        arguments:
+        - --config.file=/etc/ipmi_exporter/ipmi_remote.yml
       section: net
       priority: optional
       system_user: ipmi_exporter

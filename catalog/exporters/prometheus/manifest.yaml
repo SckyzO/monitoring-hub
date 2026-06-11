@@ -23,6 +23,10 @@ spec:
       summary: The Prometheus monitoring system and time series database.
       systemd:
         enabled: true
+        arguments:
+        - --config.file=/etc/prometheus/prometheus.yml
+        - --storage.tsdb.path=/var/lib/prometheus
+        - --web.listen-address=0.0.0.0:9090
       system_user: prometheus
       extra_files:
       - source: assets/prometheus.yml

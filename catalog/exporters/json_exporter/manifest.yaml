@@ -25,6 +25,8 @@ spec:
       summary: A prometheus exporter which scrapes remote JSON by JSONPath.
       systemd:
         enabled: true
+        arguments:
+        - --config.file=/etc/json_exporter/config.yml
       extra_files:
       - source: assets/config.yml
         dest: /etc/json_exporter/config.yml
@@ -39,6 +41,8 @@ spec:
       summary: A prometheus exporter which scrapes remote JSON by JSONPath.
       systemd:
         enabled: true
+        arguments:
+        - --config.file=/etc/json_exporter/config.yml
       section: net
       priority: optional
       extra_files:
