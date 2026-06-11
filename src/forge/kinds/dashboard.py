@@ -34,8 +34,11 @@ class DashboardProducer:
         self.validate(manifest)
         manifest = cast("DashboardManifest", manifest)  # validate guarantees the kind
 
-        ctx.work_dir.mkdir(parents=True, exist_ok=True)
-        dest = ctx.work_dir / f"{manifest.name}.json"
+        # Land the JSON under a dashboards/ subdir so a `mh build --work-dir dist`
+        # in CI produces dist/dashboards/<name>.json — the exact path `mh repo
+        # build --dashboards dist/dashboards` reads at assemble time.
+        dest = ctx.work_dir / "dashboards" / f"{manifest.name}.json"
+        dest.parent.mkdir(parents=True, exist_ok=True)
         self._fetch(manifest, ctx, dest)
         self._validate_json(manifest, dest)
 

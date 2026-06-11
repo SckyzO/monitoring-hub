@@ -84,6 +84,15 @@ def test_build_emits_grafana_dashboard_artifact(tmp_path: Path) -> None:
     assert entry.version == "39"
 
 
+def test_build_writes_json_under_dashboards_subdir(tmp_path: Path) -> None:
+    """The JSON must land in work_dir/dashboards/<name>.json so `mh repo build
+    --dashboards dist/dashboards` finds it (assemble reads that exact path)."""
+    dl = FakeDownloader(payload=b'{"title": "Node", "panels": []}')
+    ctx = BuildContext(work_dir=tmp_path, downloader=dl, runner=FakeRunner())
+    DashboardProducer().build(_grafana_manifest(), ctx)
+    assert (tmp_path / "dashboards" / "node-overview.json").is_file()
+
+
 def test_build_rejects_non_object_json(tmp_path: Path) -> None:
     dl = FakeDownloader(payload=b"[1, 2, 3]")
     ctx = BuildContext(work_dir=tmp_path, downloader=dl, runner=FakeRunner())

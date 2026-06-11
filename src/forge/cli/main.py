@@ -199,12 +199,15 @@ _overlay_option = click.option(
 )
 
 
-def _build_context(work_dir: Path, sign_key: str | None) -> BuildContext:
+def _build_context(
+    work_dir: Path, sign_key: str | None, manifest_dir: Path | None = None
+) -> BuildContext:
     return BuildContext(
         work_dir=work_dir,
         downloader=HttpxDownloader(),
         runner=SubprocessRunner(),
         signing_key_id=sign_key,
+        manifest_dir=manifest_dir,
     )
 
 
@@ -241,8 +244,9 @@ def build(  # noqa: PLR0913 — Click options map one-to-one to parameters
     """Build one item's artifacts locally (REF = catalogue name or manifest path)."""
     discover()
     root = resolve_catalog_root(catalog_root)
+    manifest_path = resolve_manifest_path(ref, catalog_root=root)
     manifest = resolve_manifest(ref, catalog_root=root, overlay_path=overlay, sets=sets)
-    ctx = _build_context(work_dir, sign_key)
+    ctx = _build_context(work_dir, sign_key, manifest_dir=manifest_path.parent)
     result = get_producer(manifest.kind).build(manifest, ctx)
     for art in result.artifacts:
         click.echo(
@@ -335,10 +339,13 @@ def catalog_build(  # noqa: PLR0913 — Click options map one-to-one to paramete
     else:
         raise click.UsageError("provide one or more REFS or --all")
 
-    ctx = _build_context(work_dir, sign_key)
     entries: list[CatalogEntry] = []
     for ref in item_refs:
+        # Each item resolves its own manifest_dir so the producer can stage that
+        # item's assets/ and resolve its custom docker.dockerfile (one ctx each).
+        manifest_path = resolve_manifest_path(ref, catalog_root=root)
         manifest = resolve_manifest(ref, catalog_root=root)
+        ctx = _build_context(work_dir, sign_key, manifest_dir=manifest_path.parent)
         entries.append(get_producer(manifest.kind).build(manifest, ctx).entry)
 
     prior = load_catalog(previous) if previous is not None else None

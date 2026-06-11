@@ -86,8 +86,11 @@ RUN set -eux; \
     arch="$(dpkg --print-architecture)"; \
     [ "$arch" = "amd64" ] || { echo "dev image only supports amd64 (got $arch)" >&2; exit 1; }; \
     mkdir -p /usr/lib/podman; \
-    curl -fsSL "https://github.com/containers/netavark/releases/download/v${NETAVARK_VERSION}/netavark.gz" | gunzip > /usr/lib/podman/netavark; \
-    curl -fsSL "https://github.com/containers/aardvark-dns/releases/download/v${AARDVARK_VERSION}/aardvark-dns.gz" | gunzip > /usr/lib/podman/aardvark-dns; \
+    curl -fsSL "https://github.com/containers/netavark/releases/download/v${NETAVARK_VERSION}/netavark.gz" -o /tmp/netavark.gz; \
+    curl -fsSL "https://github.com/containers/aardvark-dns/releases/download/v${AARDVARK_VERSION}/aardvark-dns.gz" -o /tmp/aardvark-dns.gz; \
+    gunzip /tmp/netavark.gz /tmp/aardvark-dns.gz; \
+    mv /tmp/netavark /usr/lib/podman/netavark; \
+    mv /tmp/aardvark-dns /usr/lib/podman/aardvark-dns; \
     chmod 0755 /usr/lib/podman/netavark /usr/lib/podman/aardvark-dns; \
     /usr/lib/podman/netavark --version
 
