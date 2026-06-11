@@ -51,6 +51,6 @@ jobs:
           while IFS= read -r item; do
             [ -n "$item" ] || continue
             echo "::group::build $item"
-            ./dev run uv run mh build "$item" --out "./dist/$item"
+            ./dev run uv run mh build "$item" --work-dir "./dist/$item"
             echo "::endgroup::"
           done <<< "$ITEMS"

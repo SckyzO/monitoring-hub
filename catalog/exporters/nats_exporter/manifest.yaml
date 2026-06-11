@@ -8,7 +8,9 @@ spec:
     type: github
     repo: nats-io/prometheus-nats-exporter
     strategy: latest_release
-    archive_name: prometheus-nats-exporter-v{clean_version}-linux-{upstream_linux_arch}.tar.gz
+    archive_name:
+      amd64: prometheus-nats-exporter-v{clean_version}-linux-x86_64.tar.gz
+      arm64: prometheus-nats-exporter-v{clean_version}-linux-arm64.tar.gz
   build:
     method: binary_repack
     binary_name: prometheus-nats-exporter

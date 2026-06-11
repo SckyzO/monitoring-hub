@@ -130,7 +130,11 @@ class ExporterProducer:
         )
         arch_dir = ctx.work_dir / "src" / arch
         archive = ctx.downloader.download(url, arch_dir / Path(url).name)
-        return extract_archive(archive, arch_dir / "x")
+        # binary_name lets a bare .gz (single binary, arch-suffixed upstream)
+        # land under the installed name so find_binary locates it.
+        return extract_archive(
+            archive, arch_dir / "x", single_binary_name=manifest.spec.build.binary_name
+        )
 
     def _download_extra_sources(
         self, manifest: ExporterManifest, ctx: BuildContext

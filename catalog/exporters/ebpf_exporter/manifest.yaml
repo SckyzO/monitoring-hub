@@ -8,7 +8,9 @@ spec:
     type: github
     repo: cloudflare/ebpf_exporter
     strategy: latest_release
-    archive_name: ebpf_exporter_with_examples.{rpm_arch}.tar.gz
+    archive_name:
+      amd64: ebpf_exporter_with_examples.x86_64.tar.gz
+      arm64: ebpf_exporter_with_examples.aarch64.tar.gz
   build:
     method: binary_repack
     binary_name: ebpf_exporter

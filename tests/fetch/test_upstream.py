@@ -38,6 +38,17 @@ def test_per_arch_dict_template() -> None:
     assert url.endswith("/releases/download/v1/aarch.tgz")
 
 
+def test_per_arch_dict_value_supports_placeholders() -> None:
+    # nats_exporter / ebpf_exporter: amd64 asset is x86_64-named, not amd64.
+    up = Upstream(
+        type="github",
+        repo="o/r",
+        archive_name={"amd64": "x-v{clean_version}-x86_64.tgz"},
+    )
+    url = resolve_download_url(up, name="x", version="v0.20.1", arch="amd64")
+    assert url.endswith("/releases/download/v0.20.1/x-v0.20.1-x86_64.tgz")
+
+
 def test_dict_template_missing_arch_raises() -> None:
     up = Upstream(type="github", repo="o/r", archive_name={"amd64": "x.tgz"})
     with pytest.raises(SourceResolutionError, match="no archive_name for arch 'arm64'"):
