@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import gzip
 import io
 import tarfile
 import zipfile
@@ -39,6 +40,32 @@ def test_extract_zip(tmp_path: Path) -> None:
         zf.writestr("dir/mybin", b"ELF")
     out = extract_archive(archive, tmp_path / "z")
     assert find_binary(out, "mybin").read_bytes() == b"ELF"
+
+
+def test_extract_bare_gz_renames_to_binary(tmp_path: Path) -> None:
+    # A single gzipped binary (ClusterLabs/ha_cluster_exporter ships these):
+    # the upstream arch-suffixes the name, so the hint lets find_binary locate it.
+    archive = tmp_path / "ha_cluster_exporter-amd64.gz"
+    archive.write_bytes(gzip.compress(b"ELF-binary"))
+    out = extract_archive(archive, tmp_path / "x", single_binary_name="ha_cluster_exporter")
+    binary = find_binary(out, "ha_cluster_exporter")
+    assert binary.read_bytes() == b"ELF-binary"
+    assert binary.name == "ha_cluster_exporter"
+    assert binary.stat().st_mode & 0o111  # executable
+
+
+def test_extract_bare_gz_without_hint_uses_stem(tmp_path: Path) -> None:
+    archive = tmp_path / "tool-amd64.gz"
+    archive.write_bytes(gzip.compress(b"X"))
+    out = extract_archive(archive, tmp_path / "x")
+    assert (out / "tool-amd64").read_bytes() == b"X"
+
+
+def test_extract_corrupt_bare_gz_raises(tmp_path: Path) -> None:
+    archive = tmp_path / "thing.gz"
+    archive.write_bytes(b"not a gzip stream")
+    with pytest.raises(BuildError, match="failed to extract"):
+        extract_archive(archive, tmp_path / "out")
 
 
 def test_extract_unsupported_format_raises(tmp_path: Path) -> None:
