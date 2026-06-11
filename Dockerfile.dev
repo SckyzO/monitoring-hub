@@ -35,7 +35,9 @@ RUN apt-get update \
     createrepo-c rpm debsigs apt-utils buildah skopeo gnupg qemu-user-static binfmt-support uidmap \
     && rm -rf /var/lib/apt/lists/* \
     && echo "dev:100000:65536" > /etc/subuid \
-    && echo "dev:100000:65536" > /etc/subgid
+    && echo "dev:100000:65536" > /etc/subgid \
+    && mkdir -p /etc/containers \
+    && printf '[containers]\nnetns = "host"\n' > /etc/containers/containers.conf
 
 # uv: the package manager.
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
@@ -70,6 +72,24 @@ RUN set -eux; \
     tar -xzf /tmp/gh.tgz -C /usr/local --strip-components=1 "gh_${GH_VERSION}_linux_${gh_arch}/bin/gh"; \
     rm /tmp/gh.tgz; \
     gh --version
+
+# netavark + aardvark-dns — the container network stack buildah looks up when it
+# creates the build container's namespace. Not packaged on Debian trixie, so
+# install the upstream release binaries into /usr/lib/podman (one of buildah's
+# helper_binaries_dir search paths). amd64 only: the dev image runs natively on
+# amd64 in CI; arm64 images are produced via qemu emulation while these helpers
+# still execute as amd64. Combined with netns=host above, the OCI publish job
+# builds images without provisioning an isolated rootless network.
+ARG NETAVARK_VERSION=2.0.0
+ARG AARDVARK_VERSION=2.0.0
+RUN set -eux; \
+    arch="$(dpkg --print-architecture)"; \
+    [ "$arch" = "amd64" ] || { echo "dev image only supports amd64 (got $arch)" >&2; exit 1; }; \
+    mkdir -p /usr/lib/podman; \
+    curl -fsSL "https://github.com/containers/netavark/releases/download/v${NETAVARK_VERSION}/netavark.gz" | gunzip > /usr/lib/podman/netavark; \
+    curl -fsSL "https://github.com/containers/aardvark-dns/releases/download/v${AARDVARK_VERSION}/aardvark-dns.gz" | gunzip > /usr/lib/podman/aardvark-dns; \
+    chmod 0755 /usr/lib/podman/netavark /usr/lib/podman/aardvark-dns; \
+    /usr/lib/podman/netavark --version
 
 WORKDIR /workspace
 
