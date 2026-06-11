@@ -27,6 +27,10 @@ on:
         description: "Single item to rebuild (required when mode=item)"
         type: string
         default: ""
+      dry_run:
+        description: "Build + assemble only; skip all publish legs (validation run)"
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -260,7 +264,7 @@ jobs:
 
   deploy-pages:
     needs: assemble
-    if: always() && needs.assemble.result == 'success'
+    if: always() && needs.assemble.result == 'success' && github.event.inputs.dry_run != 'true'
     runs-on: ubuntu-latest
     permissions:
       pages: write
@@ -275,7 +279,7 @@ jobs:
 
   publish-releases:
     needs: assemble
-    if: always() && needs.assemble.result == 'success'
+    if: always() && needs.assemble.result == 'success' && github.event.inputs.dry_run != 'true'
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -295,7 +299,7 @@ jobs:
 
   publish-oci:
     needs: assemble
-    if: always() && needs.assemble.result == 'success'
+    if: always() && needs.assemble.result == 'success' && github.event.inputs.dry_run != 'true'
     runs-on: ubuntu-latest
     permissions:
       packages: write
