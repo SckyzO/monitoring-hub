@@ -53,3 +53,21 @@ def test_build_passes_sign_key_into_context(
     )
     assert res.exit_code == 0
     assert captured["key"] == "ABCD"
+
+
+def test_build_threads_manifest_dir_into_context(
+    catalog_root: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """manifest_dir must reach the producer so it can stage assets/ and resolve a
+    custom docker.dockerfile (else nfpm extra_files + custom Docker fail in CI)."""
+    captured: dict[str, Path | None] = {}
+
+    class Capturing(FakeProducer):
+        def build(self, manifest, ctx):  # type: ignore[no-untyped-def]
+            captured["manifest_dir"] = ctx.manifest_dir
+            return super().build(manifest, ctx)
+
+    monkeypatch.setattr("forge.cli.main.get_producer", lambda kind: Capturing())
+    res = CliRunner().invoke(cli, ["build", "node_exporter", "--catalog-root", str(catalog_root)])
+    assert res.exit_code == 0
+    assert captured["manifest_dir"] == catalog_root / "exporters" / "node_exporter"

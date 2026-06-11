@@ -96,3 +96,32 @@ def test_catalog_build_single_ref(
 def test_catalog_build_requires_refs_or_all(catalog_root: Path) -> None:
     res = CliRunner().invoke(cli, ["catalog", "build", "--catalog-root", str(catalog_root)])
     assert res.exit_code != 0
+
+
+def test_catalog_build_threads_manifest_dir_per_item(
+    catalog_root: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Each built item must get its own manifest_dir (assets/custom-Docker resolve)."""
+    captured: dict[str, Path | None] = {}
+
+    class Capturing(FakeProducer):
+        def build(self, manifest, ctx):  # type: ignore[no-untyped-def]
+            captured["manifest_dir"] = ctx.manifest_dir
+            return super().build(manifest, ctx)
+
+    monkeypatch.setattr("forge.cli.main.get_producer", lambda kind: Capturing())
+    out = tmp_path / "catalog.json"
+    res = CliRunner().invoke(
+        cli,
+        [
+            "catalog",
+            "build",
+            "node_exporter",
+            "--catalog-root",
+            str(catalog_root),
+            "--output",
+            str(out),
+        ],
+    )
+    assert res.exit_code == 0
+    assert captured["manifest_dir"] == catalog_root / "exporters" / "node_exporter"
