@@ -6,13 +6,14 @@ UID_GID="$(id -u):$(id -g)"
 
 # Env allowlist forwarded to the container (value-less so secrets stay off argv;
 # unset vars are no-ops). Lets forge-release.yml sign + publish inside the
-# container. ITEM (build-matrix item) and ACTOR (github.actor, for ghcr login)
-# are not secrets but reach the container the same way.
+# container. ITEM (build-matrix item), ACTOR (github.actor, for ghcr login) and
+# PREV (published merge-base path, toggles incremental merge) are not secrets but
+# reach the container the same way.
 ENV_ARGS=(
   -e GH_TOKEN -e GITHUB_TOKEN -e GNUPGHOME
   -e GPG_PRIVATE_KEY -e GPG_PASSPHRASE
   -e DOCKERHUB_USERNAME -e DOCKERHUB_TOKEN -e DOCKERHUB_NAMESPACE
-  -e ITEM -e ACTOR
+  -e ITEM -e ACTOR -e PREV
 )
 
 case "${1:-}" in
