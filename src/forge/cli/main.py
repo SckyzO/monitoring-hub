@@ -496,6 +496,12 @@ def repo() -> None:
 @click.option("--sign", "sign", is_flag=True, help="Sign repo metadata (requires --key-id).")
 @click.option("--key-id", "key_id", default=None, help="GPG key id used to sign metadata.")
 @click.option(
+    "--merge",
+    "merge",
+    is_flag=True,
+    help="Incremental: merge built items into the published index (spec §4).",
+)
+@click.option(
     "--public-key",
     "public_key",
     type=click.Path(exists=True, dir_okay=False, path_type=Path),
@@ -513,6 +519,7 @@ def repo_build(  # noqa: PLR0913 — Click options map one-to-one to parameters
     sign: bool,
     key_id: str | None,
     public_key: Path | None,
+    merge: bool,
 ) -> None:
     """Assemble the Pages (--out) and Releases (--release-out) distribution trees."""
     if sign and key_id is None:
@@ -530,6 +537,8 @@ def repo_build(  # noqa: PLR0913 — Click options map one-to-one to parameters
         pages_base_url=pages_base_url,
         key_id=key_id if sign else None,
         public_key=public_key,
+        merge=merge,
+        downloader=HttpxDownloader() if merge else None,
         runner=SubprocessRunner(),
     )
     click.echo(f"assembled {len(result.items)} item(s) into {public_out} and {release_out}")

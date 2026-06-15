@@ -14,17 +14,20 @@ target since filenames don't encode it.
 from __future__ import annotations
 
 import shutil
+import tempfile
 from pathlib import Path
 
 from forge.catalog.builder import write_catalog
 from forge.domain.artifact import Artifact
 from forge.domain.catalog import Catalog, CatalogEntry
 from forge.domain.errors import DistributionError
+from forge.fetch.http import Downloader
 from forge.packaging.runner import CommandRunner
-from forge.repo.deb import build_apt_repo
+from forge.repo.deb import build_apt_repo, merge_apt_repo
 from forge.repo.metadata_sign import sign_apt_release, sign_repomd
 from forge.repo.naming import codename_for, deb_filename, rpm_arch, rpm_filename
-from forge.repo.rpm import build_rpm_repo
+from forge.repo.published import fetch_published_packages, fetch_published_repodata
+from forge.repo.rpm import build_rpm_repo, merge_rpm_repo
 
 _ORIGIN = "monitoring-hub"
 
@@ -74,8 +77,16 @@ def _stage_artifacts(  # noqa: PLR0913 — staging helper; params mirror build_d
     pages_base_url: str,
     rpm_groups: dict[tuple[str, str], list[Path]],
     deb_groups: dict[str, list[Path]],
+    merge: bool = False,
 ) -> CatalogEntry:
-    """Stage one item's artifacts into the trees and return it with URLs set."""
+    """Stage one item's artifacts into the trees and return it with URLs set.
+
+    With ``merge=True`` an artifact whose built file is absent from
+    ``packages_dir``/``dashboards_dir`` is not staged and not re-indexed; the
+    incoming ``art`` (with its already-populated ``url`` from the merged
+    catalogue) is carried over verbatim. With ``merge=False`` (full build) a
+    missing file raises via ``_locate`` / the dashboard guard, as before.
+    """
     new_artifacts: list[Artifact] = []
     for art in item.artifacts:
         url = artifact_hosted_url(
@@ -88,17 +99,26 @@ def _stage_artifacts(  # noqa: PLR0913 — staging helper; params mirror build_d
         if art.type == "rpm":
             arch = rpm_arch(art.arch)
             fn = rpm_filename(item.name, item.version, str(art.target), arch)
+            if merge and next(packages_dir.rglob(fn), None) is None:
+                new_artifacts.append(art)
+                continue
             tag_dir = release_out / f"rpm-{art.target}-{arch}"
             tag_dir.mkdir(parents=True, exist_ok=True)
             staged = Path(shutil.copy2(_locate(packages_dir, fn), tag_dir / fn))
             rpm_groups.setdefault((str(art.target), arch), []).append(staged)
         elif art.type == "deb":
             fn = deb_filename(item.name, item.version, str(art.arch))
+            if merge and next(packages_dir.rglob(fn), None) is None:
+                new_artifacts.append(art)
+                continue
             deb_groups.setdefault(codename_for(str(art.target)), []).append(
                 _locate(packages_dir, fn)
             )
         elif art.type == "grafana-dashboard":
             src = dashboards_dir / f"{item.name}.json"
+            if merge and not src.is_file():
+                new_artifacts.append(art)
+                continue
             if not src.is_file():
                 raise DistributionError(f"dashboard json not found: {src}")
             dash_dir = public_out / "dashboards"
@@ -119,6 +139,8 @@ def build_distribution(  # noqa: PLR0913 — orchestrator with explicit I/O para
     pages_base_url: str,
     key_id: str | None = None,
     public_key: Path | None = None,
+    merge: bool = False,
+    downloader: Downloader | None = None,
     runner: CommandRunner,
 ) -> Catalog:
     """Assemble the Pages (``./public``) and Releases (``./release``) trees.
@@ -126,6 +148,12 @@ def build_distribution(  # noqa: PLR0913 — orchestrator with explicit I/O para
     Returns the catalog with every ``Artifact.url`` populated; the same catalog is
     written to ``public_out/catalog.json``. Metadata is signed iff ``key_id`` is
     given (local dev / unit tests emit unsigned metadata).
+
+    With ``merge=True`` (and a ``downloader``) only the items actually built this
+    run are indexed: their records are merged per coordinate into the published
+    index, and items not built this run keep their existing artifact URLs verbatim
+    (spec §4). Default ``merge=False`` keeps the full-build behaviour: every
+    listed package must be present (a missing one raises).
     """
     rpm_groups: dict[tuple[str, str], list[Path]] = {}
     deb_groups: dict[str, list[Path]] = {}
@@ -141,26 +169,61 @@ def build_distribution(  # noqa: PLR0913 — orchestrator with explicit I/O para
             pages_base_url=pages_base_url,
             rpm_groups=rpm_groups,
             deb_groups=deb_groups,
+            merge=merge,
         )
         for item in catalog.items
     ]
 
     for (target, arch), pkgs in rpm_groups.items():
         repodata_dir = public_out / target / arch / "repodata"
-        build_rpm_repo(
-            packages=pkgs,
-            repodata_dir=repodata_dir,
-            location_prefix=f"{package_base_url}/rpm-{target}-{arch}/",
-            runner=runner,
-        )
+        location_prefix = f"{package_base_url}/rpm-{target}-{arch}/"
+        if merge and downloader is not None:
+            published_parent = fetch_published_repodata(
+                repo_url=f"{pages_base_url}/{target}/{arch}",
+                dest=Path(tempfile.mkdtemp(prefix="mh-pub-rpm-")),
+                downloader=downloader,
+            )
+            for pkg in pkgs:
+                merge_rpm_repo(
+                    new_package=pkg,
+                    published_parent=published_parent,
+                    repodata_dir=repodata_dir,
+                    location_prefix=location_prefix,
+                    runner=runner,
+                )
+                published_parent = repodata_dir.parent
+        else:
+            build_rpm_repo(
+                packages=pkgs,
+                repodata_dir=repodata_dir,
+                location_prefix=location_prefix,
+                runner=runner,
+            )
         if key_id is not None:
             sign_repomd(repodata_dir / "repomd.xml", key_id=key_id, runner=runner)
 
     for codename, debs in deb_groups.items():
         repo_dir = release_out / f"apt-{codename}"
-        build_apt_repo(
-            packages=debs, repo_dir=repo_dir, codename=codename, origin=_ORIGIN, runner=runner
-        )
+        if merge and downloader is not None:
+            published_packages = fetch_published_packages(
+                repo_url=f"{package_base_url}/apt-{codename}",
+                dest=Path(tempfile.mkdtemp(prefix="mh-pub-apt-")),
+                downloader=downloader,
+            )
+            for deb in debs:
+                merge_apt_repo(
+                    new_package=deb,
+                    published_packages=published_packages,
+                    repo_dir=repo_dir,
+                    codename=codename,
+                    origin=_ORIGIN,
+                    runner=runner,
+                )
+                published_packages = repo_dir / "Packages"
+        else:
+            build_apt_repo(
+                packages=debs, repo_dir=repo_dir, codename=codename, origin=_ORIGIN, runner=runner
+            )
         if key_id is not None:
             sign_apt_release(repo_dir / "Release", key_id=key_id, runner=runner)
 
