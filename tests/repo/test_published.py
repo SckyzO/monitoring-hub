@@ -39,6 +39,11 @@ def test_fetch_packages_returns_path_or_none(tmp_path: Path) -> None:
     out = fetch_published_packages(repo_url="https://rel/apt-noble", dest=tmp_path, downloader=dl)
     assert out == tmp_path / "Packages"
     assert (tmp_path / "Packages").read_bytes() == b"Package: x\n"
-    assert fetch_published_packages(
-        repo_url="https://rel/apt-noble", dest=tmp_path, downloader=FakeDownloader(present=False)
-    ) is None
+    assert (
+        fetch_published_packages(
+            repo_url="https://rel/apt-noble",
+            dest=tmp_path,
+            downloader=FakeDownloader(present=False),
+        )
+        is None
+    )

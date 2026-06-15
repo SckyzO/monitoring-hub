@@ -103,9 +103,7 @@ def test_repo_build_threads_params(tmp_path: Path, monkeypatch: Any) -> None:
     assert captured["key_id"] == "DEADBEEF"
 
 
-def test_repo_build_merge_threads_flag_and_downloader(
-    tmp_path: Path, monkeypatch: Any
-) -> None:
+def test_repo_build_merge_threads_flag_and_downloader(tmp_path: Path, monkeypatch: Any) -> None:
     catalog = _catalog_file(tmp_path)
     captured: dict[str, Any] = {}
 

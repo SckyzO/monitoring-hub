@@ -124,9 +124,7 @@ def test_build_apt_repo_raises_on_release_failure(tmp_path: Path) -> None:
 
 def test_merge_packages_replaces_changed_keeps_others() -> None:
     node_old = (
-        "Package: node-exporter\n"
-        "Version: 1.11.1-1\n"
-        "Filename: ./node-exporter_1.11.1-1_amd64.deb\n"
+        "Package: node-exporter\nVersion: 1.11.1-1\nFilename: ./node-exporter_1.11.1-1_amd64.deb\n"
     )
     mysql = (
         "Package: mysqld-exporter\n"
@@ -135,9 +133,7 @@ def test_merge_packages_replaces_changed_keeps_others() -> None:
     )
     published = f"{node_old}\n{mysql}\n"
     new_stanza = (
-        "Package: node-exporter\n"
-        "Version: 1.12.0-1\n"
-        "Filename: ./node-exporter_1.12.0-1_amd64.deb\n"
+        "Package: node-exporter\nVersion: 1.12.0-1\nFilename: ./node-exporter_1.12.0-1_amd64.deb\n"
     )
     out = merge_packages(published=published, new_stanza=new_stanza, package="node-exporter")
     stanzas = [s for s in out.split("\n\n") if s.strip()]
@@ -158,9 +154,7 @@ def test_merge_apt_repo_records_new_deb_and_regenerates(tmp_path: Path) -> None:
     published = tmp_path / "pub" / "Packages"
     published.parent.mkdir(parents=True)
     node_old = (
-        "Package: node-exporter\n"
-        "Version: 1.11.1-1\n"
-        "Filename: ./node-exporter_1.11.1-1_amd64.deb\n"
+        "Package: node-exporter\nVersion: 1.11.1-1\nFilename: ./node-exporter_1.11.1-1_amd64.deb\n"
     )
     mysql = (
         "Package: mysqld-exporter\n"

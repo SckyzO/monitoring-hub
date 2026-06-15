@@ -318,14 +318,10 @@ def test_build_distribution_merge_indexes_only_built_items(
     def fail_build_rpm_repo(**kw: object) -> Path:  # pragma: no cover - guard
         raise AssertionError("full build_rpm_repo must not run in merge mode")
 
-    monkeypatch.setattr(
-        "forge.repo.builder.fetch_published_repodata", lambda **kw: kw["dest"]
-    )
+    monkeypatch.setattr("forge.repo.builder.fetch_published_repodata", lambda **kw: kw["dest"])
     monkeypatch.setattr("forge.repo.builder.fetch_published_packages", lambda **kw: None)
     monkeypatch.setattr("forge.repo.builder.merge_rpm_repo", fake_merge_rpm_repo)
-    monkeypatch.setattr(
-        "forge.repo.builder.merge_apt_repo", lambda **kw: kw["repo_dir"]
-    )
+    monkeypatch.setattr("forge.repo.builder.merge_apt_repo", lambda **kw: kw["repo_dir"])
     monkeypatch.setattr("forge.repo.builder.build_rpm_repo", fail_build_rpm_repo)
 
     out = build_distribution(
