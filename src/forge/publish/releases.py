@@ -66,6 +66,44 @@ class GitHubReleasesPublisher:
             ]
         )
 
+    def prune(self, *, keep: dict[str, set[str]]) -> None:
+        """Delete bucket assets not in the keep-set (mono-version, spec §4).
+
+        ``keep`` maps a serving tag (``rpm-el9-x86_64``) to the set of current
+        asset filenames to retain; every other asset in that release is deleted.
+        """
+        for tag, current in keep.items():
+            listing = self._runner.run(
+                [
+                    "gh",
+                    "release",
+                    "view",
+                    tag,
+                    "--repo",
+                    self._repo,
+                    "--json",
+                    "assets",
+                    "--jq",
+                    ".assets[].name",
+                ]
+            )
+            if listing.returncode != 0:
+                continue  # release absent yet -> nothing to prune
+            for name in (n.strip() for n in listing.stdout.splitlines() if n.strip()):
+                if name not in current:
+                    self._run(
+                        [
+                            "gh",
+                            "release",
+                            "delete-asset",
+                            tag,
+                            name,
+                            "--yes",
+                            "--repo",
+                            self._repo,
+                        ]
+                    )
+
     def _run(self, args: Sequence[str]) -> None:
         result = self._runner.run(args)
         if result.returncode != 0:
