@@ -103,6 +103,38 @@ def test_repo_build_threads_params(tmp_path: Path, monkeypatch: Any) -> None:
     assert captured["key_id"] == "DEADBEEF"
 
 
+def test_repo_build_merge_threads_flag_and_downloader(tmp_path: Path, monkeypatch: Any) -> None:
+    catalog = _catalog_file(tmp_path)
+    captured: dict[str, Any] = {}
+
+    def fake_build_distribution(**kwargs: Any) -> Any:
+        captured.update(kwargs)
+        return kwargs["catalog"]
+
+    monkeypatch.setattr("forge.cli.main.build_distribution", fake_build_distribution)
+    result = CliRunner().invoke(
+        cli,
+        [
+            "repo",
+            "build",
+            "--catalog",
+            str(catalog),
+            "--packages",
+            str(tmp_path),
+            "--dashboards",
+            str(tmp_path),
+            "--out",
+            str(tmp_path / "public"),
+            "--release-out",
+            str(tmp_path / "release"),
+            "--merge",
+        ],
+    )
+    assert result.exit_code == 0, result.output
+    assert captured["merge"] is True
+    assert captured["downloader"] is not None
+
+
 def test_repo_build_unsigned_passes_no_key(tmp_path: Path, monkeypatch: Any) -> None:
     catalog = _catalog_file(tmp_path)
     captured: dict[str, Any] = {}

@@ -84,6 +84,9 @@ class _RecordingDownloader:
         dest.write_text("DASH", encoding="utf-8")
         return dest
 
+    def exists(self, url: str) -> bool:
+        return True
+
 
 def test_local_dir_source_copies_match(tmp_path: Path) -> None:
     root = tmp_path / "dist"

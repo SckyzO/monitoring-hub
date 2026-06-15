@@ -9,7 +9,7 @@ import pytest
 
 from forge.domain.errors import DistributionError
 from forge.packaging.runner import CommandResult
-from forge.repo.rpm import build_rpm_repo, group_rpms_by_target_arch
+from forge.repo.rpm import build_rpm_repo, group_rpms_by_target_arch, merge_rpm_repo
 from tests.packaging.conftest import FakeRunner
 
 
@@ -140,3 +140,44 @@ def test_build_rpm_repo_split_still_removes_blobs(tmp_path: Path) -> None:
     ]
     assert not (out / rpm.name).exists()
     assert rpm.is_file()
+
+
+def test_merge_rpm_repo_records_new_then_mergerepo(tmp_path: Path) -> None:
+    new = _rpm(tmp_path, "node_exporter-1.12.0-1.el9.x86_64.rpm")
+    published = tmp_path / "published"
+    (published / "repodata").mkdir(parents=True)
+    (published / "repodata" / "repomd.xml").write_text("<repomd/>")
+    out = tmp_path / "public" / "el9" / "x86_64" / "repodata"
+    runner = FakeRunner()
+
+    result = merge_rpm_repo(
+        new_package=new,
+        published_parent=published,
+        repodata_dir=out,
+        location_prefix="https://x/rpm-el9-x86_64/",
+        runner=runner,
+    )
+    assert result == out
+    cmds = [cast("list[str]", c["args"]) for c in runner.calls]
+    cre = next(c for c in cmds if c[0] == "createrepo_c")
+    assert "--location-prefix" in cre and "https://x/rpm-el9-x86_64/" in cre
+    mrg = next(c for c in cmds if c[0] == "mergerepo_c")
+    assert "--method" in mrg and mrg[mrg.index("--method") + 1] == "nvr"
+    assert "--omit-baseurl" in mrg
+    assert mrg.count("--repo") == 2
+
+
+def test_merge_rpm_repo_without_published_falls_back_to_full(tmp_path: Path) -> None:
+    new = _rpm(tmp_path, "node_exporter-1.12.0-1.el9.x86_64.rpm")
+    out = tmp_path / "public" / "el9" / "x86_64" / "repodata"
+    runner = FakeRunner()
+    merge_rpm_repo(
+        new_package=new,
+        published_parent=None,
+        repodata_dir=out,
+        location_prefix="https://x/rpm-el9-x86_64/",
+        runner=runner,
+    )
+    cmds = [cast("list[str]", c["args"]) for c in runner.calls]
+    assert any(c[0] == "createrepo_c" for c in cmds)
+    assert not any(c[0] == "mergerepo_c" for c in cmds)

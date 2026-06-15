@@ -10,7 +10,7 @@ import pytest
 
 from forge.domain.errors import DistributionError
 from forge.packaging.runner import CommandResult
-from forge.repo.deb import build_apt_repo
+from forge.repo.deb import build_apt_repo, merge_apt_repo, merge_packages
 from tests.packaging.conftest import FakeRunner
 
 
@@ -120,3 +120,69 @@ def test_build_apt_repo_raises_on_release_failure(tmp_path: Path) -> None:
             origin="monitoring-hub",
             runner=runner,
         )
+
+
+def test_merge_packages_replaces_changed_keeps_others() -> None:
+    node_old = (
+        "Package: node-exporter\nVersion: 1.11.1-1\nFilename: ./node-exporter_1.11.1-1_amd64.deb\n"
+    )
+    mysql = (
+        "Package: mysqld-exporter\n"
+        "Version: 0.15.0-1\n"
+        "Filename: ./mysqld-exporter_0.15.0-1_amd64.deb\n"
+    )
+    published = f"{node_old}\n{mysql}\n"
+    new_stanza = (
+        "Package: node-exporter\nVersion: 1.12.0-1\nFilename: ./node-exporter_1.12.0-1_amd64.deb\n"
+    )
+    out = merge_packages(published=published, new_stanza=new_stanza, package="node-exporter")
+    stanzas = [s for s in out.split("\n\n") if s.strip()]
+    assert len(stanzas) == 2
+    assert "Version: 1.12.0-1" in out and "Version: 1.11.1-1" not in out
+    assert "mysqld-exporter" in out
+
+
+def test_merge_packages_appends_when_new_package() -> None:
+    published = "Package: mysqld-exporter\nVersion: 0.15.0-1\n"
+    new_stanza = "Package: node-exporter\nVersion: 1.12.0-1\n"
+    out = merge_packages(published=published, new_stanza=new_stanza, package="node-exporter")
+    assert "mysqld-exporter" in out and "node-exporter" in out
+
+
+def test_merge_apt_repo_records_new_deb_and_regenerates(tmp_path: Path) -> None:
+    new = _deb(tmp_path, "node-exporter_1.12.0-1_amd64.deb")
+    published = tmp_path / "pub" / "Packages"
+    published.parent.mkdir(parents=True)
+    node_old = (
+        "Package: node-exporter\nVersion: 1.11.1-1\nFilename: ./node-exporter_1.11.1-1_amd64.deb\n"
+    )
+    mysql = (
+        "Package: mysqld-exporter\n"
+        "Version: 0.15.0-1\n"
+        "Filename: ./mysqld-exporter_0.15.0-1_amd64.deb\n"
+    )
+    published.write_text(f"{node_old}\n{mysql}")
+    repo_dir = tmp_path / "release" / "apt-noble"
+    node_new_stanza = (
+        "Package: node-exporter\nVersion: 1.12.0-1\nFilename: ./node-exporter_1.12.0-1_amd64.deb\n"
+    )
+    runner = FakeRunner(
+        [
+            CommandResult(args=[], returncode=0, stdout=node_new_stanza, stderr=""),
+            CommandResult(args=[], returncode=0, stdout="Origin: monitoring-hub\n", stderr=""),
+        ]
+    )
+    out = merge_apt_repo(
+        new_package=new,
+        published_packages=published,
+        repo_dir=repo_dir,
+        codename="noble",
+        origin="monitoring-hub",
+        runner=runner,
+    )
+    assert out == repo_dir
+    merged = (repo_dir / "Packages").read_text()
+    assert "Version: 1.12.0-1" in merged and "Version: 1.11.1-1" not in merged
+    assert "mysqld-exporter" in merged
+    assert (repo_dir / "Packages.gz").is_file()
+    assert (repo_dir / "Release").read_text() == "Origin: monitoring-hub\n"

@@ -14,6 +14,7 @@ from forge.domain.errors import DistributionError
 from forge.packaging.runner import CommandResult
 from forge.repo.builder import artifact_hosted_url, build_distribution
 from forge.repo.naming import codename_for
+from tests.fetch.conftest import FakeDownloader
 
 PB = "https://github.com/SckyzO/monitoring-hub/releases/download"
 PG = "https://sckyzo.github.io/monitoring-hub"
@@ -259,6 +260,88 @@ def test_build_distribution_missing_package_raises(tmp_path: Path) -> None:
             pages_base_url="https://pg",
             runner=SentinelRunner(),
         )
+
+
+def test_build_distribution_merge_indexes_only_built_items(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # Two rpm items sharing the el9/amd64 coordinate; only A is built this run.
+    item_a = CatalogEntry(
+        kind="exporter",
+        name="node_exporter",
+        version="1.9.1",
+        category="System",
+        description="d",
+        artifacts=[
+            Artifact(
+                type="rpm",
+                target="el9",
+                arch="amd64",
+                sha256="a",
+                url=f"{PB}/rpm-el9-x86_64/node_exporter-1.9.1-1.el9.x86_64.rpm",
+            )
+        ],
+    )
+    item_b = CatalogEntry(
+        kind="exporter",
+        name="mysqld_exporter",
+        version="0.15.0",
+        category="Database",
+        description="d",
+        artifacts=[
+            Artifact(
+                type="rpm",
+                target="el9",
+                arch="amd64",
+                sha256="b",
+                url=f"{PB}/rpm-el9-x86_64/mysqld_exporter-0.15.0-1.el9.x86_64.rpm",
+            )
+        ],
+    )
+    catalog = Catalog(generated_at="2026-06-07T00:00:00Z", items=[item_a, item_b])
+
+    packages = tmp_path / "dist"
+    _stage(packages, "rpm/el9/amd64", "node_exporter-1.9.1-1.el9.x86_64.rpm")  # only A
+    dashboards = tmp_path / "dashboards"
+    dashboards.mkdir()
+
+    merged_pkgs: list[str] = []
+
+    def fake_merge_rpm_repo(**kw: object) -> Path:
+        pkg = kw["new_package"]
+        assert isinstance(pkg, Path)
+        merged_pkgs.append(pkg.name)
+        repodata_dir = kw["repodata_dir"]
+        assert isinstance(repodata_dir, Path)
+        return repodata_dir
+
+    def fail_build_rpm_repo(**kw: object) -> Path:  # pragma: no cover - guard
+        raise AssertionError("full build_rpm_repo must not run in merge mode")
+
+    monkeypatch.setattr("forge.repo.builder.fetch_published_repodata", lambda **kw: kw["dest"])
+    monkeypatch.setattr("forge.repo.builder.fetch_published_packages", lambda **kw: None)
+    monkeypatch.setattr("forge.repo.builder.merge_rpm_repo", fake_merge_rpm_repo)
+    monkeypatch.setattr("forge.repo.builder.merge_apt_repo", lambda **kw: kw["repo_dir"])
+    monkeypatch.setattr("forge.repo.builder.build_rpm_repo", fail_build_rpm_repo)
+
+    out = build_distribution(
+        catalog=catalog,
+        packages_dir=packages,
+        dashboards_dir=dashboards,
+        public_out=tmp_path / "public",
+        release_out=tmp_path / "release",
+        package_base_url=PB,
+        pages_base_url=PG,
+        merge=True,
+        downloader=FakeDownloader(present=True),
+        runner=SentinelRunner(),
+    )
+
+    # Only item A's package was merged (B was not built this run).
+    assert merged_pkgs == ["node_exporter-1.9.1-1.el9.x86_64.rpm"]
+    # Item B's artifacts (URLs) are carried over unchanged.
+    returned = {it.name: it for it in out.items}
+    assert returned["mysqld_exporter"].artifacts == item_b.artifacts
 
 
 def test_build_distribution_missing_dashboard_raises(tmp_path: Path) -> None:

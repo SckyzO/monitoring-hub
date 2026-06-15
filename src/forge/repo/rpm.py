@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import re
 import shutil
+import tempfile
 from pathlib import Path
 
 from forge.domain.errors import DistributionError
@@ -72,4 +73,66 @@ def build_rpm_repo(
     if not keep_packages:
         for blob in staged:
             blob.unlink()
+    return repodata_dir
+
+
+def merge_rpm_repo(
+    *,
+    new_package: Path,
+    published_parent: Path | None,
+    repodata_dir: Path,
+    location_prefix: str,
+    runner: CommandRunner,
+) -> Path:
+    """Metadata-only incremental index for one changed ``.rpm`` (spec §4.2).
+
+    Record ``new_package`` with ``build_rpm_repo`` (one-file repo, bucket
+    ``location_prefix``) then ``mergerepo_c --method nvr --omit-baseurl`` it over
+    ``published_parent`` (a dir containing the fetched ``repodata/``). The result
+    ``repodata/`` is written at ``repodata_dir``. With ``published_parent=None``
+    (coordinate not published yet) the recorded one-file repo *is* the result —
+    correct, since the new package is then the only one for that coordinate.
+    Returns ``repodata_dir``.
+    """
+    work = Path(tempfile.mkdtemp(prefix="mh-rpm-merge-"))
+    new_repo = work / "new"
+    build_rpm_repo(
+        packages=[new_package],
+        repodata_dir=new_repo / "repodata",
+        location_prefix=location_prefix,
+        runner=runner,
+    )
+    repodata_dir.parent.mkdir(parents=True, exist_ok=True)
+
+    def _place(src: Path, dst: Path) -> None:
+        """Copy a produced repodata dir into place, tolerant of FakeRunner (no files)."""
+        if not src.exists():
+            dst.mkdir(parents=True, exist_ok=True)
+            return
+        if dst.exists():
+            shutil.rmtree(dst)
+        shutil.copytree(src, dst)
+
+    if published_parent is None:
+        _place(new_repo / "repodata", repodata_dir)
+        return repodata_dir
+
+    merged = work / "merged"
+    result = runner.run(
+        [
+            "mergerepo_c",
+            "--method",
+            "nvr",
+            "--omit-baseurl",
+            "--repo",
+            str(published_parent),
+            "--repo",
+            str(new_repo),
+            "--outputdir",
+            str(merged),
+        ]
+    )
+    if result.returncode != 0:
+        raise DistributionError(f"mergerepo_c failed: {result.stderr}")
+    _place(merged / "repodata", repodata_dir)
     return repodata_dir

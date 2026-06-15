@@ -22,6 +22,7 @@ _CHUNK = 1024 * 1024
 @runtime_checkable
 class Downloader(Protocol):
     def download(self, url: str, dest: Path) -> Path: ...
+    def exists(self, url: str) -> bool: ...
 
 
 class HttpxDownloader:
@@ -55,3 +56,13 @@ class HttpxDownloader:
         except (httpx.HTTPError, OSError) as exc:
             raise SourceResolutionError(f"download failed for {url}: {exc}") from exc
         return dest
+
+    def exists(self, url: str) -> bool:
+        """HEAD probe: True iff the resource responds 2xx. Transient transport
+        errors propagate as SourceResolutionError (never silently False)."""
+        try:
+            with httpx.Client(timeout=self._timeout, follow_redirects=True) as client:
+                response = client.head(url)
+            return response.is_success
+        except httpx.HTTPError as exc:
+            raise SourceResolutionError(f"existence check failed for {url}: {exc}") from exc
