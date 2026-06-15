@@ -108,3 +108,82 @@ def test_publish_releases_dispatches(tmp_path: Path, monkeypatch: Any) -> None:
     assert result.exit_code == 0, result.output
     assert _SpyReleases.last["repo"] == "o/r"
     assert _SpyReleases.last["staging"] == release_dir
+
+
+def _catalog_file_with_artifacts(tmp_path: Path) -> Path:
+    catalog = {
+        "schema_version": 1,
+        "generated_at": "2026-06-15T00:00:00Z",
+        "items": [
+            {
+                "kind": "exporter",
+                "name": "node_exporter",
+                "version": "1.12.0",
+                "category": "System",
+                "description": "d",
+                "artifacts": [
+                    {
+                        "type": "rpm",
+                        "target": "el9",
+                        "arch": "amd64",
+                        "sha256": "a" * 64,
+                    },
+                    {
+                        "type": "deb",
+                        "target": "ubuntu-24.04",
+                        "arch": "amd64",
+                        "sha256": "b" * 64,
+                    },
+                ],
+            }
+        ],
+    }
+    path = tmp_path / "catalog_with_arts.json"
+    path.write_text(json.dumps(catalog))
+    return path
+
+
+class _SpyReleasesPrune:
+    last: dict[str, Any] = {}
+
+    def __init__(self, *, repo: str, runner: Any) -> None:
+        _SpyReleasesPrune.last = {"repo": repo}
+
+    def publish(self, staging: Path) -> None:
+        _SpyReleasesPrune.last["staging"] = staging
+
+    def prune(self, *, keep: dict[str, Any]) -> None:
+        _SpyReleasesPrune.last["keep"] = keep
+
+
+def test_publish_releases_prune_wires_keep_set(tmp_path: Path, monkeypatch: Any) -> None:
+    """--prune calls prune() with a keep-set built from the catalogue artifacts."""
+    catalog = _catalog_file_with_artifacts(tmp_path)
+    # Non-empty releases dir so the upload path runs first.
+    release_dir = tmp_path / "release"
+    tag_dir = release_dir / "rpm-el9-x86_64"
+    tag_dir.mkdir(parents=True)
+    (tag_dir / "node_exporter-1.12.0-1.el9.x86_64.rpm").write_bytes(b"x")
+
+    monkeypatch.setattr("forge.cli.main.GitHubReleasesPublisher", _SpyReleasesPrune)
+    result = CliRunner().invoke(
+        cli,
+        [
+            "publish",
+            "--releases",
+            str(release_dir),
+            "--prune",
+            "--catalog",
+            str(catalog),
+            "--repo",
+            "o/r",
+        ],
+    )
+    assert result.exit_code == 0, result.output
+    keep = _SpyReleasesPrune.last["keep"]
+    # RPM artifact → tag rpm-el9-x86_64
+    assert "rpm-el9-x86_64" in keep
+    assert "node_exporter-1.12.0-1.el9.x86_64.rpm" in keep["rpm-el9-x86_64"]
+    # DEB artifact → tag apt-noble
+    assert "apt-noble" in keep
+    assert "node-exporter_1.12.0-1_amd64.deb" in keep["apt-noble"]

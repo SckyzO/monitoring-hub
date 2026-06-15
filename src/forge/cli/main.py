@@ -23,7 +23,7 @@ from forge.detect.bump import bump_manifest
 from forge.detect.reconcile import missing_legs
 from forge.detect.registry import discover as discover_sources
 from forge.detect.watch import detect_all
-from forge.domain.catalog import CatalogEntry
+from forge.domain.catalog import Catalog, CatalogEntry
 from forge.domain.errors import ForgeError
 from forge.domain.manifest import parse_manifest
 from forge.fetch.http import HttpxDownloader
@@ -33,6 +33,7 @@ from forge.packaging.runner import SubprocessRunner
 from forge.publish.oci import OciPublisher
 from forge.publish.releases import GitHubReleasesPublisher
 from forge.repo.builder import build_distribution
+from forge.repo.naming import codename_for, deb_filename, rpm_arch, rpm_filename
 from forge.sources.resolver import load_yaml_mapping, resolve_manifest, resolve_manifest_path
 
 _DEFAULT_PACKAGE_BASE_URL = "https://github.com/SckyzO/monitoring-hub/releases/download"
@@ -544,6 +545,24 @@ def repo_build(  # noqa: PLR0913 — Click options map one-to-one to parameters
     click.echo(f"assembled {len(result.items)} item(s) into {public_out} and {release_out}")
 
 
+def _serving_keep_set(catalog: Catalog) -> dict[str, set[str]]:
+    """Current asset filename per serving tag, from the catalogue (spec §4)."""
+    keep: dict[str, set[str]] = {}
+    for item in catalog.items:
+        for art in item.artifacts:
+            if art.type == "rpm":
+                arch = rpm_arch(art.arch)
+                tag = f"rpm-{art.target}-{arch}"
+                fn = rpm_filename(item.name, item.version, str(art.target), arch)
+            elif art.type == "deb":
+                tag = f"apt-{codename_for(str(art.target))}"
+                fn = deb_filename(item.name, item.version, str(art.arch))
+            else:
+                continue
+            keep.setdefault(tag, set()).add(fn)
+    return keep
+
+
 @cli.command()
 @click.option("--oci", "oci", is_flag=True, help="Build + push multi-arch OCI images.")
 @click.option(
@@ -584,6 +603,12 @@ def repo_build(  # noqa: PLR0913 — Click options map one-to-one to parameters
     show_default=True,
     help="owner/name of the GitHub repo whose Releases receive the assets.",
 )
+@click.option(
+    "--prune",
+    "prune",
+    is_flag=True,
+    help="Delete superseded serving-bucket assets (mono-version).",
+)
 def publish(  # noqa: PLR0913 — Click options map one-to-one to parameters
     oci: bool,
     registries: tuple[str, ...],
@@ -591,6 +616,7 @@ def publish(  # noqa: PLR0913 — Click options map one-to-one to parameters
     catalog_path: Path,
     releases_dir: Path | None,
     repo: str,
+    prune: bool,
 ) -> None:
     """Publish built artifacts to remote hosts (OCI → GHCR, releases → GitHub)."""
     if not oci and releases_dir is None:
@@ -606,6 +632,11 @@ def publish(  # noqa: PLR0913 — Click options map one-to-one to parameters
     if releases_dir is not None:
         GitHubReleasesPublisher(repo=repo, runner=runner).publish(releases_dir)
         click.echo(f"published release assets from {releases_dir} to {repo}")
+    if releases_dir is not None and prune:
+        catalog = load_catalog(catalog_path)
+        if catalog is None:
+            raise click.ClickException(f"catalog not found: {catalog_path}")
+        GitHubReleasesPublisher(repo=repo, runner=runner).prune(keep=_serving_keep_set(catalog))
 
 
 def _split_csv(value: str | None) -> list[str] | None:

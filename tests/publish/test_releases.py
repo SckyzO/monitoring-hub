@@ -110,3 +110,35 @@ def test_raises_on_upload_failure(tmp_path: Path) -> None:
 
     with pytest.raises(PublishError, match="gh release upload failed: boom"):
         GitHubReleasesPublisher(repo="o/r", runner=runner).publish(staging)
+
+
+def test_prune_deletes_superseded_assets_per_coordinate(tmp_path: Path) -> None:
+    """Given the current versions, delete every other version of the same package
+    in each serving bucket; keep the current ones."""
+
+    class ListingRunner(RecordingRunner):
+        def run(self, args, *, cwd=None, env=None, stdin=None):  # type: ignore[no-untyped-def]
+            argv = list(args)
+            self.calls.append(argv)
+            if argv[:3] == ["gh", "release", "view"] and "rpm-el9-x86_64" in argv:
+                return CommandResult(
+                    args=argv,
+                    returncode=0,
+                    stdout=(
+                        "node_exporter-1.11.1-1.el9.x86_64.rpm\n"
+                        "node_exporter-1.12.0-1.el9.x86_64.rpm\n"
+                    ),
+                    stderr="",
+                )
+            return CommandResult(args=argv, returncode=0, stdout="", stderr="")
+
+    runner = ListingRunner(view_rc=0)
+    GitHubReleasesPublisher(repo="o/r", runner=runner).prune(
+        keep={"rpm-el9-x86_64": {"node_exporter-1.12.0-1.el9.x86_64.rpm"}}
+    )
+    flat = [" ".join(c) for c in runner.calls]
+    assert any(
+        "release delete-asset rpm-el9-x86_64 node_exporter-1.11.1-1.el9.x86_64.rpm" in c
+        for c in flat
+    )
+    assert not any("delete-asset rpm-el9-x86_64 node_exporter-1.12.0-1" in c for c in flat)
