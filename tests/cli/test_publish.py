@@ -187,3 +187,51 @@ def test_publish_releases_prune_wires_keep_set(tmp_path: Path, monkeypatch: Any)
     # DEB artifact → tag apt-noble
     assert "apt-noble" in keep
     assert "node-exporter_1.12.0-1_amd64.deb" in keep["apt-noble"]
+
+
+class _SpyArchive:
+    """Spy for ArchiveReleasesPublisher: captures ctor args + publish_item calls."""
+
+    last_keep: int = 0
+    items: list[dict[str, Any]] = []
+
+    def __init__(self, *, repo: str, runner: Any, keep: int) -> None:
+        _SpyArchive.last_keep = keep
+        _SpyArchive.items = []
+
+    def publish_item(self, *, name: str, version: str, assets: list[Path]) -> None:
+        _SpyArchive.items.append({"name": name, "version": version, "assets": assets})
+
+
+def test_publish_archive_dispatches(tmp_path: Path, monkeypatch: Any) -> None:
+    """--archive constructs ArchiveReleasesPublisher(keep=N) and calls publish_item
+    for each built item (asset file present under --packages)."""
+    catalog = _catalog_file(tmp_path)  # node_exporter 1.9.1
+
+    # Create a matching .rpm under the packages tree
+    pkg_dir = tmp_path / "dist"
+    pkg_dir.mkdir()
+    (pkg_dir / "node_exporter-1.9.1-1.el9.x86_64.rpm").write_bytes(b"x")
+
+    monkeypatch.setattr("forge.cli.main.ArchiveReleasesPublisher", _SpyArchive)
+    result = CliRunner().invoke(
+        cli,
+        [
+            "publish",
+            "--archive",
+            "--packages",
+            str(pkg_dir),
+            "--catalog",
+            str(catalog),
+            "--keep",
+            "5",
+            "--repo",
+            "o/r",
+        ],
+    )
+    assert result.exit_code == 0, result.output
+    assert _SpyArchive.last_keep == 5
+    assert len(_SpyArchive.items) == 1
+    assert _SpyArchive.items[0]["name"] == "node_exporter"
+    assert _SpyArchive.items[0]["version"] == "1.9.1"
+    assert len(_SpyArchive.items[0]["assets"]) > 0

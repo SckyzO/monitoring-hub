@@ -30,6 +30,7 @@ from forge.fetch.http import HttpxDownloader
 from forge.kinds.base import BuildContext
 from forge.kinds.registry import discover, get_producer
 from forge.packaging.runner import SubprocessRunner
+from forge.publish.archive import ArchiveReleasesPublisher
 from forge.publish.oci import OciPublisher
 from forge.publish.releases import GitHubReleasesPublisher
 from forge.repo.builder import build_distribution
@@ -563,6 +564,15 @@ def _serving_keep_set(catalog: Catalog) -> dict[str, set[str]]:
     return keep
 
 
+def _belongs_to(filename: str, item: CatalogEntry) -> bool:
+    """True if a built .rpm/.deb filename belongs to item@version."""
+    rpm = f"{item.name}-{item.version}-"
+    deb = f"{item.name.replace('_', '-')}_{item.version}-"
+    return (filename.startswith(rpm) and filename.endswith(".rpm")) or (
+        filename.startswith(deb) and filename.endswith(".deb")
+    )
+
+
 @cli.command()
 @click.option("--oci", "oci", is_flag=True, help="Build + push multi-arch OCI images.")
 @click.option(
@@ -609,6 +619,28 @@ def _serving_keep_set(catalog: Catalog) -> dict[str, set[str]]:
     is_flag=True,
     help="Delete superseded serving-bucket assets (mono-version).",
 )
+@click.option(
+    "--archive",
+    "archive",
+    is_flag=True,
+    help="Mirror built items to {name}-v{version} releases.",
+)
+@click.option(
+    "--keep",
+    "keep",
+    type=int,
+    default=10,
+    show_default=True,
+    help="Archive versions to retain per item.",
+)
+@click.option(
+    "--packages",
+    "packages_dir",
+    type=click.Path(file_okay=False, path_type=Path),
+    default=Path("dist"),
+    show_default=True,
+    help="Built-package tree (for --archive asset discovery).",
+)
 def publish(  # noqa: PLR0913 — Click options map one-to-one to parameters
     oci: bool,
     registries: tuple[str, ...],
@@ -617,10 +649,13 @@ def publish(  # noqa: PLR0913 — Click options map one-to-one to parameters
     releases_dir: Path | None,
     repo: str,
     prune: bool,
+    archive: bool,
+    keep: int,
+    packages_dir: Path,
 ) -> None:
     """Publish built artifacts to remote hosts (OCI → GHCR, releases → GitHub)."""
-    if not oci and releases_dir is None:
-        raise click.UsageError("nothing to publish: pass --oci and/or --releases")
+    if not oci and releases_dir is None and not archive:
+        raise click.UsageError("nothing to publish: pass --oci, --releases, and/or --archive")
     runner = SubprocessRunner()
     if oci:
         catalog = load_catalog(catalog_path)
@@ -637,6 +672,17 @@ def publish(  # noqa: PLR0913 — Click options map one-to-one to parameters
         if catalog is None:
             raise click.ClickException(f"catalog not found: {catalog_path}")
         GitHubReleasesPublisher(repo=repo, runner=runner).prune(keep=_serving_keep_set(catalog))
+    if archive:
+        catalog = load_catalog(catalog_path)
+        if catalog is None:
+            raise click.ClickException(f"catalog not found: {catalog_path}")
+        archiver = ArchiveReleasesPublisher(repo=repo, runner=runner, keep=keep)
+        for item in catalog.items:
+            assets = sorted(
+                p for p in packages_dir.rglob("*") if p.is_file() and _belongs_to(p.name, item)
+            )
+            if assets:
+                archiver.publish_item(name=item.name, version=item.version, assets=assets)
 
 
 def _split_csv(value: str | None) -> list[str] | None:
